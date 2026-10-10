@@ -32,13 +32,15 @@ import { preserveLoggedOutShareAuthAttribution } from '@/platform/workflow/shari
  * routes and guards are active. Standalone desktop Firebase setup uses its
  * own distribution path.
  */
-export const cloudAccountSurfacesEnabled =
-  isCloud && !isHyperStudioEmbedded
+export const cloudAccountSurfacesEnabled = isCloud && !isHyperStudioEmbedded
 
-const cloudOnboardingRoutes = cloudAccountSurfacesEnabled
-  ? (await import('./platform/cloud/onboarding/onboardingCloudRoutes'))
-      .cloudOnboardingRoutes
-  : []
+const cloudOnboardingRoutes =
+  import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true'
+    ? []
+    : cloudAccountSurfacesEnabled
+      ? (await import('./platform/cloud/onboarding/onboardingCloudRoutes'))
+          .cloudOnboardingRoutes
+      : []
 
 const isFileProtocol = window.location.protocol === 'file:'
 
@@ -91,12 +93,15 @@ const router = createRouter({
             }
           }
         },
-        ...(!isHyperStudioEmbedded
-          ? [{
-              path: 'user-select',
-              name: 'UserSelectView',
-              component: () => import('@/views/UserSelectView.vue')
-            }]
+        ...(import.meta.env.VITE_HYPER_STUDIO_EMBEDDED !== 'true' &&
+        !isHyperStudioEmbedded
+          ? [
+              {
+                path: 'user-select',
+                name: 'UserSelectView',
+                component: () => import('@/views/UserSelectView.vue')
+              }
+            ]
           : [])
       ]
     },

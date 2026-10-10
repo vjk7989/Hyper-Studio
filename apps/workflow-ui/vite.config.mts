@@ -31,6 +31,13 @@ const DISABLE_TEMPLATES_PROXY = process.env.DISABLE_TEMPLATES_PROXY === 'true'
 const GENERATE_SOURCEMAP = process.env.GENERATE_SOURCEMAP !== 'false'
 const COLLECT_COVERAGE = process.env.COLLECT_COVERAGE === 'true'
 const IS_STORYBOOK = process.env.npm_lifecycle_event === 'storybook'
+const IS_HYPER_STUDIO_EMBEDDED =
+  process.env.VITE_HYPER_STUDIO_EMBEDDED === 'true'
+const EMBEDDED_ACCOUNT_PLACEHOLDER = resolve(
+  'src/platform/distribution/EmbeddedAccountPlaceholder.vue'
+)
+const FORBIDDEN_EMBEDDED_ACCOUNT_ASSET =
+  /(?:onboardingCloudRoutes|CloudLoginView|CloudSignupView|OAuth(?:Consent|Layout)View|CloudSubscriptionRedirectView|UserSelectView|ApiNodesSignInContent|SignInContent|UserPanel|CreditsPanel|SubscriptionRequiredDialogContent|CancelSubscriptionDialogContent|SubscribeToRun|CloudRunButtonWrapper|CloudNotificationContent|cloudFeedbackTopbarButton|CurrentUserPopoverWorkspace|WorkspaceSwitcherPopover|(?:Create|Delete|Edit|Leave|TeamWorkspaces|SetMemberCreditLimit|InviteMember|InviteMemberUpsell|RevokeInvite|RemoveMember|ChangeMemberRole|DowngradeRemoveMembers)DialogContent)(?:[-.])/i
 const TEST_SYSTEM_TIME = Date.parse('2024-06-15T12:00:00Z')
 const BROWSER_TESTS_DIR = resolve('browser_tests')
 
@@ -469,6 +476,39 @@ export default defineConfig({
   },
 
   plugins: [
+    {
+      name: 'hyper-studio-embedded-account-ui',
+      enforce: 'pre',
+      resolveId(source) {
+        if (!IS_HYPER_STUDIO_EMBEDDED) return null
+        if (
+          source ===
+            '@/platform/cloud/subscription/components/SubscribeToRun.vue' ||
+          source ===
+            '@/platform/cloud/subscription/components/FreeTierQuota.vue' ||
+          /^@\/platform\/workspace\/components\/dialogs\/[^/]+\.vue$/.test(
+            source
+          ) ||
+          /(?:^|[/\\])(?:CurrentUserPopoverWorkspace|WorkspaceSwitcherPopover)\.vue$/.test(
+            source
+          )
+        ) {
+          return EMBEDDED_ACCOUNT_PLACEHOLDER
+        }
+        return null
+      },
+      generateBundle(_options, bundle) {
+        if (!IS_HYPER_STUDIO_EMBEDDED) return
+        const forbidden = Object.keys(bundle).filter((name) =>
+          FORBIDDEN_EMBEDDED_ACCOUNT_ASSET.test(name)
+        )
+        if (forbidden.length > 0) {
+          this.error(
+            `Embedded build contains account UI assets: ${forbidden.join(', ')}`
+          )
+        }
+      }
+    },
     ...(!DISABLE_VUE_PLUGINS
       ? [vueDevTools(), vue(vuePluginOptions), createHtmlPlugin({})]
       : [vue(vuePluginOptions)]),

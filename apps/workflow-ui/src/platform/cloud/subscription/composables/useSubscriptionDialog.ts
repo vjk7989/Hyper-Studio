@@ -76,6 +76,7 @@ export const useSubscriptionDialog = () => {
   }
 
   function showInactiveMemberDialog(): boolean {
+    if (import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true') return false
     if (!shouldUseWorkspaceBilling.value) return false
 
     const { permissions } = useWorkspaceUI()
@@ -98,6 +99,7 @@ export const useSubscriptionDialog = () => {
   }
 
   function showPricingTable(options?: SubscriptionDialogOptions) {
+    if (import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true') return
     if (!isCloud) return
     if (showInactiveMemberDialog()) return
 

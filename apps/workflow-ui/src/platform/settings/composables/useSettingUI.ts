@@ -137,9 +137,12 @@ export function useSettingUI(
       label: 'Credits',
       children: []
     },
-    component: defineAsyncComponent(
-      () => import('@/components/dialog/content/setting/CreditsPanel.vue')
-    )
+    component:
+      import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true'
+        ? aboutPanel.component
+        : defineAsyncComponent(
+            () => import('@/components/dialog/content/setting/CreditsPanel.vue')
+          )
   }
 
   const userPanel: SettingPanelItem = {
@@ -148,15 +151,21 @@ export function useSettingUI(
       label: 'User',
       children: []
     },
-    component: defineAsyncComponent(
-      () => import('@/components/dialog/content/setting/UserPanel.vue')
-    )
+    component:
+      import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true'
+        ? aboutPanel.component
+        : defineAsyncComponent(
+            () => import('@/components/dialog/content/setting/UserPanel.vue')
+          )
   }
 
-  const workspaceSettingsPanelComponent = defineAsyncComponent(
-    () =>
-      import('@/platform/workspace/components/dialogs/settings/WorkspaceSettingsPanelContent.vue')
-  )
+  const workspaceSettingsPanelComponent =
+    import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true'
+      ? aboutPanel.component
+      : defineAsyncComponent(
+          () =>
+            import('@/platform/workspace/components/dialogs/settings/WorkspaceSettingsPanelContent.vue')
+        )
 
   const planCreditsPanel: SettingPanelItem = {
     node: {

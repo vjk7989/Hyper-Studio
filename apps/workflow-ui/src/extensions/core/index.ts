@@ -51,7 +51,10 @@ if (__DISTRIBUTION__ === 'cloud') {
 }
 
 // Feedback button for cloud and nightly builds
-if (isCloud || isNightly) {
+if (
+  import.meta.env.VITE_HYPER_STUDIO_EMBEDDED !== 'true' &&
+  (isCloud || isNightly)
+) {
   await import('./cloudFeedbackTopbarButton')
 }
 
