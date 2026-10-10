@@ -78,11 +78,16 @@ jobs:
         run: |
           node .tools/pnpm10/node_modules/pnpm/bin/pnpm.cjs --dir apps/desktop exec electron-builder --linux --x64 --dir --publish never
           export HYPER_STUDIO_SMOKE_EXE="$GITHUB_WORKSPACE/apps/desktop/release/linux-unpacked/hyper-studio"
-          xvfb-run -a node scripts/smoke-packaged-electron.mjs
+          xvfb-run -a node scripts/smoke-packaged-linux-cdp.mjs
       - name: Preserve packaged smoke diagnostics
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: phase4-smoke-${{ matrix.platform }}
-          path: .local-tmp/packaged-electron-smoke/
+          path: |
+            .local-tmp/packaged-electron-smoke/**/*.png
+            .local-tmp/packaged-electron-smoke/**/*.log
+            .local-tmp/packaged-electron-smoke/*.png
+            .local-tmp/packaged-electron-smoke/*.log
+            .local-tmp/packaged-electron-smoke/user-data/logs/*.log
           if-no-files-found: ignore
