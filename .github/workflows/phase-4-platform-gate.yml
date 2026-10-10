@@ -45,9 +45,12 @@ jobs:
           mkdir -p .local-cache .local-tmp .tools/pnpm10 .tools/pnpm11
           npm install --prefix .tools/pnpm10 --no-audit --no-fund pnpm@10.30.3
           npm install --prefix .tools/pnpm11 --no-audit --no-fund pnpm@11.13.1
+          echo "$GITHUB_WORKSPACE/.tools/pnpm10/node_modules/.bin" >> "$GITHUB_PATH"
       - name: Build pinned workflow canvas
         shell: bash
         run: |
+          export PATH="$GITHUB_WORKSPACE/.tools/pnpm11/node_modules/.bin:$PATH"
+          pnpm --version
           node .tools/pnpm11/node_modules/pnpm/bin/pnpm.cjs --dir apps/workflow-ui install --frozen-lockfile --store-dir "$GITHUB_WORKSPACE/.local-cache/pnpm11"
           node .tools/pnpm11/node_modules/pnpm/bin/pnpm.cjs --dir apps/workflow-ui exec vite build --config vite.config.mts
       - name: Build and test desktop shell
