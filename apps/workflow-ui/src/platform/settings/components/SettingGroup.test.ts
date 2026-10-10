@@ -20,7 +20,7 @@ afterEach(() => {
 it.for([
   [false, 'Comfy'],
   [true, 'Hyper-Studio']
-])('shows the embedded category as %s', ([isEmbedded, label]) => {
+] as const)('shows the embedded category as %s', ([isEmbedded, label]) => {
   embedded.value = isEmbedded
 
   render(SettingGroup, {
