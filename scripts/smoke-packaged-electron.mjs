@@ -16,8 +16,10 @@ const env = {
   APPDATA: path.join(home, 'appdata'), LOCALAPPDATA: path.join(home, 'localappdata'),
   TEMP: path.join(home, 'temp'), TMP: path.join(home, 'temp'), TMPDIR: path.join(home, 'temp'),
   HYPER_STUDIO_USER_DATA: path.join(home, 'user-data'),
+  ELECTRON_ENABLE_LOGGING: '1',
+  ELECTRON_LOG_FILE: path.join(home, 'electron.log'),
 }
-const app = await electron.launch({ executablePath, cwd: root, env, args: ['--no-sandbox'], timeout: 45000 })
+const app = await electron.launch({ executablePath, cwd: root, env, args: ['--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage'], timeout: 120000 })
 try {
   const window = await app.firstWindow({ timeout: 45000 })
   const pageErrors = []
@@ -38,7 +40,7 @@ try {
     await window.getByText('New Project', { exact: true }).waitFor({ state: 'visible', timeout: 30000 })
   } catch {
     await window.screenshot({ path: path.join(home, 'after-storage-error.png') })
-    throw new Error('Packaged app did not reach Projects without the optional local Python runtime')
+    throw new Error(`Packaged app did not reach Projects; URL ${window.url()}; body ${(await window.locator('body').innerText()).slice(0, 2000)}; errors ${JSON.stringify(pageErrors)}`)
   }
   await window.screenshot({ path: path.join(home, 'projects.png') })
   const projectFolder = path.join(home, `workflow-project-${Date.now()}`)
