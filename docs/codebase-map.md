@@ -1,6 +1,6 @@
 # Codebase map
 
-Use this as a navigation index, then use Graft for symbol discovery. The project-controls final5 scoped Windows installed gate passed on 2026-10-11; macOS/Linux packaged project-controls checks and broader release review remain open. Final5 Graft build/map passed (7,084 files, 64,492 nodes, 161,122 edges). The separate codebase-memory MCP fast reindex crashed twice, so verify its snapshot before relying on its edges (`search_graph` → `trace_path` → `get_code_snippet`). Check [phase-handoff.md](phase-handoff.md), [gates/project-controls-windows.md](gates/project-controls-windows.md), and [gates/phase-5-brand-audit.md](gates/phase-5-brand-audit.md) before editing.
+Use this as a navigation index, then use Graft for symbol discovery. The project-controls final5 scoped Windows installed gate passed on 2026-10-11; macOS/Linux packaged project-controls checks and broader release review remain open. Final5 Graft build/map passed (7,084 files, 64,492 nodes, 161,122 edges). The separate codebase-memory MCP fast reindex crashed again and omits the new `removeWorkspaceProject` symbol, so verify its snapshot before relying on its edges (`search_graph` → `trace_path` → `get_code_snippet`). Check [phase-handoff.md](phase-handoff.md), [gates/project-controls-windows.md](gates/project-controls-windows.md), and [gates/phase-5-brand-audit.md](gates/phase-5-brand-audit.md) before editing.
 
 | Concern | Start here | Current state and edit boundary |
 | --- | --- | --- |
