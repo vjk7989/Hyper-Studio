@@ -24,6 +24,7 @@ const diagnosticLines = [
   `display=${process.env.DISPLAY || '(unset)'}`,
   `core-pattern=${fs.readFileSync('/proc/sys/kernel/core_pattern', 'utf8').trim()}`,
   `core-pipe-limit=${fs.readFileSync('/proc/sys/kernel/core_pipe_limit', 'utf8').trim()}`,
+  `diagnostic-tools=${['strace', 'gdb', 'lldb', 'coredumpctl', 'journalctl'].map(name => `${name}:${command('which', [name])}`).join(' | ')}`,
   `x-socket=${fs.existsSync(`/tmp/.X11-unix/X${(process.env.DISPLAY || '').match(/^:(\d+)/)?.[1] || ''}`)}`,
   `x-authority-file-present=${Boolean(process.env.XAUTHORITY && fs.existsSync(process.env.XAUTHORITY))}`,
   `x-display=${command('xdpyinfo', ['-display', process.env.DISPLAY || '']) .split('\n').slice(0, 6).join(' | ')}`,
@@ -49,6 +50,7 @@ function snapshot(label, pid) {
   const lines = [`stage=${label} time=${new Date().toISOString()} pid=${pid} exited=${JSON.stringify(exit)}`]
   lines.push(`process=${command('ps', ['-o', 'pid,ppid,stat,wchan:32,etime,comm,args', '-p', String(pid)])}`)
   lines.push(`children=${command('ps', ['--ppid', String(pid), '-o', 'pid,ppid,stat,wchan:32,etime,comm,args'])}`)
+  lines.push(`coredump-handlers=${command('ps', ['-eo', 'pid,ppid,stat,wchan:32,args']).split('\n').filter(line => line.includes('systemd-coredump') && !line.includes('smoke-packaged-linux-cdp')).slice(0, 8).join(' | ') || '(none)'}`)
   lines.push(`main-pipes=${pipeDescriptors(pid)}`)
   try {
     const syscall = fs.readFileSync(`/proc/${pid}/syscall`, 'utf8').trim()
@@ -204,6 +206,9 @@ try {
   if (stage === 'launch') {
     await probeVersion(executable, 'packaged')
     await probeVersion(path.join(root, 'apps/desktop/node_modules/electron/dist/electron'), 'base-electron')
+    const journal = command('journalctl', ['-k', '--since', '-3 min', '--no-pager', '-n', '80'])
+    diagnosticLines.push(`kernel-crash-lines=${journal.split('\n').filter(line => /hyper-studio|electron|segfault|trap|coredump|journalctl failed/i.test(line)).slice(-20).join(' | ') || '(none)'}`)
+    fs.writeFileSync(diagnosticFile, diagnosticLines.join('\n') + '\n')
   }
   if (page) await page.screenshot({ path: path.join(home, `failure-${stage}.png`) }).catch(() => {})
   console.error(`Linux packaged smoke failed at ${stage}: ${error instanceof Error ? error.message : String(error)}`)
