@@ -65,7 +65,7 @@ export const useAboutPanelStore = defineStore('aboutPanel', () => {
       url: staticUrls.discord,
       icon: 'pi pi-discord'
     },
-    { label: 'ComfyOrg', url: staticUrls.comfyOrg, icon: 'pi pi-globe' }
+    { label: 'Hyper-Studio', url: staticUrls.comfyOrg, icon: 'pi pi-globe' }
   ])
 
   const allBadges = computed<AboutPageBadge[]>(() => [
