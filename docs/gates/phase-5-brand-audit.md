@@ -79,7 +79,8 @@ registers `HyperStudioGenerateVideo`; local and third-party nodes remain allowed
 The shared request/download/upload helpers reject relative account-proxy URLs
 and explicit `comfy.org` hosts before creating a network session. Connectivity
 diagnostics skip the upstream Comfy health probe in managed projects, and the
-engine's offline CSP omits the upstream origin. Outside managed projects, the
+engine's managed-response CSP omits the upstream origin even when offline mode
+is unset. Outside managed projects, the
 upstream modules remain available for compatibility.
 
 Focused Python checks: **10 passed**. Existing upstream compatibility checks:

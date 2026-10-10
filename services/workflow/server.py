@@ -288,7 +288,7 @@ class PromptServer():
         else:
             middlewares.append(create_origin_only_middleware())
 
-        if args.offline:
+        if args.offline or os.environ.get("HYPER_STUDIO_PROJECT_ID"):
             middlewares.append(create_block_external_middleware())
 
         if args.enable_manager:

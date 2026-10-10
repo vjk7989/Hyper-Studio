@@ -57,8 +57,8 @@ async def test_csp_header(monkeypatch, offline, expect_csp):
 
 
 @pytest.mark.asyncio
-async def test_managed_offline_csp_excludes_upstream_cloud(monkeypatch):
-    monkeypatch.setattr(args, "offline", True)
+async def test_managed_csp_excludes_upstream_cloud_without_offline_flag(monkeypatch):
+    monkeypatch.setattr(args, "offline", False)
     monkeypatch.setenv("HYPER_STUDIO_PROJECT_ID", "project-1")
     prompt_server = server.PromptServer(None, MagicMock(enabled=False))
     prompt_server.app.router.add_get("/ping", pong)
