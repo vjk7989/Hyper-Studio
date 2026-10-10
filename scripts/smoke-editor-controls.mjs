@@ -12,7 +12,7 @@ if (!exe || !fs.existsSync(exe)) throw new Error('Set HYPER_STUDIO_EDITOR_SMOKE_
 const home = path.join(root, '.local-tmp', `editor-controls-${Date.now()}`)
 const project = path.join(home, 'project')
 const fixture = path.join(home, 'fixture')
-for (const subdir of ['', 'appdata', 'localappdata', 'temp', 'shared', 'project', 'fixture']) {
+for (const subdir of ['', 'appdata', 'localappdata', 'temp', 'shared', 'project', 'fixture', 'Downloads']) {
   fs.mkdirSync(path.join(home, subdir), { recursive: true })
 }
 const redPng = path.join(fixture, 'red.png')
@@ -196,6 +196,41 @@ try {
   await page.getByRole('button', { name: 'Export Video' }).waitFor({ state: 'visible' })
   record('Export settings dialog opens', 'render not started')
   await page.screenshot({ path: path.join(home, 'editor-export-dialog.png') })
+
+  await page.locator('div.fixed.inset-0.z-50').first().click({ position: { x: 5, y: 5 } })
+  await menu('File', 'New Timeline')
+  await page.getByText('Timeline 3', { exact: true }).first().waitFor({ state: 'visible' })
+  const imageAsset = readEditor().assets.find(asset => /assets\/red\.png$/.test(asset.path))
+  assert.ok(imageAsset, 'reopened project lost the imported PNG asset')
+  await page.locator(`[data-asset-card][data-asset-id="${imageAsset.id}"]`).click({ button: 'right' })
+  await page.getByText('Add to Timeline', { exact: true }).click()
+  await waitUntil(() => activeTimeline()?.clips.some(clip => clip.assetId === imageAsset.id), 'imported PNG clip in export timeline')
+  record('Add imported image to export timeline', 'Timeline 3 has PNG clip')
+
+  const packagePath = path.join(home, 'timeline-package.fcpxml')
+  await app.evaluate(({ dialog }, filePath) => {
+    dialog.showSaveDialog = async () => ({ canceled: false, filePath })
+  }, packagePath)
+  await page.getByRole('button', { name: 'Export', exact: true }).last().click()
+  await page.getByRole('button', { name: /Package \(FCPXML\)/ }).click()
+  await page.getByText('Export complete', { exact: true }).waitFor({ state: 'visible', timeout: 20000 })
+  await waitUntil(() => fs.existsSync(packagePath), 'FCPXML package file')
+  const xml = fs.readFileSync(packagePath, 'utf8')
+  const parsed = await page.evaluate(source => {
+    const document = new DOMParser().parseFromString(source, 'application/xml')
+    return {
+      parserError: document.querySelector('parsererror')?.textContent ?? null,
+      root: document.documentElement.nodeName,
+      assetCount: document.querySelectorAll('asset').length,
+      clipCount: document.querySelectorAll('asset-clip').length,
+      hasPng: Array.from(document.querySelectorAll('asset')).some(asset => asset.getAttribute('src')?.includes('red.png')),
+    }
+  }, xml)
+  assert.equal(parsed.parserError, null)
+  assert.equal(parsed.root, 'fcpxml')
+  assert.ok(parsed.assetCount >= 1 && parsed.clipCount >= 1 && parsed.hasPng, JSON.stringify(parsed))
+  record('Export local FCPXML package', `${path.basename(packagePath)}; ${parsed.assetCount} asset, ${parsed.clipCount} clip`)
+  await page.screenshot({ path: path.join(home, 'editor-package-complete.png') })
 } catch (error) {
   results.push({ name: 'smoke', status: 'FAIL', detail: String(error) })
   fs.writeFileSync(path.join(home, 'results.json'), JSON.stringify(results, null, 2))
