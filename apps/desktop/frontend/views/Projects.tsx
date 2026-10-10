@@ -52,17 +52,7 @@ function ProjectCard({
   return (
     <div
       data-testid={`project-card-${project.id}`}
-      role="button"
-      tabIndex={0}
-      aria-label={`Open ${project.name}`}
       className="group relative bg-surface-primary rounded-[var(--radius-lg)] overflow-hidden border border-separator-secondary hover:border-separator transition-colors cursor-pointer"
-      onClick={onOpen}
-      onKeyDown={(event) => {
-        if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) {
-          event.preventDefault();
-          onOpen();
-        }
-      }}
     >
       <div className="aspect-video bg-surface-secondary flex items-center justify-center relative overflow-hidden">
         {representativeAsset && !imgError ? (
@@ -111,6 +101,8 @@ function ProjectCard({
         </Text>
       </div>
 
+      <button type="button" aria-label={`Open ${project.name}`} onClick={onOpen} className="absolute inset-0 z-10 rounded-[var(--radius-lg)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-fg-primary" />
+
       <button
         type="button"
         data-testid={`project-card-menu-${project.id}`}
@@ -120,14 +112,14 @@ function ProjectCard({
           e.stopPropagation();
           setShowMenu(!showMenu);
         }}
-        className="absolute top-2 right-2 p-1.5 rounded bg-surface-overlay opacity-100 transition-opacity focus-visible:outline focus-visible:outline-2 focus-visible:outline-fg-primary"
+        className="absolute z-20 top-2 right-2 p-1.5 rounded bg-surface-overlay opacity-100 transition-opacity focus-visible:outline focus-visible:outline-2 focus-visible:outline-fg-primary"
       >
         <MoreVertical className="h-4 w-4 text-fg-white" />
       </button>
 
       {showMenu && (
         <div
-          className="absolute top-10 right-2 bg-surface-primary rounded-[var(--radius-lg)] shadow-lg border border-separator py-1 z-10 min-w-[120px]"
+          className="absolute top-10 right-2 bg-surface-primary rounded-[var(--radius-lg)] shadow-lg border border-separator py-1 z-30 min-w-[120px]"
           onClick={(e) => e.stopPropagation()}
         >
           <button
@@ -291,8 +283,8 @@ export function ProjectsPage() {
       const project = createProject(newProjectName.trim(), projectFolder, workspaceMode);
       createdProjectId = project.id;
       const manifest = await window.electronAPI.openWorkspaceProject({ folder: projectFolder, projectId: project.id, name: project.name, mode: workspaceMode });
-      workspaceWasOpened = true;
       if (manifest.projectId !== project.id) throw new Error('This folder already belongs to another project. Open it instead.');
+      workspaceWasOpened = true;
       await window.electronAPI.writeWorkspaceProjectData({ projectId: project.id, project: prepareWorkspaceProject(project) });
       await registerWorkspaceProject(manifest, projectFolder);
       createdProjectId = null;
@@ -301,11 +293,17 @@ export function ProjectsPage() {
       setIsCreating(false);
       handleOpenProject(project.id);
     } catch (error) {
+      let rollbackError: string | null = null;
       if (createdProjectId) {
-        if (workspaceWasOpened) await window.electronAPI.removeProjectFolder({ projectId: createdProjectId }).catch(() => undefined);
-        deleteProject(createdProjectId);
+        try {
+          if (workspaceWasOpened) await window.electronAPI.removeWorkspaceProject({ projectId: createdProjectId, mode: 'forget' });
+          deleteProject(createdProjectId);
+        } catch (cleanupError) {
+          rollbackError = cleanupError instanceof Error ? cleanupError.message : String(cleanupError);
+        }
       }
-      setCreateError(error instanceof Error ? error.message : 'Could not create the project.');
+      const reason = error instanceof Error ? error.message : 'Could not create the project.';
+      setCreateError(rollbackError ? `${reason} Cleanup also failed: ${rollbackError}` : reason);
     } finally {
       setIsSubmitting(false);
     }
@@ -422,12 +420,12 @@ export function ProjectsPage() {
             <Text as="h2" id="project-remove-title" variant="heading" size="lg">Remove project</Text>
             <Text as="p" variant="body" size="md" className="mt-3 text-fg-secondary">Choose what happens to <strong className="text-fg-primary">{removalProject.name}</strong>.</Text>
             <Text as="p" variant="body" size="sm" className="mt-2 break-all rounded-md bg-surface-secondary p-3 text-fg-secondary">{removalProject.projectFolder ?? 'Legacy project — no managed folder'}</Text>
-            <div className="mt-5 grid gap-2" role="radiogroup" aria-label="Removal method">
-              <button ref={removalInitialFocusRef} type="button" role="radio" aria-checked={removalMode === 'forget'} data-testid="remove-from-app" disabled={isRemoving} onClick={() => setRemovalMode('forget')} className={`rounded-lg border p-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-fg-primary ${removalMode === 'forget' ? 'border-fg-primary bg-action' : 'border-separator'}`}>
+            <div className="mt-5 grid gap-2" role="group" aria-label="Removal method">
+              <button ref={removalInitialFocusRef} type="button" aria-pressed={removalMode === 'forget'} data-testid="remove-from-app" disabled={isRemoving} onClick={() => setRemovalMode('forget')} className={`rounded-lg border p-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-fg-primary ${removalMode === 'forget' ? 'border-fg-primary bg-action' : 'border-separator'}`}>
                 <span className="block font-medium">Remove from Hyper-Studio</span>
                 <span className="mt-1 block text-sm text-fg-secondary">Keep all files in this folder. Open the folder later to restore the project.</span>
               </button>
-              {removalProject.projectFolder && <button type="button" role="radio" aria-checked={removalMode === 'trash'} data-testid="move-project-to-trash" disabled={isRemoving} onClick={() => setRemovalMode('trash')} className={`rounded-lg border p-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-fg-primary ${removalMode === 'trash' ? 'border-fg-primary bg-action' : 'border-separator'}`}>
+              {removalProject.projectFolder && <button type="button" aria-pressed={removalMode === 'trash'} data-testid="move-project-to-trash" disabled={isRemoving} onClick={() => setRemovalMode('trash')} className={`rounded-lg border p-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-fg-primary ${removalMode === 'trash' ? 'border-fg-primary bg-action' : 'border-separator'}`}>
                 <span className="block font-medium">Move project folder to Trash</span>
                 <span className="mt-1 block text-sm text-fg-secondary">Move the entire folder and its contents to your system Trash.</span>
               </button>}
