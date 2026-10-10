@@ -27,12 +27,31 @@ const diagnosticLines = [
   `x-display=${command('xdpyinfo', ['-display', process.env.DISPLAY || '']) .split('\n').slice(0, 6).join(' | ')}`,
   `binary=${executable}`,
   `binary-mode=${fs.statSync(executable).mode.toString(8)}`,
+  'launch-flags=--no-sandbox --no-zygote --disable-gpu --disable-dev-shm-usage',
   `missing-libraries=${command('ldd', [executable]).split('\n').filter(line => line.includes('not found')).join(' | ') || '(none)'}`,
 ]
+function pipeDescriptors(pid) {
+  try {
+    return fs.readdirSync(`/proc/${pid}/fd`).flatMap(fd => {
+      try {
+        const target = fs.readlinkSync(`/proc/${pid}/fd/${fd}`)
+        if (!target.startsWith('pipe:')) return []
+        const info = fs.readFileSync(`/proc/${pid}/fdinfo/${fd}`, 'utf8')
+        const flags = info.match(/^flags:\s*(\S+)/m)?.[1] || '?'
+        return [`${fd}:${target}:${flags}`]
+      } catch { return [] }
+    }).slice(0, 60).join(' ')
+  } catch { return '(unavailable)' }
+}
 function snapshot(label, pid) {
   const lines = [`stage=${label} time=${new Date().toISOString()} pid=${pid} exited=${JSON.stringify(exit)}`]
   lines.push(`process=${command('ps', ['-o', 'pid,ppid,stat,wchan:32,etime,comm,args', '-p', String(pid)])}`)
   lines.push(`children=${command('ps', ['--ppid', String(pid), '-o', 'pid,ppid,stat,wchan:32,etime,comm,args'])}`)
+  lines.push(`main-pipes=${pipeDescriptors(pid)}`)
+  try {
+    const children = fs.readFileSync(`/proc/${pid}/task/${pid}/children`, 'utf8').trim().split(/\s+/).filter(Boolean)
+    for (const childPid of children.slice(0, 8)) lines.push(`child-${childPid}-pipes=${pipeDescriptors(childPid)}`)
+  } catch { lines.push('child-pipes=(unavailable)') }
   for (const fd of ['1', '2']) {
     try { lines.push(`fd${fd}=${fs.readlinkSync(`/proc/${pid}/fd/${fd}`)}`) }
     catch { lines.push(`fd${fd}=(unavailable)`) }
@@ -71,7 +90,7 @@ const env = {
   HYPER_STUDIO_USER_DATA: path.join(home, 'user-data'),
   ELECTRON_ENABLE_LOGGING: '1', ELECTRON_LOG_FILE: path.join(home, 'electron.log'),
 }
-const child = spawn(executable, [`--remote-debugging-port=${port}`, '--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage'], { cwd: root, env, stdio: ['ignore', stdoutFd, stderrFd] })
+const child = spawn(executable, [`--remote-debugging-port=${port}`, '--no-sandbox', '--no-zygote', '--disable-gpu', '--disable-dev-shm-usage'], { cwd: root, env, stdio: ['ignore', stdoutFd, stderrFd] })
 let exit = null
 child.once('exit', (code, signal) => { exit = { code, signal } })
 child.once('error', error => { exit = { error: String(error) } })
