@@ -1,5 +1,10 @@
 <template>
-  <BaseModalLayout content-title="" data-testid="settings-dialog" size="full">
+  <BaseModalLayout
+    class="text-base-foreground"
+    content-title=""
+    data-testid="settings-dialog"
+    size="full"
+  >
     <template #leftPanelHeaderTitle>
       <i class="icon-[lucide--settings]" />
       <h2 class="text-neutral text-base">{{ $t('g.settings') }}</h2>

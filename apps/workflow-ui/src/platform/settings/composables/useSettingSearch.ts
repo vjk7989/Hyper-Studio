@@ -9,6 +9,7 @@ import {
 import type { ISettingGroup, SettingParams } from '@/platform/settings/types'
 import { normalizeI18nKey } from '@/utils/formatUtil'
 import { useVueFeatureFlags } from '@/composables/useVueFeatureFlags'
+import { isHyperStudioEmbedded } from '@/platform/distribution/hyperStudio'
 
 interface SearchableNavItem {
   key: string
@@ -67,6 +68,8 @@ export function useSettingSearch() {
       if (
         setting.type === 'hidden' ||
         setting.deprecated ||
+        (isHyperStudioEmbedded &&
+          setting.id === 'Comfy.NodeBadge.ShowApiPricing') ||
         (shouldRenderVueNodes.value && setting.hideInVueNodes)
       ) {
         return false

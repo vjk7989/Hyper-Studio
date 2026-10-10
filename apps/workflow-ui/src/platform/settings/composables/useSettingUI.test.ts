@@ -212,13 +212,44 @@ describe('useSettingUI', () => {
       expect(navKeys).not.toContain(key)
     }
     expect(defaultCategory.value.key).not.toBe('user')
-    expect(useSettingUI('credits').defaultCategory.value.key).not.toBe('credits')
+    expect(useSettingUI('credits').defaultCategory.value.key).not.toBe(
+      'credits'
+    )
     expect(useSettingUI('workspace').defaultCategory.value.key).not.toBe(
       'workspace'
     )
     expect(navKeys).toContain('keybinding')
     expect(navKeys).toContain('extension')
     expect(navKeys).toContain('about')
+  })
+
+  it('shows the Hyper-Studio category without changing Comfy setting keys', () => {
+    env.state.isEmbedded = true
+    Object.assign(useSettingStore(), {
+      settingsById: {
+        ...mockSettings,
+        'Comfy.NodeBadge.ShowApiPricing': {
+          id: 'Comfy.NodeBadge.ShowApiPricing',
+          name: 'Show API node pricing badge',
+          type: 'boolean',
+          defaultValue: true,
+          category: ['Comfy', 'API Nodes']
+        }
+      }
+    })
+
+    const { navGroups, settingCategories } = useSettingUI()
+    const settingsItem = navGroups.value
+      .flatMap((group) => group.items)
+      .find((item) => item.id === 'root/Comfy')
+
+    expect(settingsItem?.label).toBe('Hyper-Studio')
+    expect(findCategory(settingCategories.value, 'Comfy')).toBeDefined()
+    expect(
+      findCategory(settingCategories.value, 'Comfy')?.children?.some(
+        (group) => group.label === 'API Nodes'
+      )
+    ).toBe(false)
   })
 
   it.for([false, true])(

@@ -65,6 +65,10 @@ export function useSettingUI(
       Object.values(settingStore.settingsById).filter(
         (setting: SettingParams) =>
           setting.type !== 'hidden' &&
+          !(
+            isHyperStudioEmbedded &&
+            setting.id === 'Comfy.NodeBadge.ShowApiPricing'
+          ) &&
           !(shouldRenderVueNodes.value && setting.hideInVueNodes)
       ),
       (setting: SettingParams) => setting.category || setting.id.split('.')
@@ -293,10 +297,10 @@ export function useSettingUI(
 
   const translateCategory = (node: SettingTreeNode) => ({
     ...node,
-    translatedLabel: t(
-      `settingsCategories.${normalizeI18nKey(node.label)}`,
-      node.label
-    )
+    translatedLabel:
+      isHyperStudioEmbedded && node.label === 'Comfy'
+        ? 'Hyper-Studio'
+        : t(`settingsCategories.${normalizeI18nKey(node.label)}`, node.label)
   })
 
   const workspaceMenuTreeNodes = computed<SettingTreeNode[]>(() => [

@@ -7,6 +7,14 @@ import { useSettingStore } from '@/platform/settings/settingStore'
 import type { SettingTreeNode } from '@/platform/settings/settingStore'
 import type { SettingParams } from '@/platform/settings/types'
 
+const embedded = vi.hoisted(() => ({ value: false }))
+
+vi.mock(import('@/platform/distribution/hyperStudio'), () => ({
+  get isHyperStudioEmbedded() {
+    return embedded.value
+  }
+}))
+
 vi.mock(import('@/i18n'))
 
 describe('useSettingSearch', () => {
@@ -14,6 +22,7 @@ describe('useSettingSearch', () => {
   let mockSettings: Record<string, SettingParams>
 
   beforeEach(() => {
+    embedded.value = false
     // Mock settings data
     mockSettings = {
       'Category.Setting1': {
@@ -342,6 +351,25 @@ describe('useSettingSearch', () => {
       const labels = results.map((g) => g.label)
       expect(labels).toContain('Node')
       expect(labels).toContain('API Nodes')
+    })
+
+    it('excludes cloud pricing controls from embedded search', () => {
+      embedded.value = true
+      mockSettings['Comfy.NodeBadge.ShowApiPricing'] = {
+        id: 'Comfy.NodeBadge.ShowApiPricing',
+        name: 'Show API node pricing badge',
+        type: 'boolean',
+        defaultValue: true,
+        category: ['Comfy', 'API Nodes']
+      }
+
+      const search = useSettingSearch()
+      search.handleSearch('pricing')
+
+      expect(search.filteredSettingIds.value).not.toContain(
+        'Comfy.NodeBadge.ShowApiPricing'
+      )
+      expect(search.getSearchResults(null)).toEqual([])
     })
 
     it('returns empty array when no filtered results', () => {
