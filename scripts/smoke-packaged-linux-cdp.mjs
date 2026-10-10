@@ -146,6 +146,15 @@ async function probeRawElectron() {
     fs.chmodSync(raw, 0o755)
     diagnosticLines.push(`electron-binary-hashes=${command('sha256sum', [executable, raw]).replace(/\n/g, ' | ')}`)
     await probeVersion(raw, 'raw-electron')
+    const packagedResources = path.join(path.dirname(executable), 'resources')
+    const packagedAsar = path.join(packagedResources, 'app.asar')
+    if (fs.existsSync(packagedAsar)) {
+      const rawResources = path.join(destination, 'resources')
+      fs.copyFileSync(packagedAsar, path.join(rawResources, 'app.asar'))
+      const unpacked = path.join(packagedResources, 'app.asar.unpacked')
+      if (fs.existsSync(unpacked)) fs.symlinkSync(unpacked, path.join(rawResources, 'app.asar.unpacked'), 'dir')
+      await probeVersion(raw, 'raw-with-app')
+    } else diagnosticLines.push('raw-with-app-version-probe=packaged app.asar missing')
   } catch (error) { diagnosticLines.push(`raw-electron-extract=failed: ${error instanceof Error ? error.message : String(error)}`) }
   fs.writeFileSync(diagnosticFile, diagnosticLines.join('\n') + '\n')
 }
@@ -155,7 +164,7 @@ async function probeStrace() {
   const fd = fs.openSync(output, 'w')
   const traceEnv = { ...env }
   delete traceEnv.LD_PRELOAD
-  const args = ['-ff', '-tt', '-s', '80', '-e', 'trace=%process,%signal', '-o', path.join(home, 'strace-version')]
+  const args = ['-ff', '-tt', '-s', '80', '-e', 'trace=%file,%process,%signal', '-o', path.join(home, 'strace-version')]
   if (env.LD_PRELOAD) args.push('-E', `LD_PRELOAD=${env.LD_PRELOAD}`)
   args.push(executable, '--version', '--no-sandbox')
   const tracer = spawn('/usr/bin/strace', args, { cwd: root, env: traceEnv, detached: true, stdio: ['ignore', fd, fd] })
