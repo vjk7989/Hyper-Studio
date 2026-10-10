@@ -100,7 +100,7 @@
     transparent
   );
   --color-alpha-smoke-500-20: #c5c5c533;
-  --color-alpha-smoke-400-40: #d9d9d966;
+  --color-alpha-smoke-400-40: #e5e5e566;
   --color-alpha-azure-600-30: #0b8ce94d;
   --color-alpha-magenta-700-60: #6a246a99;
   --color-alpha-magenta-300-60: #ceaac999;
@@ -156,10 +156,11 @@
 
   --accent-primary: var(--color-charcoal-700);
   --backdrop: var(--color-white);
+  --focus-ring: var(--color-charcoal-900);
 
   --button-hover-surface: var(--color-smoke-200);
   --button-active-surface: var(--color-smoke-400);
-  --button-icon: var(--color-smoke-600);
+  --button-icon: var(--color-ash-500);
 
   --dialog-surface: var(--color-neutral-200);
 
@@ -169,6 +170,21 @@
   --interface-menu-surface: var(--color-white);
   --interface-menu-stroke: var(--color-smoke-600);
   --interface-panel-surface: var(--color-white);
+  --interface-panel-hover-surface: color-mix(
+    in srgb,
+    var(--interface-panel-surface) 96%,
+    var(--color-charcoal-900)
+  );
+  --interface-panel-selected-surface: color-mix(
+    in srgb,
+    var(--interface-panel-surface) 90%,
+    var(--color-charcoal-900)
+  );
+  --interface-button-hover-surface: color-mix(
+    in srgb,
+    var(--interface-panel-surface) 88%,
+    var(--color-charcoal-900)
+  );
   --interface-stroke: var(--color-smoke-300);
 
   --interface-builder-mode-background: var(--color-ocean-300);
@@ -184,7 +200,7 @@
   --node-component-executing: var(--color-blue-500);
   --node-component-header: var(--fg-color);
   --node-component-header-icon: var(--color-ash-800);
-  --node-component-header-surface: var(--color-smoke-200);
+  --node-component-header-surface: var(--color-smoke-300);
   --node-component-outline: var(--color-black);
   --node-component-ring: rgb(from var(--color-smoke-500) r g b / 50%);
   --node-component-slot-dot-outline-opacity-mult: 1;
@@ -196,27 +212,27 @@
   --node-component-surface-selected: var(--color-charcoal-200);
   --node-component-surface: var(--color-white);
   --node-component-tooltip: var(--color-charcoal-700);
-  --node-component-tooltip-border: var(--color-sand-100);
+  --node-component-tooltip-border: var(--color-smoke-400);
   --node-component-tooltip-surface: var(--color-white);
   --node-component-widget-input: var(--fg-color);
   --node-component-widget-input-surface: rgb(
     from var(--color-zinc-500) r g b / 10%
   );
   --node-component-widget-skeleton-surface: var(--color-zinc-300);
-  --node-divider: var(--color-sand-100);
+  --node-divider: var(--color-smoke-300);
   --node-icon-disabled: var(--color-alpha-smoke-500-50);
   --node-stroke: var(--color-smoke-400);
   --node-stroke-selected: var(--color-accent-primary);
   --node-stroke-error: var(--color-error);
   --node-stroke-executing: var(--color-azure-600);
 
-  --text-secondary: var(--color-smoke-800);
+  --text-secondary: var(--color-charcoal-100);
   --text-primary: var(--color-charcoal-700);
   --input-surface: rgb(0 0 0 / 0.15);
 
   /* Semantic tokens - light mode */
   --muted-foreground: var(--color-charcoal-200);
-  --base-foreground: var(--color-charcoal-800);
+  --base-foreground: var(--color-charcoal-900);
   --brand-yellow: var(--color-electric-400);
   --brand-blue: var(--color-sapphire-700);
   --secondary-background: var(--color-smoke-200);
@@ -260,6 +276,7 @@
 
   /* Default UI element color palette variables */
   --palette-contrast-mix-color: #fff;
+  --contrast-mix-color: #fff;
   --palette-interface-panel-surface: var(--comfy-menu-bg);
   --palette-interface-stroke: color-mix(
     in srgb,
@@ -305,6 +322,7 @@
 
   --accent-primary: var(--color-white);
   --backdrop: var(--color-neutral-900);
+  --focus-ring: var(--color-white);
 
   --button-surface: var(--color-charcoal-600);
   --button-surface-contrast: var(--color-white);
@@ -320,6 +338,21 @@
   --interface-menu-surface: var(--color-charcoal-800);
   --interface-menu-stroke: var(--color-ash-800);
   --interface-panel-surface: var(--color-charcoal-800);
+  --interface-panel-hover-surface: color-mix(
+    in srgb,
+    var(--interface-panel-surface) 96%,
+    var(--color-white)
+  );
+  --interface-panel-selected-surface: color-mix(
+    in srgb,
+    var(--interface-panel-surface) 90%,
+    var(--color-white)
+  );
+  --interface-button-hover-surface: color-mix(
+    in srgb,
+    var(--interface-panel-surface) 88%,
+    var(--color-white)
+  );
   --interface-stroke: var(--color-charcoal-400);
 
   --interface-builder-mode-background: var(--color-ocean-900);
@@ -337,7 +370,7 @@
   --node-component-header-icon: var(--color-smoke-800);
   --node-component-header-surface: var(--color-charcoal-700);
   --node-component-outline: var(--color-white);
-  --node-component-ring: rgb(var(--color-smoke-500) / 20%);
+  --node-component-ring: rgb(from var(--color-smoke-500) r g b / 20%);
   --node-component-slot-dot-outline-opacity: 10%;
   --node-component-slot-dot-outline: var(--color-white);
   --node-component-slot-text: var(--color-smoke-700);
@@ -412,7 +445,7 @@
 
   --modal-card-background: var(--secondary-background);
   --modal-card-background-hovered: var(--secondary-background-hover);
-  --modal-card-border-highlighted: var(--color-ash-400);
+  --modal-card-border-highlighted: var(--color-charcoal-200);
   --modal-card-button-surface: var(--color-charcoal-300);
   --modal-card-placeholder-background: var(--secondary-background);
   --modal-card-tag-background: var(--color-ash-800);
@@ -422,6 +455,7 @@
 
 @theme inline {
   --color-backdrop: var(--backdrop);
+  --color-focus-ring: var(--focus-ring);
   --color-button-active-surface: var(--button-active-surface);
   --color-button-hover-surface: var(--button-hover-surface);
   --color-button-icon: var(--button-icon);
@@ -496,7 +530,7 @@
     --node-component-surface-highlight
   );
   --color-node-component-surface-hovered: var(--node-component-surface-hovered);
-  --color-node-component-surface-selected: var(--component-surface-selected);
+  --color-node-component-surface-selected: var(--node-component-surface-selected);
   --color-node-component-surface: var(--node-component-surface);
   --color-node-component-tooltip: var(--node-component-tooltip);
   --color-node-component-tooltip-border: var(--node-component-tooltip-border);
@@ -642,7 +676,7 @@ body {
   max-height: -webkit-fill-available;
   min-width: -webkit-fill-available;
   max-width: -webkit-fill-available;
-  font-family: Inter, Arial, sans-serif;
+  font-family: var(--font-sans);
 }
 
 .comfy-multiline-input {
@@ -1772,7 +1806,7 @@ audio.comfy-audio.empty-audio-widget {
 }
 
 .maskEditor_sidePanelDropdown:focus {
-  outline: 1px solid var(--p-surface-300);
+  outline: 1px solid var(--focus-ring);
 }
 
 .maskEditor_sidePanelDropdown option:hover {
@@ -1791,7 +1825,7 @@ audio.comfy-audio.empty-audio-widget {
 }
 
 .dark-theme .maskEditor_sidePanelDropdown:focus {
-  outline: 1px solid var(--p-button-text-primary-color);
+  outline: 1px solid var(--focus-ring);
 }
 
 .dark-theme .maskEditor_sidePanelDropdown option:active {

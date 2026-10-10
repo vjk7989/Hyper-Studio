@@ -1,3 +1,14 @@
+/* Geist is not bundled, so it resolves only from a locally installed face and
+   otherwise falls through to the bundled Inter below. Do not add a url() here
+   unless the woff2 is actually shipped in public/fonts. */
+@font-face {
+  font-family: 'Geist';
+  src: local('Geist'), local('Geist Regular'), local('GeistSans-Regular');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* Inter Font Family */
 
 @font-face {

@@ -1,6 +1,6 @@
 # OpenCode coding task: Phase 5 workflow theme tokens
 
-**Status:** Prepared only. Do not launch until the Codex runner confirms the Phase 4 gate is clear.
+**Status:** Authorized after the Phase 4 gate passed on 2026-10-10. Codex runner owns launch and review.
 
 ## Objective
 
@@ -16,7 +16,7 @@ Map the approved Vercel-inspired monochrome light/dark palette, Geist-first typo
 
 ## Steps
 
-1. From the repository root, discover the existing design-system theme tokens with the shared codebase-memory MCP/Graft graph first; use file reads for CSS where the graph lacks token detail. Inspect the desktop design tokens read-only to align visible light/dark surfaces.
+1. From the repository root, discover the existing design-system theme tokens with the configured repository-local codebase-memory MCP graph first; its snapshot may predate Phase 5, so use file reads for CSS where it lacks token detail. Run the repository-local Graft CLI at .tools/graft/node_modules/.bin/graft.cmd map --max-dirs 12 for orientation. Inspect the desktop design tokens read-only to align visible light/dark surfaces. Do not reindex the shared graph during concurrent work.
 2. Update the owned CSS tokens for neutral surfaces, foregrounds, borders, hover/selected states, and focus appearance. Keep semantic success/warning/error and node datatype cues legible. Use Geist as the first font-family name with installed/system fallbacks; do not reference a font file that is not present. Set the shared base corner radius to `0.5rem` while leaving intentional node/shape exceptions intact.
 3. Check both light and `.dark-theme` mappings for contrast and undefined variables. Limit edits to the smallest useful CSS diff.
 
@@ -25,9 +25,9 @@ Map the approved Vercel-inspired monochrome light/dark palette, Geist-first typo
 Run from `G:\Hyper-Studio\Hyper-Studio`, with all temporary/cache files under this repository, through `scripts/with-local-env.ps1`:
 
 ```powershell
-& .\scripts\with-local-env.ps1 corepack pnpm --dir apps/workflow-ui exec stylelint packages/design-system/src/css/_palette.css packages/design-system/src/css/style.css packages/design-system/src/css/fonts.css
-& .\scripts\with-local-env.ps1 corepack pnpm --dir apps/workflow-ui --filter '@comfyorg/design-system' typecheck
-& .\scripts\with-local-env.ps1 corepack pnpm --dir apps/workflow-ui build:desktop-dist
+& .\scripts\with-local-env.ps1 node .tools/pnpm11/node_modules/pnpm/bin/pnpm.cjs --dir apps/workflow-ui exec stylelint packages/design-system/src/css/_palette.css packages/design-system/src/css/style.css packages/design-system/src/css/fonts.css
+& .\scripts\with-local-env.ps1 node .tools/pnpm11/node_modules/pnpm/bin/pnpm.cjs --dir apps/workflow-ui --filter '@comfyorg/design-system' typecheck
+& .\scripts\with-local-env.ps1 node .tools/pnpm11/node_modules/pnpm/bin/pnpm.cjs --dir apps/workflow-ui build:desktop-dist
 ```
 
 Acceptance: all commands exit 0; light and dark semantic tokens remain defined; no new package/dependency; diff contains only the three owned CSS files. If a check fails, investigate and fix within ownership, rerun it, and report any remaining blocker. Do not mark Phase 5 complete; Codex will review the diff and run visual/package gates.
