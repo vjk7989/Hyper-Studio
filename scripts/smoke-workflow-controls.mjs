@@ -135,4 +135,11 @@ try {
   log('KEYBOARD TOOLBAR CLICK', toolbarShortcutClick)
   await window.screenshot({ path: path.join(home, 'keyboard-toolbar-click.png') })
   log('ERROR COUNT', errors.length)
-} finally { await app.close() }
+} finally {
+  // Unsaved canvas tabs may register beforeunload. Destroying the test window
+  // avoids a Chromium dialog race while Electron is already shutting down.
+  await app.evaluate(({ BrowserWindow }) => {
+    for (const liveWindow of BrowserWindow.getAllWindows()) liveWindow.destroy()
+  })
+  await app.close()
+}
