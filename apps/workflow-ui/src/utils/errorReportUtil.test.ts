@@ -1,4 +1,8 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
+
+vi.mock('@/platform/distribution/hyperStudio', () => ({
+  isHyperStudioEmbedded: true
+}))
 
 import type { ISerialisedGraph } from '@/lib/litegraph/src/litegraph'
 import type { SystemStats } from '@/platform/remote/comfyui/types'
@@ -33,6 +37,15 @@ function buildError(serverLogs: unknown): ErrorReportData {
 }
 
 describe('generateErrorReport', () => {
+  it('uses Hyper-Studio headings while retaining the workflow engine version', () => {
+    const report = generateErrorReport(buildError('runtime log'))
+
+    expect(report).toContain('# Hyper-Studio Error Report')
+    expect(report).toContain('**Workflow Engine Version:** 1.0.0')
+    expect(report).not.toContain('ComfyUI Error Report')
+    expect(report).not.toContain('ComfyUI Version:')
+  })
+
   it('embeds string serverLogs verbatim', () => {
     const report = generateErrorReport(buildError('line one\nline two'))
 

@@ -1,5 +1,6 @@
 import type { ISerialisedGraph } from '@/lib/litegraph/src/litegraph'
 import type { SystemStats } from '@/platform/remote/comfyui/types'
+import { isHyperStudioEmbedded } from '@/platform/distribution/hyperStudio'
 import type { SerializedNodeId } from '@/types/nodeId'
 
 export interface ErrorReportData {
@@ -28,9 +29,15 @@ export function generateErrorReport(error: ErrorReportData): string {
       ? 'Workflow too large. Please manually upload the workflow from local file system.'
       : workflowJSONString
   const systemStats = error.systemStats
+  const reportTitle = isHyperStudioEmbedded
+    ? 'Hyper-Studio Error Report'
+    : 'ComfyUI Error Report'
+  const engineVersionLabel = isHyperStudioEmbedded
+    ? 'Workflow Engine Version'
+    : 'ComfyUI Version'
 
   return `
-# ComfyUI Error Report
+# ${reportTitle}
 ## Error Details
 - **Node ID:** ${error.nodeId || 'N/A'}
 - **Node Type:** ${error.nodeType || 'N/A'}
@@ -41,7 +48,7 @@ export function generateErrorReport(error: ErrorReportData): string {
 ${error.traceback || 'No stack trace available'}
 \`\`\`
 ## System Information
-- **ComfyUI Version:** ${systemStats.system.comfyui_version}
+- **${engineVersionLabel}:** ${systemStats.system.comfyui_version}
 - **Arguments:** ${systemStats.system.argv.join(' ')}
 - **OS:** ${systemStats.system.os}
 - **Python Version:** ${systemStats.system.python_version}
