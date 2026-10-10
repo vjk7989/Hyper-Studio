@@ -52,7 +52,7 @@ jobs:
           export PATH="$GITHUB_WORKSPACE/.tools/pnpm11/node_modules/.bin:$PATH"
           pnpm --version
           node .tools/pnpm11/node_modules/pnpm/bin/pnpm.cjs --dir apps/workflow-ui install --frozen-lockfile --store-dir "$GITHUB_WORKSPACE/.local-cache/pnpm11"
-          node .tools/pnpm11/node_modules/pnpm/bin/pnpm.cjs --dir apps/workflow-ui exec vite build --config vite.config.mts
+          (cd apps/workflow-ui && node node_modules/vite/bin/vite.js build --config vite.config.mts)
       - name: Build and test desktop shell
         shell: bash
         run: |
