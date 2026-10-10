@@ -52,6 +52,7 @@ jobs:
           export PATH="$GITHUB_WORKSPACE/.tools/pnpm11/node_modules/.bin:$PATH"
           pnpm --version
           node .tools/pnpm11/node_modules/pnpm/bin/pnpm.cjs --dir apps/workflow-ui install --frozen-lockfile --store-dir "$GITHUB_WORKSPACE/.local-cache/pnpm11"
+          (cd apps/workflow-ui && node node_modules/vue-tsc/bin/vue-tsc.js --noEmit -p tsconfig.hyper-studio.json)
           (cd apps/workflow-ui && DISTRIBUTION=desktop VITE_HYPER_STUDIO_EMBEDDED=true node node_modules/vite/bin/vite.js build --config vite.config.mts)
           if ! grep -R -F -q 'hyper-studio:request-workflow' apps/workflow-ui/dist/assets; then
             echo 'Embedded workflow bridge is missing from the canvas build' >&2
