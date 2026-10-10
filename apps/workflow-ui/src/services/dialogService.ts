@@ -18,6 +18,7 @@ import { useBillingCapabilities } from '@/platform/workspace/composables/useBill
 import { t } from '@/i18n'
 import { useTelemetry } from '@/platform/telemetry'
 import { isCloud } from '@/platform/distribution/types'
+import { isHyperStudioEmbedded } from '@/platform/distribution/hyperStudio'
 import { useBillingContext } from '@/composables/billing/useBillingContext'
 import { useToastStore } from '@/platform/updates/common/toastStore'
 import { useDialogStore } from '@/stores/dialogStore'
@@ -343,6 +344,7 @@ export const useDialogService = () => {
   async function showApiNodesSignInDialog(
     apiNodeNames: string[]
   ): Promise<boolean> {
+    if (isHyperStudioEmbedded) return false
     const { default: ApiNodesSignInContent } = await lazyApiNodesSignInContent()
 
     const key = 'api-nodes-signin'
@@ -372,6 +374,7 @@ export const useDialogService = () => {
   }
 
   async function showSignInDialog(): Promise<boolean> {
+    if (isHyperStudioEmbedded) return false
     const [{ default: SignInContent }, { default: ComfyOrgHeader }] =
       await Promise.all([lazySignInContent(), lazyComfyOrgHeader()])
 
@@ -474,6 +477,7 @@ export const useDialogService = () => {
   }
 
   async function showTopUpCreditsDialog(options?: TopUpCreditsDialogOptions) {
+    if (isHyperStudioEmbedded) return
     const { type } = useBillingContext()
     const { canTopUp, canSubscribeSelfServe, isReady, initialize } =
       useBillingCapabilities()
@@ -533,6 +537,7 @@ export const useDialogService = () => {
    * Shows a dialog for updating the current user's password.
    */
   async function showUpdatePasswordDialog() {
+    if (isHyperStudioEmbedded) return
     const [{ default: UpdatePasswordContent }, { default: ComfyOrgHeader }] =
       await Promise.all([lazyUpdatePasswordContent(), lazyComfyOrgHeader()])
 
@@ -960,6 +965,7 @@ export const useDialogService = () => {
 
   /** Shows one-time cloud notification modal for macOS desktop users. */
   async function showCloudNotification(): Promise<void> {
+    if (isHyperStudioEmbedded) return
     const { default: component } = await lazyCloudNotificationContent()
     return new Promise<void>((resolve) => {
       showLayoutDialog({
@@ -977,6 +983,7 @@ export const useDialogService = () => {
   }
 
   async function showPublishDialog(): Promise<void> {
+    if (isHyperStudioEmbedded) return
     const { default: ComfyHubPublishDialog } = await lazyPublishDialog()
     const key = 'global-comfyhub-publish'
     showLayoutDialog({

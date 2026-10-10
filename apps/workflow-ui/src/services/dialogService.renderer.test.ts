@@ -28,6 +28,13 @@ vi.mock(import('@/platform/distribution/types'), () => ({
   isCloud: false
 }))
 
+const embeddedState = vi.hoisted(() => ({ enabled: false }))
+vi.mock('@/platform/distribution/hyperStudio', () => ({
+  get isHyperStudioEmbedded() {
+    return embeddedState.enabled
+  }
+}))
+
 vi.mock(import('@/composables/billing/useBillingContext'))
 
 vi.mock(import('@/platform/workspace/composables/useBillingCapabilities'))
@@ -36,6 +43,20 @@ import { useDialogService } from '@/services/dialogService'
 import { useDialogStore } from '@/stores/dialogStore'
 
 describe('dialogService Reka renderer opt-in', () => {
+  it('does not open inherited account or cloud dialogs in the embedded app', async () => {
+    embeddedState.enabled = true
+    const showDialog = vi.mocked(useDialogStore().showDialog)
+    showDialog.mockClear()
+    const service = useDialogService()
+    await expect(service.showApiNodesSignInDialog(['Cloud node'])).resolves.toBe(false)
+    await expect(service.showSignInDialog()).resolves.toBe(false)
+    await service.showUpdatePasswordDialog()
+    await service.showCloudNotification()
+    await service.showPublishDialog()
+    expect(showDialog).not.toHaveBeenCalled()
+    embeddedState.enabled = false
+  })
+
   it("prompt() sets renderer 'reka' and size 'md'", async () => {
     const showDialog = vi.mocked(useDialogStore().showDialog)
     const result = useDialogService().prompt({ title: 'T', message: 'M' })
