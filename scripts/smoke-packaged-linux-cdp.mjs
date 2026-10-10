@@ -141,7 +141,7 @@ async function probeRawElectron() {
   const destination = path.join(home, 'raw-electron')
   fs.mkdirSync(destination, { recursive: true })
   try {
-    execFileSync('unzip', ['-q', zip, 'electron', '-d', destination], { timeout: 45000, stdio: 'ignore' })
+    execFileSync('unzip', ['-q', zip, '-d', destination], { timeout: 45000, stdio: 'ignore' })
     const raw = path.join(destination, 'electron')
     fs.chmodSync(raw, 0o755)
     diagnosticLines.push(`electron-binary-hashes=${command('sha256sum', [executable, raw]).replace(/\n/g, ' | ')}`)
