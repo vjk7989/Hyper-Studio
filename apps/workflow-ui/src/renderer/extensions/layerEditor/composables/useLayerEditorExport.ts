@@ -16,7 +16,7 @@ function exportTimestamp(d: Date): string {
 }
 
 export function psdExportFilename(d: Date): string {
-  return `comfyui-layers-${exportTimestamp(d)}.psd`
+  return `hyper-studio-layers-${exportTimestamp(d)}.psd`
 }
 
 function readbackCanvas(session: LayerEditorSession): HTMLCanvasElement {

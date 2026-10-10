@@ -204,7 +204,7 @@ describe('useLayerEditorExport', () => {
 
     expect(downloadBlob).toHaveBeenCalledTimes(1)
     const [filename, blob] = downloadBlob.mock.calls[0] as [string, Blob]
-    expect(filename).toMatch(/^comfyui-layers-\d{8}-\d{6}\.psd$/)
+    expect(filename).toMatch(/^hyper-studio-layers-\d{8}-\d{6}\.psd$/)
     expect(blob).toBeInstanceOf(Blob)
     expect(exporting.value).toBe(false)
     expect(session.requestRender).toHaveBeenCalled()
