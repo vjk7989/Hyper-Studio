@@ -74,13 +74,13 @@
   --color-bypass: #6a246a;
   --color-error: #962a2a;
 
-  --color-interface-panel-job-progress-primary: var(--color-azure-300);
+  --color-interface-panel-job-progress-primary: var(--color-smoke-500);
   --color-interface-panel-job-progress-secondary: var(
     --color-alpha-azure-600-30
   );
   --color-interface-panel-job-progress-border: var(--base-foreground);
 
-  --color-blue-selection: rgb(from var(--color-azure-600) r g b / 0.3);
+  --color-blue-selection: rgb(from var(--color-charcoal-600) r g b / 0.3);
   --color-node-hover-100: rgb(from var(--color-charcoal-800) r g b / 0.15);
   --color-node-hover-200: rgb(from var(--color-charcoal-800) r g b / 0.1);
   --color-modal-tag: rgb(from var(--color-smoke-400) r g b / 0.4);
@@ -135,10 +135,10 @@
   --border-color: #4e4e4e;
   --tr-even-bg-color: #222;
   --tr-odd-bg-color: #353535;
-  --primary-bg: #236692;
-  --primary-fg: #ffffff;
-  --primary-hover-bg: #3485bb;
-  --primary-hover-fg: #ffffff;
+  --primary-bg: #e5e5e5;
+  --primary-fg: #171717;
+  --primary-hover-bg: #d4d4d4;
+  --primary-hover-fg: #171717;
   --content-bg: #e0e0e0;
   --content-fg: #000;
   --content-hover-bg: #adadad;
@@ -233,16 +233,16 @@
   /* Semantic tokens - light mode */
   --muted-foreground: var(--color-charcoal-200);
   --base-foreground: var(--color-charcoal-900);
-  --brand-yellow: var(--color-electric-400);
-  --brand-blue: var(--color-sapphire-700);
+  --brand-yellow: var(--color-smoke-400);
+  --brand-blue: var(--color-charcoal-800);
   --secondary-background: var(--color-smoke-200);
   --secondary-background-hover: var(--color-smoke-400);
   --secondary-background-selected: var(--color-smoke-600);
   --tertiary-background: var(--color-smoke-400);
   --tertiary-background-hover: var(--color-smoke-500);
   --base-background: var(--color-white);
-  --primary-background: var(--color-azure-400);
-  --primary-background-hover: var(--color-cobalt-800);
+  --primary-background: var(--color-smoke-400);
+  --primary-background-hover: var(--color-smoke-600);
   --destructive-background: var(--color-coral-500);
   --destructive-background-hover: var(--color-coral-600);
   --inverted-background-hover: var(--color-charcoal-600);
@@ -391,7 +391,7 @@
   --node-stroke-executing: var(--color-azure-600);
 
   /* Queue progress (dark theme) */
-  --color-interface-panel-job-progress-primary: var(--color-cobalt-800);
+  --color-interface-panel-job-progress-primary: var(--color-smoke-700);
   --color-interface-panel-job-progress-secondary: var(
     --color-alpha-azure-600-30
   );
@@ -405,16 +405,16 @@
   /* Semantic tokens - dark mode */
   --muted-foreground: var(--color-smoke-800);
   --base-foreground: var(--color-white);
-  --brand-yellow: var(--color-electric-400);
-  --brand-blue: var(--color-sapphire-700);
+  --brand-yellow: var(--color-smoke-300);
+  --brand-blue: var(--color-smoke-600);
   --secondary-background: var(--color-charcoal-600);
   --secondary-background-hover: var(--color-charcoal-400);
   --secondary-background-selected: var(--color-charcoal-200);
   --tertiary-background: var(--color-charcoal-400);
   --tertiary-background-hover: var(--color-charcoal-300);
   --base-background: var(--color-charcoal-800);
-  --primary-background: var(--color-azure-600);
-  --primary-background-hover: var(--color-azure-400);
+  --primary-background: var(--color-charcoal-200);
+  --primary-background-hover: var(--color-charcoal-100);
   --destructive-background: var(--color-coral-700);
   --destructive-background-hover: var(--color-coral-600);
   --inverted-background-hover: var(--color-smoke-200);

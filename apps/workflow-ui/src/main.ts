@@ -75,10 +75,11 @@ if (hasHostTelemetryBridge) {
   initHostTelemetry()
 }
 
-const ComfyUIPreset = definePreset(Aura, {
+const HyperStudioPreset = definePreset(Aura, {
   semantic: {
+    // Keep PrimeVue controls in the same neutral palette as the canvas UI.
     // @ts-expect-error fixme ts strict error
-    primary: Aura['primitive'].blue
+    primary: Aura['primitive'].zinc
   }
 })
 
@@ -151,7 +152,7 @@ app
       tooltip: 2000
     },
     theme: {
-      preset: ComfyUIPreset,
+      preset: HyperStudioPreset,
       options: {
         prefix: 'p',
         cssLayer: {

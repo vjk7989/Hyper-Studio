@@ -1,5 +1,15 @@
 @import '@comfyorg/design-system/css/style.css';
 
+/* The rounded Hyper mark is white in the source asset. Invert it on light
+   surfaces and retain the original white version in dark mode. */
+img[src*='/assets/images/hyper-studio-logo-'] {
+  filter: invert(1);
+}
+
+.dark-theme img[src*='/assets/images/hyper-studio-logo-'] {
+  filter: none;
+}
+
 @theme {
   --comfy-canvas-gutter: calc(var(--spacing) * 2);
 }
