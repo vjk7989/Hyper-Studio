@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { installHyperStudioEmbedBridge, isSafeWorkflowName, isTrustedHyperStudioHost } from './hyperStudioEmbedBridge'
+import { installHyperStudioEmbedBridge, isSafeWorkflowName, isTrustedHyperStudioHost, markHyperStudioCanvasReady } from './hyperStudioEmbedBridge'
 
 vi.mock('@/scripts/app', () => ({ app: { graphToPrompt: async () => ({ workflow: { nodes: [{ id: 7 }] } }) } }))
 const openWorkflowAction = vi.fn(async () => ({ success: true }))
@@ -21,6 +21,28 @@ describe('Hyper-Studio embed bridge boundaries', () => {
     expect(isSafeWorkflowName('../scene.json')).toBe(false)
     expect(isSafeWorkflowName('sub/scene.json')).toBe(false)
     expect(isSafeWorkflowName('scene.png')).toBe(false)
+  })
+
+  it('waits for startup tab restoration before opening a host workflow', async () => {
+    openWorkflowAction.mockClear()
+    const parent = { postMessage: vi.fn() } as unknown as Window
+    const previous = Object.getOwnPropertyDescriptor(window, 'parent')
+    Object.defineProperty(window, 'parent', { configurable: true, value: parent })
+    try {
+      installHyperStudioEmbedBridge()
+      window.dispatchEvent(new MessageEvent('message', {
+        source: parent, origin: 'null',
+        data: { type: 'hyper-studio:open-workflow', name: 'imported.json', workflow: { nodes: [{ id: 90909 }] } },
+      }))
+      await Promise.resolve()
+      expect(openWorkflowAction).not.toHaveBeenCalled()
+      markHyperStudioCanvasReady()
+      await vi.waitFor(() => expect(openWorkflowAction).toHaveBeenCalledWith(
+        { nodes: [{ id: 90909 }] }, 'imported.json'
+      ))
+    } finally {
+      if (previous) Object.defineProperty(window, 'parent', previous)
+    }
   })
 
   it('returns a canvas snapshot only to its parent window', async () => {

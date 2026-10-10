@@ -1,6 +1,15 @@
 import type { ComfyWorkflowJSON } from '@/platform/workflow/validation/schemas/workflowSchema'
 
 const MAX_WORKFLOW_BYTES = 20 * 1024 * 1024
+let markCanvasReady!: () => void
+const canvasReady = new Promise<void>((resolve) => {
+  markCanvasReady = resolve
+})
+
+/** Host workflow opens must wait until startup has restored its own tabs. */
+export function markHyperStudioCanvasReady(): void {
+  markCanvasReady()
+}
 
 export function isTrustedHyperStudioHost(origin: string): boolean {
   if (origin === 'null' || origin === 'file://') return true
@@ -52,9 +61,10 @@ export function installHyperStudioEmbedBridge(): void {
         return
       }
       void import('@/platform/workflow/core/services/workflowActionsService')
-        .then(({ useWorkflowActionsService }) =>
-          useWorkflowActionsService().openWorkflowAction(data.workflow as ComfyWorkflowJSON, data.name as string)
-        ).then(result => {
+        .then(async ({ useWorkflowActionsService }) => {
+          await canvasReady
+          return useWorkflowActionsService().openWorkflowAction(data.workflow as ComfyWorkflowJSON, data.name as string)
+        }).then(result => {
           if (!result.success) throw new Error(result.error || 'Could not open workflow')
         }).catch(reportError)
     }

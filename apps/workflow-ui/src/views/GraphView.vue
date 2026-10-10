@@ -73,6 +73,7 @@ import ModelImportProgressDialog from '@/platform/assets/components/ModelImportP
 import DesktopCloudNotificationController from '@/platform/cloud/notification/components/DesktopCloudNotificationController.vue'
 import { isCloud, isDesktop } from '@/platform/distribution/types'
 import { isHyperStudioEmbedded } from '@/platform/distribution/hyperStudio'
+import { markHyperStudioCanvasReady } from '@/platform/distribution/hyperStudioEmbedBridge'
 import { useSettingStore } from '@/platform/settings/settingStore'
 import { useTelemetry } from '@/platform/telemetry'
 import { getShellLayoutSnapshot } from '@/platform/telemetry/utils/getShellLayoutSnapshot'
@@ -304,6 +305,7 @@ void nextTick(() => {
 
 const onGraphReady = () => {
   graphReady.value = true
+  if (isHyperStudioEmbedded) markHyperStudioCanvasReady()
   runWhenGlobalIdle(() => {
     // Track user login when app is ready in graph view (cloud only)
     if (isCloud && authStore.isAuthenticated && !hasTrackedLogin) {

@@ -5,13 +5,16 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { ComfyWorkflowJSON } from '@/platform/workflow/validation/schemas/workflowSchema'
 import * as utils from '@/scripts/utils'
 import { useWorkflowActionsService } from './workflowActionsService'
+import { useWorkflowService } from './workflowService'
+
+const openWorkflow = vi.hoisted(() => vi.fn())
 
 vi.mock(import('@/services/dialogService'))
 
 vi.mock<unknown>(
   import('@/platform/workflow/core/services/workflowService'),
   () => ({
-    useWorkflowService: () => ({ openWorkflow: vi.fn() })
+    useWorkflowService: () => ({ openWorkflow })
   })
 )
 
@@ -77,5 +80,16 @@ describe('workflowActionsService.exportWorkflowAction', () => {
       error: 'No workflow data available'
     })
     expect(utils.downloadBlob).not.toHaveBeenCalled()
+  })
+})
+
+describe('workflowActionsService.openWorkflowAction', () => {
+  it('reports a rejected canvas activation as an open failure', async () => {
+    openWorkflow.mockResolvedValueOnce(false)
+    const result = await useWorkflowActionsService().openWorkflowAction(
+      minimalWorkflow, 'imported.json'
+    )
+    expect(result).toEqual({ success: false, error: 'Could not open workflow' })
+    expect(useWorkflowService().openWorkflow).toHaveBeenCalledOnce()
   })
 })
