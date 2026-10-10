@@ -32,6 +32,7 @@ interface ProjectContextType {
   workspaceOpenError: string | null
   workspaceSaveError: string | null
   deleteProject: (id: string) => void
+  removeProject: (id: string, mode: 'forget' | 'trash') => Promise<void>
   renameProject: (id: string, name: string) => void
   activateProject: (id: string) => void
   clearActiveProject: () => void
@@ -282,12 +283,12 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
     }
   }, [activeProject?.id, activeProject?.projectFolder, persistProject])
 
-  const deleteProject = useCallback((id: string) => {
-    if (window.electronAPI?.removeProjectFolder) {
-      void window.electronAPI.removeProjectFolder({ projectId: id }).catch(() => {
-        // Local project removal must still complete if the folder registry is unavailable.
-      })
+  const forgetProjectLocally = useCallback((id: string) => {
+    writeQueues.current.delete(id)
+    for (const key of registeredMedia.current) {
+      if (key.startsWith(`${id}:`)) registeredMedia.current.delete(key)
     }
+    setWorkspaceMedia(prev => activeProject?.id === id || generationProjectId === id ? [] : prev)
     const nextProjectIds = readProjectIds().filter(projectId => projectId !== id)
     writeProjectIds(nextProjectIds)
     setProjectIds(nextProjectIds)
@@ -296,7 +297,23 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
     setActiveProject(prev => (prev?.id === id ? null : prev))
     setGenerationProjectId(prev => (prev === id ? null : prev))
     bumpProjectRevision()
-  }, [bumpProjectRevision])
+  }, [activeProject?.id, generationProjectId, bumpProjectRevision])
+
+  const deleteProject = useCallback((id: string) => {
+    // Only used to roll back a local create before it becomes visible.
+    forgetProjectLocally(id)
+  }, [forgetProjectLocally])
+
+  const removeProject = useCallback(async (id: string, mode: 'forget' | 'trash') => {
+    const project = readProject(id)
+    if (!project) throw new Error('This project is no longer available.')
+    if (mode === 'trash' && !project.projectFolder) {
+      throw new Error('Legacy projects have no managed folder to move to Trash.')
+    }
+    await writeQueues.current.get(id)
+    await window.electronAPI.removeWorkspaceProject({ projectId: id, mode })
+    forgetProjectLocally(id)
+  }, [forgetProjectLocally])
 
   const renameProject = useCallback((id: string, name: string) => {
     mutateProject(id, project => ({
@@ -451,6 +468,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
       workspaceOpenError,
       workspaceSaveError,
       deleteProject,
+      removeProject,
       renameProject,
       activateProject,
       clearActiveProject,

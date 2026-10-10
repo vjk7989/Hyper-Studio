@@ -107,11 +107,7 @@ export function planHomeSidebarNavEntries(
         path: entry.path,
       },
     });
-    if (
-      entry.id === "projects" &&
-      plan.host === "desktop" &&
-      recentProjects.length > 0
-    ) {
+    if (entry.id === "projects" && plan.host === "desktop") {
       entries.push({
         kind: "section",
         id: "recent-projects",

@@ -267,6 +267,51 @@
   padding-right: calc(var(--md-h-padding) + var(--spacing-xxs));
 }
 
+.recentProjectEntry { min-width: 0; }
+.recentProjectRow { display: flex; align-items: center; min-width: 0; }
+.recentProjectOpen.recentProjectOpen { min-width: 0; flex: 1; width: auto; }
+.recentProjectMenuButton,
+.recentProjectCreate,
+.recentProjectMenu button {
+  color: var(--semantic-fg-primary);
+  border-radius: var(--radius-sm);
+  -webkit-app-region: no-drag;
+  &:focus-visible { outline: 2px solid var(--semantic-fg-primary); outline-offset: 2px; }
+}
+.recentProjectMenuButton {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  &:hover { background: var(--semantic-bg-transparent); }
+}
+.recentProjectCreate {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  width: 100%;
+  min-height: 32px;
+  padding: 0 var(--spacing-md);
+  text-align: left;
+  &:hover { background: var(--semantic-bg-transparent); }
+}
+.recentProjectMenu {
+  padding: 0 0 var(--spacing-xs) var(--spacing-xl);
+  button {
+    width: 100%;
+    padding: var(--spacing-xs) var(--spacing-md);
+    text-align: left;
+    &:hover { background: var(--semantic-bg-transparent); }
+  }
+}
+.recentProjectEmpty {
+  display: block;
+  padding: var(--spacing-xs) var(--spacing-md);
+  color: var(--semantic-fg-tertiary);
+  font-size: 12px;
+}
+
 // Selected rows set their icon and label in secondary ink; the fill stays the
 // stock action treatment. Keyed off aria-current (set exactly when the row is
 // selected). Hover keeps its own treatment via --btn-fg-hover; press inherits

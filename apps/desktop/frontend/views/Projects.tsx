@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Plus, Folder, MoreVertical, Trash2, Pencil, Film, Workflow, FolderOpen } from "lucide-react";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { Button } from "@ds/Button/Button";
 import { Text } from "@ds/Text/Text";
 import { TextField } from "@ds/TextField/TextField";
@@ -10,6 +10,7 @@ import { pathToFileUrl } from "../lib/file-url";
 import type { Project } from "../types/project-model";
 import { useProjectReferencesMigration } from "../hooks/useProjectReferencesMigration";
 import { prepareWorkspaceProject } from "../lib/workspace-project-data";
+import { paths } from "../paths";
 
 function formatDate(timestamp: number): string {
   const date = new Date(timestamp);
@@ -50,8 +51,18 @@ function ProjectCard({
 
   return (
     <div
+      data-testid={`project-card-${project.id}`}
+      role="button"
+      tabIndex={0}
+      aria-label={`Open ${project.name}`}
       className="group relative bg-surface-primary rounded-[var(--radius-lg)] overflow-hidden border border-separator-secondary hover:border-separator transition-colors cursor-pointer"
       onClick={onOpen}
+      onKeyDown={(event) => {
+        if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) {
+          event.preventDefault();
+          onOpen();
+        }
+      }}
     >
       <div className="aspect-video bg-surface-secondary flex items-center justify-center relative overflow-hidden">
         {representativeAsset && !imgError ? (
@@ -101,11 +112,15 @@ function ProjectCard({
       </div>
 
       <button
+        type="button"
+        data-testid={`project-card-menu-${project.id}`}
+        aria-label={`More options for ${project.name}`}
+        aria-expanded={showMenu}
         onClick={(e) => {
           e.stopPropagation();
           setShowMenu(!showMenu);
         }}
-        className="absolute top-2 right-2 p-1.5 rounded bg-surface-overlay opacity-0 group-hover:opacity-100 transition-opacity"
+        className="absolute top-2 right-2 p-1.5 rounded bg-surface-overlay opacity-100 transition-opacity focus-visible:outline focus-visible:outline-2 focus-visible:outline-fg-primary"
       >
         <MoreVertical className="h-4 w-4 text-fg-white" />
       </button>
@@ -134,7 +149,7 @@ function ProjectCard({
             className="w-full px-3 py-2 text-left text-fg-danger hover:bg-action flex items-center gap-2"
           >
             <Trash2 className="h-4 w-4" />
-            <Text as="span" variant="body" size="lg">Delete</Text>
+            <Text as="span" variant="body" size="lg">Remove…</Text>
           </button>
         </div>
       )}
@@ -146,6 +161,7 @@ function NewProjectCard({ onCreate }: { onCreate: () => void }) {
   return (
     <button
       type="button"
+      data-testid="new-project-card"
       className="group relative bg-surface-primary rounded-[var(--radius-lg)] overflow-hidden border border-separator-secondary hover:border-separator transition-colors text-left"
       onClick={onCreate}
     >
@@ -171,11 +187,13 @@ export function ProjectsPage() {
     createProject,
     registerWorkspaceProject,
     deleteProject,
+    removeProject,
     renameProject,
     activateProject,
     setCurrentTab,
   } = useProjects();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const handleOpenProject = (projectId: string) => {
     openProject(projectId, { activateProject, setCurrentTab, navigate });
@@ -194,7 +212,24 @@ export function ProjectsPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [renamingId, setRenamingId] = useState<string | null>(null);
   const [renameValue, setRenameValue] = useState("");
+  const [removalProjectId, setRemovalProjectId] = useState<string | null>(null);
+  const [removalMode, setRemovalMode] = useState<'forget' | 'trash'>('forget');
+  const [removalError, setRemovalError] = useState<string | null>(null);
+  const [isRemoving, setIsRemoving] = useState(false);
+  const removalInitialFocusRef = useRef<HTMLButtonElement>(null);
+  const removalDialogRef = useRef<HTMLDivElement>(null);
   const migrationStartedRef = useRef(false);
+
+  const closeRemovalDialog = useCallback((removed = false) => {
+    const targetId = removalProjectId;
+    setRemovalProjectId(null);
+    requestAnimationFrame(() => {
+      const target = !removed && targetId
+        ? document.querySelector<HTMLElement>(`[data-testid="project-card-menu-${CSS.escape(targetId)}"]`)
+        : null;
+      (target ?? document.querySelector<HTMLElement>('[data-testid="new-project-card"]'))?.focus();
+    });
+  }, [removalProjectId]);
 
   useEffect(() => {
     if (migrationStatus.status !== "needed" || migrationStartedRef.current)
@@ -206,6 +241,37 @@ export function ProjectsPage() {
   useEffect(() => {
     void window.electronAPI.getSharedStorageRoot().then(setStorageRoot).catch(error => { setStorageRoot(null); setStorageError(String(error)); });
   }, []);
+
+  useEffect(() => {
+    const create = searchParams.get('create');
+    const remove = searchParams.get('remove');
+    if (create === '1') setIsCreating(true);
+    if (remove) {
+      setRemovalProjectId(remove);
+      setRemovalMode('forget');
+      setRemovalError(null);
+    }
+    if (create || remove) setSearchParams({}, { replace: true });
+  }, [searchParams, setSearchParams]);
+
+  useEffect(() => {
+    if (!removalProjectId) return;
+    removalInitialFocusRef.current?.focus();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && !isRemoving) {
+        closeRemovalDialog();
+      }
+      if (event.key !== 'Tab') return;
+      const focusable = removalDialogRef.current?.querySelectorAll<HTMLElement>('button:not(:disabled)');
+      if (!focusable?.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [removalProjectId, isRemoving, closeRemovalDialog]);
 
   const projects = useMemo(
     () =>
@@ -220,10 +286,12 @@ export function ProjectsPage() {
     setIsSubmitting(true);
     setCreateError(null);
     let createdProjectId: string | null = null;
+    let workspaceWasOpened = false;
     try {
       const project = createProject(newProjectName.trim(), projectFolder, workspaceMode);
       createdProjectId = project.id;
       const manifest = await window.electronAPI.openWorkspaceProject({ folder: projectFolder, projectId: project.id, name: project.name, mode: workspaceMode });
+      workspaceWasOpened = true;
       if (manifest.projectId !== project.id) throw new Error('This folder already belongs to another project. Open it instead.');
       await window.electronAPI.writeWorkspaceProjectData({ projectId: project.id, project: prepareWorkspaceProject(project) });
       await registerWorkspaceProject(manifest, projectFolder);
@@ -233,7 +301,10 @@ export function ProjectsPage() {
       setIsCreating(false);
       handleOpenProject(project.id);
     } catch (error) {
-      if (createdProjectId) deleteProject(createdProjectId);
+      if (createdProjectId) {
+        if (workspaceWasOpened) await window.electronAPI.removeProjectFolder({ projectId: createdProjectId }).catch(() => undefined);
+        deleteProject(createdProjectId);
+      }
       setCreateError(error instanceof Error ? error.message : 'Could not create the project.');
     } finally {
       setIsSubmitting(false);
@@ -280,6 +351,23 @@ export function ProjectsPage() {
     setRenameValue("");
   };
 
+  const submitRemoval = async () => {
+    if (!removalProjectId || isRemoving) return;
+    setIsRemoving(true);
+    setRemovalError(null);
+    try {
+      await removeProject(removalProjectId, removalMode);
+      closeRemovalDialog(true);
+      navigate(paths.projects, { replace: true });
+    } catch (error) {
+      setRemovalError(error instanceof Error ? error.message : 'Could not remove this project.');
+    } finally {
+      setIsRemoving(false);
+    }
+  };
+
+  const removalProject = removalProjectId ? getProject(removalProjectId) : null;
+
   if (
     migrationStatus.status === "needed" ||
     migrationStatus.status === "inProgress"
@@ -320,17 +408,40 @@ export function ProjectsPage() {
               key={project.id}
               project={project}
               onOpen={() => handleOpenProject(project.id)}
-              onDelete={() => {
-                if (confirm(`Delete "${project.name}"?`)) {
-                  deleteProject(project.id);
-                }
-              }}
+              onDelete={() => { setRemovalProjectId(project.id); setRemovalMode('forget'); setRemovalError(null); }}
               onRename={() => handleRenameProject(project.id, project.name)}
               onImport={!project.projectFolder ? () => { void handleImportLegacyProject(project); } : undefined}
             />
           ))}
         </div>
       </div>
+
+      {removalProject && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-surface-overlay p-4">
+          <div ref={removalDialogRef} role="dialog" aria-modal="true" aria-labelledby="project-remove-title" aria-busy={isRemoving} data-testid="project-remove-dialog" className="w-full max-w-lg rounded-[var(--radius-lg)] border border-separator bg-surface-primary p-6 shadow-xl">
+            <Text as="h2" id="project-remove-title" variant="heading" size="lg">Remove project</Text>
+            <Text as="p" variant="body" size="md" className="mt-3 text-fg-secondary">Choose what happens to <strong className="text-fg-primary">{removalProject.name}</strong>.</Text>
+            <Text as="p" variant="body" size="sm" className="mt-2 break-all rounded-md bg-surface-secondary p-3 text-fg-secondary">{removalProject.projectFolder ?? 'Legacy project — no managed folder'}</Text>
+            <div className="mt-5 grid gap-2" role="radiogroup" aria-label="Removal method">
+              <button ref={removalInitialFocusRef} type="button" role="radio" aria-checked={removalMode === 'forget'} data-testid="remove-from-app" disabled={isRemoving} onClick={() => setRemovalMode('forget')} className={`rounded-lg border p-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-fg-primary ${removalMode === 'forget' ? 'border-fg-primary bg-action' : 'border-separator'}`}>
+                <span className="block font-medium">Remove from Hyper-Studio</span>
+                <span className="mt-1 block text-sm text-fg-secondary">Keep all files in this folder. Open the folder later to restore the project.</span>
+              </button>
+              {removalProject.projectFolder && <button type="button" role="radio" aria-checked={removalMode === 'trash'} data-testid="move-project-to-trash" disabled={isRemoving} onClick={() => setRemovalMode('trash')} className={`rounded-lg border p-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-fg-primary ${removalMode === 'trash' ? 'border-fg-primary bg-action' : 'border-separator'}`}>
+                <span className="block font-medium">Move project folder to Trash</span>
+                <span className="mt-1 block text-sm text-fg-secondary">Move the entire folder and its contents to your system Trash.</span>
+              </button>}
+            </div>
+            {removalError && <div role="alert"><Text as="p" variant="body" size="sm" className="mt-4 text-fg-danger">{removalError}</Text></div>}
+            <div className="mt-6 flex justify-end gap-3">
+              <button type="button" disabled={isRemoving} onClick={() => closeRemovalDialog()} className="rounded-lg border border-separator px-4 py-2 text-fg-primary hover:bg-action disabled:opacity-50">Cancel</button>
+              <button type="button" data-testid="confirm-project-removal" disabled={isRemoving} onClick={() => { void submitRemoval(); }} className={`rounded-lg px-4 py-2 text-white disabled:opacity-50 ${removalMode === 'trash' ? 'bg-red-700 hover:bg-red-800' : 'bg-brand hover:opacity-90'}`}>
+                {isRemoving ? 'Removing…' : removalMode === 'trash' ? 'Move to Trash' : 'Remove project'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {isCreating && (
         <div className="fixed inset-0 bg-surface-overlay flex items-center justify-center z-50">

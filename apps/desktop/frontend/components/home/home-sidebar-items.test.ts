@@ -117,6 +117,7 @@ describe("planHomeSidebarNavItems", () => {
       "assets",
       "remote",
       "projects",
+      "recent-projects",
       "featured",
       ...HOME_SIDEBAR_FEATURED_FEATURES.map((feature) => feature.id),
     ]);
@@ -125,7 +126,7 @@ describe("planHomeSidebarNavItems", () => {
     );
     assert.deepEqual(
       sections.map((entry) => (entry.kind === "section" ? entry.label : null)),
-      ["Featured"],
+      ["Recent projects", "Featured"],
     );
   });
 
@@ -165,6 +166,7 @@ describe("planHomeSidebarNavItems", () => {
       "assets",
       "remote",
       "projects",
+      "recent-projects",
       "recent",
       "cozy-felt",
       "text-to-video",

@@ -1,5 +1,5 @@
-import { type ReactNode } from "react";
-import { Radio, Search, Settings } from "lucide-react";
+import { type ReactNode, useState } from "react";
+import { MoreVertical, Plus, Radio, Search, Settings } from "lucide-react";
 import { useLocation } from "react-router";
 import { Button } from "@/ds/Button/Button";
 import { Text } from "@/ds/Text/Text";
@@ -29,6 +29,7 @@ import { homeFeatureIcon } from "./homeFeatureIcons";
 import styles from "./DesktopHomeSidebar.module.scss";
 import { useRecentSidebarProjects } from "./useRecentSidebarProjects";
 import { useRecentSidebarTools } from "./useRecentSidebarTools";
+import { paths } from "../../paths";
 function SidebarKeyboardShortcut({ keys }: { keys: string }) {
   return (
     <span className={styles.navShortcut} aria-hidden>
@@ -96,6 +97,7 @@ export function HomeSidebarMenu({
   const location = useLocation();
   const recentFeatureIds = useRecentSidebarTools();
   const recentProjects = useRecentSidebarProjects();
+  const [activeRecentMenuId, setActiveRecentMenuId] = useState<string | null>(null);
   const navEntries = planHomeSidebarNavEntries(
     plan,
     recentFeatureIds,
@@ -158,19 +160,38 @@ export function HomeSidebarMenu({
       recentProjectItems.push({
         type: "custom",
         node: (
-          <HomeNavButton
-            isActive={isHomeSidebarRecentProjectActive(
-              location.pathname,
-              entry.path,
+          <div className={styles.recentProjectEntry}>
+            <div className={styles.recentProjectRow}>
+              <HomeNavButton
+                isActive={isHomeSidebarRecentProjectActive(location.pathname, entry.path)}
+                label={entry.project.name}
+                icon={<ProjectsIcon />}
+                className={`${styles.navButton} ${styles.recentProjectOpen}`}
+                onClick={() => {
+                  setActiveRecentMenuId(null);
+                  selectHomeSidebarRecentProject(entry.project.id, actions);
+                  onNavigateComplete?.();
+                }}
+              />
+              <button
+                type="button"
+                data-testid={`recent-project-menu-${entry.project.id}`}
+                aria-label={`More options for ${entry.project.name}`}
+                aria-expanded={activeRecentMenuId === entry.project.id}
+                className={styles.recentProjectMenuButton}
+                onClick={() => setActiveRecentMenuId(current => current === entry.project.id ? null : entry.project.id)}
+              ><MoreVertical size={16} aria-hidden /></button>
+            </div>
+            {activeRecentMenuId === entry.project.id && (
+              <div className={styles.recentProjectMenu}>
+                <button type="button" onClick={() => {
+                  setActiveRecentMenuId(null);
+                  actions.goTo(`${paths.projects}?remove=${encodeURIComponent(entry.project.id)}`, { clearActiveProject: true });
+                  onNavigateComplete?.();
+                }}>Remove…</button>
+              </div>
             )}
-            label={entry.project.name}
-            icon={<ProjectsIcon />}
-            className={styles.navButton}
-            onClick={() => {
-              selectHomeSidebarRecentProject(entry.project.id, actions);
-              onNavigateComplete?.();
-            }}
-          />
+          </div>
         ),
       });
       continue;
@@ -183,6 +204,20 @@ export function HomeSidebarMenu({
       if (entry.item.id === "home") {
         pageItems.push(exploreToolsItem);
       }
+    }
+  }
+
+  if (recentProjectsLabel !== undefined) {
+    recentProjectItems.unshift({
+      type: "custom",
+      node: <button type="button" data-testid="sidebar-new-project" className={styles.recentProjectCreate} onClick={() => {
+        setActiveRecentMenuId(null);
+        actions.goTo(`${paths.projects}?create=1`, { clearActiveProject: true });
+        onNavigateComplete?.();
+      }}><Plus size={16} aria-hidden />New Project</button>,
+    });
+    if (recentProjects.length === 0) {
+      recentProjectItems.push({ type: "custom", node: <span className={styles.recentProjectEmpty}>No recent projects</span> });
     }
   }
 
