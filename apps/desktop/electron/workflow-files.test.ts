@@ -233,12 +233,13 @@ describe('project workflow files', () => {
     const destination = path.join(out, 'graph.json')
     fs.writeFileSync(destination, '{"kept":true}')
     fs.chmodSync(destination, 0o444)
+    const probe = path.join(out, 'rename-probe.json')
+    fs.writeFileSync(probe, '{"probe":true}')
     try {
-      fs.writeFileSync(destination, '{"probe":true}')
-      fs.chmodSync(destination, 0o600)
-      t.skip('this filesystem lets the test user replace a read-only destination file')
+      fs.renameSync(probe, destination)
+      t.skip('this filesystem lets the test user replace a read-only destination by rename')
       return
-    } catch { /* the replacement must fail for this case to be observable */ }
+    } catch { fs.unlinkSync(probe) /* the replacement must fail for this case to be observable */ }
     assert.throws(() => exportProjectWorkflow(folder, 'graph.json', destination))
     assert.equal(fs.readFileSync(destination, 'utf8'), '{"kept":true}')
     assert.deepEqual(fs.readdirSync(out), ['graph.json'])
