@@ -3,6 +3,7 @@ import { ApiClient, type ApiRequestBodyOf } from '../lib/api-client'
 import { withGenerationActive } from '../lib/generation-active'
 import { logger } from '../lib/logger'
 import type { PromptProvenance } from '../lib/prompt-provenance'
+import { useProjects } from '../contexts/ProjectContext'
 
 export type IcLoraConditioningType = 'canny' | 'depth' | 'custom'
 export type IcLoraAudioMode = 'source' | 'generated' | 'off'
@@ -61,6 +62,7 @@ interface UseIcLoraState {
 type GenerateIcLoraBody = ApiRequestBodyOf<'generateIcLora'>
 
 export function useIcLora() {
+  const { activeProject } = useProjects()
   const [state, setState] = useState<UseIcLoraState>({
     isGenerating: false,
     canCancel: false,
@@ -87,6 +89,7 @@ export function useIcLora() {
 
     await withGenerationActive(async () => {
       const result = await ApiClient.generateIcLora({
+        ...(activeProject?.id ? { projectId: activeProject.id } : {}),
         video_path: params.videoPath,
         conditioning_type: params.conditioningType,
         conditioning_strength: params.conditioningStrength,
@@ -145,7 +148,7 @@ export function useIcLora() {
         return
       }
     })
-  }, [])
+  }, [activeProject?.id])
 
   const reset = useCallback(() => {
     setState({

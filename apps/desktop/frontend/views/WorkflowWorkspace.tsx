@@ -1,28 +1,29 @@
 import { Film, FolderOpen, Workflow } from 'lucide-react'
 import { Text } from '@ds/Text/Text'
 import type { Project } from '../types/project-model'
+import type { WorkspaceMediaEntry } from '../../shared/electron-api-schema'
 import styles from './Project.module.scss'
 
-export function WorkflowWorkspace({ project, onSwitchToEditor }: { project: Project; onSwitchToEditor: () => void }) {
+export function WorkflowWorkspace({ project, media, onSwitchToEditor }: { project: Project; media: WorkspaceMediaEntry[]; onSwitchToEditor: () => void }) {
   return (
     <div className={styles.workflowWorkspace}>
       <div className={styles.workflowIntro}>
         <Workflow size={28} aria-hidden="true" />
         <Text as="h1" variant="heading" size="xl">Workflow mode</Text>
         <Text as="p" variant="body" size="md" className={styles.workflowDescription}>
-          Build generation workflows in this project. Your media library is shared with Editor mode.
+          This project uses one media library in Editor and Workflow mode.
         </Text>
       </div>
       <div className={styles.workflowPanel}>
         <div className={styles.workflowPanelHeading}><FolderOpen size={18} aria-hidden="true" /> Project workspace</div>
         <p className={styles.workflowFolder}>{project.projectFolder ?? 'No project folder selected'}</p>
         <p className={styles.workflowDescription}>
-          {project.assets.length} {project.assets.length === 1 ? 'asset' : 'assets'} in this project
+          {media.length} {media.length === 1 ? 'file' : 'files'} in the shared media index
         </p>
-        {project.assets.length > 0 && (
+        {media.length > 0 && (
           <ul className={styles.workflowAssets}>
-            {project.assets.slice(0, 8).map(asset => (
-              <li key={asset.id}>{asset.path.split(/[\\/]/).pop() || 'Untitled asset'}</li>
+            {media.slice(0, 8).map(item => (
+              <li key={item.id}>{item.relativePath.split(/[\\/]/).pop() || 'Untitled file'}</li>
             ))}
           </ul>
         )}

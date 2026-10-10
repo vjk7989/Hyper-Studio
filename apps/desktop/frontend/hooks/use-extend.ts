@@ -4,6 +4,7 @@ import { canCancelLocalJob, withGenerationActive } from '../lib/generation-activ
 import type { ApiFailure } from '../lib/generation-errors'
 import { logger } from '../lib/logger'
 import { useAppSettings } from '../contexts/AppSettingsContext'
+import { useProjects } from '../contexts/ProjectContext'
 import type { RetakeExtendModel } from './use-retake'
 
 export type ExtendDirection = 'start' | 'end'
@@ -35,6 +36,7 @@ interface UseExtendState {
 }
 
 export function useExtend() {
+  const { activeProject } = useProjects()
   const { shouldVideoGenerateWithLtxApi, shouldImageGenerateWithFalApi } = useAppSettings()
   const [state, setState] = useState<UseExtendState>({
     isExtending: false,
@@ -57,6 +59,7 @@ export function useExtend() {
 
     await withGenerationActive(async () => {
       const result = await ApiClient.extend({
+        ...(activeProject?.id ? { projectId: activeProject.id } : {}),
         video_path: params.videoPath,
         duration: params.duration,
         prompt: params.prompt,
@@ -108,7 +111,7 @@ export function useExtend() {
         result: null,
       })
     })
-  }, [shouldImageGenerateWithFalApi, shouldVideoGenerateWithLtxApi])
+  }, [activeProject?.id, shouldImageGenerateWithFalApi, shouldVideoGenerateWithLtxApi])
 
   const resetExtend = useCallback(() => {
     setState({ isExtending: false, canCancel: false, extendStatus: '', extendError: null, result: null })

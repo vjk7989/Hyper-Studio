@@ -7,6 +7,7 @@ import { load as loadYaml } from 'js-yaml'
 import path from 'path'
 import { isDev } from './config'
 import { logger } from './logger'
+import { getSharedStorageRoot } from './project-registry'
 
 export interface PythonSetupProgress {
   status: 'downloading' | 'extracting' | 'complete' | 'error'
@@ -61,7 +62,12 @@ function getBundledHashPath(): string {
 }
 
 function getInstalledHashPath(): string {
-  return path.join(app.getPath('userData'), 'python', 'deps-hash.txt')
+  return path.join(getPythonDir(), 'deps-hash.txt')
+}
+
+function getPythonRuntimeRoot(): string {
+  const sharedRoot = getSharedStorageRoot()
+  return sharedRoot ? path.join(sharedRoot, 'runtimes') : app.getPath('userData')
 }
 
 /** Directory where python-embed lives at runtime. */
@@ -70,7 +76,7 @@ export function getPythonDir(): string {
     if (isDev) {
       return path.join(process.cwd(), 'python-embed')
     }
-    return path.join(app.getPath('userData'), 'python')
+    return path.join(getPythonRuntimeRoot(), 'python')
   }
   // macOS: bundled in resources
   return path.join(process.resourcesPath, 'python')
@@ -92,12 +98,12 @@ export function isPythonReady(): { ready: boolean } {
   const bundledHash = readHash(getBundledHashPath())
 
   // Check if a pre-downloaded python-next/ is waiting to be promoted
-  const nextDir = path.join(app.getPath('userData'), 'python-next')
+  const nextDir = path.join(getPythonRuntimeRoot(), 'python-next')
   const nextHash = readHash(path.join(nextDir, 'deps-hash.txt'))
   if (bundledHash && nextHash && bundledHash === nextHash) {
     logger.info( '[python-setup] Promoting staged python-next/ to python/')
     try {
-      const destDir = path.join(app.getPath('userData'), 'python')
+      const destDir = getPythonDir()
       if (fs.existsSync(destDir)) {
         fs.rmSync(destDir, { recursive: true, force: true })
       }
@@ -153,9 +159,9 @@ export async function preDownloadPythonForUpdate(
   logger.info( `[python-setup] Python deps changed (${installedHash} → ${newHash}), pre-downloading`)
 
   // Download to python-next/
-  const nextDir = path.join(app.getPath('userData'), 'python-next')
-  const tempDir = path.join(app.getPath('userData'), 'python-next-tmp')
-  const archivePath = path.join(app.getPath('userData'), 'python-next.tar.gz')
+  const nextDir = path.join(getPythonRuntimeRoot(), 'python-next')
+  const tempDir = path.join(getPythonRuntimeRoot(), 'python-next-tmp')
+  const archivePath = path.join(getPythonRuntimeRoot(), 'python-next.tar.gz')
 
   try {
     if (fs.existsSync(nextDir)) fs.rmSync(nextDir, { recursive: true, force: true })
@@ -262,7 +268,7 @@ async function fetchRemoteDepsHash(base: string, tempFileName: string): Promise<
     return readHash(path.join(base, 'deps-hash.txt'))
   }
   const hashUrl = `${base}/python-deps-hash.txt`
-  const hashDest = path.join(app.getPath('userData'), tempFileName)
+  const hashDest = path.join(getPythonRuntimeRoot(), tempFileName)
   try {
     await downloadFileRaw(hashUrl, hashDest)
     return readHash(hashDest)
@@ -324,9 +330,9 @@ async function acquireArchive(
 export async function downloadPythonEmbed(
   onProgress: (progress: PythonSetupProgress) => void
 ): Promise<void> {
-  const destDir = path.join(app.getPath('userData'), 'python')
-  const tempDir = path.join(app.getPath('userData'), 'python-tmp')
-  const archivePath = path.join(app.getPath('userData'), `${getPythonArchivePrefix()}.tar.gz`)
+  const destDir = getPythonDir()
+  const tempDir = path.join(getPythonRuntimeRoot(), 'python-tmp')
+  const archivePath = path.join(getPythonRuntimeRoot(), `${getPythonArchivePrefix()}.tar.gz`)
 
   try {
     if (fs.existsSync(tempDir)) {
@@ -445,7 +451,7 @@ async function acquirePartsLocal(
 
   for (const part of manifest.parts) {
     const src = path.join(dirPath, part.name)
-    const dest = path.join(app.getPath('userData'), part.name)
+    const dest = path.join(getPythonRuntimeRoot(), part.name)
     partPaths.push(dest)
     cleanupFiles.push(dest)
 
@@ -467,7 +473,7 @@ async function acquirePartsRemote(
   // Fetch manifest
   const prefix = getPythonArchivePrefix()
   const manifestUrl = `${baseUrl}/${prefix}.manifest.json`
-  const manifestDest = path.join(app.getPath('userData'), `${prefix}.manifest.json`)
+  const manifestDest = path.join(getPythonRuntimeRoot(), `${prefix}.manifest.json`)
   cleanupFiles.push(manifestDest)
   await downloadFileRaw(manifestUrl, manifestDest)
   const manifest: ArchiveManifest = JSON.parse(fs.readFileSync(manifestDest, 'utf-8'))
@@ -480,7 +486,7 @@ async function acquirePartsRemote(
 
   for (const part of manifest.parts) {
     const partUrl = `${baseUrl}/${part.name}`
-    const partDest = path.join(app.getPath('userData'), part.name)
+    const partDest = path.join(getPythonRuntimeRoot(), part.name)
     partPaths.push(partDest)
     cleanupFiles.push(partDest)
 

@@ -44,6 +44,7 @@ from services.generation_interrupt import GenerationCancelledError, is_cancel_ex
 from services.ltx_api_client.ltx_api_client import LTXAPIClientError
 from services.ltx_api_client.ltx_api_errors import map_ltx_api_client_error, missing_ltx_api_key_error
 from services.interfaces import LTXAPIClient
+from services.project_workspace import ProjectWorkspaceError, project_outputs_dir
 from state.app_state_types import AppState
 from state.app_settings import should_video_generate_with_ltx_api
 
@@ -72,6 +73,11 @@ class ExtendHandler(StateHandlerBase):
         self._text = text_handler
 
     def run(self, req: ExtendRequest) -> ExtendResponse:
+        try:
+            output_dir = project_outputs_dir(req.projectId) if req.projectId else self.config.outputs_dir
+        except ProjectWorkspaceError as exc:
+            raise HTTPError(422, str(exc), code="INVALID_PROJECT_WORKSPACE") from exc
+        project_options = {"output_dir": output_dir} if req.projectId else {}
         video_path = req.video_path
         duration = req.duration
         prompt = req.prompt
@@ -93,6 +99,7 @@ class ExtendHandler(StateHandlerBase):
             # selection is local-only.
             return self._run_api_extend(
                 video_file=video_file, duration=duration, prompt=prompt, mode=mode, model=req.model,
+                **project_options,
             )
 
         model_id = resolve_active_ltx_model_id(
@@ -108,7 +115,8 @@ class ExtendHandler(StateHandlerBase):
             )
 
         return self._run_local_extend(
-            video_file=video_file, duration=duration, prompt=prompt, mode=mode, resolution=req.resolution
+            video_file=video_file, duration=duration, prompt=prompt, mode=mode, resolution=req.resolution,
+            **project_options,
         )
 
     def _run_api_extend(
@@ -119,6 +127,7 @@ class ExtendHandler(StateHandlerBase):
         prompt: str,
         mode: ExtendMode,
         model: RetakeExtendModel,
+        output_dir: Path | None = None,
     ) -> ExtendResponse:
         api_key = self.state.app_settings.ltx_api_key
         if not api_key:
@@ -148,7 +157,7 @@ class ExtendHandler(StateHandlerBase):
 
                 if result.video_bytes is not None:
                     self._generation.update_progress("downloading_output", 85, None, None)
-                    output = self.config.outputs_dir / f"extend_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:8]}.mp4"
+                    output = (output_dir or self.config.outputs_dir) / f"extend_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:8]}.mp4"
                     try:
                         with open(output, "wb") as out:
                             out.write(result.video_bytes)
@@ -184,6 +193,7 @@ class ExtendHandler(StateHandlerBase):
         prompt: str,
         mode: ExtendMode,
         resolution: TargetResolution | None,
+        output_dir: Path | None = None,
     ) -> ExtendResponse:
         with self._generation.reserved_generation_start():
 
@@ -199,7 +209,7 @@ class ExtendHandler(StateHandlerBase):
 
             generation_id = uuid.uuid4().hex[:8]
             seed = self._resolve_seed()
-            output_path = self.config.outputs_dir / f"extend_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{generation_id}.mp4"
+            output_path = (output_dir or self.config.outputs_dir) / f"extend_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{generation_id}.mp4"
             logger.info(
                 "Extend %s started (%dx%d, %d source frames @ %g fps, %s +%d)",
                 generation_id,

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Plus, Folder, MoreVertical, Trash2, Pencil, Film, Workflow } from "lucide-react";
+import { Plus, Folder, MoreVertical, Trash2, Pencil, Film, Workflow, FolderOpen } from "lucide-react";
 import { useNavigate } from "react-router";
 import { Button } from "@ds/Button/Button";
 import { Text } from "@ds/Text/Text";
@@ -9,6 +9,7 @@ import { openProject } from "../lib/project-navigation";
 import { pathToFileUrl } from "../lib/file-url";
 import type { Project } from "../types/project-model";
 import { useProjectReferencesMigration } from "../hooks/useProjectReferencesMigration";
+import { prepareWorkspaceProject } from "../lib/workspace-project-data";
 
 function formatDate(timestamp: number): string {
   const date = new Date(timestamp);
@@ -26,11 +27,13 @@ function ProjectCard({
   onOpen,
   onDelete,
   onRename,
+  onImport,
 }: {
   project: Project;
   onOpen: () => void;
   onDelete: () => void;
   onRename: () => void;
+  onImport?: () => void;
 }) {
   const [showMenu, setShowMenu] = useState(false);
   const [imgError, setImgError] = useState(false);
@@ -122,6 +125,7 @@ function ProjectCard({
             <Pencil className="h-4 w-4" />
             <Text as="span" variant="body" size="lg">Rename</Text>
           </button>
+          {onImport && <button onClick={() => { onImport(); setShowMenu(false); }} className="w-full px-3 py-2 text-left text-fg-primary hover:bg-action flex items-center gap-2"><FolderOpen className="h-4 w-4" /><Text as="span" variant="body" size="lg">Import to folder</Text></button>}
           <button
             onClick={() => {
               onDelete();
@@ -165,6 +169,7 @@ export function ProjectsPage() {
     projectIds,
     getProject,
     createProject,
+    registerWorkspaceProject,
     deleteProject,
     renameProject,
     activateProject,
@@ -182,6 +187,10 @@ export function ProjectsPage() {
   const [projectFolder, setProjectFolder] = useState<string | null>(null);
   const [workspaceMode, setWorkspaceMode] = useState<'editor' | 'workflow'>('editor');
   const [createError, setCreateError] = useState<string | null>(null);
+  const [storageRoot, setStorageRoot] = useState<string | null | undefined>(undefined);
+  const [storageFolder, setStorageFolder] = useState<string | null>(null);
+  const [storageError, setStorageError] = useState<string | null>(null);
+  const [isOpeningFolder, setIsOpeningFolder] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [renamingId, setRenamingId] = useState<string | null>(null);
   const [renameValue, setRenameValue] = useState("");
@@ -193,6 +202,10 @@ export function ProjectsPage() {
     migrationStartedRef.current = true;
     void migrateProjects();
   }, [migrateProjects, migrationStatus.status]);
+
+  useEffect(() => {
+    void window.electronAPI.getSharedStorageRoot().then(setStorageRoot).catch(error => { setStorageRoot(null); setStorageError(String(error)); });
+  }, []);
 
   const projects = useMemo(
     () =>
@@ -210,10 +223,10 @@ export function ProjectsPage() {
     try {
       const project = createProject(newProjectName.trim(), projectFolder, workspaceMode);
       createdProjectId = project.id;
-      const registered = await window.electronAPI.setProjectFolder({ projectId: project.id, folder: projectFolder });
-      if (!registered) {
-        throw new Error('Could not prepare the selected project folder.');
-      }
+      const manifest = await window.electronAPI.openWorkspaceProject({ folder: projectFolder, projectId: project.id, name: project.name, mode: workspaceMode });
+      if (manifest.projectId !== project.id) throw new Error('This folder already belongs to another project. Open it instead.');
+      await window.electronAPI.writeWorkspaceProjectData({ projectId: project.id, project: prepareWorkspaceProject(project) });
+      await registerWorkspaceProject(manifest, projectFolder);
       createdProjectId = null;
       setNewProjectName("");
       setProjectFolder(null);
@@ -224,6 +237,33 @@ export function ProjectsPage() {
       setCreateError(error instanceof Error ? error.message : 'Could not create the project.');
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleOpenExistingFolder = async () => {
+    const folder = await window.electronAPI.selectProjectFolder();
+    if (!folder) return;
+    setIsOpeningFolder(true);
+    setCreateError(null);
+    try {
+      const manifest = await window.electronAPI.openWorkspaceProject({ folder });
+      await registerWorkspaceProject(manifest, folder);
+      handleOpenProject(manifest.projectId);
+    } catch (error) {
+      setCreateError(error instanceof Error ? error.message : 'Could not open that project folder.');
+    } finally { setIsOpeningFolder(false); }
+  };
+
+  const handleImportLegacyProject = async (project: Project) => {
+    const folder = await window.electronAPI.selectProjectFolder();
+    if (!folder) return;
+    if (!confirm(`Import a copy of "${project.name}" into ${folder}? The original project remains available.`)) return;
+    try {
+      const manifest = await window.electronAPI.importLegacyProject({ folder, projectId: project.id, name: project.name, mode: project.workspaceMode ?? 'editor', legacyProject: project });
+      await registerWorkspaceProject(manifest, folder);
+      handleOpenProject(project.id);
+    } catch (error) {
+      setCreateError(error instanceof Error ? error.message : 'Could not import this project.');
     }
   };
 
@@ -264,9 +304,15 @@ export function ProjectsPage() {
     );
   }
 
+  if (storageRoot === undefined) return <div className="h-full flex items-center justify-center text-fg-secondary">Preparing Hyper-Studio storage...</div>;
+
+  if (storageRoot === null) return <div className="h-full flex items-center justify-center p-6"><div className="w-full max-w-md rounded-[var(--radius-lg)] border border-separator bg-surface-primary p-6"><Text as="h1" variant="heading" size="lg">Choose shared storage</Text><Text as="p" variant="body" size="md" className="mt-3 text-fg-secondary">Hyper-Studio keeps managed runtimes, models, caches, and connection settings in this folder. Choose a drive with enough space.</Text><button type="button" className="mt-5 w-full rounded-lg border border-separator px-3 py-2 text-left hover:bg-action" onClick={() => { void window.electronAPI.selectProjectFolder().then(setStorageFolder).catch(error => setStorageError(String(error))); }}><Folder className="inline h-4 w-4 mr-2" />{storageFolder ?? 'Choose a folder'}</button>{storageError && <Text as="p" variant="body" size="sm" className="mt-3 text-fg-danger">{storageError}</Text>}<div className="mt-6 flex justify-end"><Button appearance="brand" hierarchy="primary" size="md" label="Continue" disabled={!storageFolder} onClick={() => { if (!storageFolder) return; void window.electronAPI.setSharedStorageRoot({ folder: storageFolder }).then(setStorageRoot).catch(error => setStorageError(String(error))); }} /></div></div></div>;
+
   return (
     <>
       <div className="pb-8">
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-3"><Text as="p" variant="body" size="sm" className="text-fg-secondary">Shared storage: {storageRoot}</Text><button type="button" disabled={isOpeningFolder} onClick={() => { void handleOpenExistingFolder(); }} className="rounded-lg border border-separator px-3 py-2 text-fg-primary hover:bg-action"><FolderOpen className="inline h-4 w-4 mr-2" />Open project folder</button></div>
+        {createError && !isCreating && <Text as="p" variant="body" size="sm" className="mb-4 text-fg-danger">{createError}</Text>}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           <NewProjectCard onCreate={() => setIsCreating(true)} />
           {projects.map((project) => (
@@ -280,6 +326,7 @@ export function ProjectsPage() {
                 }
               }}
               onRename={() => handleRenameProject(project.id, project.name)}
+              onImport={!project.projectFolder ? () => { void handleImportLegacyProject(project); } : undefined}
             />
           ))}
         </div>

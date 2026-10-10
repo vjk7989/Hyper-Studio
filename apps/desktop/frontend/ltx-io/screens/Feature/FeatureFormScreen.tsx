@@ -1,5 +1,8 @@
 import type { UseMutationResult } from "@tanstack/react-query";
-import { type ComponentType, useCallback, useRef, type ReactNode } from "react";
+import { type ComponentType, useCallback, useRef, useState, type ReactNode } from "react";
+import { Link } from "react-router";
+import { useProjects } from "@/contexts/ProjectContext";
+import { paths } from "@/paths";
 
 import { enhanceActionLabel } from "@/lib/enhance-ui-copy";
 import type { HomeFeatureId } from "@/lib/home-features";
@@ -61,6 +64,8 @@ export function FeatureFormScreen<TId extends HomeFeatureId, TCreateBody, TConte
   interceptGenerate?: (proceed: () => void) => void;
   onCancelGenerate?: () => void;
 }) {
+  const { projectIds, getProject, generationProjectId, selectGenerationProject } = useProjects();
+  const [projectSelectionError, setProjectSelectionError] = useState<string | null>(null);
   const form = useFeatureForm(
     definition,
     context,
@@ -136,6 +141,17 @@ export function FeatureFormScreen<TId extends HomeFeatureId, TCreateBody, TConte
   }, [enhance.isEnhancing, generateNow, interceptGenerate]);
 
   return (
+    <>
+    <div className="mb-4 rounded-lg border border-separator bg-surface-primary p-3 text-fg-primary">
+      <label htmlFor="generation-project" className="mr-3 text-sm font-medium">Save generation to project</label>
+      <select id="generation-project" value={generationProjectId ?? ''} onChange={event => { const id = event.target.value; if (!id) return; void selectGenerationProject(id).then(() => setProjectSelectionError(null)).catch(error => setProjectSelectionError(error instanceof Error ? error.message : String(error))); }} className="rounded-lg border border-separator bg-surface-primary px-3 py-2 text-fg-primary">
+        <option value="">Choose a project</option>
+        {projectIds.map(id => { const project = getProject(id); return project?.projectFolder ? <option key={id} value={id}>{project.name}</option> : null; })}
+      </select>
+      <Link to={paths.projects} className="ml-3 text-sm underline">Create or import a project</Link>
+      {projectSelectionError && <p role="alert" className="mt-2 text-sm text-fg-danger">{projectSelectionError}</p>}
+      {!generationProjectId && <p className="mt-2 text-sm text-fg-secondary">Select where the video and its project media should be saved.</p>}
+    </div>
     <FeatureFormView
       form={form.form}
       values={form.values}
@@ -156,10 +172,10 @@ export function FeatureFormScreen<TId extends HomeFeatureId, TCreateBody, TConte
       enhanceProvider={enhance.enhanceProvider}
       canToggleEnhanceProvider={enhance.canToggleEnhanceProvider}
       onEnhanceProviderChange={enhance.setEnhanceProvider}
-      canGenerate={form.canGenerate && !enhance.isEnhancing && generateEnabled}
+      canGenerate={form.canGenerate && !enhance.isEnhancing && generateEnabled && !!generationProjectId}
       isUnavailable={form.isUnavailable}
       isCreating={form.isCreating}
-      actionError={actionErrorOverride ?? form.actionError}
+      actionError={projectSelectionError ?? actionErrorOverride ?? form.actionError}
       generations={form.generations}
       isGenerationsLoading={form.isGenerationsLoading}
       generationsError={form.generationsError}
@@ -174,5 +190,6 @@ export function FeatureFormScreen<TId extends HomeFeatureId, TCreateBody, TConte
       videoRange={videoRange}
       onPatchValues={form.patchValues}
     />
+    </>
   );
 }

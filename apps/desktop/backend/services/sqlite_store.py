@@ -39,6 +39,7 @@ from services.records import (
     UnavailableError,
 )
 from services.thumbnails import PillowAvThumbnailWriter, ThumbnailWriter
+from services.project_workspace import is_registered_output, project_outputs_dir
 
 _RUNNING_STATUSES: set[str] = {"running"}
 _CANCELLING_STATUSES: set[str] = {"cancelling"}
@@ -268,7 +269,7 @@ class SqliteStore:
                 "id": asset_id,
                 "media_kind": str(row["media_kind"]),
                 "origin": str(row["origin"]),
-                "path": str(_derived_path(self._assets_dir, asset_id, mime_type)),
+                "path": str(self._asset_path(row)),
                 "thumbnail_path": thumbnail_path,
                 "mime_type": mime_type,
                 "name": str(row["name"]),
@@ -276,6 +277,12 @@ class SqliteStore:
                 "created_at": _require_int(row["created_at"]),
             }
         )
+
+    def _asset_path(self, row: sqlite3.Row) -> Path:
+        stored = _optional_str(row["storage_path"])
+        if stored is not None:
+            return Path(stored)
+        return _derived_path(self._assets_dir, str(row["id"]), str(row["mime_type"]))
 
     def ingest_upload(self, source_path: str) -> AssetRecord:
         source = Path(source_path).resolve()
@@ -940,7 +947,7 @@ class SqliteStore:
     def _restore_promoted_outputs(self, moved: list[tuple[Path, Path]]) -> None:
         for canonical, original in reversed(moved):
             try:
-                if not self._is_under_dir(canonical, self._assets_dir):
+                if not self._is_under_dir(canonical, self._assets_dir) and not is_registered_output(canonical):
                     continue
                 if not canonical.is_file():
                     continue
@@ -950,7 +957,11 @@ class SqliteStore:
                 if not self._is_under_dir(original, self._assets_dir):
                     canonical.unlink(missing_ok=True)
                     continue
-                canonical.replace(original)
+                if is_registered_output(canonical):
+                    shutil.copy2(canonical, original)
+                    canonical.unlink()
+                else:
+                    canonical.replace(original)
             except OSError as exc:
                 logger.warning(
                     "Could not restore promoted output %s to %s: %s",
@@ -964,7 +975,7 @@ class SqliteStore:
     ) -> list[Path]:
         rows = conn.execute(
             """
-            SELECT id, mime_type FROM assets
+            SELECT id, mime_type, storage_path FROM assets
             WHERE producer_generation_id = ?
             """,
             (generation_id,),
@@ -974,13 +985,13 @@ class SqliteStore:
             (generation_id,),
         )
         return [
-            _derived_path(self._assets_dir, str(row["id"]), str(row["mime_type"]))
+            self._asset_path(row)
             for row in rows
         ]
 
     def _unlink_under_assets(self, paths: list[Path]) -> None:
         for path in paths:
-            if not self._is_under_dir(path, self._assets_dir):
+            if not self._is_under_dir(path, self._assets_dir) and not is_registered_output(path):
                 continue
             _unlink_path(path)
 
@@ -1085,6 +1096,13 @@ class SqliteStore:
         moved: list[tuple[Path, Path]] = []
         try:
             conn.execute("BEGIN IMMEDIATE")
+            generation_row = conn.execute(
+                "SELECT spec FROM generations WHERE id = ?", (generation_id,)
+            ).fetchone()
+            if generation_row is None:
+                raise ValueError("generation is missing")
+            project_id = _parse_json_object(str(generation_row["spec"])).get("projectId")
+            project_dir = project_outputs_dir(project_id) if isinstance(project_id, str) else None
             self._require_attempt_unlinking(
                 conn,
                 generation_id,
@@ -1096,18 +1114,30 @@ class SqliteStore:
             for spec, dest, media_kind, mime_type, metadata in probed:
                 if not dest.is_file():
                     raise MarkSucceededError(generation_id, "OUTPUT_MISSING")
-                canonical = _derived_path(self._assets_dir, spec.asset_id, mime_type)
+                canonical = _derived_path(project_dir or self._assets_dir, spec.asset_id, mime_type)
                 if dest.resolve() != canonical.resolve():
-                    dest.replace(canonical)
-                    moved.append((canonical, dest))
+                    if project_dir is not None:
+                        # Source in-flight files can be on C: while a project is on G:.
+                        # Copy within the destination volume, then publish atomically.
+                        pending = canonical.with_name(f".{spec.asset_id}.partial")
+                        try:
+                            shutil.copy2(dest, pending)
+                            pending.replace(canonical)
+                            moved.append((canonical, dest))
+                            dest.unlink()
+                        finally:
+                            pending.unlink(missing_ok=True)
+                    else:
+                        dest.replace(canonical)
+                        moved.append((canonical, dest))
                     dest = canonical
                 conn.execute(
                     """
                     INSERT INTO assets (
                         id, media_kind, origin, producer_generation_id,
                         output_ordinal, mime_type, name, metadata, created_at,
-                        deleted_at
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        deleted_at, storage_path
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
                     (
                         spec.asset_id,
@@ -1120,6 +1150,7 @@ class SqliteStore:
                         json.dumps(metadata.model_dump(mode="json")),
                         now,
                         None,
+                        str(canonical) if project_dir is not None else None,
                     ),
                 )
             conn.execute(
@@ -1433,9 +1464,7 @@ class SqliteStore:
                         """,
                         (now, producer_id),
                     )
-            unlink_paths.append(
-                _derived_path(self._assets_dir, asset_id, str(row["mime_type"]))
-            )
+            unlink_paths.append(self._asset_path(row))
             thumbnail_path = _optional_str(row["thumbnail_path"])
             if thumbnail_path is not None:
                 unlink_paths.append(Path(thumbnail_path))

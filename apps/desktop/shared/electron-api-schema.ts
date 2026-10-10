@@ -68,6 +68,39 @@ const backendHealthStatus = z.object({
 
 export type BackendHealthStatus = z.infer<typeof backendHealthStatus>;
 
+const workspaceMode = z.enum(["editor", "workflow"]);
+const workspaceMediaKind = z.enum(["video", "image", "audio", "other"]);
+const workspaceMediaOrigin = z.enum(["editor", "workflow", "import", "external"]);
+export const workspaceManifestSchema = z.object({
+  version: z.literal(1),
+  projectId: z.string(),
+  name: z.string(),
+  mode: workspaceMode,
+  createdAt: z.number(),
+  updatedAt: z.number(),
+  paths: z.object({
+    assets: z.literal("assets"),
+    outputs: z.literal("outputs"),
+    workflows: z.literal("workflows"),
+  }),
+});
+export type WorkspaceManifest = z.infer<typeof workspaceManifestSchema>;
+export const workspaceMediaEntrySchema = z.object({
+  id: z.string(),
+  relativePath: z.string(),
+  absolutePath: z.string(),
+  kind: workspaceMediaKind,
+  origin: workspaceMediaOrigin,
+  createdAt: z.number(),
+  updatedAt: z.number(),
+  size: z.number(),
+});
+export type WorkspaceMediaEntry = z.infer<typeof workspaceMediaEntrySchema>;
+export type WorkspaceMediaChanged = {
+  projectId: string;
+  entries: WorkspaceMediaEntry[];
+};
+
 const updateStatePayload = z.object({
   status: z.enum([
     "idle",
@@ -259,6 +292,61 @@ export const electronAPISchemas = {
   },
 
   // Project assets
+  getSharedStorageRoot: {
+    input: z.object({}),
+    output: z.string().nullable(),
+  },
+  setSharedStorageRoot: {
+    input: z.object({ folder: z.string().min(1) }),
+    output: z.string(),
+  },
+  openWorkspaceProject: {
+    input: z.object({
+      folder: z.string().min(1),
+      projectId: z.string().optional(),
+      name: z.string().optional(),
+      mode: workspaceMode.optional(),
+    }),
+    output: workspaceManifestSchema,
+  },
+  importLegacyProject: {
+    input: z.object({
+      folder: z.string().min(1),
+      projectId: z.string(),
+      name: z.string(),
+      mode: workspaceMode,
+      legacyProject: z.unknown(),
+    }),
+    output: workspaceManifestSchema,
+  },
+  readWorkspaceProjectData: {
+    input: z.object({ projectId: z.string() }),
+    output: z.unknown().nullable(),
+  },
+  writeWorkspaceProjectData: {
+    input: z.object({ projectId: z.string(), project: z.unknown() }),
+    output: z.boolean(),
+  },
+  listWorkspaceMedia: {
+    input: z.object({ projectId: z.string() }),
+    output: z.array(workspaceMediaEntrySchema),
+  },
+  importWorkspaceMedia: {
+    input: z.object({ projectId: z.string(), sourcePath: z.string(), kind: workspaceMediaKind.optional() }),
+    output: workspaceMediaEntrySchema,
+  },
+  registerWorkspaceMedia: {
+    input: z.object({ projectId: z.string(), relativePath: z.string(), kind: workspaceMediaKind.optional(), origin: workspaceMediaOrigin.optional() }),
+    output: workspaceMediaEntrySchema,
+  },
+  watchWorkspaceMedia: {
+    input: z.object({ projectId: z.string() }),
+    output: z.boolean(),
+  },
+  unwatchWorkspaceMedia: {
+    input: z.object({ projectId: z.string() }),
+    output: z.boolean(),
+  },
   selectProjectFolder: {
     input: z.object({}),
     output: z.string().nullable(),
@@ -518,6 +606,7 @@ type InvokeAPI = {
 };
 
 export type ElectronAPI = InvokeAPI & {
+  onWorkspaceMediaChanged: (cb: (data: WorkspaceMediaChanged) => void) => () => void;
   onPythonSetupProgress: (cb: (data: unknown) => void) => void;
   removePythonSetupProgress: () => void;
   onBackendHealthStatus: (cb: (data: BackendHealthStatus) => void) => () => void;

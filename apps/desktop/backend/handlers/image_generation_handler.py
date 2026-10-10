@@ -25,6 +25,7 @@ from handlers.generation_handler import GenerationHandler
 from handlers.pipelines_handler import PipelinesHandler
 from services.generation_interrupt import is_cancel_exception
 from services.interfaces import ZitAPIClient
+from services.project_workspace import ProjectWorkspaceError, project_outputs_dir
 from server_utils.heartbeat import log_heartbeat
 from server_utils.media_validation import validate_image_file
 from server_utils.oriented_image import open_oriented_rgb
@@ -54,6 +55,11 @@ class ImageGenerationHandler(StateHandlerBase):
         self._zit_api_client = zit_api_client
 
     def generate(self, req: GenerateImageRequest) -> GenerateImageResponse:
+        try:
+            output_dir = project_outputs_dir(req.projectId) if req.projectId else self.config.outputs_dir
+        except ProjectWorkspaceError as exc:
+            raise HTTPError(422, str(exc), code="INVALID_PROJECT_WORKSPACE") from exc
+        project_options = {"output_dir": output_dir} if req.projectId else {}
         with self._generation.reserved_generation_start():
 
             width = (req.width // 16) * 16
@@ -73,6 +79,7 @@ class ImageGenerationHandler(StateHandlerBase):
                     seed=seed,
                     num_images=num_images,
                     use_fal_api=use_fal_api,
+                    **project_options,
                 )
 
             if use_fal_api:
@@ -83,6 +90,7 @@ class ImageGenerationHandler(StateHandlerBase):
                     num_inference_steps=req.numSteps,
                     seed=seed,
                     num_images=num_images,
+                    **project_options,
                 )
 
             generation_id = uuid.uuid4().hex[:8]
@@ -97,6 +105,7 @@ class ImageGenerationHandler(StateHandlerBase):
                     num_inference_steps=req.numSteps,
                     seed=seed,
                     num_images=num_images,
+                    **project_options,
                 )
                 self._generation.complete_generation(output_paths)
                 return GenerateImageCompleteResponse(status="complete", image_paths=output_paths)
@@ -114,6 +123,7 @@ class ImageGenerationHandler(StateHandlerBase):
         seed: int,
         num_images: int,
         use_fal_api: bool,
+        output_dir: Path | None = None,
     ) -> GenerateImageResponse:
         assert req.imagePath is not None
         validate_image_file(req.imagePath)
@@ -133,6 +143,7 @@ class ImageGenerationHandler(StateHandlerBase):
                 num_inference_steps=req.numSteps,
                 seed=seed,
                 num_images=num_images,
+                **({"output_dir": output_dir} if output_dir is not None else {}),
             )
 
         generation_id = uuid.uuid4().hex[:8]
@@ -147,6 +158,7 @@ class ImageGenerationHandler(StateHandlerBase):
                 num_inference_steps=req.numSteps,
                 seed=seed,
                 num_images=num_images,
+                **({"output_dir": output_dir} if output_dir is not None else {}),
             )
             self._generation.complete_generation(output_paths)
             return GenerateImageCompleteResponse(status="complete", image_paths=output_paths)
@@ -165,6 +177,7 @@ class ImageGenerationHandler(StateHandlerBase):
         num_inference_steps: int,
         seed: int,
         num_images: int,
+        output_dir: Path | None = None,
     ) -> list[str]:
         self._generation.raise_if_cancelled()
 
@@ -185,7 +198,9 @@ class ImageGenerationHandler(StateHandlerBase):
             return result.images[0]
 
         with log_heartbeat("zit edit"):
-            return self._run_local_batch(num_images, seed, "zit_edit", generate_one)
+            if output_dir is None:
+                return self._run_local_batch(num_images, seed, "zit_edit", generate_one)
+            return self._run_local_batch(num_images, seed, "zit_edit", generate_one, output_dir)
 
     def generate_image(
         self,
@@ -195,6 +210,7 @@ class ImageGenerationHandler(StateHandlerBase):
         num_inference_steps: int,
         seed: int,
         num_images: int,
+        output_dir: Path | None = None,
     ) -> list[str]:
         self._generation.raise_if_cancelled()
 
@@ -214,7 +230,9 @@ class ImageGenerationHandler(StateHandlerBase):
             return result.images[0]
 
         with log_heartbeat(f"zit image {width}x{height}"):
-            return self._run_local_batch(num_images, seed, "zit_image", generate_one)
+            if output_dir is None:
+                return self._run_local_batch(num_images, seed, "zit_image", generate_one)
+            return self._run_local_batch(num_images, seed, "zit_image", generate_one, output_dir)
 
     def _run_local_batch(
         self,
@@ -222,6 +240,7 @@ class ImageGenerationHandler(StateHandlerBase):
         seed: int,
         filename_prefix: str,
         generate_one: Callable[[int], PILImage.Image],
+        output_dir: Path | None = None,
     ) -> list[str]:
         outputs: list[Path] = []
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -234,7 +253,7 @@ class ImageGenerationHandler(StateHandlerBase):
                 self._generation.update_progress("inference", progress, i, num_images)
 
                 image = generate_one(seed + i)
-                output_path = self.config.outputs_dir / f"{filename_prefix}_{timestamp}_{uuid.uuid4().hex[:8]}.png"
+                output_path = (output_dir or self.config.outputs_dir) / f"{filename_prefix}_{timestamp}_{uuid.uuid4().hex[:8]}.png"
                 image.save(str(output_path))
                 outputs.append(output_path)
 
@@ -263,6 +282,7 @@ class ImageGenerationHandler(StateHandlerBase):
         num_inference_steps: int,
         seed: int,
         num_images: int,
+        output_dir: Path | None = None,
     ) -> GenerateImageResponse:
         source = self._load_edit_source(image_path)
         buffer = io.BytesIO()
@@ -279,7 +299,9 @@ class ImageGenerationHandler(StateHandlerBase):
                 num_inference_steps=num_inference_steps,
             )
 
-        return self._run_api_batch(seed, num_images, "zit_api_edit", call_provider)
+        if output_dir is None:
+            return self._run_api_batch(seed, num_images, "zit_api_edit", call_provider)
+        return self._run_api_batch(seed, num_images, "zit_api_edit", call_provider, output_dir)
 
     def _generate_via_api(
         self,
@@ -290,6 +312,7 @@ class ImageGenerationHandler(StateHandlerBase):
         num_inference_steps: int,
         seed: int,
         num_images: int,
+        output_dir: Path | None = None,
     ) -> GenerateImageResponse:
         def call_provider(api_key: str, seed_i: int) -> bytes:
             return self._zit_api_client.generate_text_to_image(
@@ -301,7 +324,9 @@ class ImageGenerationHandler(StateHandlerBase):
                 num_inference_steps=num_inference_steps,
             )
 
-        return self._run_api_batch(seed, num_images, "zit_api_image", call_provider)
+        if output_dir is None:
+            return self._run_api_batch(seed, num_images, "zit_api_image", call_provider)
+        return self._run_api_batch(seed, num_images, "zit_api_image", call_provider, output_dir)
 
     def _run_api_batch(
         self,
@@ -309,6 +334,7 @@ class ImageGenerationHandler(StateHandlerBase):
         num_images: int,
         filename_prefix: str,
         call_provider: Callable[[str, int], bytes],
+        output_dir: Path | None = None,
     ) -> GenerateImageResponse:
         generation_id = uuid.uuid4().hex[:8]
         output_paths: list[Path] = []
@@ -334,7 +360,7 @@ class ImageGenerationHandler(StateHandlerBase):
                 download_progress = 75 + int(((idx + 1) / num_images) * 20)
                 self._generation.update_progress("downloading_output", download_progress, None, None)
 
-                output_path = self.config.outputs_dir / f"{filename_prefix}_{timestamp}_{uuid.uuid4().hex[:8]}.png"
+                output_path = (output_dir or self.config.outputs_dir) / f"{filename_prefix}_{timestamp}_{uuid.uuid4().hex[:8]}.png"
                 output_path.write_bytes(result_bytes)
                 output_paths.append(output_path)
 

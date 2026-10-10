@@ -16,9 +16,10 @@ import { freeDiskBytes } from '../free-disk-space'
 import { handle } from './typed-handle'
 import { takePendingDeepLink } from '../deep-link-inbox'
 import { registerOptionalAppHandlers } from '@optional/app-handlers'
+import { getSharedStorageRoot } from '../project-registry'
 
 function getModelsPath(): string {
-  const modelsPath = path.join(app.getPath('userData'), 'models')
+  const modelsPath = path.join(getSharedStorageRoot() ?? app.getPath('userData'), 'models')
   if (!fs.existsSync(modelsPath)) {
     fs.mkdirSync(modelsPath, { recursive: true })
   }

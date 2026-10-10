@@ -571,6 +571,7 @@ PromptProvenance: TypeAlias = Literal["typed", "enhanced"]
 class GenerateVideoRequest(BaseModel):
     model_config = ConfigDict(strict=True)
 
+    projectId: str | None = None
     prompt: Annotated[str, StringConstraints(strip_whitespace=True)]
     promptProvenance: PromptProvenance = "typed"
     resolution: LTXVideoGenResolution = "1080p"
@@ -599,6 +600,7 @@ class GenerateVideoRequest(BaseModel):
 class GenerateImageRequest(BaseModel):
     model_config = ConfigDict(strict=True)
 
+    projectId: str | None = None
     prompt: NonEmptyPrompt
     width: int = Field(default=1024, ge=16)
     height: int = Field(default=1024, ge=16)
@@ -677,6 +679,7 @@ class TargetResolution(BaseModel):
 
 
 class RetakeRequest(BaseModel):
+    projectId: str | None = None
     model_config = ConfigDict(strict=True)
 
     video_path: str
@@ -694,6 +697,7 @@ ExtendMode: TypeAlias = Literal["start", "end"]
 
 
 class ExtendRequest(BaseModel):
+    projectId: str | None = None
     model_config = ConfigDict(strict=True)
 
     video_path: str
@@ -762,6 +766,7 @@ class OutpaintPads(BaseModel):
 
 
 class IcLoraGenerateRequest(BaseModel):
+    projectId: str | None = None
     model_config = ConfigDict(strict=True)
     # Optional: not required in IC-LoRA mode (input comes via input_path).
     video_path: str = ""
@@ -1838,6 +1843,7 @@ class LoraRecipeInputs(BaseModel):
 
 class CreateLoraRecipeRequest(BaseModel):
     model_config = ConfigDict(strict=True, extra="forbid")
+    projectId: str | None = None
 
     params: LoraRecipeParams
     inputs: LoraRecipeInputs | None = None
@@ -1846,12 +1852,14 @@ class CreateLoraRecipeRequest(BaseModel):
 
 class CreateTextToVideoRequest(BaseModel):
     model_config = ConfigDict(strict=True, extra="forbid")
+    projectId: str | None = None
     params: TextToVideoParams
     contract_version: int = Field(default=1, ge=1)
 
 
 class CreateImageToVideoRequest(BaseModel):
     model_config = ConfigDict(strict=True, extra="forbid")
+    projectId: str | None = None
     params: ImageToVideoParams
     inputs: ImageToVideoInputs
     contract_version: int = Field(default=1, ge=1)
@@ -1894,6 +1902,7 @@ class AudioToVideoInputs(BaseModel):
 
 class CreateAudioToVideoRequest(BaseModel):
     model_config = ConfigDict(strict=True, extra="forbid")
+    projectId: str | None = None
     params: CreateAudioToVideoParams
     inputs: AudioToVideoInputs
     contract_version: int = Field(default=1, ge=1)
@@ -1944,6 +1953,7 @@ class RetakeRequestParams(RetakeParams):
 
 class CreateRetakeRequest(BaseModel):
     model_config = ConfigDict(strict=True, extra="forbid")
+    projectId: str | None = None
 
     params: RetakeRequestParams
     inputs: RetakeInputs
@@ -1980,6 +1990,7 @@ class ExtendInputs(BaseModel):
 
 class CreateExtendRequest(BaseModel):
     model_config = ConfigDict(strict=True, extra="forbid")
+    projectId: str | None = None
 
     params: ExtendParams
     inputs: ExtendInputs
@@ -2046,6 +2057,7 @@ class IcLoraRecipeInputs(BaseModel):
 
 class CreateIcLoraRecipeRequest(BaseModel):
     model_config = ConfigDict(strict=True, extra="forbid")
+    projectId: str | None = None
 
     params: IcLoraRecipeParams
     inputs: IcLoraRecipeInputs

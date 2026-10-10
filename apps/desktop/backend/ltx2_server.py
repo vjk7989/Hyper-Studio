@@ -212,7 +212,9 @@ def _resolve_app_data_dir() -> Path:
 
 APP_DATA_DIR = _resolve_app_data_dir()
 
-DEFAULT_MODELS_DIR = APP_DATA_DIR / "models"
+DEFAULT_MODELS_DIR = Path(
+    os.environ.get("HYPER_STUDIO_MODELS_DIR") or APP_DATA_DIR / "models"
+).resolve()
 DEFAULT_MODELS_DIR.mkdir(parents=True, exist_ok=True)
 
 PROJECT_ROOT = Path(__file__).parent.parent

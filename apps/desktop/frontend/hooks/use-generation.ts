@@ -4,6 +4,7 @@ import { ApiClient, type ApiRequestBodyOf, type ApiSuccessOf } from '../lib/api-
 import { createLocalGenerationError, type GenerationError } from '../lib/generation-errors'
 import { canCancelLocalJob, withGenerationActive } from '../lib/generation-active'
 import { useAppSettings } from '../contexts/AppSettingsContext'
+import { useProjects } from '../contexts/ProjectContext'
 import { buildGenerateVideoBody } from '../lib/build-generate-video-body'
 import { displayPolledProgress } from '../lib/generation-display-progress'
 import type { GenSpaceMode } from '../lib/genspace-multi-keyframe'
@@ -157,6 +158,7 @@ function getPhaseMessage(phase: string): string {
 
 export function useGeneration(): UseGenerationReturn {
   const { settings: appSettings, shouldImageGenerateWithFalApi, shouldVideoGenerateWithLtxApi, refreshSettings } = useAppSettings()
+  const { activeProject } = useProjects()
   const [state, setState] = useState<GenerationState>({
     isGenerating: false,
     isCancelling: false,
@@ -265,6 +267,7 @@ export function useGeneration(): UseGenerationReturn {
           audioPath,
           imageInputs,
         })
+        if (activeProject?.id) body.projectId = activeProject.id
 
         // Poll backend progress. Local jobs report real denoise totals; the bar
         // uses that percentage. API jobs have no step total, so inference is
@@ -384,7 +387,7 @@ export function useGeneration(): UseGenerationReturn {
         }
       }
     })
-  }, [shouldImageGenerateWithFalApi, shouldVideoGenerateWithLtxApi])
+  }, [activeProject?.id, shouldImageGenerateWithFalApi, shouldVideoGenerateWithLtxApi])
 
   const cancel = useCallback(() => {
     let claimedCancelling = false
@@ -506,7 +509,7 @@ export function useGeneration(): UseGenerationReturn {
           strength: isEditing ? (settings.imageEditStrength ?? 0.6) : 0.6,
           ...(isEditing ? { imagePath: editSource } : {}),
         }
-        const result = await ApiClient.generateImage(imageRequest)
+        const result = await ApiClient.generateImage({ ...imageRequest, ...(activeProject?.id ? { projectId: activeProject.id } : {}) })
 
         if (!result.ok) {
           setState(prev => ({
@@ -563,7 +566,7 @@ export function useGeneration(): UseGenerationReturn {
         }
       }
     })
-  }, [appSettings.hasFalApiKey, shouldImageGenerateWithFalApi, shouldVideoGenerateWithLtxApi, refreshSettings])
+  }, [activeProject?.id, appSettings.hasFalApiKey, shouldImageGenerateWithFalApi, shouldVideoGenerateWithLtxApi, refreshSettings])
 
   const reset = useCallback(() => {
     clearRecoveryPolling()

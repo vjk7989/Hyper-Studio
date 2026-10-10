@@ -15,6 +15,7 @@ import { useBackend } from './hooks/use-backend'
 import { useGenerationRecoveryWatcher } from './hooks/use-generation-recovery-watcher'
 import { logger } from './lib/logger'
 import { LaunchGate } from './components/FirstRunSetup'
+import { SharedStorageSetup } from './components/first-run/SharedStorageSetup'
 import { usePythonSetup } from './hooks/use-python-setup'
 import { AppShellLayoutProvider } from './components/AppShell'
 import { LogViewer } from './components/LogViewer'
@@ -23,6 +24,7 @@ import { Button } from './components/ui/button'
 import { ThemeProvider } from '@/ds/styles/themes/useTheme'
 import { OptionalBootGate, wrapApp } from '@optional/app-wrap'
 import { router } from './router'
+import { canStartRuntimeSetup } from './lib/shared-storage-gate'
 import styles from './App.module.scss'
 
 function PostSplashFade({ active, children }: { active: boolean; children: ReactNode }) {
@@ -46,6 +48,9 @@ function AppContent() {
   useGenerationRecoveryWatcher()
 
   const [pythonReady, setPythonReady] = useState<boolean | null>(null)
+  const [sharedStorageRoot, setSharedStorageRoot] = useState<string | null | undefined>(undefined)
+  const [sharedStorageError, setSharedStorageError] = useState<string | null>(null)
+  const sharedStorageReady = canStartRuntimeSetup(sharedStorageRoot)
   const [backendStarted, setBackendStarted] = useState(false)
   const [setupState, setSetupState] = useState<BootSetupState>('loading')
   const [isFinalizingFirstRun, setIsFinalizingFirstRun] = useState(false)
@@ -78,7 +83,7 @@ function AppContent() {
   // Splash-embedded python download: unconditional hook, gated by the phase's
   // own payload (single source — the splash shows the download exactly when
   // the phase carries pythonRequired).
-  const pythonActive = phase.kind === 'splash' && phase.pythonRequired
+  const pythonActive = sharedStorageReady && phase.kind === 'splash' && phase.pythonRequired
 
   const {
     snapshot: pythonSnapshot,
@@ -91,12 +96,23 @@ function AppContent() {
   }, [bootWindow.document])
 
   useEffect(() => {
+    if (!sharedStorageReady) {
+      if (sharedStorageRoot === null) void window.electronAPI.setMainWindowMode({ mode: 'install' })
+      return
+    }
     // Null while unknown or while the splash holds the window: skip the IPC.
     if (bootWindow.main === null) return
     void window.electronAPI.setMainWindowMode({ mode: bootWindow.main })
-  }, [bootWindow.main])
+  }, [bootWindow.main, sharedStorageReady, sharedStorageRoot])
 
   useEffect(() => {
+    void window.electronAPI.getSharedStorageRoot()
+      .then(setSharedStorageRoot)
+      .catch(error => { setSharedStorageError(error instanceof Error ? error.message : String(error)); setSharedStorageRoot(null) })
+  }, [])
+
+  useEffect(() => {
+    if (!sharedStorageReady) return
     const check = async () => {
       try {
         const result = await window.electronAPI.checkPythonReady()
@@ -107,7 +123,7 @@ function AppContent() {
       }
     }
     void check()
-  }, [])
+  }, [sharedStorageReady])
 
   // The splash-embedded download reports progress but no completion signal,
   // so re-check readiness while python is missing; the phase advances to the
@@ -129,7 +145,7 @@ function AppContent() {
   }, [pythonReady])
 
   useEffect(() => {
-    if (pythonReady !== true || backendStarted) return
+    if (!sharedStorageReady || pythonReady !== true || backendStarted) return
     setBackendStarted(true)
     const start = async () => {
       try {
@@ -141,7 +157,7 @@ function AppContent() {
       }
     }
     void start()
-  }, [pythonReady, backendStarted])
+  }, [sharedStorageReady, pythonReady, backendStarted])
 
   useEffect(() => {
     const checkFirstRun = async () => {
@@ -391,6 +407,12 @@ function AppContent() {
       const _exhaustive: never = phase
       throw new Error(`Unhandled boot phase: ${String(_exhaustive)}`)
     }
+  }
+
+  if (!sharedStorageReady) {
+    earlyView = sharedStorageRoot === undefined
+      ? <div className={styles.bootSpinner}><Loader2 className="h-8 w-8 text-primary animate-spin" /></div>
+      : <SharedStorageSetup onComplete={setSharedStorageRoot} initialError={sharedStorageError} />
   }
 
   const content = earlyView ?? (

@@ -40,6 +40,7 @@ from api_types import (
     LTXVideoGenResolution,
     VideoCameraMotion,
 )
+from services.project_workspace import ProjectWorkspaceError, project_outputs_dir
 from runtime_config.ltx_capabilities import (
     CanvasMode,
     LtxAspectRatio,
@@ -352,6 +353,10 @@ class VideoGenerationHandler(StateHandlerBase):
         return num_frames
 
     def generate(self, req: GenerateVideoRequest) -> GenerateVideoResponse:
+        try:
+            output_path = self._make_output_path(req.projectId) if req.projectId else None
+        except ProjectWorkspaceError as exc:
+            raise HTTPError(422, str(exc), code="INVALID_PROJECT_WORKSPACE") from exc
         self._require_local_generation_possible(api_key=self.state.app_settings.ltx_api_key)
         use_api_specs = should_video_generate_with_ltx_api(
             force_api_generations=self.config.force_api_generations,
@@ -363,8 +368,12 @@ class VideoGenerationHandler(StateHandlerBase):
             return self._generate_forced_api(req)
 
         with self._generation.reserved_generation_start():
+            if output_path is None:
+                return self._generate_local_reserved_validated(
+                    req, generation_id=self._make_generation_id()
+                )
             return self._generate_local_reserved_validated(
-                req, generation_id=self._make_generation_id()
+                req, generation_id=self._make_generation_id(), output_path=output_path
             )
 
     def generate_local_reserved(
@@ -1031,9 +1040,10 @@ class VideoGenerationHandler(StateHandlerBase):
     def _compute_num_frames(duration: int, fps: int) -> int:
         return compute_num_frames(duration, fps)
 
-    def _make_output_path(self) -> Path:
+    def _make_output_path(self, project_id: str | None = None) -> Path:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        return self.config.outputs_dir / f"ltx2_video_{timestamp}_{self._make_generation_id()}.mp4"
+        outputs_dir = project_outputs_dir(project_id) if project_id else self.config.outputs_dir
+        return outputs_dir / f"hyper_video_{timestamp}_{self._make_generation_id()}.mp4"
 
     def _generate_forced_api(self, req: GenerateVideoRequest) -> GenerateVideoResponse:
         with self._generation.reserved_generation_start():
@@ -1176,7 +1186,11 @@ class VideoGenerationHandler(StateHandlerBase):
 
                 self._generation.raise_if_cancelled()
 
-                output_path = self._write_forced_api_video(video_bytes)
+                output_path = (
+                    self._write_forced_api_video(video_bytes, req.projectId)
+                    if req.projectId
+                    else self._write_forced_api_video(video_bytes)
+                )
                 if self._generation.is_generation_cancelled():
                     output_path.unlink(missing_ok=True)
                     raise GenerationCancelledError()
@@ -1198,7 +1212,7 @@ class VideoGenerationHandler(StateHandlerBase):
                     return GenerateVideoCancelledResponse(status="cancelled")
                 raise HTTPError(500, str(e)) from e
 
-    def _write_forced_api_video(self, video_bytes: bytes) -> Path:
-        output_path = self._make_output_path()
+    def _write_forced_api_video(self, video_bytes: bytes, project_id: str | None = None) -> Path:
+        output_path = self._make_output_path(project_id)
         output_path.write_bytes(video_bytes)
         return output_path

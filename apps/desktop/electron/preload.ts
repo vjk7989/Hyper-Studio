@@ -2,6 +2,7 @@ import {
   electronAPISchemas,
   type BackendHealthStatus,
   type UpdateStatePayload,
+  type WorkspaceMediaChanged,
 } from '../shared/electron-api-schema'
 import type { DeepLinkIntent } from '../shared/deep-link'
 import { attachOptionalPreload } from '@optional/preload'
@@ -40,6 +41,12 @@ api.onDeepLink = (cb: (data: DeepLinkIntent) => void) => {
   const listener = (_: unknown, data: DeepLinkIntent) => cb(data)
   ipcRenderer.on('deep-link', listener)
   return () => ipcRenderer.removeListener('deep-link', listener)
+}
+
+api.onWorkspaceMediaChanged = (cb: (data: WorkspaceMediaChanged) => void) => {
+  const listener = (_: unknown, data: WorkspaceMediaChanged) => cb(data)
+  ipcRenderer.on('workspace-media-changed', listener)
+  return () => ipcRenderer.removeListener('workspace-media-changed', listener)
 }
 
 api.getPathForFile = (file: File) => webUtils.getPathForFile(file)

@@ -27,6 +27,7 @@ from api_types import (
     LTXLocalModelId,
 )
 from _routes._errors import HTTPError
+from services.project_workspace import ProjectWorkspaceError, project_outputs_dir
 from frame_math import compute_num_frames, snap_to_frame_grid
 from handlers.base import StateHandlerBase
 from handlers.generation_handler import GenerationHandler
@@ -678,6 +679,10 @@ class IcLoraHandler(StateHandlerBase):
             self._text.clear_api_embeddings()
 
     def generate(self, req: IcLoraGenerateRequest) -> IcLoraGenerateResponse:
+        try:
+            output_dir = project_outputs_dir(req.projectId) if req.projectId else self.config.outputs_dir
+        except ProjectWorkspaceError as exc:
+            raise HTTPError(422, str(exc), code="INVALID_PROJECT_WORKSPACE") from exc
         # Hardware viability first: local downloads are disabled on an unsupported
         # runtime, so a later weights check would report IC_LORA_NOT_DOWNLOADED and
         # hide the real reason. The per-job budget still 422s unsupported on its own.
@@ -696,7 +701,7 @@ class IcLoraHandler(StateHandlerBase):
                     req,
                     generation_id=uuid.uuid4().hex[:8],
                     seed=self._resolve_seed(),
-                    output_path=self.config.outputs_dir
+                    output_path=output_dir
                     / f"ic_lora_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:8]}.mp4",
                     local_model_id=None,
                     explore_generation=False,
@@ -885,7 +890,7 @@ class IcLoraHandler(StateHandlerBase):
                 self._generation.update_progress("inference", 15, 0, 1)
 
                 output_path = (
-                    self.config.outputs_dir / f"ic_lora_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:8]}.mp4"
+                    output_dir / f"ic_lora_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:8]}.mp4"
                 )
 
                 # The budget priced the snapped count. The control video can be longer.

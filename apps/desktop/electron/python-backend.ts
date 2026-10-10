@@ -9,6 +9,7 @@ import { logger, writeLog } from './logger'
 import { getCurrentLogFilename } from './logging-management'
 import { getPythonDir } from './python-setup'
 import { getMainWindow } from './window'
+import { getProjectRegistryPath, getSharedStorageRoot } from './project-registry'
 import { PY_REMOVE_CWD_FROM_DLL_SEARCH } from './win-dll-search'
 
 let pythonProcess: ChildProcess | null = null
@@ -342,6 +343,7 @@ export async function startPythonBackend(): Promise<void> {
     // Generate auth token and admin token for this backend session
     authToken = crypto.randomBytes(32).toString('base64url')
     adminToken = crypto.randomBytes(32).toString('base64url')
+    const sharedStorageRoot = getSharedStorageRoot()
 
     pythonProcess = spawn(pythonPath, pythonArgs, {
       cwd: backendPath,
@@ -373,7 +375,9 @@ export async function startPythonBackend(): Promise<void> {
         LTX_AUTH_TOKEN: authToken,
         LTX_ADMIN_TOKEN: adminToken,
         LTX_LOG_FILE: getCurrentLogFilename(),
-        LTX_APP_DATA_DIR: getAppDataDir(),
+        LTX_APP_DATA_DIR: sharedStorageRoot ? path.join(sharedStorageRoot, 'backend') : getAppDataDir(),
+        HYPER_STUDIO_PROJECT_REGISTRY: getProjectRegistryPath(),
+        HYPER_STUDIO_MODELS_DIR: path.join(sharedStorageRoot ?? getAppDataDir(), 'models'),
         LTX_DEV_MODE: isDev ? '1' : '0',
         LTX_ANALYTICS_SINK_URL: sink?.url ?? '',
         LTX_ANALYTICS_TOKEN: sink?.token ?? '',

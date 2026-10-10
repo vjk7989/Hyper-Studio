@@ -30,6 +30,10 @@ export function Project() {
     setProject,
     setCurrentTab,
     updateAsset,
+    workspaceMedia,
+    workspaceOpenStatus,
+    workspaceOpenError,
+    workspaceSaveError,
     pendingRetakeUpdate,
     setPendingRetakeUpdate,
     pendingIcLoraUpdate,
@@ -127,7 +131,8 @@ export function Project() {
   }
 
   if (decision === 'activate' || !activeProject || activeProject.id !== projectId) {
-    return null
+    if (workspaceOpenStatus === 'error') return <div className={styles.migration}><div className={styles.migrationInner}><Text as="p" variant="body" size="lg">Could not open this project: {workspaceOpenError}</Text><button type="button" onClick={() => projectId && activateProject(projectId)}>Retry</button>{' '}<Link to={paths.projects}>Back to projects</Link></div></div>
+    return <div className={styles.migration}><Text as="p" variant="body" size="lg">Opening project workspace...</Text></div>
   }
 
   const tabs: { id: ProjectTab; label: string; icon: ReactNode }[] = [
@@ -203,8 +208,9 @@ export function Project() {
       )}
 
       <div className={styles.main}>
+        {workspaceSaveError && <div role="alert" className={styles.deprecation}>Project changes could not be saved: {workspaceSaveError}</div>}
         {workspaceMode === 'workflow' ? (
-          <WorkflowWorkspace project={activeProject} onSwitchToEditor={() => setWorkspaceMode('editor')} />
+          <WorkflowWorkspace project={activeProject} media={workspaceMedia} onSwitchToEditor={() => setWorkspaceMode('editor')} />
         ) : currentTab === 'gen-space' ? (
           <GenSpace />
         ) : (

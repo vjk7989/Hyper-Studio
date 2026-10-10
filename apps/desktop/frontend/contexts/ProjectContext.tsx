@@ -1,4 +1,5 @@
 import React, { createContext, useCallback, useContext, useState } from 'react'
+import type { WorkspaceManifest, WorkspaceMediaEntry } from '../../shared/electron-api-schema'
 import { hasLegacyProjectsEntry } from '../hooks/useProjectReferencesMigration'
 import { createDefaultTimeline, normalizeProject, type Project, type Asset, type AssetTake, type ProjectTab } from '../types/project-model'
 import { removeRecentProjectId } from '../lib/home-recent-projects-preference.ts'
@@ -9,6 +10,8 @@ import {
   writeProject,
   writeProjectIds,
 } from '../lib/project-storage'
+import { mergeWorkspaceMedia, projectRelativePath } from '../lib/workspace-media'
+import { hydrateProjectFromWorkspace, prepareWorkspaceProject } from '../lib/workspace-project-data'
 
 interface ProjectContextType {
   currentTab: ProjectTab
@@ -19,6 +22,14 @@ interface ProjectContextType {
   getProject: (id: string) => Project | null
   setProject: (id: string, project: Project) => void
   createProject: (name: string, projectFolder?: string, workspaceMode?: 'editor' | 'workflow') => Project
+  openProjectWorkspace: (id: string) => Promise<Project | null>
+  registerWorkspaceProject: (manifest: WorkspaceManifest, folder: string) => Promise<Project>
+  workspaceMedia: WorkspaceMediaEntry[]
+  generationProjectId: string | null
+  selectGenerationProject: (id: string) => Promise<void>
+  workspaceOpenStatus: 'idle' | 'opening' | 'ready' | 'error'
+  workspaceOpenError: string | null
+  workspaceSaveError: string | null
   deleteProject: (id: string) => void
   renameProject: (id: string, name: string) => void
   activateProject: (id: string) => void
@@ -88,6 +99,11 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
   const [projectIds, setProjectIds] = useState<string[]>(() => loadInitialProjectIds())
   const [activeProject, setActiveProject] = useState<Project | null>(null)
   const [projectRevision, setProjectRevision] = useState(0)
+  const [workspaceMedia, setWorkspaceMedia] = useState<WorkspaceMediaEntry[]>([])
+  const [generationProjectId, setGenerationProjectId] = useState<string | null>(null)
+  const [workspaceOpenStatus, setWorkspaceOpenStatus] = useState<'idle' | 'opening' | 'ready' | 'error'>('idle')
+  const [workspaceOpenError, setWorkspaceOpenError] = useState<string | null>(null)
+  const [workspaceSaveError, setWorkspaceSaveError] = useState<string | null>(null)
   const [genSpaceEditImagePath, setGenSpaceEditImagePath] = useState<string | null>(null)
   const [genSpaceEditMode, setGenSpaceEditMode] = useState<'image' | 'video' | null>(null)
   const [genSpaceAudioPath, setGenSpaceAudioPath] = useState<string | null>(null)
@@ -111,20 +127,96 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
     bumpProjectRevision()
   }, [bumpProjectRevision])
 
-  const activateProject = useCallback((id: string) => {
-    setActiveProject(readProject(id))
-  }, [])
+  const writeQueues = React.useRef(new Map<string, Promise<unknown>>())
+  const registeredMedia = React.useRef(new Set<string>())
 
-  const clearActiveProject = useCallback(() => {
-    setActiveProject(null)
+  const queueWorkspaceWrite = useCallback((project: Project) => {
+    if (!project.projectFolder) return
+    const previous = writeQueues.current.get(project.id) ?? Promise.resolve()
+    const next = previous.catch(() => undefined).then(async () => {
+      const saved = await window.electronAPI.writeWorkspaceProjectData({ projectId: project.id, project: prepareWorkspaceProject(project) })
+      if (!saved) throw new Error('The project workspace refused to save the editor state.')
+      setWorkspaceSaveError(null)
+    })
+    writeQueues.current.set(project.id, next)
+    void next.catch(error => setWorkspaceSaveError(error instanceof Error ? error.message : String(error)))
   }, [])
 
   const persistProject = useCallback((projectId: string, project: Project): Project => {
     const persistedProject = writeProject(projectId, normalizeProject({ ...project, id: projectId }))
     setActiveProject(prev => (prev?.id === projectId ? persistedProject : prev))
     bumpProjectRevision()
+    queueWorkspaceWrite(persistedProject)
+    if (persistedProject.projectFolder) {
+      for (const asset of persistedProject.assets) {
+        const relativePath = projectRelativePath(persistedProject.projectFolder, asset.path)
+        if (!relativePath || registeredMedia.current.has(`${projectId}:${relativePath}`)) continue
+        registeredMedia.current.add(`${projectId}:${relativePath}`)
+        void window.electronAPI.registerWorkspaceMedia({ projectId, relativePath, kind: asset.type === 'adjustment' ? 'other' : asset.type, origin: 'editor' })
+          .catch(() => registeredMedia.current.delete(`${projectId}:${relativePath}`))
+      }
+    }
     return persistedProject
-  }, [bumpProjectRevision])
+  }, [bumpProjectRevision, queueWorkspaceWrite])
+
+  const registerWorkspaceProject = useCallback(async (manifest: WorkspaceManifest, folder: string): Promise<Project> => {
+    const rawData = await window.electronAPI.readWorkspaceProjectData({ projectId: manifest.projectId })
+    const cached = readProject(manifest.projectId)
+    const authoritative = hydrateProjectFromWorkspace(manifest, folder, rawData, cached)
+    persistProject(manifest.projectId, authoritative)
+    const nextIds = [manifest.projectId, ...readProjectIds().filter(id => id !== manifest.projectId)]
+    writeProjectIds(nextIds)
+    setProjectIds(nextIds)
+    setActiveProject(authoritative)
+    setWorkspaceOpenStatus('ready')
+    setWorkspaceOpenError(null)
+    setGenerationProjectId(manifest.projectId)
+    bumpProjectRevision()
+    return authoritative
+  }, [bumpProjectRevision, persistProject])
+
+  const openProjectWorkspace = useCallback(async (id: string): Promise<Project | null> => {
+    setWorkspaceOpenStatus('opening')
+    setWorkspaceOpenError(null)
+    const cached = readProject(id)
+    if (!cached?.projectFolder) {
+      setActiveProject(cached)
+      setWorkspaceOpenStatus('ready')
+      return cached
+    }
+    try {
+      const manifest = await window.electronAPI.openWorkspaceProject({ folder: cached.projectFolder })
+      if (manifest.projectId !== id) throw new Error('The selected folder belongs to another project.')
+      return await registerWorkspaceProject(manifest, cached.projectFolder)
+    } catch (error) {
+      setWorkspaceOpenStatus('error')
+      setWorkspaceOpenError(error instanceof Error ? error.message : String(error))
+      throw error
+    }
+  }, [registerWorkspaceProject])
+
+  const activateProject = useCallback((id: string) => {
+    const cached = readProject(id)
+    if (!cached?.projectFolder) {
+      setActiveProject(cached)
+      setWorkspaceOpenStatus('ready')
+      return
+    }
+    setGenerationProjectId(id)
+    setActiveProject(null)
+    void openProjectWorkspace(id).catch(error => console.error('Could not open project workspace', error))
+  }, [openProjectWorkspace])
+
+  const selectGenerationProject = useCallback(async (id: string) => {
+    const project = readProject(id)
+    if (!project?.projectFolder) throw new Error('Choose a project with a workspace folder or import this legacy project first.')
+    await openProjectWorkspace(id)
+    setGenerationProjectId(id)
+  }, [openProjectWorkspace])
+
+  const clearActiveProject = useCallback(() => {
+    setActiveProject(null)
+  }, [])
 
   const mutateProject = useCallback((projectId: string, updater: (project: Project) => Project): Project | null => {
     const project = readProject(projectId)
@@ -158,6 +250,33 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
     return persistedProject
   }, [bumpProjectRevision])
 
+  React.useEffect(() => {
+    const projectId = activeProject?.id
+    if (!projectId || !activeProject.projectFolder) {
+      setWorkspaceMedia([])
+      return
+    }
+    let disposed = false
+    const refresh = (entries: WorkspaceMediaEntry[]) => {
+      if (disposed) return
+      setWorkspaceMedia(entries)
+      const current = readProject(projectId)
+      if (!current) return
+      const assets = mergeWorkspaceMedia(current.assets, entries)
+      if (assets !== current.assets) persistProject(projectId, { ...current, assets, updatedAt: Date.now() })
+    }
+    void window.electronAPI.listWorkspaceMedia({ projectId }).then(refresh).catch(() => undefined)
+    void window.electronAPI.watchWorkspaceMedia({ projectId }).catch(() => undefined)
+    const unsubscribe = window.electronAPI.onWorkspaceMediaChanged(event => {
+      if (event.projectId === projectId) refresh(event.entries)
+    })
+    return () => {
+      disposed = true
+      unsubscribe()
+      void window.electronAPI.unwatchWorkspaceMedia({ projectId }).catch(() => undefined)
+    }
+  }, [activeProject?.id, activeProject?.projectFolder, persistProject])
+
   const deleteProject = useCallback((id: string) => {
     if (window.electronAPI?.removeProjectFolder) {
       void window.electronAPI.removeProjectFolder({ projectId: id }).catch(() => {
@@ -170,6 +289,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
     deleteProjectEntry(id)
     removeRecentProjectId(id)
     setActiveProject(prev => (prev?.id === id ? null : prev))
+    setGenerationProjectId(prev => (prev === id ? null : prev))
     bumpProjectRevision()
   }, [bumpProjectRevision])
 
@@ -316,6 +436,14 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
       getProject,
       setProject,
       createProject,
+      openProjectWorkspace,
+      registerWorkspaceProject,
+      workspaceMedia,
+      generationProjectId,
+      selectGenerationProject,
+      workspaceOpenStatus,
+      workspaceOpenError,
+      workspaceSaveError,
       deleteProject,
       renameProject,
       activateProject,

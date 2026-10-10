@@ -13,6 +13,7 @@ import { registerFileHandlers } from './ipc/file-handlers'
 import { registerMediaHandlers } from './ipc/media-handlers'
 import { registerLogHandlers } from './ipc/log-handlers'
 import { registerVideoProcessingHandlers } from './ipc/video-processing-handlers'
+import { registerProjectWorkspaceHandlers } from './ipc/project-workspace-handlers'
 import { logger } from './logger'
 import { initSessionLog } from './logging-management'
 import { stopPythonBackend } from './python-backend'
@@ -134,6 +135,7 @@ if (!gotLock) {
   registerLogHandlers()
   registerExportHandlers()
   registerVideoProcessingHandlers()
+  registerProjectWorkspaceHandlers()
 
   app.whenReady().then(async () => {
     setupCSP()

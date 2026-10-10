@@ -1,6 +1,6 @@
 # Architecture decision record
 
-This record separates accepted product decisions from work awaiting a phase gate. It reflects the imported source and local UI slice on 2026-10-10; see [phase-handoff.md](phase-handoff.md) for verification state.
+This record separates accepted product decisions from verified implementation. It reflects the Phase 2 workspace checkpoint on 2026-10-10; see [phase-handoff.md](phase-handoff.md) and [gates/phase-2.md](gates/phase-2.md) for verification state.
 
 ## ADR 0001: Desktop editor as host
 
@@ -11,10 +11,12 @@ This record separates accepted product decisions from work awaiting a phase gate
 
 ## ADR 0002: Global storage and portable projects
 
-- **Status:** Accepted; durable storage pending.
+- **Status:** Workspace foundation implemented in Phase 2; workflow process paths pending Phase 4.
 - **Decision:** First run asks for one shared folder for runtimes, models, caches, and global provider settings. Each project has a chosen folder with a versioned manifest, `assets/`, `outputs/`, `workflows/`, and private metadata. Store media paths relative to the project root and validate containment. Point workflow input/output/user/database/temp paths at the active project and keep large models in shared storage. Route editor generation output to the project too.
 - **Reason:** Both modes must see the same media and survive restart or transfer of the folder.
-- **Current gap:** The local UI slice records a selected folder and can copy imported assets to `assets/`. Project content remains in renderer `localStorage`, generation output and the asset DB remain global, and a durable shared media index does not exist. A folder picker alone does not satisfy this decision.
+- **Implemented:** Electron creates and validates `.hyper-studio/project.json` (schema version 1) and `media.json`, plus `assets/`, `outputs/`, and `workflows/`; it writes `editor.json` when project data is saved or imported. Paths to project-owned media are stored relative to that folder. A 2-second media scan/watch updates both mode surfaces. The renderer may keep a project listing cache, but the manifest and editor file win on reopen. Legacy import is explicit and leaves source data intact.
+- **Storage boundary:** Electron keeps a small private project ID-to-folder registry in user data and passes its path to Python. Python verifies registry and manifest IDs before writing tagged jobs. Generated files use project `outputs/`; a SQLite `storage_path` migration keeps queued asset references valid across restart, while legacy rows keep their prior global location. Cross-volume queued output promotion copies to a temporary file beside the destination and publishes it atomically. The backend app data and in-flight files now point to `<shared storage>/backend`; models point to `<shared storage>/models`.
+- **Remaining limit:** Python's queue DB stores absolute project output paths; the portable project media index stores relative paths. Moving a project folder preserves indexed media, but historic queue asset links need a rebind/migration. The runnable workflow engine is not yet pointed at these paths.
 
 ## ADR 0003: One credential and job boundary
 
@@ -34,9 +36,16 @@ This record separates accepted product decisions from work awaiting a phase gate
 
 ## ADR 0005: Repository-local builds and phase gates
 
-- **Status:** Accepted; Phase 0 gate in progress.
+- **Status:** Accepted; Phase 1 baseline committed as `df6e295`, Phase 2 workspace checks recorded.
 - **Decision:** Run installs, caches, temp files, model downloads, and builds within this repository using `scripts/with-local-env.ps1`. Keep generated caches ignored. Do not download model packs for baseline verification. Run relevant tests, type checks, and builds after each phase, repair failures before proceeding, and update this record, handoff, code map, and Graft graph.
-- **Consequence:** Windows is the current local verification host. macOS and Linux packages require builds and smoke tests on those platforms before the release gate can pass.
+- **Consequence:** Windows is the current local verification host. The full Python test suite requires a large LTX inference environment absent here; Phase 2 instead ran isolated store and workspace/migration tests. macOS and Linux packages still require builds and smoke tests on those platforms before the release gate can pass.
+
+## ADR 0006: Trust boundary for project output routing
+
+- **Status:** Implemented for current Editor generation routes in Phase 2.
+- **Decision:** Renderer requests carry only `projectId`. Electron main creates a private registry and gives its path to Python through `HYPER_STUDIO_PROJECT_REGISTRY`. Python resolves a tagged request only when the registry entry and `.hyper-studio/project.json` agree, and ensures `outputs/` remains inside the selected project. Unknown or invalid IDs fail with 422. Untagged legacy requests retain their old output path.
+- **Scope:** Direct video/image/retake/extend/IC-LoRA routes and queued video features accept `projectId`. The desktop media scanner registers completed files in the relative project index. The backend does not write `media.json`, avoiding two writers for one JSON file.
+- **Consequence:** The global SQLite queue remains for job history while generated files live in project folders. The current watcher polls every 2 seconds; live UI updates can lag by that interval. The provider job broker remains Phase 3 work.
 
 ## Imported source provenance and licenses
 

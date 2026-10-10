@@ -42,6 +42,7 @@ from services.retake_pipeline.retake_mode import (
 from services.ltx_api_client.ltx_api_client import LTXAPIClientError
 from services.ltx_api_client.ltx_api_errors import map_ltx_api_client_error, missing_ltx_api_key_error
 from services.interfaces import LTXAPIClient
+from services.project_workspace import ProjectWorkspaceError, project_outputs_dir
 from state.app_state_types import AppState
 from state.app_settings import should_video_generate_with_ltx_api
 
@@ -66,6 +67,11 @@ class RetakeHandler(StateHandlerBase):
         self._text = text_handler
 
     def run(self, req: RetakeRequest) -> RetakeResponse:
+        try:
+            output_dir = project_outputs_dir(req.projectId) if req.projectId else self.config.outputs_dir
+        except ProjectWorkspaceError as exc:
+            raise HTTPError(422, str(exc), code="INVALID_PROJECT_WORKSPACE") from exc
+        project_options = {"output_dir": output_dir} if req.projectId else {}
         video_path = req.video_path
         start_time = req.start_time
         duration = req.duration
@@ -89,6 +95,7 @@ class RetakeHandler(StateHandlerBase):
                 prompt=prompt,
                 mode=mode,
                 model=req.model,
+                **project_options,
             )
 
         model_id = resolve_active_ltx_model_id(
@@ -110,6 +117,7 @@ class RetakeHandler(StateHandlerBase):
             prompt=prompt,
             mode=mode,
             resolution=req.resolution,
+            **project_options,
         )
 
     def _run_api_retake(
@@ -121,6 +129,7 @@ class RetakeHandler(StateHandlerBase):
         prompt: str,
         mode: RetakeMode,
         model: RetakeExtendModel,
+        output_dir: Path | None = None,
     ) -> RetakeResponse:
         api_key = self.state.app_settings.ltx_api_key
         if not api_key:
@@ -153,7 +162,7 @@ class RetakeHandler(StateHandlerBase):
 
                 if result.video_bytes is not None:
                     self._generation.update_progress("downloading_output", 85, None, None)
-                    output = self.config.outputs_dir / f"retake_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:8]}.mp4"
+                    output = (output_dir or self.config.outputs_dir) / f"retake_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:8]}.mp4"
                     with open(output, "wb") as out:
                         out.write(result.video_bytes)
                     self._generation.update_progress("complete", 100, None, None)
@@ -189,6 +198,7 @@ class RetakeHandler(StateHandlerBase):
         prompt: str,
         mode: RetakeMode,
         resolution: TargetResolution | None,
+        output_dir: Path | None = None,
     ) -> RetakeResponse:
         with self._generation.reserved_generation_start():
 
@@ -210,7 +220,7 @@ class RetakeHandler(StateHandlerBase):
 
             generation_id = uuid.uuid4().hex[:8]
             seed = self._resolve_seed()
-            output_path = self.config.outputs_dir / f"retake_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{generation_id}.mp4"
+            output_path = (output_dir or self.config.outputs_dir) / f"retake_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{generation_id}.mp4"
             try:
                 regenerate_video, regenerate_audio = resolve_retake_mode(mode)
             except InvalidRetakeModeError as exc:

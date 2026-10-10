@@ -35,6 +35,38 @@ from services.records import (
     UnavailableError,
 )
 from services.unavailable_store import UnavailableStore
+from services.project_workspace import ProjectWorkspaceError, project_outputs_dir
+
+
+def _register_project(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+    folder = tmp_path / "project"
+    (folder / ".hyper-studio").mkdir(parents=True)
+    (folder / ".hyper-studio" / "project.json").write_text(
+        json.dumps({"version": 1, "projectId": "project-1"}), encoding="utf-8"
+    )
+    registry = tmp_path / "project_registry.json"
+    registry.write_text(
+        json.dumps({"version": 1, "projects": {"project-1": str(folder.resolve())}}),
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("HYPER_STUDIO_PROJECT_REGISTRY", str(registry))
+    return folder
+
+
+def test_project_output_registry_rejects_unknown_and_mismatched_id(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    folder = _register_project(tmp_path, monkeypatch)
+    assert project_outputs_dir("project-1") == (folder / "outputs").resolve()
+    with pytest.raises(ProjectWorkspaceError):
+        project_outputs_dir("../project-1")
+    with pytest.raises(ProjectWorkspaceError):
+        project_outputs_dir("other")
+    (folder / ".hyper-studio" / "project.json").write_text(
+        json.dumps({"version": 1, "projectId": "other"}), encoding="utf-8"
+    )
+    with pytest.raises(ProjectWorkspaceError):
+        project_outputs_dir("project-1")
 
 
 def _connect(db_path: Path) -> sqlite3.Connection:
@@ -62,11 +94,12 @@ def test_fresh_db_applies_initial_schema(tmp_path: Path) -> None:
         "paired_devices",
     }
     version = conn.execute("SELECT MAX(version) FROM schema_migrations").fetchone()[0]
-    assert version == 1
+    assert version == 2
     asset_columns = {
         row["name"] for row in conn.execute("PRAGMA table_info(assets)").fetchall()
     }
     assert "thumbnail_path" in asset_columns
+    assert "storage_path" in asset_columns
     asset_indexes = {
         row["name"] for row in conn.execute("PRAGMA index_list(assets)").fetchall()
     }
@@ -115,7 +148,7 @@ def test_second_open_is_noop(tmp_path: Path) -> None:
     apply_migrations(conn, MIGRATIONS_DIR)
     apply_migrations(conn, MIGRATIONS_DIR)
     count = conn.execute("SELECT COUNT(*) FROM schema_migrations").fetchone()[0]
-    assert count == 1
+    assert count == 2
     conn.close()
 
 
@@ -129,7 +162,7 @@ def test_rerun_after_ddl_without_ledger_row_does_not_brick(tmp_path: Path) -> No
     conn.commit()
     apply_migrations(conn, MIGRATIONS_DIR)
     version = conn.execute("SELECT MAX(version) FROM schema_migrations").fetchone()[0]
-    assert version == 1
+    assert version == 2
     tables = {
         row[0]
         for row in conn.execute(
@@ -236,6 +269,35 @@ def _output(
         mime_type=mime_type,
         name=name,
     )
+
+
+def test_project_output_persists_across_store_reopen_and_deletes_safely(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    folder = _register_project(tmp_path, monkeypatch)
+    app_data = tmp_path / "app_data"
+    store = SqliteStore(app_data)
+    spec = _spec(prompt="project output")
+    spec["projectId"] = "project-1"
+    gen = store.insert_generation("text-to-video", spec)
+    claimed = _claim(store, gen.id)
+    asset_id, dest = store.allocate_output_path("image", "image/png")
+    _png(Path(dest), (8, 8))
+    done = store.mark_succeeded(
+        gen.id, [_output(asset_id, dest)], attempt_count=claimed.attempt_count
+    )
+    output = Path(done.outputs[0].path)
+    assert output.parent == (folder / "outputs").resolve()
+    assert output.is_file()
+    assert not Path(dest).exists()
+
+    reopened = SqliteStore(app_data)
+    loaded = reopened.get_generation(gen.id)
+    assert loaded is not None
+    assert loaded.outputs[0].path == str(output)
+    assert reopened.get_asset(asset_id) is not None
+    assert reopened.delete_asset(asset_id)
+    assert not output.exists()
 
 
 def _succeed_png(

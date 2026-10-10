@@ -5,6 +5,7 @@ import { canCancelLocalJob, withGenerationActive } from '../lib/generation-activ
 import type { ApiFailure } from '../lib/generation-errors'
 import { logger } from '../lib/logger'
 import { useAppSettings } from '../contexts/AppSettingsContext'
+import { useProjects } from '../contexts/ProjectContext'
 
 export type RetakeMode = 'replace_audio_and_video' | 'replace_video' | 'replace_audio'
 
@@ -47,6 +48,7 @@ interface UseRetakeState {
 }
 
 export function useRetake() {
+  const { activeProject } = useProjects()
   const { shouldVideoGenerateWithLtxApi, shouldImageGenerateWithFalApi } = useAppSettings()
   const [state, setState] = useState<UseRetakeState>({
     isRetaking: false,
@@ -69,6 +71,7 @@ export function useRetake() {
 
     await withGenerationActive(async () => {
       const result = await ApiClient.retake({
+        ...(activeProject?.id ? { projectId: activeProject.id } : {}),
         video_path: params.videoPath,
         start_time: params.startTime,
         duration: params.duration,
@@ -129,7 +132,7 @@ export function useRetake() {
         result: null,
       })
     })
-  }, [shouldImageGenerateWithFalApi, shouldVideoGenerateWithLtxApi])
+  }, [activeProject?.id, shouldImageGenerateWithFalApi, shouldVideoGenerateWithLtxApi])
 
   const resetRetake = useCallback(() => {
     setState({

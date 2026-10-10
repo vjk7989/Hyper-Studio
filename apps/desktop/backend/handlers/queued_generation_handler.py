@@ -45,6 +45,7 @@ from services.features.lora_recipes import RecipeCreateError, resolve_recipe_cre
 from services.lora_catalog import LoraCatalogProvider
 from services.store import Store
 from services.sqlite_store import collect_asset_ids
+from services.project_workspace import ProjectWorkspaceError, project_outputs_dir
 from services.records import (
     AttemptError,
     AssetRecord,
@@ -130,6 +131,7 @@ class QueuedGenerationHandler:
             "params": req.params.model_dump(mode="json"),
             "inputs": {},
         }
+        self._assign_project(spec, req.projectId)
         return self._enqueue_generation(
             TEXT_TO_VIDEO_FEATURE,
             spec,
@@ -150,6 +152,7 @@ class QueuedGenerationHandler:
             "params": req.params.model_dump(mode="json"),
             "inputs": req.inputs.model_dump(mode="json", exclude_none=True),
         }
+        self._assign_project(spec, req.projectId)
         return self._enqueue_generation(
             IMAGE_TO_VIDEO_FEATURE,
             spec,
@@ -199,6 +202,7 @@ class QueuedGenerationHandler:
                 inputs.model_dump(mode="json", exclude_none=True) if inputs is not None else {}
             ),
         }
+        self._assign_project(spec, req.projectId)
         return self._enqueue_generation(
             feature,
             spec,
@@ -268,12 +272,23 @@ class QueuedGenerationHandler:
             "params": params.model_dump(mode="json"),
             "inputs": req.inputs.model_dump(mode="json", exclude_none=True),
         }
+        self._assign_project(spec, req.projectId)
         return self._enqueue_generation(
             AUDIO_TO_VIDEO_FEATURE,
             spec,
             contract_version=req.contract_version,
             analytics_client=analytics_client,
         )
+
+    @staticmethod
+    def _assign_project(spec: dict[str, JsonValue], project_id: str | None) -> None:
+        if project_id is None:
+            return
+        try:
+            project_outputs_dir(project_id)
+        except ProjectWorkspaceError as exc:
+            raise HTTPError(422, str(exc), code="INVALID_PROJECT_WORKSPACE") from exc
+        spec["projectId"] = project_id
 
     def create_retake(
         self,
@@ -353,6 +368,7 @@ class QueuedGenerationHandler:
             "params": stored.model_dump(mode="json", exclude={"scale", "variantId"}),
             "inputs": req.inputs.model_dump(mode="json", exclude_none=True),
         }
+        self._assign_project(spec, req.projectId)
         return self._enqueue_generation(
             recipe.recipe_id,
             spec,
@@ -404,6 +420,7 @@ class QueuedGenerationHandler:
             "params": params_payload,
             "inputs": req.inputs.model_dump(mode="json", exclude_none=True),
         }
+        self._assign_project(spec, req.projectId)
         return self._enqueue_generation(
             feature,
             spec,
