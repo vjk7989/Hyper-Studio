@@ -49,6 +49,15 @@ function snapshot(label, pid) {
   lines.push(`children=${command('ps', ['--ppid', String(pid), '-o', 'pid,ppid,stat,wchan:32,etime,comm,args'])}`)
   lines.push(`main-pipes=${pipeDescriptors(pid)}`)
   try {
+    const syscall = fs.readFileSync(`/proc/${pid}/syscall`, 'utf8').trim()
+    lines.push(`main-syscall=${syscall}`)
+    const fd = syscall.match(/^1\s+(0x[0-9a-f]+|\d+)/i)?.[1]
+    if (fd) {
+      const number = String(Number(BigInt(fd)))
+      lines.push(`write-fd=${number}:${fs.readlinkSync(`/proc/${pid}/fd/${number}`)}`)
+    }
+  } catch (error) { lines.push(`main-syscall=(unavailable: ${error instanceof Error ? error.message : String(error)})`) }
+  try {
     const children = fs.readFileSync(`/proc/${pid}/task/${pid}/children`, 'utf8').trim().split(/\s+/).filter(Boolean)
     for (const childPid of children.slice(0, 8)) lines.push(`child-${childPid}-pipes=${pipeDescriptors(childPid)}`)
   } catch { lines.push('child-pipes=(unavailable)') }
