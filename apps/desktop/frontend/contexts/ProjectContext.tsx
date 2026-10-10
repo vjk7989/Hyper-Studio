@@ -21,6 +21,7 @@ interface ProjectContextType {
   activeProject: Project | null
   getProject: (id: string) => Project | null
   setProject: (id: string, project: Project) => void
+  updateWorkspaceMode: (id: string, mode: 'editor' | 'workflow') => void
   createProject: (name: string, projectFolder?: string, workspaceMode?: 'editor' | 'workflow') => Project
   openProjectWorkspace: (id: string) => Promise<Project | null>
   registerWorkspaceProject: (manifest: WorkspaceManifest, folder: string) => Promise<Project>
@@ -227,6 +228,10 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
   const setProject = useCallback((projectId: string, project: Project) => {
     persistProject(projectId, project)
   }, [persistProject])
+
+  const updateWorkspaceMode = useCallback((projectId: string, mode: 'editor' | 'workflow') => {
+    mutateProject(projectId, project => ({ ...project, workspaceMode: mode, updatedAt: Date.now() }))
+  }, [mutateProject])
 
   const createProject = useCallback((name: string, projectFolder?: string, workspaceMode: 'editor' | 'workflow' = 'editor'): Project => {
     const defaultTimeline = createDefaultTimeline('Timeline 1')
@@ -435,6 +440,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
       activeProject,
       getProject,
       setProject,
+      updateWorkspaceMode,
       createProject,
       openProjectWorkspace,
       registerWorkspaceProject,

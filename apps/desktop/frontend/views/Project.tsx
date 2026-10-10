@@ -31,6 +31,7 @@ export function Project() {
     activateProject,
     clearActiveProject,
     setProject,
+    updateWorkspaceMode,
     setCurrentTab,
     updateAsset,
     workspaceMedia,
@@ -53,8 +54,8 @@ export function Project() {
   const workspaceMode = activeProject?.workspaceMode ?? 'editor'
   const setWorkspaceMode = useCallback((mode: 'editor' | 'workflow') => {
     if (!activeProject) return
-    setProject(activeProject.id, { ...activeProject, workspaceMode: mode, updatedAt: Date.now() })
-  }, [activeProject, setProject])
+    updateWorkspaceMode(activeProject.id, mode)
+  }, [activeProject, updateWorkspaceMode])
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {

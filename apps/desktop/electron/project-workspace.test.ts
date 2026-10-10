@@ -112,6 +112,20 @@ describe('project workspace', () => {
     assert.equal(listMedia(folder).length, 1)
   })
 
+  it('excludes generated thumbnails from the shared media index', () => {
+    const folder = sandbox()
+    openProjectFolder({ folder, projectId: 'thumbnails', name: 'Thumbnails', mode: 'editor' })
+    for (const name of ['render.png', 'render_big_thumbnail.png', 'render_small_thumbnail.png',
+      'render_small_thumbnail_small_thumbnail.png', 'standalone_small_thumbnail.png']) {
+      fs.writeFileSync(path.join(folder, 'outputs', name), name)
+    }
+    registerMedia(folder, 'outputs/render_small_thumbnail.png', { origin: 'workflow' })
+    const entries = listMedia(folder)
+    assert.deepEqual(entries.map(entry => entry.relativePath).sort(),
+      ['outputs/render.png', 'outputs/standalone_small_thumbnail.png'])
+    assert.equal(listMedia(folder).length, 2)
+  })
+
   it('blocks traversal and symlink escape when registering media', () => {
     const folder = sandbox()
     openProjectFolder({ folder, projectId: 'project-4', name: 'Safe', mode: 'editor' })

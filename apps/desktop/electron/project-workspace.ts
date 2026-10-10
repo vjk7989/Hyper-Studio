@@ -186,6 +186,17 @@ export function importMedia(root: string, sourcePath: string, kind?: WorkspaceMe
   return registerMedia(root, toRelative(fs.realpathSync(root), target), { kind, origin: 'import' })
 }
 
+function isGeneratedThumbnail(file: string): boolean {
+  const suffix = /(?:_big|_small)_thumbnail\.png$/i
+  let name = path.basename(file)
+  const dir = path.dirname(file)
+  while (suffix.test(name)) {
+    name = name.replace(suffix, '.png')
+    if (fs.existsSync(path.join(dir, name))) return true
+  }
+  return false
+}
+
 export function listMedia(root: string): WorkspaceMediaEntry[] {
   const index = readIndex(root)
   const known = new Set(index.entries.map(entry => entry.relativePath))
@@ -196,7 +207,7 @@ export function listMedia(root: string): WorkspaceMediaEntry[] {
         if (item.isSymbolicLink()) continue
         const absolute = path.join(dir, item.name)
         if (item.isDirectory()) walk(absolute)
-        else if (item.isFile() && mediaKind(absolute) !== 'other') {
+        else if (item.isFile() && mediaKind(absolute) !== 'other' && !isGeneratedThumbnail(absolute)) {
           const relativePath = toRelative(fs.realpathSync(root), absolute)
           if (!known.has(relativePath)) {
             const stat = fs.statSync(absolute)
@@ -213,6 +224,8 @@ export function listMedia(root: string): WorkspaceMediaEntry[] {
   }
   const before = index.entries.length
   index.entries = index.entries.filter(entry => {
+    if ((entry.origin === 'external' || entry.origin === 'workflow')
+      && isGeneratedThumbnail(resolveProjectPath(root, entry.relativePath))) return false
     try { return fs.statSync(resolveProjectPath(root, entry.relativePath)).isFile() } catch { return false }
   })
   if (index.entries.length !== before) changed = true

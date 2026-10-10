@@ -161,21 +161,24 @@ try {
   fs.copyFileSync(output.absolutePath, editorSource)
   await window.evaluate(({ projectId, sourcePath }) => window.electronAPI.importWorkspaceMedia({ projectId, sourcePath, kind: 'image' }), { projectId: engine.projectId, sourcePath: editorSource })
   const workflowToggle = window.locator('button[title^="Workflow mode"]')
-  try { await workflowToggle.evaluate(button => button.click(), { timeout: 5000 }) }
+  try { await workflowToggle.click({ timeout: 10000 }) }
   catch {
     await window.screenshot({ path: path.join(home, 'workflow-return-error.png') })
-    throw new Error(`Workflow toggle disappeared after Editor import: ${await window.locator('body').innerText()}`)
-  }
-  await window.waitForTimeout(500)
-  if ((await workflowToggle.getAttribute('aria-pressed')) !== 'true') {
-    await window.screenshot({ path: path.join(home, 'workflow-return-error.png') })
-    throw new Error(`Workflow toggle did not stay selected after Editor import; title=${await workflowToggle.getAttribute('title')}`)
+    throw new Error(`Workflow toggle could not be clicked after Editor import: ${await window.locator('body').innerText()}`)
   }
   const sharedFiles = window.getByRole('button', { name: /Shared files \(\d+\)/ })
   try { await sharedFiles.waitFor({ state: 'visible', timeout: 20000 }) }
   catch {
     await window.screenshot({ path: path.join(home, 'workflow-return-error.png') })
     throw new Error(`Workflow mode did not return after Editor import: ${await window.locator('body').innerText()}`)
+  }
+  try {
+    await window.waitForFunction(async projectId => (await window.electronAPI.readWorkspaceProjectData({ projectId }))?.workspaceMode === 'workflow', engine.projectId, { timeout: 15000 })
+    if ((await workflowToggle.getAttribute('aria-pressed')) !== 'true') throw new Error('Workflow toggle is not selected')
+  } catch (error) {
+    await window.screenshot({ path: path.join(home, 'workflow-return-error.png') })
+    const persisted = await window.evaluate(projectId => window.electronAPI.readWorkspaceProjectData({ projectId }), engine.projectId)
+    throw new Error(`Workflow mode did not persist after Editor import: ${error instanceof Error ? error.message : String(error)}; stored mode=${persisted?.workspaceMode}; toggle=${await workflowToggle.getAttribute('aria-pressed')}`)
   }
   await sharedFiles.click()
   await window.getByText('editor-import.png', { exact: true }).waitFor({ state: 'visible', timeout: 20000 })
