@@ -43,7 +43,7 @@ const tooltipConfig = computed(() => {
         type="button"
         :class="
           cn(
-            'group flex w-full items-center justify-between border-0 bg-transparent pr-3 pl-4 text-left ring-0 outline-0',
+            'group flex w-full items-center justify-between border-0 bg-transparent pr-3 pl-4 text-left text-base-foreground ring-0 outline-0',
             size === 'lg' ? 'min-h-16' : 'min-h-12',
             !disabled && 'cursor-pointer'
           )
