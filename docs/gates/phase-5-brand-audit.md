@@ -1,6 +1,6 @@
 # Phase 5 surface-brand audit (Windows checkpoint)
 
-Status: **open**. This is a reproducible checkpoint, not a release pass. Phase 5 source fixes are committed through `7290c2f`; the final installed Windows gate and new macOS/Linux package gates are pending. Run
+Status: **Windows installed checkpoint passed; Phase 5 remains open**. This is not a cross-platform release pass. Phase 5 source fixes include `0c79364`, and Windows smoke checks include `f3399f2`. macOS/Linux run [38065649260](https://github.com/vjk7989/Hyper-Studio/actions/runs/38065649260) is in progress. Run
 `scripts/with-local-env.ps1 .tools/node-v26.8.2-win-x64/node.exe scripts/audit-branding.mjs`
 from the repository root after every fresh UI build/package. The full machine
 inventory stays in `.local-cache/brand-audit/audit.json`; it is not committed.
@@ -9,11 +9,13 @@ inventory stays in `.local-cache/brand-audit/audit.json`; it is not committed.
 
 | Gate | Evidence | Status |
 | --- | --- | --- |
-| Read-only tracked-source and built-tree audit | 21:04 local `.local-cache/phase5-final-brand-audit-diagnostic.log`: 232 source matches, 178 unallowlisted review candidates, 253 tracked visuals, zero residual legacy visual filenames in tracked source and three built trees (Vue dist, Windows workflow frontend, Windows remote UI). | **Diagnostic only.** It predates the latest Vue build/package; string matches require contextual review and media frames require visual inspection. |
+| Read-only tracked-source and built-tree audit | Final `.local-cache/phase5-brand-audit-final3.log`: 232 source matches, 178 unallowlisted review candidates, 253 tracked visuals, zero residual legacy visual filenames in tracked source and three built trees (Vue dist, Windows workflow frontend, Windows remote UI). | **Passed filename inventory, not a complete visual audit.** String candidates and media frames require contextual inspection. |
 | Managed cloud policy | 10 focused Python tests passed; 65 upstream compatibility tests passed with 2 skipped; 8 provider-adapter and 8 server/CSP tests passed. | Source-level pass. Live hosted API/network behavior is not proven. |
-| Embedded account and node-pack unit tests | Five-file account suite: 79/79 passed. Two-file local catalog/pack suite: 32/32 passed. Direct Vue typecheck (`node_modules/.bin/vue-tsc --noEmit -p tsconfig.hyper-studio.json`) and latest embedded Vue build passed. | Focused pass. A later `useSettingUI.ts` filter was added after the first installed settings diagnostic; its final package behavior is pending. |
-| Windows package diagnostics | An earlier installed smoke passed canvas, JSON roundtrip, bidirectional media, and observed no account button or upstream Comfy/LTX request. Compatibility diagnostic retained IDs 37, 90909, and 91001; missing-node guidance and explicit source-review confirmation were visible, and task submission was intercepted before download. | Partial pass. The first settings diagnostic failed on an inherited `user` category; recheck a fresh installed build after the source filter. |
-| New platform packages | `.github/workflows/phase-4-platform-gate.yml` now includes Phase 5 catalog, account, typecheck, and brand checks. | **Pending** new macOS arm64 and Linux x64 run; the prior Phase 4 run is not Phase 5 evidence. |
+| Embedded account and node-pack unit tests | Five-file account suite: 79/79 passed. Two-file local catalog/pack suite: 32/32 passed. Embedded Settings branding/search/contrast source fixes passed 56 focused tests, scoped Vue typecheck, lint, and embedded build. | Focused source pass; installed Windows Settings assertions below passed. |
+| Final Windows NSIS and installed smoke | `apps/desktop/release/Hyper-Studio-Setup.exe`: 420,633,109 bytes, SHA-256 `F73BF677F4A1218D995E5A1DB82A3E0FEF75E2B14D615C453767A3C5191A276F`, Authenticode `NotSigned`. Fresh repo-local install: `.local-tmp/installed-phase5-final3`. Installed smoke passed Workflow canvas, JSON roundtrip, bidirectional usable media, Hyper-Studio Settings category, account/pricing absence, dark “Nodes 2.0” heading contrast ≥3:1, and no observed upstream Comfy/LTX cloud request. | **Windows checkpoint passed.** Logs: `.local-cache/phase5-windows-installed-{smoke,compat}-final3.log`; screenshots: `.local-tmp/packaged-electron-smoke-final3/`. |
+| Workflow compatibility and reviewed queue | Three imported variants preserved JSON, core/third-party node IDs and links. IDs 37, 90909, and removed cloud node 91001 stayed in imported JSON; missing-node guidance appeared. Explicit third-party source review opened, and the correct install task was intercepted after confirmation but before download. | **Windows compatibility checkpoint passed.** A completed third-party package download/install is still unverified. |
+| New platform packages | `.github/workflows/phase-4-platform-gate.yml` includes Phase 5 catalog, account, typecheck, and brand checks. | **In progress:** macOS arm64/Linux x64 run 38065649260. The prior Phase 4 run is not Phase 5 evidence. |
+| Code navigation graphs | `.local-cache/phase5-graft-{build,map}.log`: Graft parsed 7,066 files, 64,425 nodes, 158,969 edges. | Graft build/map passed. Separate codebase-memory MCP fast reindex crashed twice; its snapshot remains unverified. |
 
 No model packs or live hosted credentials were used. The current checks do not prove a completed third-party node install, account-free behavior in every optional overlay, or all frame/theme/icon states.
 
@@ -42,14 +44,14 @@ found 300 tracked-source string/URL matches, 249 review candidates, and 253
 tracked visual assets. The packed workflow frontend still contained six old
 `comfy-*` asset **filenames**. The tracked source files with those names were
 removed, and later clean local builds reached zero residual legacy visual filenames
-in the three available built trees. The latest build/package still needs a fresh audit.
+in the three available built trees. The final Windows audit above supersedes that historical scan.
 
 **Former visible blocker:** `apps/workflow-ui/public/assets/images/og-image.png`
 (269,193 bytes) visibly says “Comfy CLOUD” and “Run ComfyUI anywhere.” The same
 image was present in Vue dist and the packaged Windows frontend. It is referenced
 by `src/renderer/extensions/firstRunTour/nudge/FirstRunTourNudge.vue`. The
 embedded first-run entry appears disabled. The asset was replaced in `b95d6b3`;
-its final package appearance must still be checked.
+the final Windows package passed the installed brand smoke, while a complete frame-by-frame audit remains open.
 
 The earlier bundled `cloud-subscription.webm` remained in Vue dist and Windows package.
 A representative frame at one second showed a cloud/old-monitor scene with no
@@ -63,8 +65,8 @@ light/dark/installer state is clean.
 ## Source candidates and disposition
 
 - Desktop production CSP no longer permits the upstream account origin (`be1dbdf`). Embedded help links and first-run destinations were rerouted or hidden (`8c4b1d6`), while manager package and workflow compatibility IDs remain.
-- Embedded account/login/billing dialogs, user route, cloud promotion, templates, and settings panels were removed from the active path (`1471b1a` through `01047cd`). Source-only upstream strings can remain in dormant compatibility code and legal attribution; a final installed navigation/network check must show they are unreachable.
-- The last local packaged smoke observed no account button or upstream Comfy/LTX request. The first settings diagnostic nevertheless found `user`; the `useSettingUI.ts` filter added afterward must be checked against a newly installed package. Do not infer a pass from the unit test alone.
+- Embedded account/login/billing dialogs, user route, cloud promotion, templates, and settings panels were removed from the active path (`1471b1a` through `01047cd`). Source-only upstream strings can remain in dormant compatibility code and legal attribution; installed Windows navigation/network checks found no account button or upstream Comfy/LTX cloud request.
+- A prior diagnostic found an inherited `user` category. After the source filter, the final fresh installed Windows Settings smoke passed category/account/pricing assertions and a 3:1 dark “Nodes 2.0” heading contrast threshold. Internal `Comfy.*` setting IDs remain intact.
 
 ## Managed workflow engine boundary
 
@@ -92,12 +94,11 @@ flows; no live provider credentials or model packs were used.
 
 ## Remaining release checks
 
-Rebuild/reinstall the latest Windows package, rerun the read-only audit, and
-pass the installed settings/account/compatibility smoke. Record the exact
-installer path, commit, commands, exit statuses, logs, and screenshots. Inspect
-light and dark UI states, rounded logo contrast, template gallery, node-pack
-review flow, network silence, and installer/window/OS icons. Run equivalent
-fresh macOS arm64 and Linux x64 package gates, keeping temp and caches inside
-the repository. Audit assets and locale values contextually; zero old filenames
-is not a complete visual or behavioral proof. Phase 5 stays open until these
-checks pass and their limits are recorded.
+Collect macOS arm64 and Linux x64 results from run 38065649260 and repair any
+failures before calling the platform gate passed. Inspect remaining light/dark,
+loading, error, empty, optional-overlay, installer/window/OS-icon states and
+review the 178 string candidates and media frames contextually. Run a completed
+reviewed third-party pack installation and live hosted provider acceptance when
+the test infrastructure is available. Cross-platform installer/uninstaller
+behavior remains unverified. Keep temp and caches inside the repository.
+Phase 5 stays open until those checks and their limits are recorded.
