@@ -77,25 +77,7 @@
       <i class="pi pi-times" aria-hidden="true" />
     </Button>
 
-    <div
-      class="relative col-span-2 flex items-center justify-center overflow-hidden rounded-sm"
-    >
-      <video
-        autoplay
-        loop
-        muted
-        playsinline
-        class="h-full min-w-[125%] object-cover p-0"
-        style="margin-left: -20%"
-      >
-        <source
-          src="/assets/images/cloud-subscription.webm"
-          type="video/webm"
-        />
-      </video>
-    </div>
-
-    <div class="col-span-3 flex flex-col justify-between p-8">
+    <div class="col-span-5 flex flex-col justify-between p-8">
       <div>
         <div class="flex flex-col gap-6">
           <div class="inline-flex items-center gap-2">

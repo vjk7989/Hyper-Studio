@@ -13,24 +13,7 @@
       <i class="pi pi-times" />
     </Button>
 
-    <div
-      class="relative col-span-2 flex items-center justify-center overflow-hidden rounded-sm"
-    >
-      <video
-        autoplay
-        loop
-        muted
-        playsinline
-        class="ml-[-20%] h-full min-w-5/4 object-cover p-0"
-      >
-        <source
-          src="/assets/images/cloud-subscription.webm"
-          type="video/webm"
-        />
-      </video>
-    </div>
-
-    <div class="col-span-3 flex flex-col justify-between p-8">
+    <div class="col-span-5 flex flex-col justify-between p-8">
       <div>
         <div class="flex flex-col gap-4">
           <div class="text-sm font-semibold text-text-primary">
