@@ -1,6 +1,6 @@
 # Hyper-Studio phase to-do list
 
-Status: `[x]` verified complete; `[·]` in progress or only partly verified; `[ ]` not started. Phase 4's scoped integration gate and the Phase 5 installed Windows checkpoint passed; cross-platform and broader release checks remain listed below.
+Status: `[x]` verified complete; `[·]` in progress or only partly verified; `[ ]` not started. Phase 4's scoped integration gate and a prior Phase 5 installed Windows checkpoint passed. Four later source commits require new Windows and macOS/Linux package gates.
 
 ## Phase 1 — Baseline and containment
 
@@ -43,10 +43,11 @@ Status: `[x]` verified complete; `[·]` in progress or only partly verified; `[ 
 - [·] Apply the supplied Vercel theme tokens to React and Vue and prepare rounded light/dark logo and desktop icons; remaining platform/state review is open.
 - [·] Replace shipped app-owned branding in UI, assets, metadata, links, errors, filenames, and installers; retain compatibility IDs and legal attribution.
 - [·] Scan shipped strings and visual assets; inspect light/dark, loading, error, and empty states. The 178 unallowlisted string candidates need contextual review.
-- [x] Build, freshly install, and smoke the final Windows NSIS under repository-local paths; verify media, Workflow Settings branding/account/pricing/contrast, three workflow compatibility variants, reviewed queue interception, and removed cloud node ID 91001.
-- [x] Run the Windows read-only brand inventory with zero legacy visual filenames in tracked source and three built trees; record installer hash, size, and `NotSigned` status.
-- [·] Complete release packaging checks: Phase 5 Windows installed checkpoint passed; macOS/Linux run 38065649260 is in progress. Platform installer installation/uninstall, full rebrand review, completed third-party install, and live provider acceptance remain.
-- [·] Update architecture record, handoff, code map, and Graft graph (7,066 files; 64,425 nodes; 158,969 edges); codebase-memory fast reindex crashed twice and release checkpoint remains open.
+- [x] Build, freshly install, and smoke the prior Windows NSIS under repository-local paths; verify media, Workflow Settings branding/account/pricing/contrast, three workflow compatibility variants, reviewed queue interception, and removed cloud node ID 91001.
+- [x] Run the prior Windows read-only brand inventory with zero legacy visual filenames in tracked source and three built trees; record installer hash, size, and `NotSigned` status.
+- [·] Validate later PSD/error-report branding and embedded account UI/Firebase SDK exclusions in a newly built and installed Windows package; generic auth compatibility chunks remain for review.
+- [·] Complete release packaging checks: prior Phase 5 Windows installed checkpoint passed; new Windows build and macOS/Linux run 38067417438 are pending. Platform installer installation/uninstall, full rebrand review, completed third-party install, and live provider acceptance remain.
+- [·] Update architecture record, handoff, code map, and Graft graph (last build: 7,066 files; 64,425 nodes; 158,969 edges); codebase-memory fast reindex crashed twice and release checkpoint remains open.
 
 ## Managed OpenCode V2 worker
 
