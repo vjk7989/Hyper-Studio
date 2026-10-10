@@ -226,6 +226,51 @@ try {
   await window.locator('iframe[title="Hyper-Studio workflow canvas"]').waitFor({ state: 'visible', timeout: 45000 })
   await window.frameLocator('iframe[title="Hyper-Studio workflow canvas"]').locator('#graph-canvas').waitFor({ state: 'visible', timeout: 45000 })
   await window.screenshot({ path: path.join(home, 'workflow-dark.png') })
+  if (process.platform === 'win32') {
+    const workflowCanvas = window.frameLocator('iframe[title="Hyper-Studio workflow canvas"]')
+    await workflowCanvas.locator('#graph-canvas').press('Control+,')
+    const workflowSettings = workflowCanvas.getByTestId('settings-dialog')
+    await workflowSettings.waitFor({ state: 'visible', timeout: 10000 })
+    await window.screenshot({ path: path.join(home, 'workflow-settings-dark.png') })
+    const workflowSettingsCategories = await workflowSettings.locator('[data-nav-id]').evaluateAll(items => items.map(item => item.getAttribute('data-nav-id')))
+    if (workflowSettingsCategories.some(category => /^(user|credits|workspace)$/i.test(category || ''))) {
+      throw new Error(`Embedded Workflow settings exposed an account or billing category: ${JSON.stringify(workflowSettingsCategories)}`)
+    }
+    const visibleCategoryLabels = await workflowSettings.locator('[data-nav-id]').allInnerTexts()
+    if (visibleCategoryLabels.some(label => /^Comfy(?:UI)?$/i.test(label.trim()))) {
+      throw new Error(`Embedded Workflow settings exposed upstream product branding: ${JSON.stringify(visibleCategoryLabels)}`)
+    }
+    const workflowSettingsText = await workflowSettings.innerText()
+    if (/\b(?:sign in|sign up|credits)\b/i.test(workflowSettingsText)) {
+      throw new Error('Embedded Workflow settings exposed account or billing copy')
+    }
+    if (workflowSettingsText.includes('Show API node pricing badge')) {
+      throw new Error('Embedded Workflow settings exposed upstream cloud pricing controls')
+    }
+    const headingContrast = await workflowSettings.getByText('Nodes 2.0', { exact: true }).first().evaluate(element => {
+      const channels = value => (value.match(/[\d.]+/g) || []).map(Number)
+      const luminance = value => {
+        const [red, green, blue] = channels(value).slice(0, 3).map(channel => {
+          const normalized = channel / 255
+          return normalized <= 0.04045 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4
+        })
+        return 0.2126 * red + 0.7152 * green + 0.0722 * blue
+      }
+      const foreground = getComputedStyle(element).color
+      let background = 'rgb(0, 0, 0)'
+      for (let parent = element; parent; parent = parent.parentElement) {
+        const candidate = getComputedStyle(parent).backgroundColor
+        const components = channels(candidate)
+        if (components.length >= 3 && (components.length < 4 || components[3] > 0)) { background = candidate; break }
+      }
+      const light = Math.max(luminance(foreground), luminance(background))
+      const dark = Math.min(luminance(foreground), luminance(background))
+      return { foreground, background, ratio: (light + 0.05) / (dark + 0.05) }
+    })
+    if (headingContrast.ratio < 3) {
+      throw new Error(`Embedded Workflow dark Settings heading lacks contrast: ${JSON.stringify(headingContrast)}`)
+    }
+  }
   if (upstreamCloudRequests.length) throw new Error(`Unexpected upstream cloud requests: ${upstreamCloudRequests.join(', ')}`)
   process.stdout.write('No account button or observed renderer request to upstream Comfy/LTX cloud during packaged workflow smoke\n')
   process.stdout.write(`Packaged Electron Workflow canvas, JSON roundtrip, and bidirectional usable media passed: ${title}\n`)
