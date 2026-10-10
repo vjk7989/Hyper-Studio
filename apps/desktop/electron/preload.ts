@@ -3,6 +3,7 @@ import {
   type BackendHealthStatus,
   type UpdateStatePayload,
   type WorkspaceMediaChanged,
+  type ProviderJob,
 } from '../shared/electron-api-schema'
 import type { DeepLinkIntent } from '../shared/deep-link'
 import { attachOptionalPreload } from '@optional/preload'
@@ -47,6 +48,12 @@ api.onWorkspaceMediaChanged = (cb: (data: WorkspaceMediaChanged) => void) => {
   const listener = (_: unknown, data: WorkspaceMediaChanged) => cb(data)
   ipcRenderer.on('workspace-media-changed', listener)
   return () => ipcRenderer.removeListener('workspace-media-changed', listener)
+}
+
+api.onProviderJobChanged = (cb: (job: ProviderJob) => void) => {
+  const listener = (_: unknown, job: ProviderJob) => cb(job)
+  ipcRenderer.on('provider-job-changed', listener)
+  return () => ipcRenderer.removeListener('provider-job-changed', listener)
 }
 
 api.getPathForFile = (file: File) => webUtils.getPathForFile(file)

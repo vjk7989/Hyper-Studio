@@ -24,8 +24,8 @@ from services.gemini_text_client import (
     normalize_gemini_model_id,
     resolve_gemini_model,
 )
-from services.api_key_validation import validate_fal_api_key, validate_gemini_api_key
 from services.interfaces import HTTPClient
+from provider_key_safety import contains_provider_key_patch, remove_provider_keys
 from state.app_state_types import AppState
 
 if TYPE_CHECKING:
@@ -47,13 +47,18 @@ class SettingsHandler(StateHandlerBase):
                 with open(settings_file, "r", encoding="utf-8") as f:
                     payload = json.load(f)
                 migrated = migrate_legacy_settings(ensure_json_object(payload))
+                migrated, had_plaintext_keys = remove_provider_keys(migrated)
                 merged = deep_merge_dicts(
                     ensure_json_object(default_settings.model_dump(by_alias=False)),
                     migrated,
                 )
                 loaded = AppSettings.model_validate(merged)
+                for key in ("ltx_api_key", "fal_api_key", "gemini_api_key"):
+                    setattr(loaded, key, "")
                 logger.info("Settings loaded from %s", settings_file)
                 self.state.app_settings = loaded
+                if had_plaintext_keys:
+                    self.save_settings()
                 return loaded
             except Exception as exc:
                 logger.warning("Could not load settings: %s", exc, exc_info=True)
@@ -64,6 +69,7 @@ class SettingsHandler(StateHandlerBase):
     def save_settings(self) -> None:
         try:
             payload = self.get_settings_snapshot().model_dump(by_alias=False)
+            payload, _ = remove_provider_keys(payload)
             with open(self.config.settings_file, "w", encoding="utf-8") as f:
                 json.dump(payload, f, indent=2)
         except Exception as exc:
@@ -79,18 +85,9 @@ class SettingsHandler(StateHandlerBase):
         self.save_settings()
 
     def update_settings(self, patch: UpdateSettingsRequest) -> tuple[AppSettings, AppSettings, set[str]]:
-        # Probe Fal and Gemini outside the lock — these are network calls.
-        # LTX is stored without a probe: no LTX route checks a key without a side effect.
-        self._validate_incoming_api_keys(patch)
+        if contains_provider_key_patch(patch.model_fields_set):
+            raise HTTPError(410, "PROVIDER_KEYS_USE_CONNECTIONS")
         return self._apply_settings_patch(patch)
-
-    def _validate_incoming_api_keys(self, patch: UpdateSettingsRequest) -> None:
-        gemini_key = _nonempty_key(patch, "gemini_api_key")
-        fal_key = _nonempty_key(patch, "fal_api_key")
-        if gemini_key is not None:
-            validate_gemini_api_key(self._http, api_key=gemini_key)
-        if fal_key is not None:
-            validate_fal_api_key(self._http, api_key=fal_key)
 
     @with_state_lock
     def _apply_settings_patch(
@@ -99,17 +96,6 @@ class SettingsHandler(StateHandlerBase):
         raw_patch = patch.model_dump(by_alias=False, exclude_unset=True)
         patch_payload = strip_none_values(ensure_json_object(raw_patch))
 
-        for key_field in ("ltx_api_key", "gemini_api_key", "fal_api_key"):
-            explicitly_set = key_field in patch.model_fields_set
-            if not explicitly_set:
-                continue
-            value = getattr(patch, key_field)
-            # null or blank = user removed the key. (Omitted fields stay unchanged.)
-            # Non-empty keys are stored trimmed, matching the value Fal/Gemini were probed with.
-            if isinstance(value, str) and value.strip():
-                patch_payload[key_field] = value.strip()
-            else:
-                patch_payload[key_field] = ""
         # Empty gemini_model is kept: it means "use DEFAULT_GEMINI_MODEL", not "leave unchanged".
         # Image/audio/video generators cannot enhance a prompt — persist them as "use default"
         # so a leftover Nano Banana setting cannot round-trip back into the picker.
@@ -162,13 +148,3 @@ class SettingsHandler(StateHandlerBase):
         while len(te.prompt_cache) > max_size:
             oldest = next(iter(te.prompt_cache))
             del te.prompt_cache[oldest]
-
-
-def _nonempty_key(patch: UpdateSettingsRequest, field: str) -> str | None:
-    if field not in patch.model_fields_set:
-        return None
-    value = getattr(patch, field)
-    if not isinstance(value, str):
-        return None
-    trimmed = value.strip()
-    return trimmed or None

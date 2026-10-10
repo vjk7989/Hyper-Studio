@@ -9,15 +9,17 @@ import {
 } from './settings-navigation.ts'
 
 describe('isSettingsTabAvailable', () => {
-  it('shows every tab when local generation is available', () => {
-    for (const tab of ['general', 'models', 'apiKeys', 'legacy', 'about'] as const) {
+  it('shows the secure Connections tab when local generation is available', () => {
+    for (const tab of ['general', 'models', 'connections', 'legacy', 'about'] as const) {
       assert.equal(isSettingsTabAvailable(tab, { forceApiGenerations: false }), true)
     }
+    assert.equal(isSettingsTabAvailable('apiKeys', { forceApiGenerations: false }), false)
   })
 
-  it('hides only Models in force-API mode', () => {
+  it('hides Models and the retired plaintext key editor in force-API mode', () => {
     assert.equal(isSettingsTabAvailable('models', { forceApiGenerations: true }), false)
-    for (const tab of ['general', 'apiKeys', 'legacy', 'about'] as const) {
+    assert.equal(isSettingsTabAvailable('apiKeys', { forceApiGenerations: true }), false)
+    for (const tab of ['general', 'connections', 'legacy', 'about'] as const) {
       assert.equal(isSettingsTabAvailable(tab, { forceApiGenerations: true }), true)
     }
   })
@@ -32,6 +34,8 @@ describe('isSettingsTabAvailable', () => {
 describe('parseSettingsTabId', () => {
   it('accepts the real tab ids', () => {
     assert.equal(parseSettingsTabId('models'), 'models')
+    assert.equal(parseSettingsTabId('connections'), 'connections')
+    assert.equal(parseSettingsTabId('apiKeys'), 'connections')
     assert.equal(parseSettingsTabId('legacy'), 'legacy')
   })
 

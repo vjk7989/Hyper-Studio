@@ -1,8 +1,32 @@
 # Phase handoff
 
-## Current checkpoint: Phase 2 project workspace (2026-10-10)
+## Current checkpoint: Phase 3 provider profiles and broker (2026-10-10)
 
-The imported baseline is committed as `df6e295`. Phase 2 workspace changes are in the current working tree; see [gates/phase-2.md](gates/phase-2.md) for exact checks. The next implementation phase is global provider profiles and a shared job broker. Workflow mode still displays a placeholder, not the runnable node canvas.
+Phase 3 builds on the Phase 2 project workspace. The current working tree has named encrypted provider profiles, a shared Electron job broker, a first-party workflow node bridge, and a provider composer in the desktop UI. These are code-level features, not a live API or integrated workflow-canvas release. See [gates/phase-3.md](gates/phase-3.md) for exact verification.
+
+### What works in this slice
+
+- Settings → Connections creates multiple named LTX, Runway, Google Veo, fal.ai, or Custom HTTP profiles. The renderer sees metadata without API keys. A key is held only in a transient password input during entry; OS encryption or a passphrase vault protects the local store. Legacy key import requires an explicit confirmation. The old API Keys tab/deep links route to Connections; backend legacy key setters return 410 and new settings saves scrub keys.
+- A project can store a default profile and model ID. The Editor, Workflow placeholder, and Home text-to-video form can submit a job with a per-job model override. Other existing specialized feature forms still use project-scoped Python generation.
+- Electron brokers jobs by project/profile/model, snapshots the submitted profile, allows concurrent profiles with a two-job per-profile cap, normalizes progress/results, and registers generated files in the project media index. LTX, Runway, Veo, fal.ai, and Custom HTTP direct/async adapters have mocked coverage.
+- A first-party Hyper-Studio workflow node uses an authenticated loopback bridge to this same broker. Its token is process-local, never a node input or serialized workflow field. The node source and unit tests exist, but desktop process integration and canvas execution remain Phase 4 work.
+
+### Verified and pending
+
+- Desktop `scripts:test`: **1,436/1,436**; `typecheck:ts` and `build:frontend`: exit 0. Isolated Python key-safety **3/3**, first-party workflow-node standard-library suite **5/5**, and mocked broker **15/15** passed. Graft refreshed at 2,292 files; see the gate report.
+- Live provider API smoke, local image uploads, restart recovery for in-flight broker jobs, remote provider cancellation, managed workflow-engine integration, and the full backend pytest suite remain pending. “Stop tracking” cancels local observation/download; a remote job may continue.
+- The hosted-provider composer currently covers text-to-video. The Vue workflow canvas is not yet embedded. Existing branded assets and app copy remain for the release rebrand phase.
+
+### Next agent entry points
+
+1. Read [architecture-decision-record.md](architecture-decision-record.md), [codebase-map.md](codebase-map.md), and [gates/phase-3.md](gates/phase-3.md). Use the codebase-memory graph and Graft to jump to narrow symbols.
+2. For Phase 4, wire the managed workflow process to the project folder, bridge token, and first-party node registration; embed the pinned branded Vue canvas. Confirm workflow output enters the Editor media index and Editor media is available to workflow inputs.
+3. Add broker persistence/restart recovery and provider-specific remote cancellation only when supported by each API. Cover local media uploads and real hosted API smoke before claiming provider acceptance.
+4. Run checks through `scripts/with-local-env.ps1` to keep caches and temp files on G. Fix failed checks before advancing.
+
+## Prior checkpoint: Phase 2 project workspace (2026-10-10)
+
+The imported baseline is committed as `df6e295`. Phase 2 workspace changes are in the current working tree; see [gates/phase-2.md](gates/phase-2.md) for exact checks. Workflow mode still displays a placeholder, not the runnable node canvas.
 
 ### What works in the current workspace slice
 
@@ -17,7 +41,7 @@ The imported baseline is committed as `df6e295`. Phase 2 workspace changes are i
 - Desktop script tests: **1,415 passed, 0 failed**. TypeScript check and frontend build exited 0 on Windows, as recorded in the gate report.
 - The isolated Python asset store suite passed **108/108** using small dependencies installed under this repository. The dependency-free workspace/migration gate passed **2/2**. Python `compileall` passed.
 - Full backend pytest could not import `ltx_core` in the available Python environment. No model packs or full Torch/LTX stack were downloaded. Python generation with a real model, Electron plus Python end-to-end execution, and macOS/Linux packages remain unverified.
-- Workflow mode can display indexed project media, but does not launch the workflow engine, execute a graph, or embed the Vue canvas. This is Phase 4 work. The secure provider registry and multi-provider broker are Phase 3 work; existing legacy keys still require explicit migration later.
+- At this Phase 2 checkpoint, Workflow mode displayed indexed project media but did not launch the engine, execute a graph, or embed the Vue canvas. The secure provider registry and broker arrived in the later Phase 3 slice above; existing legacy keys require an explicit confirmed import.
 - Queue asset rows record absolute output paths even though project `media.json` uses relative paths. Moving an already used project folder requires a queue-history rebind; do not assume old queue links travel with it.
 
 ### Next agent entry points

@@ -28,6 +28,7 @@ import { EnhanceSettingsSection } from "./settings/EnhanceSettingsSection";
 import { LegacyTextEncodingSection } from "./settings/LegacyTextEncodingSection";
 import { LegacySettingsSection } from "./settings/LegacySettingsSection";
 import { ModelsSettingsSection } from "./settings/ModelsSettingsSection";
+import { ProviderConnectionsSection } from "./settings/ProviderConnectionsSection";
 import pageLayoutStyles from "./settings/SettingsPageLayout.module.scss";
 import { SettingsAnchorSection } from "./settings/SettingsAnchorSection";
 import { SettingToggle } from "./settings/SettingToggle";
@@ -119,7 +120,7 @@ function useApiKeyFocus(
   }, [activeTab, pending, isOpen, sectionRef, containerRef]);
 
   const openAndFocus = () => {
-    setActiveTab("apiKeys");
+    setActiveTab("connections");
     setPending(true);
   };
 
@@ -236,17 +237,17 @@ export function SettingsScreen({
   // Sync active tab with initialTab when the screen becomes active or the prop changes.
   useEffect(() => {
     if (active && initialTab) {
-      setActiveTab(initialTab);
+      setActiveTab(initialTab === 'apiKeys' ? 'connections' : initialTab);
     }
   }, [active, initialTab]);
 
   useEffect(() => {
     if (!active) return;
     if (initialReason === "geminiKeyRequired") {
-      setActiveTab("apiKeys");
+      setActiveTab("connections");
       geminiApiKey.openAndFocus();
     } else if (initialReason === "ltxKeyRequired") {
-      setActiveTab("apiKeys");
+      setActiveTab("connections");
       ltxApiKey.openAndFocus();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- openAndFocus is stable for this open
@@ -322,7 +323,7 @@ export function SettingsScreen({
   const tabs = [
     { id: "general" as TabId, label: "General", icon: Settings },
     { id: "models" as TabId, label: "Models", icon: Boxes },
-    { id: "apiKeys" as TabId, label: "API Keys", icon: KeyRound },
+    { id: "connections" as TabId, label: "Connections", icon: KeyRound },
     { id: "legacy" as TabId, label: "Legacy", icon: Archive },
     { id: "about" as TabId, label: "About", icon: Info },
   ].filter((tab) => isSettingsTabAvailable(tab.id, { forceApiGenerations }));
@@ -733,6 +734,12 @@ export function SettingsScreen({
                 }
               />
             </div>
+            </SettingsAnchorSection>
+          )}
+
+          {showSection("connections") && (
+            <SettingsAnchorSection title="Video connections">
+              <ProviderConnectionsSection />
             </SettingsAnchorSection>
           )}
 

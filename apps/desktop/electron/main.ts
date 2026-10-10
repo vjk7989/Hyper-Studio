@@ -11,9 +11,12 @@ import { stopExportProcess } from './export/ffmpeg-utils'
 import { registerAppHandlers } from './ipc/app-handlers'
 import { registerFileHandlers } from './ipc/file-handlers'
 import { registerMediaHandlers } from './ipc/media-handlers'
+import { registerProviderJobHandlers } from './provider-jobs/main'
+import { startProviderJobBridge, stopProviderJobBridge } from './provider-jobs/bridge'
 import { registerLogHandlers } from './ipc/log-handlers'
 import { registerVideoProcessingHandlers } from './ipc/video-processing-handlers'
 import { registerProjectWorkspaceHandlers } from './ipc/project-workspace-handlers'
+import { registerProviderProfileHandlers } from './ipc/provider-profile-handlers'
 import { logger } from './logger'
 import { initSessionLog } from './logging-management'
 import { stopPythonBackend } from './python-backend'
@@ -136,6 +139,8 @@ if (!gotLock) {
   registerExportHandlers()
   registerVideoProcessingHandlers()
   registerProjectWorkspaceHandlers()
+  registerProviderProfileHandlers()
+  registerProviderJobHandlers()
 
   app.whenReady().then(async () => {
     setupCSP()
@@ -154,6 +159,7 @@ if (!gotLock) {
     })
     initRemoteKeepAwake()
     ensureWindow()
+    await startProviderJobBridge()
     initAutoUpdater()
     // Python setup + backend start are now driven by the renderer via IPC
 
@@ -175,6 +181,7 @@ if (!gotLock) {
   })
 
   app.on('before-quit', () => {
+    void stopProviderJobBridge()
     stopRemoteKeepAwake()
     stopExportProcess()
     stopPythonBackend()

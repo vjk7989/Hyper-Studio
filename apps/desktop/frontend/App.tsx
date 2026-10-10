@@ -2,9 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNo
 import { Loader2, AlertCircle } from 'lucide-react'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { RouterProvider } from 'react-router'
-import { ApiClient } from './lib/api-client'
 import { resolveBootPhase, resolveBootWindow, type BootModelsGate, type BootSetupState } from './lib/boot-phase'
-import { isRequiredLtxBundleReady } from './lib/first-run-downloads'
 import { queryClient } from './lib/queryClient'
 import { ProjectProvider } from './contexts/ProjectContext'
 import { KeyboardShortcutsProvider } from './contexts/KeyboardShortcutsContext'
@@ -55,7 +53,8 @@ function AppContent() {
   const [setupState, setSetupState] = useState<BootSetupState>('loading')
   const [isFinalizingFirstRun, setIsFinalizingFirstRun] = useState(false)
   const [firstRunFinalizeError, setFirstRunFinalizeError] = useState<string | null>(null)
-  const [requiredModelsGate, setRequiredModelsGate] = useState<BootModelsGate>('checking')
+  // Local model packs are optional; hosted providers must be usable without a download.
+  const requiredModelsGate: BootModelsGate = 'ready'
   const [splashFinished, setSplashFinished] = useState(false)
   const setupCompletionInFlightRef = useRef<Promise<void> | null>(null)
 
@@ -214,75 +213,12 @@ function AppContent() {
   const shouldAutoFinalizeForcedFirstRun =
     isForcedFirstRun && isLoaded && !isFinalizingFirstRun && !firstRunFinalizeError
 
-  const areRequiredModelsDownloaded = useCallback(async () => {
-    const [ltxResult, imgGenResult] = await Promise.all([
-      ApiClient.getLtxRecommendation(),
-      ApiClient.getImgGenRecommendation(),
-    ])
-    if (!ltxResult.ok) {
-      throw new Error(ltxResult.error.message)
-    }
-    if (!imgGenResult.ok) {
-      throw new Error(imgGenResult.error.message)
-    }
-    return isRequiredLtxBundleReady(ltxResult.data, imgGenResult.data)
-  }, [])
-
-  const handleMissingModelsComplete = useCallback(async () => {
-    const allDownloaded = await areRequiredModelsDownloaded()
-    if (!allDownloaded) {
-      throw new Error('Required models are still missing. Please finish downloading before continuing.')
-    }
-    await handleFirstRunComplete()
-    setRequiredModelsGate('ready')
-  }, [areRequiredModelsDownloaded, handleFirstRunComplete])
-
   useEffect(() => {
     if (!shouldAutoFinalizeForcedFirstRun) return
     void handleFirstRunComplete().catch(() => {
       // Error state is handled via firstRunFinalizeError.
     })
   }, [shouldAutoFinalizeForcedFirstRun, handleFirstRunComplete])
-
-  useEffect(() => {
-    if (setupState === 'loading' || waitingForRuntimePolicy || backendLoading || !connected) {
-      return
-    }
-
-    if (forceApiGenerations || setupState.needsSetup) {
-      setRequiredModelsGate('ready')
-      return
-    }
-
-    let cancelled = false
-    setRequiredModelsGate('checking')
-
-    const checkRequiredModels = async () => {
-      try {
-        const allDownloaded = await areRequiredModelsDownloaded()
-        if (cancelled) return
-        setRequiredModelsGate(allDownloaded ? 'ready' : 'missing')
-      } catch (e) {
-        logger.error(`Failed to check required model status: ${e}`)
-        if (cancelled) return
-        // Do not block app launch on transient status-check failures.
-        setRequiredModelsGate('ready')
-      }
-    }
-
-    void checkRequiredModels()
-
-    return () => {
-      cancelled = true
-    }
-  }, [
-    areRequiredModelsDownloaded,
-    backendLoading,
-    forceApiGenerations,
-    setupState,
-    connected,
-    waitingForRuntimePolicy,
-  ])
 
   const restartingOverlay = isBackendRestarting ? (
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm">
@@ -352,7 +288,7 @@ function AppContent() {
     case 'missing-models':
       beneathSplashView = (
         <ThemeProvider scheme="light">
-          <LaunchGate onComplete={handleMissingModelsComplete} />
+          <LaunchGate onComplete={handleFirstRunComplete} />
         </ThemeProvider>
       )
       break

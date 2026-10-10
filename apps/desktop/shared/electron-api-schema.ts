@@ -101,6 +101,46 @@ export type WorkspaceMediaChanged = {
   entries: WorkspaceMediaEntry[];
 };
 
+export const providerKindSchema = z.enum(["ltx", "runway", "veo", "fal", "custom"]);
+export type ProviderKind = z.infer<typeof providerKindSchema>;
+export const customHttpMappingSchema = z.object({
+  submitPath: z.string().min(1),
+  auth: z.object({ mode: z.enum(["none", "bearer", "header", "query"]), name: z.string().optional() }),
+  requestFields: z.object({
+    prompt: z.string().min(1), model: z.string().min(1),
+    inputImage: z.string().optional(), options: z.string().optional(),
+  }),
+  response: z.object({
+    mode: z.enum(["direct", "async"]), outputPath: z.string().min(1),
+    jobIdPath: z.string().optional(), pollPath: z.string().optional(),
+    statusPath: z.string().optional(), progressPath: z.string().optional(),
+    completeValues: z.array(z.string()).optional(), failureValues: z.array(z.string()).optional(),
+  }),
+});
+export type CustomHttpMapping = z.infer<typeof customHttpMappingSchema>;
+export const providerProfileMetadataSchema = z.object({
+  id: z.string(), name: z.string(), provider: providerKindSchema,
+  baseUrl: z.string().optional(), defaultModelId: z.string().optional(),
+  custom: customHttpMappingSchema.optional(), hasApiKey: z.boolean(),
+  createdAt: z.number(), updatedAt: z.number(),
+});
+export type ProviderProfileMetadata = z.infer<typeof providerProfileMetadataSchema>;
+export const providerModelSchema = z.object({ id: z.string(), label: z.string(), provider: providerKindSchema });
+export type ProviderModel = z.infer<typeof providerModelSchema>;
+export const providerJobInputSchema = z.object({
+  projectId: z.string().min(1), profileId: z.string().min(1), modelId: z.string().min(1), prompt: z.string().min(1),
+  inputs: z.object({ image: z.string().optional(), lastImage: z.string().optional(), video: z.string().optional() }).optional(),
+  options: z.record(z.string(), z.unknown()).optional(),
+});
+export const providerJobSchema = z.object({
+  id: z.string(), projectId: z.string(), profileId: z.string(), modelId: z.string(),
+  status: z.enum(['queued', 'running', 'succeeded', 'failed', 'cancelled']), progress: z.number(),
+  outputs: z.array(workspaceMediaEntrySchema), error: z.string().optional(),
+  createdAt: z.number(), updatedAt: z.number(),
+});
+export type ProviderJobInput = z.infer<typeof providerJobInputSchema>;
+export type ProviderJob = z.infer<typeof providerJobSchema>;
+
 const updateStatePayload = z.object({
   status: z.enum([
     "idle",
@@ -292,6 +332,39 @@ export const electronAPISchemas = {
   },
 
   // Project assets
+  listProviderProfiles: { input: z.object({}), output: z.array(providerProfileMetadataSchema) },
+  upsertProviderProfile: {
+    input: z.object({
+      id: z.string().optional(), name: z.string().min(1), provider: providerKindSchema,
+      baseUrl: z.string().optional(), defaultModelId: z.string().optional(),
+      apiKey: z.string().optional(), custom: customHttpMappingSchema.optional(),
+    }),
+    output: providerProfileMetadataSchema,
+  },
+  deleteProviderProfile: { input: z.object({ id: z.string() }), output: z.boolean() },
+  testProviderProfile: {
+    input: z.object({ id: z.string() }),
+    output: z.object({ ok: z.boolean(), message: z.string(), checkType: z.enum(["configuration", "connectivity"]), latencyMs: z.number().optional() }),
+  },
+  listProviderModels: {
+    input: z.object({ profileId: z.string() }),
+    output: z.array(providerModelSchema),
+  },
+  getProviderVaultStatus: {
+    input: z.object({}),
+    output: z.object({ mode: z.enum(["os", "passphrase", "locked"]), available: z.boolean() }),
+  },
+  setProviderVaultPassphrase: {
+    input: z.object({ passphrase: z.string().min(12) }), output: z.boolean(),
+  },
+  unlockProviderVault: { input: z.object({ passphrase: z.string() }), output: z.boolean() },
+  submitProviderJob: { input: providerJobInputSchema, output: providerJobSchema },
+  getProviderJob: { input: z.object({ jobId: z.string() }), output: providerJobSchema.nullable() },
+  cancelProviderJob: { input: z.object({ jobId: z.string() }), output: providerJobSchema.nullable() },
+  importLegacyProviderKeys: {
+    input: z.object({ confirmed: z.literal(true) }),
+    output: z.object({ imported: z.array(z.string()) }),
+  },
   getSharedStorageRoot: {
     input: z.object({}),
     output: z.string().nullable(),
@@ -606,6 +679,7 @@ type InvokeAPI = {
 };
 
 export type ElectronAPI = InvokeAPI & {
+  onProviderJobChanged: (cb: (job: ProviderJob) => void) => () => void;
   onWorkspaceMediaChanged: (cb: (data: WorkspaceMediaChanged) => void) => () => void;
   onPythonSetupProgress: (cb: (data: unknown) => void) => void;
   removePythonSetupProgress: () => void;

@@ -11,6 +11,8 @@ import { paths } from '../paths'
 import { GenSpace } from './GenSpace'
 import { VideoEditor } from './VideoEditor'
 import { WorkflowWorkspace } from './WorkflowWorkspace'
+import { ProjectConnectionPicker } from '../components/ProjectConnectionPicker'
+import { ProviderJobComposer } from '../components/ProviderJobComposer'
 import type { ProjectTab } from '../types/project-model'
 import {
   hasVisualAssetMetadataForMigration,
@@ -46,6 +48,7 @@ export function Project() {
     projectExists: resolvedProject !== null,
   })
   const [assetMetadataMigrationProgress, setAssetMetadataMigrationProgress] = useState({ running: false, total: 0, completed: 0 })
+  const [showProviderJobComposer, setShowProviderJobComposer] = useState(false)
   const workspaceMode = activeProject?.workspaceMode ?? 'editor'
   const setWorkspaceMode = useCallback((mode: 'editor' | 'workflow') => {
     if (!activeProject) return
@@ -179,6 +182,9 @@ export function Project() {
           <button type="button" aria-pressed={workspaceMode === 'workflow'} className={`${styles.modeButton} ${workspaceMode === 'workflow' ? styles.modeButtonSelected : ''}`} onClick={() => setWorkspaceMode('workflow')} title="Workflow mode (Ctrl/⌘+Shift+M)"><Workflow size={16} />Workflow</button>
         </div>
 
+        <ProjectConnectionPicker project={activeProject} onChange={updates => setProject(activeProject.id, { ...activeProject, ...updates, updatedAt: Date.now() })} />
+        <button type="button" className={`${styles.modeButton} window-no-drag`} onClick={() => setShowProviderJobComposer(value => !value)} aria-expanded={showProviderJobComposer}>Generate</button>
+
         {workspaceMode === 'editor' && <div className={styles.tabs} role="tablist" aria-label="Editor views">
           {tabs.map(tab => (
             <button
@@ -199,6 +205,8 @@ export function Project() {
 
         <div className={styles.titleSlot} />
       </header>
+
+      {showProviderJobComposer && <div className="max-h-[48vh] overflow-y-auto border-b border-separator p-3"><ProviderJobComposer projectId={activeProject.id} defaultProfileId={activeProject.defaultProfileId} defaultModelId={activeProject.defaultModelId} /></div>}
 
       {workspaceMode === 'editor' && currentTab === 'gen-space' && (
         <Text as="p" variant="body" size="md" className={styles.deprecation}>

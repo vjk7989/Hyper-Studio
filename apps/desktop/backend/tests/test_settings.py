@@ -146,93 +146,29 @@ class TestPostSettings:
         assert r.status_code == 200
         assert len(te.prompt_cache) <= 2
 
-    def test_update_api_keys(self, client, test_state):
-        # LTX is stored without a provider probe. Gemini then Fal are checked.
-        test_state.http.queue("get", FakeResponse(status_code=200, json_payload={"models": []}))
-        test_state.http.queue("get", FakeResponse(status_code=200, json_payload={"models": []}))
-        r = client.post(
-            "/api/settings",
-            json={
-                "ltxApiKey": "ltx-key-abc",
-                "geminiApiKey": "gemini-key-xyz",
-                "falApiKey": "fal-key-123",
-            },
-        )
-        assert r.status_code == 200
-        assert test_state.state.app_settings.ltx_api_key == "ltx-key-abc"
-        assert test_state.state.app_settings.gemini_api_key == "gemini-key-xyz"
-        assert test_state.state.app_settings.fal_api_key == "fal-key-123"
-        assert [call.url for call in test_state.http.calls] == [
-            "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1",
-            "https://api.fal.ai/v1/models?limit=1",
-        ]
-
-    def test_ltx_api_key_is_stored_without_a_probe(self, client, test_state):
-        test_state.state.app_settings.ltx_api_key = "real-key"
-        r = client.post("/api/settings", json={"ltxApiKey": "  random-junk  "})
-        assert r.status_code == 200
-        assert test_state.state.app_settings.ltx_api_key == "random-junk"
+    def test_provider_keys_are_rejected_by_legacy_settings_route(self, client, test_state):
+        for field in ("ltxApiKey", "falApiKey", "geminiApiKey"):
+            r = client.post("/api/settings", json={field: "new-secret"})
+            assert_http_error(r, status_code=410, code="PROVIDER_KEYS_USE_CONNECTIONS", message="PROVIDER_KEYS_USE_CONNECTIONS")
         assert test_state.http.calls == []
-
-    def test_api_key_is_stored_trimmed(self, client, test_state):
-        test_state.http.queue("get", FakeResponse(status_code=200, json_payload={"models": []}))
-        r = client.post("/api/settings", json={"falApiKey": "  fal-key  "})
-        assert r.status_code == 200
-        assert test_state.state.app_settings.fal_api_key == "fal-key"
-        headers = test_state.http.calls[0].headers
-        assert headers is not None
-        assert headers["Authorization"] == "Key fal-key"
-
-    def test_rejected_fal_api_key_is_not_saved(self, client, test_state):
-        test_state.state.app_settings.fal_api_key = "real-fal-key"
-        test_state.http.queue("get", FakeResponse(status_code=401, text="Invalid API key"))
-        r = client.post("/api/settings", json={"falApiKey": "random-junk"})
-        assert_http_error(
-            r,
-            status_code=400,
-            code="FAL_INVALID_API_KEY",
-            message="This key isn’t valid.",
-        )
-        assert test_state.state.app_settings.fal_api_key == "real-fal-key"
-
-    def test_fal_non_auth_failure_is_not_an_invalid_key(self, client, test_state):
-        test_state.state.app_settings.fal_api_key = "real-fal-key"
-        test_state.http.queue("get", FakeResponse(status_code=404, text="missing"))
-        r = client.post("/api/settings", json={"falApiKey": "real-looking-key"})
-        assert_http_error(
-            r,
-            status_code=502,
-            code="FAL_API_KEY_UNVERIFIED",
-            message="Couldn’t verify this key. Try again in a moment.",
-        )
-        assert test_state.state.app_settings.fal_api_key == "real-fal-key"
-
-    def test_gemini_server_error_is_not_an_invalid_key(self, client, test_state):
-        test_state.state.app_settings.gemini_api_key = "real-gemini-key"
-        test_state.http.queue("get", FakeResponse(status_code=503, text="unavailable"))
-        r = client.post("/api/settings", json={"geminiApiKey": "real-looking-key"})
-        assert_http_error(
-            r,
-            status_code=502,
-            code="GEMINI_API_KEY_UNVERIFIED",
-            message="Couldn’t verify this key. Try again in a moment.",
-        )
-        assert test_state.state.app_settings.gemini_api_key == "real-gemini-key"
+        assert test_state.state.app_settings.ltx_api_key == ""
+        assert test_state.state.app_settings.fal_api_key == ""
+        assert test_state.state.app_settings.gemini_api_key == ""
 
     def test_update_user_prefers_api_video_generations(self, client, test_state):
         r = client.post("/api/settings", json={"userPrefersLtxApiVideoGenerations": True})
         assert r.status_code == 200
         assert test_state.state.app_settings.user_prefers_ltx_api_video_generations is True
 
-    def test_empty_string_clears_api_key(self, client, test_state):
+    def test_empty_string_cannot_write_legacy_api_key(self, client, test_state):
         test_state.state.app_settings.ltx_api_key = "real-key"
         test_state.state.app_settings.fal_api_key = "fal-key"
         r = client.post("/api/settings", json={"ltxApiKey": "", "falApiKey": ""})
-        assert r.status_code == 200
-        assert test_state.state.app_settings.ltx_api_key == ""
-        assert test_state.state.app_settings.fal_api_key == ""
+        assert r.status_code == 410
+        assert test_state.state.app_settings.ltx_api_key == "real-key"
+        assert test_state.state.app_settings.fal_api_key == "fal-key"
 
-    def test_null_clears_api_key(self, client, test_state):
+    def test_null_cannot_write_legacy_api_key(self, client, test_state):
         test_state.state.app_settings.ltx_api_key = "real-key"
         test_state.state.app_settings.gemini_api_key = "gemini-key"
         test_state.state.app_settings.fal_api_key = "fal-key"
@@ -240,14 +176,14 @@ class TestPostSettings:
             "/api/settings",
             json={"ltxApiKey": None, "geminiApiKey": None, "falApiKey": None},
         )
-        assert r.status_code == 200
-        assert test_state.state.app_settings.ltx_api_key == ""
-        assert test_state.state.app_settings.gemini_api_key == ""
-        assert test_state.state.app_settings.fal_api_key == ""
+        assert r.status_code == 410
+        assert test_state.state.app_settings.ltx_api_key == "real-key"
+        assert test_state.state.app_settings.gemini_api_key == "gemini-key"
+        assert test_state.state.app_settings.fal_api_key == "fal-key"
         body = client.get("/api/settings").json()
-        assert body["hasLtxApiKey"] is False
-        assert body["hasGeminiApiKey"] is False
-        assert body["hasFalApiKey"] is False
+        assert body["hasLtxApiKey"] is True
+        assert body["hasGeminiApiKey"] is True
+        assert body["hasFalApiKey"] is True
 
     def test_empty_gemini_model_persists_as_use_default(self, client, test_state):
         # Unlike API keys, an empty model string is stored so generate-time resolution can
@@ -419,6 +355,27 @@ class TestSettingsPersistence:
             store=SqliteStore(test_state.config.app_data_dir),
         )
         return build_initial_state(test_state.config, default_app_settings.model_copy(deep=True), service_bundle=bundle)
+
+    def test_plaintext_provider_keys_are_removed_when_settings_load(self, test_state, default_app_settings):
+        test_state.config.settings_file.write_text(
+            json.dumps({"ltx_api_key": "old-ltx", "falApiKey": "old-fal", "gemini_api_key": "old-gemini", "prompt_cache_size": 27}),
+            encoding="utf-8",
+        )
+        loaded = self._new_state(test_state, default_app_settings)
+        assert loaded.state.app_settings.ltx_api_key == ""
+        assert loaded.state.app_settings.fal_api_key == ""
+        assert loaded.state.app_settings.gemini_api_key == ""
+        assert loaded.state.app_settings.prompt_cache_size == 27
+        persisted = json.loads(test_state.config.settings_file.read_text(encoding="utf-8"))
+        assert not {"ltx_api_key", "fal_api_key", "gemini_api_key", "falApiKey"} & persisted.keys()
+
+    def test_save_settings_never_serializes_in_memory_provider_keys(self, test_state):
+        test_state.state.app_settings.ltx_api_key = "transient-ltx"
+        test_state.state.app_settings.fal_api_key = "transient-fal"
+        test_state.state.app_settings.gemini_api_key = "transient-gemini"
+        test_state.settings.save_settings()
+        persisted = json.loads(test_state.config.settings_file.read_text(encoding="utf-8"))
+        assert not {"ltx_api_key", "fal_api_key", "gemini_api_key"} & persisted.keys()
 
     def test_load_settings_clamps_from_disk_and_ignores_removed_fields(self, test_state, default_app_settings):
         test_state.config.settings_file.write_text(

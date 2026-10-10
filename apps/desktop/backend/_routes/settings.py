@@ -7,6 +7,8 @@ import logging
 from fastapi import APIRouter, Depends, Request
 
 from _routes._admin_guard import guard_admin_permission
+from _routes._errors import HTTPError
+from provider_key_safety import contains_provider_key_patch
 from state.app_settings import SettingsResponse, UpdateSettingsRequest, to_settings_response
 from api_types import GeminiModelsResponsePayload, StatusResponse
 from remote.controller import remote_controller_from_app
@@ -32,6 +34,8 @@ def route_post_settings(
     handler: AppHandler = Depends(get_state_service),
 ) -> StatusResponse:
     patch_data = req.model_dump(exclude_unset=True)
+    if contains_provider_key_patch(req.model_fields_set):
+        raise HTTPError(410, "PROVIDER_KEYS_USE_CONNECTIONS")
     if "models_dir" in patch_data or "modelsDir" in patch_data:
         guard_admin_permission(request)
 

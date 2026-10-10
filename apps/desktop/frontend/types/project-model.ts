@@ -355,6 +355,8 @@ export const projectV2Schema = z.object({
   name: z.string(),
   projectFolder: z.string().optional(),
   workspaceMode: workspaceModeSchema.optional(),
+  defaultProfileId: z.string().optional(),
+  defaultModelId: z.string().optional(),
   createdAt: z.number(),
   updatedAt: z.number(),
   bins: assetBinsSchema,

@@ -2595,6 +2595,11 @@ async def init_extra_nodes(init_custom_nodes=True, init_api_nodes=True):
 
     import_failed = await init_builtin_extra_nodes()
 
+    # Stable first-party node identifiers are kept separate from imported nodes.
+    hyper_nodes = os.path.join(os.path.dirname(os.path.realpath(__file__)), "hyper_studio_nodes.py")
+    if not await load_custom_node(hyper_nodes, module_parent="hyper_studio"):
+        import_failed.append("hyper_studio_nodes.py")
+
     import_failed_api = []
     if init_api_nodes:
         import_failed_api = await init_builtin_api_nodes()

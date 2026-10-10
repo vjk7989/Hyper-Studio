@@ -553,6 +553,9 @@ export function LaunchGate({ onComplete }: LaunchGateProps) {
                 <span />
               )}
               <div className={styles.actions}>
+                {currentStep === 'location' && (
+                  <Button appearance="neutral" hierarchy="secondary" size="lg" label="Continue without local models" onClick={() => void completeSetupNow()} />
+                )}
                 <Button
                   appearance="brand"
                   hierarchy="primary"

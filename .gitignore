@@ -1,5 +1,6 @@
 # Repository-local tooling and temporary files
 .local-cache/
+.cache/
 .local-tmp/
 .tools/
 node_modules/

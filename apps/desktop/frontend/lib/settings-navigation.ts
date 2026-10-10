@@ -3,6 +3,7 @@ export type SettingsTabId =
   | "general"
   | "models"
   | "apiKeys"
+  | "connections"
   | "legacy"
   | "about";
 
@@ -17,6 +18,7 @@ const SETTINGS_TAB_IDS = new Set<SettingsTabId>([
   "general",
   "models",
   "apiKeys",
+  "connections",
   "legacy",
   "about",
 ]);
@@ -40,6 +42,7 @@ export function isSettingsTabAvailable(
   tab: SettingsTabId,
   { forceApiGenerations }: { forceApiGenerations: boolean },
 ): boolean {
+  if (tab === "apiKeys") return false;
   if (tab === "models") return !forceApiGenerations;
   return true;
 }
@@ -48,6 +51,7 @@ export function parseSettingsTabId(
   value: string | null,
 ): SettingsTabId | undefined {
   if (value === null) return undefined;
+  if (value === "apiKeys") return "connections";
   const legacyTab = LEGACY_HASH_TO_TAB[value];
   if (legacyTab) return legacyTab;
   return SETTINGS_TAB_IDS.has(value as SettingsTabId)

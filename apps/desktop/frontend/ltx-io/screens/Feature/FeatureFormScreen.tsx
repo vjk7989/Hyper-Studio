@@ -3,6 +3,7 @@ import { type ComponentType, useCallback, useRef, useState, type ReactNode } fro
 import { Link } from "react-router";
 import { useProjects } from "@/contexts/ProjectContext";
 import { paths } from "@/paths";
+import { ProviderJobComposer } from "@/components/ProviderJobComposer";
 
 import { enhanceActionLabel } from "@/lib/enhance-ui-copy";
 import type { HomeFeatureId } from "@/lib/home-features";
@@ -152,6 +153,7 @@ export function FeatureFormScreen<TId extends HomeFeatureId, TCreateBody, TConte
       {projectSelectionError && <p role="alert" className="mt-2 text-sm text-fg-danger">{projectSelectionError}</p>}
       {!generationProjectId && <p className="mt-2 text-sm text-fg-secondary">Select where the video and its project media should be saved.</p>}
     </div>
+    {generationProjectId && definition.id === 'text-to-video' && <div className="mb-4"><ProviderJobComposer projectId={generationProjectId} defaultProfileId={getProject(generationProjectId)?.defaultProfileId} defaultModelId={getProject(generationProjectId)?.defaultModelId} prompt={promptText} /></div>}
     <FeatureFormView
       form={form.form}
       values={form.values}

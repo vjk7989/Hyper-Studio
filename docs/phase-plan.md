@@ -22,7 +22,7 @@ Follow [architecture-decision-record.md](architecture-decision-record.md). A pha
 2. Add `jobs.submit/get/subscribe/cancel`; snapshot profile settings at submit, normalize progress/errors/output, run distinct profiles concurrently with per-profile cap, register output in media index.
 3. Implement LTX, Runway, Google Veo, fal.ai video, and Custom HTTP adapters. Custom profile maps URL, model ID, authentication/headers, request fields, and direct or asynchronous job/poll/status/output fields. Use validated URLs and redact secrets from errors/logs.
 4. Expose the same broker to first-party workflow nodes through a narrow authenticated localhost integration. Preserve third-party node compatibility.
-5. Gate: mocked submit/poll/failure/cancel, key redaction, hosted and localhost URLs, simultaneous distinct profiles, and model switching without re-entering keys.
+5. Gate: mocked submit/poll/failure/cancel, key redaction, hosted and localhost URLs, simultaneous distinct profiles, and model switching without re-entering keys. **Checkpoint:** code-level checks and limits in [gates/phase-3.md](gates/phase-3.md). Live API smoke and specialized form coverage remain open.
 
 ## Phase 4 — Integrated workflow canvas
 
@@ -47,4 +47,4 @@ Follow [architecture-decision-record.md](architecture-decision-record.md). A pha
 | Jobs | `jobs.submit/get/subscribe/cancel` with `projectId`, `profileId`, `modelId`, prompt, inputs, options |
 | Workflow | `engine.start/status/stop`, `workflow.open/save/import/export` |
 
-These are target contracts. Their presence in this document does not mean they are implemented.
+Projects/media and provider setup/job broker contracts are implemented in the current code-level slice. Engine lifecycle and workflow file contracts remain targets; the first-party workflow broker node alone does not establish full workflow integration.

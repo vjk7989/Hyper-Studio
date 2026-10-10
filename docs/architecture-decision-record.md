@@ -1,6 +1,6 @@
 # Architecture decision record
 
-This record separates accepted product decisions from verified implementation. It reflects the Phase 2 workspace checkpoint on 2026-10-10; see [phase-handoff.md](phase-handoff.md) and [gates/phase-2.md](gates/phase-2.md) for verification state.
+This record separates accepted product decisions from verified implementation. It reflects the Phase 3 provider checkpoint on 2026-10-10; see [phase-handoff.md](phase-handoff.md) and [gates/phase-3.md](gates/phase-3.md) for verification state.
 
 ## ADR 0001: Desktop editor as host
 
@@ -20,11 +20,12 @@ This record separates accepted product decisions from verified implementation. I
 
 ## ADR 0003: One credential and job boundary
 
-- **Status:** Accepted; implementation pending.
+- **Status:** Implemented as a mocked, code-level Phase 3 slice; live provider access is unverified.
 - **Decision:** Global named provider profiles hold URL, model, and secret references; the renderer receives non-secret metadata only. A broker accepts project/profile/model per job, snapshots submitted configuration, limits concurrency per profile, normalizes state/output, and registers finished media. Provide LTX, Runway, Google Veo, fal.ai video, and mapped Custom HTTP adapters. The same registry powers Editor generation and first-party workflow nodes.
 - **Security:** Use a secure local store outside project manifests, workflow JSON, renderer state, and logs. Ask before importing legacy LTX/fal/Gemini credentials. Keep third-party nodes' credential handling separate. A custom URL requires request/auth/output mapping; localhost alone does not imply video generation support.
 - **Boundary:** Hosted API calls belong in the desktop integration boundary. The imported workflow engine's `AGENTS.md` bars outbound internet behavior in its core.
-- **Current gap:** The desktop still has provider-specific settings and legacy key persistence; no shared profile registry or broker exists.
+- **Implemented:** Electron stores named LTX, Runway, Veo, fal.ai, and Custom HTTP profiles in an encrypted vault. OS encryption is used when available; a passphrase vault is available otherwise. Renderer IPC exposes redacted metadata, model choices, configuration checks, and explicit confirmed import of legacy keys. Old backend key setters return 410 and new settings writes scrub key fields. The old API Keys tab routes to Connections. Electron's broker snapshots a profile per submission, limits each profile to two active jobs, permits different profiles to run concurrently, emits normalized job changes, and registers successful outputs in project media. Adapters cover direct and asynchronous contracts. A random-token authenticated loopback bridge gives first-party workflow nodes the same broker without serializing the token into workflow JSON.
+- **Limits:** The broker is in-memory: restart recovery of active jobs is absent. Cancel aborts local polling/download but cannot guarantee a remote provider stops; the UI says “Stop tracking.” The current generic Editor/Workflow and Home composer covers text-to-video. Specialized Editor/feature forms still use project-scoped local Python routes. Live API credentials, local image uploads, and remote cancellation are not smoke-tested. The workflow engine is not yet launched from the desktop app.
 
 ## ADR 0004: Rebrand surface without breaking workflows
 
@@ -36,16 +37,16 @@ This record separates accepted product decisions from verified implementation. I
 
 ## ADR 0005: Repository-local builds and phase gates
 
-- **Status:** Accepted; Phase 1 baseline committed as `df6e295`, Phase 2 workspace checks recorded.
+- **Status:** Accepted; Phase 1 baseline committed as `df6e295`, Phase 2 and Phase 3 code-level checks recorded.
 - **Decision:** Run installs, caches, temp files, model downloads, and builds within this repository using `scripts/with-local-env.ps1`. Keep generated caches ignored. Do not download model packs for baseline verification. Run relevant tests, type checks, and builds after each phase, repair failures before proceeding, and update this record, handoff, code map, and Graft graph.
-- **Consequence:** Windows is the current local verification host. The full Python test suite requires a large LTX inference environment absent here; Phase 2 instead ran isolated store and workspace/migration tests. macOS and Linux packages still require builds and smoke tests on those platforms before the release gate can pass.
+- **Consequence:** Windows is the current local verification host. The full Python test suite requires a large LTX inference environment absent here; Phase 3 used isolated key-safety, workflow-node, and mocked broker tests. macOS and Linux packages still require builds and smoke tests on those platforms before the release gate can pass.
 
 ## ADR 0006: Trust boundary for project output routing
 
 - **Status:** Implemented for current Editor generation routes in Phase 2.
 - **Decision:** Renderer requests carry only `projectId`. Electron main creates a private registry and gives its path to Python through `HYPER_STUDIO_PROJECT_REGISTRY`. Python resolves a tagged request only when the registry entry and `.hyper-studio/project.json` agree, and ensures `outputs/` remains inside the selected project. Unknown or invalid IDs fail with 422. Untagged legacy requests retain their old output path.
 - **Scope:** Direct video/image/retake/extend/IC-LoRA routes and queued video features accept `projectId`. The desktop media scanner registers completed files in the relative project index. The backend does not write `media.json`, avoiding two writers for one JSON file.
-- **Consequence:** The global SQLite queue remains for job history while generated files live in project folders. The current watcher polls every 2 seconds; live UI updates can lag by that interval. The provider job broker remains Phase 3 work.
+- **Consequence:** The global SQLite queue remains for local job history while generated files live in project folders. The current watcher polls every 2 seconds; live UI updates can lag by that interval. Hosted-provider broker jobs currently live in Electron memory and need restart recovery.
 
 ## Imported source provenance and licenses
 
