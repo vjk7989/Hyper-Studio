@@ -18,6 +18,14 @@ import {
 } from '@/workbench/extensions/manager/utils/systemCompatibility'
 import { checkVersionCompatibility } from '@/workbench/extensions/manager/utils/versionUtil'
 
+const embeddedState = vi.hoisted(() => ({ enabled: false }))
+
+vi.mock('@/platform/distribution/hyperStudio', () => ({
+  get isHyperStudioEmbedded() {
+    return embeddedState.enabled
+  }
+}))
+
 // Mock dependencies
 vi.mock(
   import('@/workbench/extensions/manager/services/comfyManagerService'),
@@ -156,6 +164,7 @@ describe('useConflictDetection', () => {
   }
 
   beforeEach(() => {
+    embeddedState.enabled = false
     // Setup mocks
     vi.mocked(useManagerState()).isNewManagerUI = computed(() => true)
     vi.mocked(useComfyManagerService).mockReturnValue(mockComfyManagerService)
@@ -358,6 +367,45 @@ describe('useConflictDetection', () => {
         current_value: 'Import error',
         required_value: 'Import error'
       })
+    })
+
+    it('uses local pack and import-failure data without Registry calls when embedded', async () => {
+      embeddedState.enabled = true
+      mockInstalledPacks.isReady.value = true
+      mockInstalledPacks.installedPacks.value = [{
+        id: 'local-pack',
+        name: 'Local Pack'
+      }]
+      mockInstalledPacksWithVersions.value = [{
+        id: 'local-pack',
+        version: '1.0.0'
+      }]
+      vi.mocked(mockComfyManagerService.getImportFailInfoBulk).mockResolvedValue({
+        'local-pack': { error: 'Local import error' }
+      })
+      vi.mocked(useComfyRegistryService).mockClear()
+      vi.mocked(mockRegistryService.getBulkNodeVersions).mockClear()
+
+      const result = await useConflictDetection().runFullConflictAnalysis()
+
+      expect(useComfyRegistryService).not.toHaveBeenCalled()
+      expect(mockRegistryService.getBulkNodeVersions).not.toHaveBeenCalled()
+      expect(mockComfyManagerService.getImportFailInfoBulk).toHaveBeenCalledWith(
+        { cnr_ids: ['local-pack'] },
+        expect.any(AbortSignal)
+      )
+      expect(result.results).toContainEqual(
+        expect.objectContaining({
+          package_id: 'local-pack',
+          has_conflict: true,
+          conflicts: [
+            expect.objectContaining({
+              type: 'import_failed',
+              current_value: 'Local import error'
+            })
+          ]
+        })
+      )
     })
   })
 

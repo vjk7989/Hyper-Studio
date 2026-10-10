@@ -2,6 +2,7 @@ import { until } from '@vueuse/core'
 import { find } from 'es-toolkit/compat'
 import { computed, getCurrentInstance, onUnmounted, readonly, ref } from 'vue'
 
+import { isHyperStudioEmbedded } from '@/platform/distribution/hyperStudio'
 import { useComfyRegistryService } from '@/services/comfyRegistryService'
 import { useSystemStatsStore } from '@/stores/systemStatsStore'
 import type { components } from '@/types/comfyRegistryTypes'
@@ -136,13 +137,11 @@ export function useConflictDetection() {
         return []
       }
 
-      // Step 2: Get Registry service for bulk API calls
-      const registryService = useComfyRegistryService()
-
-      // Step 3: Setup abort controller for request cancellation
+      // Step 2: Setup abort controller for local Manager requests too.
       abortController.value = new AbortController()
 
-      // Step 4: Use bulk API to fetch all version data in a single request
+      // Step 3: Embedded builds use only local Manager data. The upstream
+      // Registry bulk endpoint is never needed to detect local import failures.
       const versionDataMap = new Map<
         string,
         components['schemas']['NodeVersion']
@@ -154,8 +153,9 @@ export function useConflictDetection() {
         version: pack.version
       }))
 
-      if (nodeVersions.length > 0) {
+      if (!isHyperStudioEmbedded && nodeVersions.length > 0) {
         try {
+          const registryService = useComfyRegistryService()
           const bulkResponse = await registryService.getBulkNodeVersions(
             nodeVersions,
             abortController.value.signal
@@ -185,7 +185,7 @@ export function useConflictDetection() {
         }
       }
 
-      // Step 5: Combine local installation data with Registry version data
+      // Step 4: Combine local installation data with optional Registry data
       const requirements: NodeRequirements[] = []
 
       // IMPORTANT: Use installedPacksWithVersions to check ALL installed packages
