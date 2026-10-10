@@ -45,7 +45,7 @@ found 300 tracked-source string/URL matches, 249 review candidates, and 253
 tracked visual assets. The packed workflow frontend still contained six old
 `comfy-*` asset **filenames**. The tracked source files with those names were
 removed, and later clean local builds reached zero residual legacy visual filenames
-in the three available built trees. The later Windows audit above superseded that historical scan but predates the newest bundle changes.
+in the three available built trees. The final4 Windows audit above followed the newest bundle changes and supersedes that historical scan.
 
 **Former visible blocker:** `apps/workflow-ui/public/assets/images/og-image.png`
 (269,193 bytes) visibly says “Comfy CLOUD” and “Run ComfyUI anywhere.” The same
@@ -64,6 +64,33 @@ showed no visible upstream mark. These spot checks do not prove every frame or
 light/dark/installer state is clean.
 
 ## Source candidates and disposition
+
+A read-only review classified all **178** unallowlisted source candidates in
+`.local-cache/brand-audit/audit.json` once each. These are source matches, not
+178 visible defects:
+
+| Classification | Count | Representative evidence |
+| --- | ---: | --- |
+| Confirmed reachable packaged UI with old product branding | 0 | Final4 installed light Projects, first run, Editor, Workflow, and dark Workflow Settings screenshots showed no upstream product mark. |
+| Dormant inherited cloud/account or standalone paths | 48 | Cloud billing/onboarding, sign-in, upstream first-run/tutorial and partner media paths are removed or guarded in embedded mode. |
+| Technical compatibility or internal CSS/DOM identifiers | 121 | Legacy workflow IDs, CSS selectors, import paths, telemetry/source keys, error-match predicates, manager package names, and developer compatibility data remain stable. |
+| Legal attribution or third-party/provider facts | 4 | About attribution, third-party node-map names, and the LTX publisher alias preserve source facts. |
+| Reachability still uncertain | 5 | Public Registry Manager search (1), Agent consent/free-use upstream links and media (3), and the developer CRDT report version label (1). |
+
+The optional Manager path needs a focused embedded test if a backend starts with
+`--enable-manager`: opening general Manager search immediately calls the search
+gateway, which tries Algolia and can fall back to the public registry at
+`api.comfy.org`. The final4 default installed smoke observed no such request;
+the Manager gate is disabled without that flag. Embedded missing-pack lookup
+already uses the local catalog. The Agent paths depend on its feature gate and
+account/consent flow; the CRDT label additionally requires the developer debug
+gate. These five paths are not confirmed visible rebrand blockers.
+
+The final4 light empty/project/editor states and dark Settings were visually
+reviewed. A captured Workflow loading state showed a pale, minimally styled
+Hyper-Studio splash inside the dark host, with no upstream wordmark; loading
+polish remains open. The passing cold-start smoke does not provide exhaustive
+error-state, optional-overlay, light/dark, or media-frame coverage.
 
 - Desktop production CSP no longer permits the upstream account origin (`be1dbdf`). Embedded help links and first-run destinations were rerouted or hidden (`8c4b1d6`), while manager package and workflow compatibility IDs remain.
 - Embedded account/login/billing dialogs, user route, cloud promotion, templates, and settings panels were removed from the active path (`1471b1a` through `01047cd`). Later `c9c0633` adds compile-time guards and inert placeholders to exclude inherited account UI assets from the embedded bundle. `0c3125a` substitutes a signed-out local identity and rejects Firebase SDK/identity modules during embedded build. Source-only upstream strings can remain in dormant compatibility code and legal attribution; the final4 installed Windows navigation/network check found no account button or upstream Comfy/LTX cloud request.
@@ -99,7 +126,7 @@ flows; no live provider credentials or model packs were used.
 
 The final4 Windows installed and macOS/Linux packaged gates passed. Inspect remaining light/dark,
 loading, error, empty, optional-overlay, installer/window/OS-icon states and
-review the 178 string candidates and media frames contextually. Run a completed
+resolve the five uncertain source candidates and remaining media frames. Run a completed
 reviewed third-party pack installation and live hosted provider acceptance when
 the test infrastructure is available. macOS/Linux installer installation/uninstall
 behavior remains unverified. Keep temp and caches inside the repository.
