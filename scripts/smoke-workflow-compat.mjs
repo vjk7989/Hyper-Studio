@@ -6,7 +6,8 @@ import { _electron as electron } from '../apps/workflow-ui/node_modules/@playwri
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const executablePath = process.env.HYPER_STUDIO_SMOKE_EXE || path.join(root, 'apps', 'desktop', 'release', 'win-unpacked', 'Hyper-Studio.exe')
 if (!fs.existsSync(executablePath)) throw new Error('Build the Windows unpacked app first')
-const home = path.join(root, '.local-tmp', 'workflow-compat-smoke')
+const home = process.env.HYPER_STUDIO_COMPAT_HOME || path.join(root, '.local-tmp', 'workflow-compat-smoke')
+if (!path.resolve(home).startsWith(`${root}${path.sep}`)) throw new Error('Compatibility smoke home must remain inside the repository')
 for (const folder of [home, path.join(home, 'appdata'), path.join(home, 'localappdata'), path.join(home, 'temp')]) {
   fs.mkdirSync(folder, { recursive: true })
 }
@@ -28,7 +29,8 @@ try {
   })
   await window.waitForLoadState('domcontentloaded', { timeout: 45000 })
   // Reuse the already bootstrapped managed runtime without sharing Electron user data.
-  const shared = path.join(root, '.local-tmp', 'packaged-electron-smoke', 'shared-storage')
+  const shared = process.env.HYPER_STUDIO_SMOKE_SHARED || path.join(root, '.local-tmp', 'packaged-electron-smoke', 'shared-storage')
+  if (!path.resolve(shared).startsWith(`${root}${path.sep}`)) throw new Error('Compatibility smoke shared storage must remain inside the repository')
   fs.mkdirSync(shared, { recursive: true })
   await window.evaluate(folder => window.electronAPI.setSharedStorageRoot({ folder }), shared)
   await window.reload({ waitUntil: 'domcontentloaded' })
