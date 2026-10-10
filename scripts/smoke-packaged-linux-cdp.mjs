@@ -11,9 +11,10 @@ const executable = process.env.HYPER_STUDIO_SMOKE_EXE || path.join(root, 'apps/d
 if (!fs.existsSync(executable)) throw new Error(`Packaged Linux executable is missing: ${executable}`)
 const home = path.join(root, '.local-tmp/packaged-electron-smoke/linux')
 for (const folder of [home, path.join(home, 'temp'), path.join(home, 'user-data'), path.join(home, 'config'), path.join(home, 'data'), path.join(home, 'state'), path.join(home, 'cache')]) fs.mkdirSync(folder, { recursive: true })
-const log = (name) => fs.createWriteStream(path.join(home, name), { flags: 'w' })
-const stdout = log('electron-stdout.log')
-const stderr = log('electron-stderr.log')
+// Give Electron regular files, not Node pipes: a blocked pipe write can stall
+// Chromium before its debugging endpoint or app window is created.
+const stdoutFd = fs.openSync(path.join(home, 'electron-stdout.log'), 'w')
+const stderrFd = fs.openSync(path.join(home, 'electron-stderr.log'), 'w')
 const diagnosticFile = path.join(home, 'startup-diagnostics.log')
 function command(program, args) {
   try { return execFileSync(program, args, { encoding: 'utf8', timeout: 3000, maxBuffer: 256 * 1024 }).trim() }
@@ -21,6 +22,8 @@ function command(program, args) {
 }
 const diagnosticLines = [
   `display=${process.env.DISPLAY || '(unset)'}`,
+  `x-socket=${fs.existsSync(`/tmp/.X11-unix/X${(process.env.DISPLAY || '').match(/^:(\d+)/)?.[1] || ''}`)}`,
+  `x-authority-file-present=${Boolean(process.env.XAUTHORITY && fs.existsSync(process.env.XAUTHORITY))}`,
   `x-display=${command('xdpyinfo', ['-display', process.env.DISPLAY || '']) .split('\n').slice(0, 6).join(' | ')}`,
   `binary=${executable}`,
   `binary-mode=${fs.statSync(executable).mode.toString(8)}`,
@@ -30,6 +33,10 @@ function snapshot(label, pid) {
   const lines = [`stage=${label} time=${new Date().toISOString()} pid=${pid} exited=${JSON.stringify(exit)}`]
   lines.push(`process=${command('ps', ['-o', 'pid,ppid,stat,wchan:32,etime,comm,args', '-p', String(pid)])}`)
   lines.push(`children=${command('ps', ['--ppid', String(pid), '-o', 'pid,ppid,stat,wchan:32,etime,comm,args'])}`)
+  for (const fd of ['1', '2']) {
+    try { lines.push(`fd${fd}=${fs.readlinkSync(`/proc/${pid}/fd/${fd}`)}`) }
+    catch { lines.push(`fd${fd}=(unavailable)`) }
+  }
   for (const name of ['status', 'wchan']) {
     try {
       const content = fs.readFileSync(`/proc/${pid}/${name}`, 'utf8')
@@ -64,9 +71,7 @@ const env = {
   HYPER_STUDIO_USER_DATA: path.join(home, 'user-data'),
   ELECTRON_ENABLE_LOGGING: '1', ELECTRON_LOG_FILE: path.join(home, 'electron.log'),
 }
-const child = spawn(executable, [`--remote-debugging-port=${port}`, '--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage'], { cwd: root, env, stdio: ['ignore', 'pipe', 'pipe'] })
-child.stdout.pipe(stdout)
-child.stderr.pipe(stderr)
+const child = spawn(executable, [`--remote-debugging-port=${port}`, '--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage'], { cwd: root, env, stdio: ['ignore', stdoutFd, stderrFd] })
 let exit = null
 child.once('exit', (code, signal) => { exit = { code, signal } })
 child.once('error', error => { exit = { error: String(error) } })
@@ -153,5 +158,5 @@ try {
   if (!child.killed && exit === null) child.kill('SIGTERM')
   await new Promise(resolve => setTimeout(resolve, 500))
   if (exit === null) child.kill('SIGKILL')
-  stdout.end(); stderr.end()
+  fs.closeSync(stdoutFd); fs.closeSync(stderrFd)
 }
