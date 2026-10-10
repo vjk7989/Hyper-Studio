@@ -1,6 +1,6 @@
-# Phase 5 surface-brand audit (scoped package gates passed)
+# Phase 5 surface-brand audit (final5 visual gate open)
 
-Status: **latest Windows installed and macOS/Linux packaged brand gates passed; Phase 5 release review remains open**. The final4 Windows installer includes export and embedded-bundle fixes (`5360748`, `9370589`, `c9c0633`, `0c3125a`). Both platform jobs succeeded in [run 38067616426](https://github.com/vjk7989/Hyper-Studio/actions/runs/38067616426). Run
+Status: **final5 Windows functional/Manager and macOS/Linux packaged checks passed; Windows dark Workflow contrast requires a fix and fresh installed rerun**. The final5 Windows installer includes export and embedded-bundle fixes (`5360748`, `9370589`, `c9c0633`, `0c3125a`) and canvas readiness fix `f66fa25`. Both platform jobs succeeded in [run 38070896043](https://github.com/vjk7989/Hyper-Studio/actions/runs/38070896043). Run
 `scripts/with-local-env.ps1 .tools/node-v26.8.2-win-x64/node.exe scripts/audit-branding.mjs`
 from the repository root after every fresh UI build/package. The full machine
 inventory stays in `.local-cache/brand-audit/audit.json`; it is not committed.
@@ -9,16 +9,16 @@ inventory stays in `.local-cache/brand-audit/audit.json`; it is not committed.
 
 | Gate | Evidence | Status |
 | --- | --- | --- |
-| Read-only tracked-source and built-tree audit | Final `.local-cache/phase5-brand-audit-final4.log`: 232 source matches, 178 unallowlisted review candidates, 253 tracked visuals, zero residual legacy visual filenames in tracked source and three built trees (Vue dist, Windows workflow frontend, Windows remote UI). | **Latest filename inventory passed.** String candidates and media frames require contextual inspection. |
+| Read-only tracked-source and built-tree audit | Final5 `.local-cache/phase5-brand-audit-final5.log`: 232 source matches, 178 unallowlisted review candidates, 253 tracked visuals, zero residual legacy visual filenames in tracked source and three built trees (Vue dist, Windows workflow frontend, Windows remote UI). | **Latest filename inventory passed.** Five optional source paths and media frames need further inspection. |
 | Managed cloud policy | 10 focused Python tests passed; 65 upstream compatibility tests passed with 2 skipped; 8 provider-adapter and 8 server/CSP tests passed. | Source-level pass. Live hosted API/network behavior is not proven. |
 | Embedded account and node-pack unit tests | Five-file account suite: 79/79 passed. Two-file local catalog/pack suite: 32/32 passed. Embedded Settings branding/search/contrast source fixes passed 56 focused tests, scoped Vue typecheck, lint, and embedded build. | Focused source pass; installed Windows Settings assertions below passed. |
-| Final4 Windows NSIS and installed smoke | `apps/desktop/release/Hyper-Studio-Setup.exe`: 409,469,651 bytes, SHA-256 `357C23E700954742FEE7F9C2A2E1EC6EA7A17FF809B3D5F933F53A89D2354A69`, Authenticode `NotSigned`. Fresh repo-local install `.local-tmp/installed-phase5-final4` passed cold-start Workflow canvas, JSON roundtrip, bidirectional usable media, Hyper-Studio Settings category, account/pricing absence, dark “Nodes 2.0” heading contrast ≥3:1, and no observed upstream Comfy/LTX cloud request. | **Latest Windows checkpoint passed.** Evidence: `.local-cache/phase5-windows-installed-smoke-final4-cold2.log` and `.local-tmp/packaged-electron-smoke-final4-cold2/`. |
-| Workflow compatibility and reviewed queue | Final4 compatibility retry: three imported variants preserved JSON, core/third-party node IDs and links. IDs 37, 90909, and removed cloud node 91001 stayed in imported JSON; missing-node guidance appeared. Explicit third-party source review opened, and the correct install task was intercepted after confirmation but before download. | **Latest Windows compatibility checkpoint passed.** Log: `.local-cache/phase5-windows-installed-compat-final4-retry.log`. A completed third-party package download/install remains unverified. |
+| Final5 Windows NSIS and installed functional smoke | `apps/desktop/release/Hyper-Studio-Setup.exe`: 419,861,117 bytes, SHA-256 `CB776DBDE7E64388B3EF00C129BB6A38BE917443F5A5E4754BEED332AAE564AC`, Authenticode `NotSigned`. Fresh repo-local install `.local-tmp/installed-phase5-final5` passed cold-start Workflow canvas, JSON roundtrip, bidirectional usable media, Hyper-Studio Settings category, account/pricing absence, dark “Nodes 2.0” heading contrast ≥3:1, and no observed upstream Comfy/LTX cloud request. | **Functional checks passed; visual/package gate open.** A later screenshot showed low-contrast Workflow Overview and “NO FAVORITED INPUTS” text in the dark canvas. Evidence: `.local-cache/phase5-windows-installed-smoke-final5-cold.log` and `.local-tmp/packaged-electron-smoke-final5-cold/`. |
+| Workflow compatibility and reviewed Manager install | Final5 compatibility: three imported variants preserved JSON, core/third-party node IDs and links. IDs 37, 90909, and removed cloud node 91001 stayed in imported JSON; missing-node guidance appeared. A reviewed Manager task installed a repository-local ImpactInt fixture, restarted the managed engine, registered the node, and retained ID 90909 on the active canvas. Host Open/Import waits for startup tab restoration (`f66fa25`). | **Local fixture mechanics passed.** Logs: `.local-cache/phase5-windows-installed-compat-final5.log` and `.local-cache/phase5-manager-install-local-smoke-final5.log`. The exact reviewed Git URL was redirected to a local fixture; real external Impact Pack installation remains unverified. |
 | Latest export branding and embedded account bundle | `5360748` changes PSD export names; `9370589` brands embedded error reports. `c9c0633` removes inherited account UI imports/chunks from embedded build; `0c3125a` substitutes signed-out identity and excludes Firebase SDK modules/chunks. A local Vue build completed, while generic `auth-*`, `authStore-*`, and `workspaceAuthStore-*` compatibility chunks remain. | **Source/build and scoped package gates passed.** The remaining generic chunks do not establish a reachable account UI, and their presence rules out a blanket “no auth code” claim. Individual PSD/error-report interactions were not exhaustively inspected. |
-| New platform packages | `.github/workflows/phase-4-platform-gate.yml` includes Phase 5 catalog, account, typecheck, package smoke, and brand checks. | **Passed:** macOS arm64 and Linux x64 jobs in [run 38067616426](https://github.com/vjk7989/Hyper-Studio/actions/runs/38067616426). Installer installation/uninstall was not run on these platforms. |
-| Code navigation graphs | `.local-cache/phase5-graft-{build,map}-final.log`: Graft parsed 7,071 files, 64,436 nodes, 158,982 edges. | Final Graft build/map passed. Separate codebase-memory MCP fast reindex crashed twice; its snapshot remains unverified. |
+| New platform packages | `.github/workflows/phase-4-platform-gate.yml` includes Phase 5 catalog, account, typecheck, package smoke, and brand checks. | **Passed:** macOS arm64 and Linux x64 jobs in [run 38070896043](https://github.com/vjk7989/Hyper-Studio/actions/runs/38070896043). Installer installation/uninstall was not run on these platforms. |
+| Code navigation graphs | `.local-cache/phase5-graft-{build,map}-final5.log`: Graft parsed 7,073 files, 64,447 nodes, 159,003 edges. | Final5 Graft build/map passed. Separate codebase-memory MCP fast reindex crashed twice; its snapshot remains unverified. |
 
-No model packs or live hosted credentials were used. The current checks do not prove a completed third-party node install, account-free behavior in every optional overlay, or all frame/theme/icon states.
+No model packs or live hosted credentials were used. The local fixture Manager install does not prove installation from a real external third-party source, account-free behavior in every optional overlay, or all frame/theme/icon states.
 
 ## Scope and exact exceptions
 
@@ -45,7 +45,7 @@ found 300 tracked-source string/URL matches, 249 review candidates, and 253
 tracked visual assets. The packed workflow frontend still contained six old
 `comfy-*` asset **filenames**. The tracked source files with those names were
 removed, and later clean local builds reached zero residual legacy visual filenames
-in the three available built trees. The final4 Windows audit above followed the newest bundle changes and supersedes that historical scan.
+in the three available built trees. The later final4 and final5 Windows audits followed those bundle changes and supersede that historical scan.
 
 **Former visible blocker:** `apps/workflow-ui/public/assets/images/og-image.png`
 (269,193 bytes) visibly says “Comfy CLOUD” and “Run ComfyUI anywhere.” The same
@@ -124,10 +124,9 @@ flows; no live provider credentials or model packs were used.
 
 ## Remaining release checks
 
-The final4 Windows installed and macOS/Linux packaged gates passed. Inspect remaining light/dark,
+The final5 Windows functional/Manager and macOS/Linux packaged checks passed; Windows visual/package acceptance waits for the dark Workflow contrast fix and fresh installed rerun. Inspect remaining light/dark,
 loading, error, empty, optional-overlay, installer/window/OS-icon states and
-resolve the five uncertain source candidates and remaining media frames. Run a completed
-reviewed third-party pack installation and live hosted provider acceptance when
+resolve the five uncertain source candidates and remaining media frames. Run a reviewed install from a real external third-party source and live hosted provider acceptance when
 the test infrastructure is available. macOS/Linux installer installation/uninstall
 behavior remains unverified. Keep temp and caches inside the repository.
 Phase 5 stays open until those checks and their limits are recorded.
