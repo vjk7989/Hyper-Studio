@@ -189,7 +189,6 @@ try {
   await window.getByRole('button', { name: 'Open', exact: true }).click({ timeout: 45000 })
   const afterRestartOrigin = new URL(restarted.url).origin
   let restored = null
-  let selectedImportedTab = false
   for (let attempt = 0; attempt < 40; attempt++) {
     restored = await window.evaluate(async targetOrigin => {
       const target = document.querySelector('iframe[title="Hyper-Studio workflow canvas"]')?.contentWindow
@@ -207,13 +206,6 @@ try {
       })
     }, afterRestartOrigin)
     if (restored?.nodes?.some(node => node.id === nodeId && node.type === 'ImpactInt')) break
-    if (attempt === 8) {
-      const importedTabs = canvas.getByText(/missing-impact-int/, { exact: false })
-      if (await importedTabs.count()) {
-        await importedTabs.last().click()
-        selectedImportedTab = true
-      }
-    }
     await window.waitForTimeout(250)
   }
   if (!restored?.nodes?.some(node => node.id === nodeId && node.type === 'ImpactInt')) {
@@ -222,7 +214,6 @@ try {
     throw new Error(`Canvas lost imported ImpactInt ID after restart; workflow input=${await window.locator('input[aria-label="Workflow filename"]').inputValue()}; body=${(await window.locator('body').innerText()).slice(0, 1200)}`)
   }
   await window.screenshot({ path: path.join(home, 'installed-node-after-restart.png') })
-  if (selectedImportedTab) process.stdout.write('NOTE: imported Vue tab needed explicit selection after restart; host/canvas activation race remains a product follow-up\n')
   process.stdout.write('PASS: managed engine restart registered ImpactInt and canvas retained imported node ID 90909\n')
 } finally {
   await app.close()
