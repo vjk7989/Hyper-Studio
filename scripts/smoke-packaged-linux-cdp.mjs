@@ -78,6 +78,11 @@ function snapshot(label, pid) {
       catch { return `${tid}:unavailable` }
     }).join(' ')}`)
   } catch { lines.push('thread-wchan=(unavailable)') }
+  for (const crashFolder of [path.join(home, 'user-data/Crashpad'), path.join(home, 'user-data/Crash Reports')]) {
+    if (!fs.existsSync(crashFolder)) continue
+    const reports = fs.readdirSync(crashFolder, { recursive: true }).slice(0, 30)
+    lines.push(`crash-reports=${path.relative(home, crashFolder)}:${reports.join(',') || '(empty)'}`)
+  }
   diagnosticLines.push(...lines)
   fs.writeFileSync(diagnosticFile, diagnosticLines.join('\n') + '\n')
 }
@@ -97,7 +102,21 @@ const env = {
   XDG_CONFIG_HOME: path.join(home, 'config'), XDG_DATA_HOME: path.join(home, 'data'),
   XDG_STATE_HOME: path.join(home, 'state'), XDG_CACHE_HOME: path.join(home, 'cache'),
   HYPER_STUDIO_USER_DATA: path.join(home, 'user-data'),
-  ELECTRON_ENABLE_LOGGING: '1', ELECTRON_LOG_FILE: path.join(home, 'electron.log'),
+  ELECTRON_ENABLE_LOGGING: '1', ELECTRON_ENABLE_STACK_DUMPING: '1', ELECTRON_LOG_FILE: path.join(home, 'electron.log'),
+}
+async function probePackagedVersion() {
+  const output = path.join(home, 'version-probe.log')
+  const fd = fs.openSync(output, 'w')
+  const probe = spawn(executable, ['--version', '--no-sandbox'], { cwd: root, env, detached: true, stdio: ['ignore', fd, fd] })
+  const result = await new Promise(resolve => {
+    const timer = setTimeout(() => resolve('timeout after 5s'), 5000)
+    probe.once('exit', (code, signal) => { clearTimeout(timer); resolve(`exit=${code} signal=${signal}`) })
+    probe.once('error', error => { clearTimeout(timer); resolve(`error=${error.message}`) })
+  })
+  if (result.startsWith('timeout')) { probe.kill('SIGTERM'); probe.unref() }
+  fs.closeSync(fd)
+  diagnosticLines.push(`version-probe=${result} output=${fs.readFileSync(output, 'utf8').slice(0, 500).replace(/\s+/g, ' ')}`)
+  fs.writeFileSync(diagnosticFile, diagnosticLines.join('\n') + '\n')
 }
 const child = spawn(executable, [`--remote-debugging-port=${port}`, '--no-sandbox', '--no-zygote', '--disable-gpu', '--disable-dev-shm-usage'], { cwd: root, env, stdio: ['ignore', stdoutFd, stderrFd] })
 let exit = null
@@ -175,6 +194,7 @@ try {
   await page.screenshot({ path: path.join(home, 'workflow-engine.png') })
   console.log(`Linux packaged workflow: engine, EmptyImage → SaveImage, shared media index passed (${media.length} media)`)
 } catch (error) {
+  if (stage === 'launch') await probePackagedVersion()
   if (page) await page.screenshot({ path: path.join(home, `failure-${stage}.png`) }).catch(() => {})
   console.error(`Linux packaged smoke failed at ${stage}: ${error instanceof Error ? error.message : String(error)}`)
   const tail = fs.existsSync(path.join(home, 'electron-stderr.log')) ? fs.readFileSync(path.join(home, 'electron-stderr.log'), 'utf8').slice(-2000) : ''
