@@ -22,6 +22,43 @@ let startPromise: Promise<WorkflowEngineStatus> | null = null
 let revision = 0
 let setupController: AbortController | null = null
 const embedToken = randomBytes(32).toString('hex')
+const TRACE_LIMIT = 32 * 1024
+
+function workflowStartupTrace(sharedRoot: string, secrets: string[]) {
+  if (process.env.HYPER_STUDIO_WORKFLOW_TRACE !== '1') return null
+  let stdout = ''
+  let stderr = ''
+  const sensitiveValues = [
+    ...secrets,
+    ...Object.entries(process.env)
+      .filter(([name, value]) => /(?:KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL)/i.test(name) && value && value.length >= 8)
+      .map(([, value]) => value as string),
+  ].filter(value => value.length >= 8)
+  const redact = (value: string) => {
+    let result = value
+    for (const secret of sensitiveValues) result = result.replaceAll(secret, '[redacted]')
+    return result
+      .replace(/((?:Bearer|Basic)\s+)[A-Za-z0-9._~+/-]+/gi, '$1[redacted]')
+      .replace(/((?:api[_-]?key|token|secret|password)\s*[:=]\s*)[^\s,;]+/gi, '$1[redacted]')
+  }
+  return {
+    append(stream: 'stdout' | 'stderr', chunk: Buffer) {
+      if (stream === 'stdout') stdout = (stdout + chunk.toString('utf8')).slice(-TRACE_LIMIT)
+      else stderr = (stderr + chunk.toString('utf8')).slice(-TRACE_LIMIT)
+    },
+    flush(outcome: string) {
+      // Diagnostics stay in the user's selected shared storage and never enter IPC or renderer state.
+      try {
+        const directory = path.join(sharedRoot, 'caches', 'workflow', 'diagnostics')
+        fs.mkdirSync(directory, { recursive: true, mode: 0o700 })
+        const body = `Hyper-Studio workflow startup trace\n${new Date().toISOString()} ${process.platform}/${process.arch} ${outcome}\n--- stdout (last ${TRACE_LIMIT} chars) ---\n${stdout}\n--- stderr (last ${TRACE_LIMIT} chars) ---\n${stderr}\n`
+        const logPath = path.join(directory, 'engine-startup.log')
+        fs.writeFileSync(logPath, redact(body), { mode: 0o600 })
+        fs.chmodSync(logPath, 0o600)
+      } catch { /* Diagnostics must never change engine startup behavior. */ }
+    },
+  }
+}
 
 export function getWorkflowEmbedToken(): string { return embedToken }
 
@@ -131,24 +168,34 @@ export async function startWorkflowEngine(projectId: string): Promise<WorkflowEn
           PYTHONPYCACHEPREFIX: path.join(paths.cache, 'pycache'),
         }
       const cpuOnly = workflowCpuOnly(python, env)
+      const trace = workflowStartupTrace(shared, [bridge.token, embedToken])
       const engine = spawn(python, [path.join(source, 'main.py'), ...workflowArguments(paths, frontend, port), ...(cpuOnly ? ['--cpu'] : [])], {
-        cwd: source, windowsHide: true, stdio: ['ignore', 'ignore', 'ignore'], env,
+        cwd: source, windowsHide: true, stdio: trace ? ['ignore', 'pipe', 'pipe'] : ['ignore', 'ignore', 'ignore'], env,
       })
+      engine.stdout?.on('data', (chunk: Buffer) => trace?.append('stdout', chunk))
+      engine.stderr?.on('data', (chunk: Buffer) => trace?.append('stderr', chunk))
+      engine.once('close', (code, signal) => trace?.flush(`closed code=${code ?? 'null'} signal=${signal ?? 'null'}`))
       child = engine
       let exited = false
-      engine.once('exit', () => {
+      engine.once('exit', (code, signal) => {
         exited = true
+        trace?.flush(`exited code=${code ?? 'null'} signal=${signal ?? 'null'}`)
         if (child === engine) {
           child = null
           status = { state: 'failed', projectId, error: 'Workflow engine exited' }
         }
       })
-      engine.once('error', () => { exited = true; if (child === engine) child = null })
+      engine.once('error', error => {
+        exited = true
+        trace?.flush(`spawn error=${error.name}`)
+        if (child === engine) child = null
+      })
       const deadline = Date.now() + 120000
       while (Date.now() < deadline && !exited && revision === startedAtRevision) {
         try {
           const response = await fetch(`${url}system_stats`, { signal: AbortSignal.timeout(1000), redirect: 'manual' })
           if (response.ok && !exited) {
+            trace?.flush('ready')
             status = { state: 'running', projectId, url }
             return getWorkflowEngineStatus()
           }

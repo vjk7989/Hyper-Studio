@@ -18,6 +18,7 @@ const env = {
   HYPER_STUDIO_USER_DATA: path.join(home, 'user-data'),
   ELECTRON_ENABLE_LOGGING: '1',
   ELECTRON_LOG_FILE: path.join(home, 'electron.log'),
+  ...(process.env.CI ? { HYPER_STUDIO_WORKFLOW_TRACE: '1' } : {}),
 }
 const app = await electron.launch({ executablePath, cwd: root, env, args: ['--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage'], timeout: 120000 })
 try {
