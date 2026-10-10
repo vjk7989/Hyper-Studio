@@ -159,19 +159,19 @@
     "label": "Ausgewählten Subgraph entpacken"
   },
   "Comfy_Help_AboutComfyUI": {
-    "label": "Info zu ComfyUI öffnen"
+    "label": "Info zu Hyper-Studio öffnen"
   },
   "Comfy_Help_OpenComfyOrgDiscord": {
     "label": "Comfy-Org Discord öffnen"
   },
   "Comfy_Help_OpenComfyUIDocs": {
-    "label": "ComfyUI-Dokumentation öffnen"
+    "label": "Hyper-Studio-Dokumentation öffnen"
   },
   "Comfy_Help_OpenComfyUIForum": {
-    "label": "ComfyUI-Forum öffnen"
+    "label": "Hyper-Studio-Forum öffnen"
   },
   "Comfy_Help_OpenComfyUIIssues": {
-    "label": "ComfyUI-Issues öffnen"
+    "label": "Hyper-Studio-Issues öffnen"
   },
   "Comfy_Interrupt": {
     "label": "Unterbrechen"

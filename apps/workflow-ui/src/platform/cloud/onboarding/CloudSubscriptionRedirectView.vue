@@ -168,7 +168,7 @@ onMounted(() => {
   >
     <div class="flex flex-col items-center gap-4">
       <img
-        src="/assets/images/comfy-logo-single.svg"
+        src="/assets/images/hyper-studio-logo-single.svg"
         :alt="t('g.comfyOrgLogoAlt')"
         class="size-16"
       />

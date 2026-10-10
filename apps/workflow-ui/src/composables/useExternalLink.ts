@@ -3,6 +3,9 @@ import { computed } from 'vue'
 import { isDesktop } from '@/platform/distribution/types'
 import { electronAPI } from '@/utils/envUtil'
 import { i18n } from '@/i18n'
+import { isHyperStudioEmbedded } from '@/platform/distribution/hyperStudio'
+
+const HYPER_STUDIO_REPOSITORY = 'https://github.com/vjk7989/Hyper-Studio'
 
 /**
  * Composable for building docs.comfy.org URLs with automatic locale and platform detection
@@ -63,6 +66,7 @@ export function useExternalLink() {
       platform?: boolean
     } = {}
   ): string => {
+    if (isHyperStudioEmbedded) return `${HYPER_STUDIO_REPOSITORY}#readme`
     const { includeLocale = false, platform: includePlatform = false } = options
 
     let url = 'https://docs.comfy.org'
@@ -84,14 +88,14 @@ export function useExternalLink() {
 
   const staticUrls = {
     // Static external URLs
-    discord: 'https://discord.com/invite/comfyorg',
-    github: 'https://github.com/Comfy-Org/ComfyUI',
-    githubIssues: 'https://github.com/Comfy-Org/ComfyUI/issues',
-    githubFrontend: 'https://github.com/Comfy-Org/ComfyUI_frontend',
-    githubElectron: 'https://github.com/Comfy-Org/electron',
-    forum: 'https://forum.comfy.org/',
-    comfyOrg: 'https://comfy.org/',
-    status: 'https://status.comfy.org/'
+    discord: isHyperStudioEmbedded ? `${HYPER_STUDIO_REPOSITORY}/issues` : 'https://discord.com/invite/comfyorg',
+    github: isHyperStudioEmbedded ? HYPER_STUDIO_REPOSITORY : 'https://github.com/Comfy-Org/ComfyUI',
+    githubIssues: isHyperStudioEmbedded ? `${HYPER_STUDIO_REPOSITORY}/issues` : 'https://github.com/Comfy-Org/ComfyUI/issues',
+    githubFrontend: isHyperStudioEmbedded ? HYPER_STUDIO_REPOSITORY : 'https://github.com/Comfy-Org/ComfyUI_frontend',
+    githubElectron: isHyperStudioEmbedded ? HYPER_STUDIO_REPOSITORY : 'https://github.com/Comfy-Org/electron',
+    forum: isHyperStudioEmbedded ? `${HYPER_STUDIO_REPOSITORY}/issues` : 'https://forum.comfy.org/',
+    comfyOrg: isHyperStudioEmbedded ? HYPER_STUDIO_REPOSITORY : 'https://comfy.org/',
+    status: isHyperStudioEmbedded ? HYPER_STUDIO_REPOSITORY : 'https://status.comfy.org/'
   }
 
   /** Common doc paths for use with buildDocsUrl */

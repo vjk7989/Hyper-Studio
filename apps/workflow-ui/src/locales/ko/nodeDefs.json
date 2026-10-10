@@ -11753,7 +11753,7 @@
     }
   },
   "LazyCache": {
-    "description": "EasyCache의 자체 제작 버전 - 구현이 '더 쉬운' EasyCache 버전입니다. 전체적으로는 EasyCache보다 성능이 떨어지지만, 일부 드문 경우에 더 좋으며 ComfyUI의 모든 것과 완벽한 호환성을 제공합니다.",
+    "description": "EasyCache의 자체 제작 버전 - 구현이 '더 쉬운' EasyCache 버전입니다. 전체적으로는 EasyCache보다 성능이 떨어지지만, 일부 드문 경우에 더 좋으며 Hyper-Studio의 모든 것과 완벽한 호환성을 제공합니다.",
     "display_name": "LazyCache",
     "inputs": {
       "end_percent": {
@@ -13320,7 +13320,7 @@
     }
   },
   "MaskPreview": {
-    "description": "입력 이미지를 ComfyUI 출력 디렉터리에 저장합니다.",
+    "description": "입력 이미지를 Hyper-Studio 출력 디렉터리에 저장합니다.",
     "display_name": "마스크 미리보기",
     "inputs": {
       "mask": {
@@ -18300,7 +18300,7 @@
     }
   },
   "Preview3D": {
-    "description": "3D 모델 파일을 ComfyUI 출력 디렉토리에 저장하지 않고 미리보기합니다.",
+    "description": "3D 모델 파일을 Hyper-Studio 출력 디렉토리에 저장하지 않고 미리보기합니다.",
     "display_name": "3D 및 애니메이션 미리보기 (DEPRECATED)",
     "inputs": {
       "bg_image": {
@@ -18319,7 +18319,7 @@
     }
   },
   "Preview3DAdvanced": {
-    "description": "3D 모델 파일을 ComfyUI 출력 디렉토리에 저장하지 않고 미리보기합니다.",
+    "description": "3D 모델 파일을 Hyper-Studio 출력 디렉토리에 저장하지 않고 미리보기합니다.",
     "display_name": "3D 미리보기 (고급)",
     "inputs": {
       "camera_info": {
@@ -18380,7 +18380,7 @@
     }
   },
   "PreviewAudio": {
-    "description": "오디오를 ComfyUI 출력 디렉토리에 저장하지 않고 미리듣기합니다.",
+    "description": "오디오를 Hyper-Studio 출력 디렉토리에 저장하지 않고 미리듣기합니다.",
     "display_name": "오디오 미리듣기",
     "inputs": {
       "audio": {
@@ -18398,7 +18398,7 @@
     }
   },
   "PreviewGaussianSplat": {
-    "description": "가우시안 스플랫 3D 파일을 ComfyUI 출력 디렉토리에 저장하지 않고 미리보기합니다.",
+    "description": "가우시안 스플랫 3D 파일을 Hyper-Studio 출력 디렉토리에 저장하지 않고 미리보기합니다.",
     "display_name": "스플랫 미리보기",
     "inputs": {
       "camera_info": {
@@ -18445,7 +18445,7 @@
     }
   },
   "PreviewImage": {
-    "description": "입력 이미지를 ComfyUI 의 임시(temp) 폴더에 저장합니다.",
+    "description": "입력 이미지를 Hyper-Studio 의 임시(temp) 폴더에 저장합니다.",
     "display_name": "이미지 미리보기",
     "inputs": {
       "images": {
@@ -18459,7 +18459,7 @@
     }
   },
   "PreviewPointCloud": {
-    "description": "포인트 클라우드 3D 파일을 ComfyUI 출력 디렉토리에 저장하지 않고 미리보기합니다.",
+    "description": "포인트 클라우드 3D 파일을 Hyper-Studio 출력 디렉토리에 저장하지 않고 미리보기합니다.",
     "display_name": "포인트 클라우드 미리보기",
     "inputs": {
       "camera_info": {
@@ -21948,7 +21948,7 @@
     }
   },
   "SaveAudioAdvanced": {
-    "description": "입력된 오디오를 ComfyUI 출력 디렉터리에 저장합니다.",
+    "description": "입력된 오디오를 Hyper-Studio 출력 디렉터리에 저장합니다.",
     "display_name": "오디오 저장 (고급)",
     "inputs": {
       "audio": {
@@ -22103,7 +22103,7 @@
     }
   },
   "SaveImage": {
-    "description": "입력 이미지를 ComfyUI 출력 디렉토리에 저장합니다.",
+    "description": "입력 이미지를 Hyper-Studio 출력 디렉토리에 저장합니다.",
     "display_name": "이미지 저장",
     "inputs": {
       "filename_prefix": {
@@ -22122,7 +22122,7 @@
     }
   },
   "SaveImageAdvanced": {
-    "description": "입력된 이미지를 ComfyUI 출력 디렉터리에 저장합니다.",
+    "description": "입력된 이미지를 Hyper-Studio 출력 디렉터리에 저장합니다.",
     "display_name": "이미지 저장 (고급)",
     "inputs": {
       "filename_prefix": {
@@ -22354,7 +22354,7 @@
     }
   },
   "SaveVideo": {
-    "description": "입력 이미지를 ComfyUI 출력 디렉토리에 저장합니다.",
+    "description": "입력 이미지를 Hyper-Studio 출력 디렉토리에 저장합니다.",
     "display_name": "비디오 저장",
     "inputs": {
       "codec": {
@@ -25539,7 +25539,7 @@
       },
       "compress_geometry": {
         "name": "compress_geometry",
-        "tooltip": "meshopt 지오메트리 압축(EXT_meshopt_compression)을 적용합니다. 파일 크기는 작아지지만 ComfyUI의 3D 미리보기에서는 표시할 수 없습니다. 편집 전에 압축을 해제하세요."
+        "tooltip": "meshopt 지오메트리 압축(EXT_meshopt_compression)을 적용합니다. 파일 크기는 작아지지만 Hyper-Studio의 3D 미리보기에서는 표시할 수 없습니다. 편집 전에 압축을 해제하세요."
       },
       "enable_image_autofix": {
         "name": "enable_image_autofix",
@@ -25589,7 +25589,7 @@
       },
       "compress_geometry": {
         "name": "compress_geometry",
-        "tooltip": "meshopt 지오메트리 압축(EXT_meshopt_compression)을 적용합니다. 파일 크기는 작아지지만 ComfyUI의 3D 미리보기에서는 표시할 수 없습니다. 편집 전에 압축을 해제하세요."
+        "tooltip": "meshopt 지오메트리 압축(EXT_meshopt_compression)을 적용합니다. 파일 크기는 작아지지만 Hyper-Studio의 3D 미리보기에서는 표시할 수 없습니다. 편집 전에 압축을 해제하세요."
       },
       "export_uv": {
         "name": "export_uv",
@@ -25648,7 +25648,7 @@
       },
       "compress_geometry": {
         "name": "지오메트리 압축",
-        "tooltip": "meshopt 지오메트리 압축(EXT_meshopt_compression)을 적용합니다. 파일 크기는 작아지지만 ComfyUI의 3D 미리보기에서는 표시할 수 없습니다. 편집 전에 압축을 해제하세요."
+        "tooltip": "meshopt 지오메트리 압축(EXT_meshopt_compression)을 적용합니다. 파일 크기는 작아지지만 Hyper-Studio의 3D 미리보기에서는 표시할 수 없습니다. 편집 전에 압축을 해제하세요."
       },
       "export_uv": {
         "name": "UV 내보내기",

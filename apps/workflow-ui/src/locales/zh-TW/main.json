@@ -728,9 +728,9 @@
     "feature2Title": "隨處可用，立即啟動",
     "feature3Title": "模型即刻可用",
     "feature4Title": "頂級自訂節點包預先安裝",
-    "footer": "ComfyUI 持續免費且開源。雲端服務為選用項目。",
+    "footer": "Hyper-Studio 持續免費且開源。雲端服務為選用項目。",
     "message": "從設定到創作只需幾秒。熱門模型、擴充套件與強大 GPU，隨時待命。",
-    "title": "在雲端運行 ComfyUI"
+    "title": "在雲端運行 Hyper-Studio"
   },
   "cloudOnboarding": {
     "authTimeout": {
@@ -742,7 +742,7 @@
         "請嘗試使用不同的瀏覽器或網路"
       ],
       "helpText": "需要協助？聯絡",
-      "message": "我們在連線至 ComfyUI 雲端時遇到問題。這可能是由於連線速度緩慢或暫時性服務問題所致。",
+      "message": "我們在連線至 Hyper-Studio 雲端時遇到問題。這可能是由於連線速度緩慢或暫時性服務問題所致。",
       "restart": "登出並重試",
       "supportLink": "支援團隊",
       "technicalDetails": "技術詳情",
@@ -771,11 +771,11 @@
     "skipToCloudApp": "跳至雲端應用程式",
     "start": {
       "desc": "無需任何設定。可在任何裝置上使用。",
-      "download": "下載 ComfyUI",
+      "download": "下載 Hyper-Studio",
       "explain": "一次生成多個輸出。輕鬆分享工作流程。",
       "learnAboutButton": "了解雲端服務",
       "title": "數秒內開始創作",
-      "wantToRun": "想要在本機運行 ComfyUI？"
+      "wantToRun": "想要在本機運行 Hyper-Studio？"
     },
     "survey": {
       "errors": {
@@ -784,12 +784,12 @@
         "describeAnswer": "請描述您的答案。",
         "selectAtLeastOne": "請至少選擇一個選項。"
       },
-      "intro": "協助我們為您量身打造 ComfyUI 體驗。",
+      "intro": "協助我們為您量身打造 Hyper-Studio 體驗。",
       "navigationFailed": "問卷已儲存，但無法繼續引導流程",
       "navigationFailedDetail": "請再試一次。",
       "options": {
         "experience": {
-          "new": "ComfyUI 新手",
+          "new": "Hyper-Studio 新手",
           "pro": "我是進階使用者",
           "some": "我已經熟悉操作"
         },
@@ -839,10 +839,10 @@
   "cloudStart_explain": "一次生成多個輸出。輕鬆分享工作流程。",
   "cloudStart_learnAboutButton": "了解雲端服務",
   "cloudStart_title": "數秒內開始創作",
-  "cloudSurvey_steps_experience": "您對 ComfyUI 的熟悉程度？",
+  "cloudSurvey_steps_experience": "您對 Hyper-Studio 的熟悉程度？",
   "cloudSurvey_steps_focus": "您正在製作什麼？",
-  "cloudSurvey_steps_intent": "您想用 ComfyUI 創作什麼？",
-  "cloudSurvey_steps_source": "您是從哪裡得知 ComfyUI 的？",
+  "cloudSurvey_steps_intent": "您想用 Hyper-Studio 創作什麼？",
+  "cloudSurvey_steps_source": "您是從哪裡得知 Hyper-Studio 的？",
   "cloudSurvey_steps_source_social": "哪個平台？",
   "cloudWaitlist_contactLink": "此處",
   "cloudWaitlist_questionsText": "有問題？聯絡我們",
@@ -1250,13 +1250,13 @@
     "WEBCAM": "網路攝影機"
   },
   "desktopLogin": {
-    "confirmMessage": "ComfyUI 桌面應用程式正在等待使用您的帳戶登入。僅在您剛從 ComfyUI 桌面應用程式啟動登入時才繼續。",
+    "confirmMessage": "Hyper-Studio 桌面應用程式正在等待使用您的帳戶登入。僅在您剛從 Hyper-Studio 桌面應用程式啟動登入時才繼續。",
     "confirmSummary": "批准桌面端登入？",
-    "expiredDetail": "登入請求已過期或已被使用。請從 ComfyUI 桌面應用程式重新啟動登入。",
+    "expiredDetail": "登入請求已過期或已被使用。請從 Hyper-Studio 桌面應用程式重新啟動登入。",
     "expiredSummary": "桌面端登入失敗",
-    "failedDetail": "完成桌面端登入時發生錯誤。請從 ComfyUI 桌面應用程式重新啟動登入。",
+    "failedDetail": "完成桌面端登入時發生錯誤。請從 Hyper-Studio 桌面應用程式重新啟動登入。",
     "failedSummary": "桌面端登入失敗",
-    "successDetail": "您可以返回 ComfyUI 桌面應用程式。",
+    "successDetail": "您可以返回 Hyper-Studio 桌面應用程式。",
     "successSummary": "登入成功"
   },
   "desktopMenu": {
@@ -1269,12 +1269,12 @@
     "initialising": "初始化中..."
   },
   "desktopUpdate": {
-    "description": "ComfyUI Desktop 正在安裝新相依套件，這可能需要幾分鐘。",
+    "description": "Hyper-Studio Desktop 正在安裝新相依套件，這可能需要幾分鐘。",
     "errorCheckingUpdate": "檢查更新時發生錯誤",
     "errorInstallingUpdate": "安裝更新時發生錯誤",
     "noUpdateFound": "未發現更新",
     "terminalDefaultMessage": "任何來自更新的主控台輸出都會顯示在這裡。",
-    "title": "正在更新 ComfyUI Desktop",
+    "title": "正在更新 Hyper-Studio Desktop",
     "updateAvailableMessage": "有可用的更新。您要立即重新啟動並更新嗎？",
     "updateFoundTitle": "發現更新（v{version}）"
   },
@@ -1284,7 +1284,7 @@
     "message": "無法找到 git。正常運作需要安裝可用的 git。",
     "skip": "略過",
     "title": "下載 git",
-    "warning": "如果您確定不需要安裝 git，或這是一個誤判，您可以點擊「略過」來跳過此檢查。目前不支援在沒有可用 git 的情況下執行 ComfyUI。"
+    "warning": "如果您確定不需要安裝 git，或這是一個誤判，您可以點擊「略過」來跳過此檢查。目前不支援在沒有可用 git 的情況下執行 Hyper-Studio。"
   },
   "electronFileDownload": {
     "cancel": "取消下載",
@@ -1665,7 +1665,7 @@
         "details": "{nodeName} 返回了無法識別的驗證錯誤：{errorType}",
         "detailsWithRawDetails": "{nodeName} 返回了無法識別的驗證錯誤（{errorType}）：{rawDetails}",
         "itemLabel": "{nodeName}",
-        "message": "某個節點返回了 ComfyUI 無法識別的驗證錯誤。",
+        "message": "某個節點返回了 Hyper-Studio 無法識別的驗證錯誤。",
         "title": "驗證失敗",
         "toastMessage": "{nodeName} 返回了無法識別的驗證錯誤。",
         "toastTitle": "驗證失敗"
@@ -1829,7 +1829,7 @@
     "color": "顏色",
     "comfy": "Comfy",
     "comfyCloud": "Comfy Cloud",
-    "comfyOrgLogoAlt": "ComfyOrg 標誌",
+    "comfyOrgLogoAlt": "Hyper-Studio 標誌",
     "comfyPackageOutdated": "已安裝的 {name} 版本 {installedVersion} 低於所需版本 {requiredVersion}。",
     "comingSoon": "即將推出",
     "command": "指令",
@@ -1967,7 +1967,7 @@
       "exportPreset": "匯出預設",
       "importKeybindingPreset": "匯入快捷鍵預設",
       "importPreset": "匯入預設",
-      "invalidPresetFile": "預設檔必須是從 ComfyUI 匯出的有效 JSON",
+      "invalidPresetFile": "預設檔必須是從 Hyper-Studio 匯出的有效 JSON",
       "invalidPresetName": "預設名稱不可為空、不可為「default」、不可以點開頭、不可包含路徑分隔符號，或以 .json 結尾",
       "loadPresetFailed": "載入預設「{name}」失敗",
       "overwritePresetMessage": "已存在名為「{name}」的預設。要覆蓋嗎？",
@@ -1992,7 +1992,7 @@
     "loading": "載入中",
     "loadingPanel": "正在載入{panel}面板...",
     "login": "登入",
-    "logoAlt": "ComfyUI 標誌",
+    "logoAlt": "Hyper-Studio 標誌",
     "logs": "日誌",
     "manageExtensions": "管理擴充功能",
     "markdown": "標記語言",
@@ -2152,7 +2152,7 @@
     "systemInfo": "系統資訊",
     "systemStatsArguments": "啟動參數",
     "systemStatsCloudVersion": "雲端版本",
-    "systemStatsComfyUIVersion": "ComfyUI 版本",
+    "systemStatsComfyUIVersion": "Hyper-Studio 版本",
     "systemStatsEmbeddedPython": "內嵌 Python",
     "systemStatsFrontendVersion": "前端版本",
     "systemStatsOS": "作業系統",
@@ -2282,12 +2282,12 @@
     "reinstall": "重新安裝",
     "systemStatus": "系統狀態",
     "updateAvailable": "有更新",
-    "updateComfyUI": "更新 ComfyUI",
-    "updateComfyUIFailed": "ComfyUI 更新失敗，請再試一次。",
+    "updateComfyUI": "更新 Hyper-Studio",
+    "updateComfyUIFailed": "Hyper-Studio 更新失敗，請再試一次。",
     "updateComfyUIStarted": "開始更新",
-    "updateComfyUIStartedDetail": "ComfyUI 更新已排入佇列，請稍候……",
+    "updateComfyUIStartedDetail": "Hyper-Studio 更新已排入佇列，請稍候……",
     "updateComfyUISuccess": "更新完成",
-    "updateComfyUISuccessDetail": "ComfyUI 已更新，正在重新啟動……",
+    "updateComfyUISuccessDetail": "Hyper-Studio 已更新，正在重新啟動……",
     "whatsNew": "有什麼新功能？"
   },
   "icon": {
@@ -2322,14 +2322,14 @@
     "title": "匯入失敗"
   },
   "install": {
-    "appDataLocationTooltip": "ComfyUI 的應用程式資料目錄。儲存：\n- 日誌\n- 伺服器設定",
-    "appPathLocationTooltip": "ComfyUI 的應用程式資產目錄。儲存 ComfyUI 程式碼與資產",
+    "appDataLocationTooltip": "Hyper-Studio 的應用程式資料目錄。儲存：\n- 日誌\n- 伺服器設定",
+    "appPathLocationTooltip": "Hyper-Studio 的應用程式資產目錄。儲存 Hyper-Studio 程式碼與資產",
     "cannotWrite": "無法寫入所選路徑",
     "chooseInstallationLocation": "選擇安裝位置",
     "customNodes": "自訂節點",
-    "customNodesDescription": "從現有的 ComfyUI 安裝重新安裝自訂節點。",
+    "customNodesDescription": "從現有的 Hyper-Studio 安裝重新安裝自訂節點。",
     "desktopAppSettings": "桌面應用程式設定",
-    "desktopAppSettingsDescription": "設定 ComfyUI 在桌面的行為。您之後可以變更這些設定。",
+    "desktopAppSettingsDescription": "設定 Hyper-Studio 在桌面的行為。您之後可以變更這些設定。",
     "desktopSettings": "桌面設定",
     "failedToSelectDirectory": "選擇目錄失敗",
     "gpu": "GPU",
@@ -2339,7 +2339,7 @@
       "appleMetalDescription": "利用您 Mac 的 GPU 提升速度並獲得更好的整體體驗",
       "cpuDescription": "當 GPU 加速不可用時，使用 CPU 模式以取得相容性",
       "cpuSubtitle": "CPU 模式",
-      "manualDescription": "為進階設定或不支援的硬體手動設定 ComfyUI",
+      "manualDescription": "為進階設定或不支援的硬體手動設定 Hyper-Studio",
       "manualSubtitle": "手動設定",
       "nvidiaDescription": "使用您的 NVIDIA GPU 與 CUDA 加速以獲得最佳效能。",
       "nvidiaSubtitle": "NVIDIA CUDA",
@@ -2350,7 +2350,7 @@
       "cpuMode": "CPU 模式",
       "cpuModeDescription": "CPU 模式僅供開發者及極少數特殊情境使用。",
       "cpuModeDescription2": "如果您不確定需要此選項，請忽略此選項並在上方選擇您的 GPU。",
-      "customComfyNeedsPython": "ComfyUI 需要先設定 Python 才能運作",
+      "customComfyNeedsPython": "Hyper-Studio 需要先設定 Python 才能運作",
       "customInstallRequirements": "安裝所有需求與相依套件（例如自訂 torch）",
       "customManualVenv": "手動設定 Python venv",
       "customMayNotWork": "此選項完全不受支援，可能無法正常運作",
@@ -2361,28 +2361,28 @@
       "selectGpu": "選擇 GPU",
       "selectGpuDescription": "選擇您擁有的 GPU 類型"
     },
-    "helpImprove": "請協助改進 ComfyUI",
-    "insideAppInstallDir": "此資料夾位於 ComfyUI Desktop 應用程式包內，更新時會被刪除。請選擇安裝資料夾以外的目錄，例如 Documents/ComfyUI。",
-    "insideUpdaterCache": "此資料夾位於 ComfyUI 更新快取中，每次更新時都會清除。請選擇其他位置儲存您的資料。",
+    "helpImprove": "請協助改進 Hyper-Studio",
+    "insideAppInstallDir": "此資料夾位於 Hyper-Studio Desktop 應用程式包內，更新時會被刪除。請選擇安裝資料夾以外的目錄，例如 Documents/Hyper-Studio。",
+    "insideUpdaterCache": "此資料夾位於 Hyper-Studio 更新快取中，每次更新時都會清除。請選擇其他位置儲存您的資料。",
     "installLocation": "安裝位置",
-    "installLocationDescription": "選擇 ComfyUI 使用者資料的目錄。Python 環境將安裝在所選位置。",
-    "installLocationTooltip": "ComfyUI 的使用者資料目錄。儲存：\n- Python 環境\n- 模型\n- 自訂節點\n",
+    "installLocationDescription": "選擇 Hyper-Studio 使用者資料的目錄。Python 環境將安裝在所選位置。",
+    "installLocationTooltip": "Hyper-Studio 的使用者資料目錄。儲存：\n- Python 環境\n- 模型\n- 自訂節點\n",
     "insufficientFreeSpace": "空間不足 - 最低可用空間",
-    "isOneDrive": "不支援 OneDrive。請將 ComfyUI 安裝在其他位置。",
+    "isOneDrive": "不支援 OneDrive。請將 Hyper-Studio 安裝在其他位置。",
     "locationPicker": {
       "chooseDownloadServers": "手動選擇下載伺服器",
       "downloadServersDescription": "根據您的位置選擇特定的鏡像伺服器來下載 Python、PyPI 套件與 PyTorch。",
-      "migrateDescription": "從先前的 ComfyUI 安裝複製或連結您現有的模型、自訂節點與設定。",
+      "migrateDescription": "從先前的 Hyper-Studio 安裝複製或連結您現有的模型、自訂節點與設定。",
       "migrateFromExisting": "從現有安裝遷移",
-      "migrationPathPlaceholder": "選取現有的 ComfyUI 安裝（選填）",
-      "pathPlaceholder": "/Users/username/Documents/ComfyUI",
-      "subtitle": "為 ComfyUI 的檔案選擇一個資料夾。我們也會自動在該處設定 Python。",
-      "title": "選擇 ComfyUI 安裝位置"
+      "migrationPathPlaceholder": "選取現有的 Hyper-Studio 安裝（選填）",
+      "pathPlaceholder": "/Users/username/Documents/Hyper-Studio",
+      "subtitle": "為 Hyper-Studio 的檔案選擇一個資料夾。我們也會自動在該處設定 Python。",
+      "title": "選擇 Hyper-Studio 安裝位置"
     },
     "manualConfiguration": {
       "createVenv": "您需要在下列目錄建立虛擬環境",
       "requirements": "需求",
-      "restartWhenFinished": "完成虛擬環境設定後，請重新啟動 ComfyUI。",
+      "restartWhenFinished": "完成虛擬環境設定後，請重新啟動 Hyper-Studio。",
       "title": "手動設定",
       "virtualEnvironmentPath": "虛擬環境路徑"
     },
@@ -2391,9 +2391,9 @@
     "migrateFromExistingInstallation": "從現有安裝遷移",
     "migration": "遷移",
     "migrationOptional": "遷移為選擇性步驟。如果您沒有現有安裝，可以略過此步驟。",
-    "migrationSourcePathDescription": "如果您已有 ComfyUI 安裝，我們可以將您現有的使用者檔案與模型複製/連結到新安裝。您現有的 ComfyUI 安裝不會受到影響。",
+    "migrationSourcePathDescription": "如果您已有 Hyper-Studio 安裝，我們可以將您現有的使用者檔案與模型複製/連結到新安裝。您現有的 Hyper-Studio 安裝不會受到影響。",
     "moreInfo": "更多資訊請參閱",
-    "nonDefaultDrive": "請將 ComfyUI 安裝在您的系統磁碟（例如 C:\\）。不同檔案系統的磁碟可能會導致不可預期的問題。安裝後，模型和其他檔案可以儲存在其他磁碟。",
+    "nonDefaultDrive": "請將 Hyper-Studio 安裝在您的系統磁碟（例如 C:\\）。不同檔案系統的磁碟可能會導致不可預期的問題。安裝後，模型和其他檔案可以儲存在其他磁碟。",
     "parentMissing": "路徑不存在 - 請先建立上層目錄",
     "pathExists": "目錄已存在 - 請確保您已備份所有資料",
     "pathValidationFailed": "路徑驗證失敗",
@@ -2401,7 +2401,7 @@
     "selectItemsToMigrate": "選擇要遷移的項目",
     "settings": {
       "allowMetrics": "使用統計",
-      "allowMetricsDescription": "協助改進 ComfyUI，傳送匿名使用統計資料。不會收集個人資訊或工作流程內容。",
+      "allowMetricsDescription": "協助改進 Hyper-Studio，傳送匿名使用統計資料。不會收集個人資訊或工作流程內容。",
       "autoUpdate": "自動更新",
       "autoUpdateDescription": "自動下載可用更新。安裝前會通知您。",
       "checkingMirrors": "正在檢查 Python 鏡像的網路連線...",
@@ -2718,12 +2718,12 @@
   },
   "loadWorkflowWarning": {
     "coreNodesFromVersion": "來自版本 {version} 的核心節點：",
-    "newerVersionRequired": "部分節點需要較新版本的 ComfyUI（目前：{version}）。請更新以使用所有節點。",
-    "newerVersionRequiredGeneric": "部分節點需要較新版本的 ComfyUI。請更新以使用所有節點。",
+    "newerVersionRequired": "部分節點需要較新版本的 Hyper-Studio（目前：{version}）。請更新以使用所有節點。",
+    "newerVersionRequiredGeneric": "部分節點需要較新版本的 Hyper-Studio。請更新以使用所有節點。",
     "unknownVersion": "未知"
   },
   "logsTerminal": {
-    "loadError": "無法載入日誌，請確認您已更新 ComfyUI 後端。",
+    "loadError": "無法載入日誌，請確認您已更新 Hyper-Studio 後端。",
     "resyncError": "後端重新連線後無法重新同步日誌。請重新開啟主控台以重試。"
   },
   "maintenance": {
@@ -2746,12 +2746,12 @@
     "terminalDefaultMessage": "當您執行疑難排解指令時，任何輸出都會顯示在這裡。",
     "title": "維護",
     "unsafeMigration": {
-      "action": "請使用下方「基本路徑」維護任務，將 ComfyUI 移動到安全位置。",
-      "appInstallDir": "您的基本路徑位於 ComfyUI Desktop 應用程式包內。此資料夾在更新時可能會被刪除或覆蓋。請選擇安裝資料夾外的目錄，例如 Documents/ComfyUI。",
-      "generic": "您目前的 ComfyUI 基本路徑位於可能在更新時被刪除或修改的位置。為避免資料遺失，請將其移動到安全的資料夾。",
+      "action": "請使用下方「基本路徑」維護任務，將 Hyper-Studio 移動到安全位置。",
+      "appInstallDir": "您的基本路徑位於 Hyper-Studio Desktop 應用程式包內。此資料夾在更新時可能會被刪除或覆蓋。請選擇安裝資料夾外的目錄，例如 Documents/Hyper-Studio。",
+      "generic": "您目前的 Hyper-Studio 基本路徑位於可能在更新時被刪除或修改的位置。為避免資料遺失，請將其移動到安全的資料夾。",
       "oneDrive": "您的基本路徑位於 OneDrive，這可能導致同步問題及意外資料遺失。請選擇未由 OneDrive 管理的本機資料夾。",
       "title": "偵測到不安全的安裝位置",
-      "updaterCache": "您的基本路徑位於 ComfyUI 更新快取中，每次更新時都會清除。請為您的資料選擇其他位置。"
+      "updaterCache": "您的基本路徑位於 Hyper-Studio 更新快取中，每次更新時都會清除。請為您的資料選擇其他位置。"
     }
   },
   "manager": {
@@ -2766,7 +2766,7 @@
       "conflictMessages": {
         "accelerator": "不支援的 GPU/加速器（可用：{current}，需要：{required}）",
         "banned": "此套件因安全原因被禁用",
-        "comfyui_version": "ComfyUI 版本不符（目前：{current}，需要：{required}）",
+        "comfyui_version": "Hyper-Studio 版本不符（目前：{current}，需要：{required}）",
         "frontend_version": "前端版本不符（目前：{current}，需要：{required}）",
         "generic": "相容性問題（目前：{current}，需要：{required}）",
         "import_failed": "匯入失敗",
@@ -2774,11 +2774,11 @@
         "pending": "安全性驗證待處理 - 無法驗證相容性"
       },
       "conflicts": "衝突",
-      "description": "我們偵測到部分擴充功能與新版 ComfyUI 之間存在衝突。更新後，依賴這些擴充功能的工作流程可能會失效。",
+      "description": "我們偵測到部分擴充功能與新版 Hyper-Studio 之間存在衝突。更新後，依賴這些擴充功能的工作流程可能會失效。",
       "enableAnyway": "仍然啟用",
       "extensionAtRisk": "有風險的擴充功能",
       "importFailedExtensions": "匯入失敗的擴充功能",
-      "info": "若您繼續更新，衝突的擴充功能將自動停用。您可以隨時在 ComfyUI 管理器中查看和管理它們。",
+      "info": "若您繼續更新，衝突的擴充功能將自動停用。您可以隨時在 Hyper-Studio 管理器中查看和管理它們。",
       "installAnyway": "仍然安裝",
       "title": "偵測到節點套件問題！",
       "understood": "了解",
@@ -2830,8 +2830,8 @@
     "importFailedGenericError": "套件匯入失敗。請查看主控台以取得更多詳細資訊。",
     "inWorkflow": "於工作流程中",
     "incompatibleVersion": {
-      "message": "請將 ComfyUI-Manager 升級至 4.2.1 或更高版本。\n• 桌面版：請更新 ComfyUI 桌面應用程式\n• 獨立版：執行 pip install -U comfyui-manager 並重新啟動\n了解更多：https://github.com/Comfy-Org/ComfyUI-Manager",
-      "title": "需要升級 ComfyUI-Manager"
+      "message": "請將 Node Manager 升級至 4.2.1 或更高版本。\n• 桌面版：請更新 Hyper-Studio 桌面應用程式\n• 獨立版：執行 pip install -U comfyui-manager 並重新啟動\n了解更多：https://github.com/Comfy-Org/ComfyUI-Manager",
+      "title": "需要升級 Node Manager"
     },
     "infoPanelEmpty": "點擊項目以查看資訊",
     "installAllMissingNodes": "安裝所有缺少的節點",
@@ -2844,9 +2844,9 @@
     "latestInstallable": "最新可安裝版本",
     "latestStableVersion": "最新穩定版",
     "latestVersion": "最新版本",
-    "legacyManagerSearchTip": "正在尋找 ComfyUI-Manager？你可以在啟動 ComfyUI 時加上 --enable-manager-legacy-ui 參數來啟用舊版管理介面。",
+    "legacyManagerSearchTip": "正在尋找 Node Manager？你可以在啟動 Hyper-Studio 時加上 --enable-manager-legacy-ui 參數來啟用舊版管理介面。",
     "legacyManagerUI": "使用舊版介面",
-    "legacyManagerUIDescription": "若要使用舊版管理介面，請以 --enable-manager-legacy-ui 啟動 ComfyUI",
+    "legacyManagerUIDescription": "若要使用舊版管理介面，請以 --enable-manager-legacy-ui 啟動 Hyper-Studio",
     "legacyMenuNotAvailable": "舊版管理選單不可用，已預設切換至新版管理選單。",
     "license": "授權條款",
     "loadingVersions": "正在載入版本...",
@@ -2880,7 +2880,7 @@
     "packsSelected": "已選擇套件",
     "queueWaitingToContinue": "工作仍在等待處理。請重試以繼續。",
     "repository": "儲存庫",
-    "restartToApplyChanges": "請重新啟動 ComfyUI 以套用變更",
+    "restartToApplyChanges": "請重新啟動 Hyper-Studio 以套用變更",
     "restartingBackend": "正在重新啟動後端以套用變更...",
     "retryQueueStart": "重試",
     "searchPlaceholder": "搜尋",
@@ -3000,7 +3000,7 @@
     "deleteHistoryOnly": "僅會影響歷程記錄，檔案將保留在磁碟上",
     "deleteItems": "刪除這些項目",
     "deletePermanent": "它們將被永久移除。",
-    "deleteTombstone": "它們將不再顯示於 ComfyUI 中，但仍會保留在磁碟上",
+    "deleteTombstone": "它們將不再顯示於 Hyper-Studio 中，但仍會保留在磁碟上",
     "deletingImportedFilesCloudOnly": "僅雲端版本支援刪除匯入的檔案",
     "deletionUnsupported": "資產功能已啟用，但伺服器不支援刪除",
     "failedToCreateNode": "建立節點失敗",
@@ -3081,7 +3081,7 @@
     "toggleBottomPanel": "切換下方面板"
   },
   "menuLabels": {
-    "About ComfyUI": "關於 ComfyUI",
+    "About ComfyUI": "關於 Hyper-Studio",
     "Assets": "資源",
     "Bottom Panel": "底部面板",
     "Browse Templates": "瀏覽範本",
@@ -3096,9 +3096,9 @@
     "Close Current Workflow": "關閉目前工作流程",
     "Collapse/Expand Selected Nodes": "收合/展開選取節點",
     "Comfy-Org Discord": "Comfy-Org Discord",
-    "ComfyUI Docs": "ComfyUI 文件",
-    "ComfyUI Forum": "ComfyUI 論壇",
-    "ComfyUI Issues": "ComfyUI 問題回報",
+    "ComfyUI Docs": "Hyper-Studio 文件",
+    "ComfyUI Forum": "Hyper-Studio 論壇",
+    "ComfyUI Issues": "Hyper-Studio 問題回報",
     "Contact Support": "聯絡支援",
     "Convert Selection to Subgraph": "將選取內容轉為子圖",
     "Copy": "複製",
@@ -3246,7 +3246,7 @@
   "nightly": {
     "badge": {
       "label": "預覽版本",
-      "tooltip": "您正在使用 ComfyUI 的夜間版本。請使用反饋按鈕分享您對這些功能的看法。"
+      "tooltip": "您正在使用 Hyper-Studio 的夜間版本。請使用反饋按鈕分享您對這些功能的看法。"
     }
   },
   "nightlySurvey": {
@@ -3628,7 +3628,7 @@
     "stepLabel": "步驟 {current} / {total}"
   },
   "onboardingReplay": {
-    "confirmMessage": "這將重新載入 ComfyUI，並重設此環境中可用的引導步驟。您的工作流程不會受到影響。",
+    "confirmMessage": "這將重新載入 Hyper-Studio，並重設此環境中可用的引導步驟。您的工作流程不會受到影響。",
     "confirmTitle": "重新播放引導流程？",
     "failedDetail": "無法重設您的引導流程狀態。請再試一次。",
     "failedSummary": "無法重新播放引導流程"
@@ -3857,7 +3857,7 @@
       "installAll": "全部安裝",
       "installed": "已安裝",
       "installing": "安裝中⋯⋯",
-      "ossManagerDisabledHint": "若要安裝缺少的節點，請先在您的 Python 環境中執行 {pipCmd} 以安裝 Node Manager，然後使用 {flag} 旗標重新啟動 ComfyUI。",
+      "ossManagerDisabledHint": "若要安裝缺少的節點，請先在您的 Python 環境中執行 {pipCmd} 以安裝 Node Manager，然後使用 {flag} 旗標重新啟動 Hyper-Studio。",
       "title": "缺少節點包",
       "unknownPack": "未知的節點包",
       "unsupportedTitle": "不支援的節點包",
@@ -4010,7 +4010,7 @@
     },
     "disable-smart-memory": {
       "name": "停用智慧型記憶體管理",
-      "tooltip": "強制 ComfyUI 積極地將模型卸載到一般 RAM，而不是在可行時保留於 VRAM。"
+      "tooltip": "強制 Hyper-Studio 積極地將模型卸載到一般 RAM，而不是在可行時保留於 VRAM。"
     },
     "disable-xformers": {
       "name": "停用 xFormers 最佳化"
@@ -4026,7 +4026,7 @@
     },
     "enable-manager-legacy-ui": {
       "name": "使用舊版 Manager 介面",
-      "tooltip": "使用舊版 ComfyUI-Manager 介面而非新版介面。"
+      "tooltip": "使用舊版 Node Manager 介面而非新版介面。"
     },
     "fast": {
       "name": "啟用部分未經測試且可能降低品質的最佳化。"
@@ -4094,21 +4094,21 @@
   "serverStart": {
     "copyAllTooltip": "複製全部",
     "copySelectionTooltip": "複製所選內容",
-    "errorMessage": "無法啟動 ComfyUI Desktop",
+    "errorMessage": "無法啟動 Hyper-Studio Desktop",
     "installation": {
-      "title": "正在安裝 ComfyUI"
+      "title": "正在安裝 Hyper-Studio"
     },
     "openLogs": "開啟日誌",
     "process": {
-      "error": "無法啟動 ComfyUI 桌面版",
+      "error": "無法啟動 Hyper-Studio 桌面版",
       "initial-state": "載入中...",
       "python-setup": "正在設定 Python 環境...",
       "ready": "完成中...",
-      "starting-server": "正在啟動 ComfyUI 伺服器..."
+      "starting-server": "正在啟動 Hyper-Studio 伺服器..."
     },
     "reportIssue": "回報問題",
     "showTerminal": "顯示終端機",
-    "title": "正在啟動 ComfyUI",
+    "title": "正在啟動 Hyper-Studio",
     "troubleshoot": "疑難排解"
   },
   "settingsCategories": {
@@ -4196,7 +4196,7 @@
     "acknowledgeCheckbox": "我了解這些媒體項目將被公開發佈",
     "checkingAssets": "正在檢查媒體可見性…",
     "comfyHubButton": "上傳到 Comfy Workflows",
-    "comfyHubDescription": "Comfy Workflows 是 ComfyUI 的官方社群中心。\n你的工作流程將有一個所有人都可瀏覽的公開頁面。",
+    "comfyHubDescription": "Comfy Workflows 是 Hyper-Studio 的官方社群中心。\n你的工作流程將有一個所有人都可瀏覽的公開頁面。",
     "comfyHubTitle": "上傳到 Comfy Workflows",
     "copyLink": "複製",
     "createLinkButton": "建立連結",
@@ -4895,7 +4895,7 @@
       "Area Composition": "區域合成",
       "Audio": "音訊",
       "Basics": "基礎",
-      "ComfyUI Examples": "ComfyUI 範例",
+      "ComfyUI Examples": "Hyper-Studio 範例",
       "ControlNet": "ControlNet",
       "Custom Nodes": "自訂節點",
       "Extensions": "擴充功能",
@@ -4955,7 +4955,7 @@
     "logoProviderSeparator": " ＆ "
   },
   "toastMessages": {
-    "a1111CoreNodesUnavailable": "無法載入工作流程，因為此 ComfyUI 安裝缺少核心節點。請確認後端是否正確啟動。",
+    "a1111CoreNodesUnavailable": "無法載入工作流程，因為此 Hyper-Studio 安裝缺少核心節點。請確認後端是否正確啟動。",
     "a1111EmbeddingsUnavailable": "無法從伺服器載入嵌入向量。工作流程已匯入，但嵌入向量名稱保留為純文字。",
     "assetDropFailed": "無法載入拖放的資產",
     "cannotCreateSubgraph": "無法建立子圖",
@@ -5127,7 +5127,7 @@
   },
   "welcome": {
     "getStarted": "開始使用",
-    "title": "歡迎使用 ComfyUI"
+    "title": "歡迎使用 Hyper-Studio"
   },
   "whatsNewPopup": {
     "later": "稍後",

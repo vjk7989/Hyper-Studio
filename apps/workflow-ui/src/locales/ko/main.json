@@ -728,9 +728,9 @@
     "feature2Title": "어디서나 즉시 사용 가능",
     "feature3Title": "즉시 사용 가능한 모델",
     "feature4Title": "최고의 커스텀 노드 팩 사전 설치",
-    "footer": "ComfyUI는 계속 무료이자 오픈 소스입니다. 클라우드 사용은 선택 사항입니다.",
+    "footer": "Hyper-Studio는 계속 무료이자 오픈 소스입니다. 클라우드 사용은 선택 사항입니다.",
     "message": "설정부터 창작까지 몇 초 만에. 인기 모델, 확장 기능, 강력한 GPU — 언제든 바로 사용 가능합니다.",
-    "title": "ComfyUI 클라우드에서 실행하기"
+    "title": "Hyper-Studio 클라우드에서 실행하기"
   },
   "cloudOnboarding": {
     "authTimeout": {
@@ -742,7 +742,7 @@
         "Try a different browser or network"
       ],
       "helpText": "도움이 필요하신가요? 다음으로 문의하세요:",
-      "message": "ComfyUI 클라우드에 연결하는 데 문제가 있습니다. 느린 연결 또는 일시적인 서비스 문제 때문일 수 있습니다.",
+      "message": "Hyper-Studio 클라우드에 연결하는 데 문제가 있습니다. 느린 연결 또는 일시적인 서비스 문제 때문일 수 있습니다.",
       "restart": "로그아웃 후 다시 시도",
       "supportLink": "지원팀",
       "technicalDetails": "기술적 세부 사항",
@@ -771,11 +771,11 @@
     "skipToCloudApp": "클라우드 앱으로 건너뛰기",
     "start": {
       "desc": "설정 불필요. 모든 기기에서 작동합니다.",
-      "download": "ComfyUI 다운로드",
+      "download": "Hyper-Studio 다운로드",
       "explain": "한 번에 여러 결과물 생성. 워크플로우를 손쉽게 공유하세요.",
       "learnAboutButton": "클라우드 알아보기",
       "title": "몇 초 만에 제작 시작",
-      "wantToRun": "로컬에서 ComfyUI를 실행하고 싶으신가요?"
+      "wantToRun": "로컬에서 Hyper-Studio를 실행하고 싶으신가요?"
     },
     "survey": {
       "errors": {
@@ -784,12 +784,12 @@
         "describeAnswer": "답변을 설명해 주세요.",
         "selectAtLeastOne": "최소 한 가지 옵션을 선택해 주세요."
       },
-      "intro": "ComfyUI 경험을 맞춤화할 수 있도록 도와주세요.",
+      "intro": "Hyper-Studio 경험을 맞춤화할 수 있도록 도와주세요.",
       "navigationFailed": "설문조사는 저장되었지만 온보딩을 계속할 수 없습니다",
       "navigationFailedDetail": "다시 시도하세요.",
       "options": {
         "experience": {
-          "new": "ComfyUI가 처음이에요",
+          "new": "Hyper-Studio가 처음이에요",
           "pro": "전문 사용자입니다",
           "some": "기본적인 사용법을 알아요"
         },
@@ -839,10 +839,10 @@
   "cloudStart_explain": "한 번에 여러 결과물 생성. 워크플로우를 손쉽게 공유하세요.",
   "cloudStart_learnAboutButton": "클라우드 알아보기",
   "cloudStart_title": "몇 초 만에 제작 시작",
-  "cloudSurvey_steps_experience": "ComfyUI를 얼마나 잘 알고 계신가요?",
+  "cloudSurvey_steps_experience": "Hyper-Studio를 얼마나 잘 알고 계신가요?",
   "cloudSurvey_steps_focus": "무엇을 만들고 계신가요?",
-  "cloudSurvey_steps_intent": "ComfyUI로 무엇을 만들고 싶으신가요?",
-  "cloudSurvey_steps_source": "ComfyUI를 어디에서 알게 되셨나요?",
+  "cloudSurvey_steps_intent": "Hyper-Studio로 무엇을 만들고 싶으신가요?",
+  "cloudSurvey_steps_source": "Hyper-Studio를 어디에서 알게 되셨나요?",
   "cloudSurvey_steps_source_social": "어떤 플랫폼에서 알게 되셨나요?",
   "cloudWaitlist_contactLink": "여기",
   "cloudWaitlist_questionsText": "질문이 있으신가요? 문의하기",
@@ -1250,13 +1250,13 @@
     "WEBCAM": "웹캠"
   },
   "desktopLogin": {
-    "confirmMessage": "ComfyUI 데스크톱 앱이 귀하의 계정으로 로그인 대기 중입니다. ComfyUI 데스크톱 앱에서 로그인을 시작한 경우에만 계속 진행하세요.",
+    "confirmMessage": "Hyper-Studio 데스크톱 앱이 귀하의 계정으로 로그인 대기 중입니다. Hyper-Studio 데스크톱 앱에서 로그인을 시작한 경우에만 계속 진행하세요.",
     "confirmSummary": "데스크톱 로그인 승인하시겠습니까?",
-    "expiredDetail": "로그인 요청이 만료되었거나 이미 사용되었습니다. ComfyUI 데스크톱 앱에서 다시 로그인을 시작하세요.",
+    "expiredDetail": "로그인 요청이 만료되었거나 이미 사용되었습니다. Hyper-Studio 데스크톱 앱에서 다시 로그인을 시작하세요.",
     "expiredSummary": "데스크톱 로그인 실패",
-    "failedDetail": "데스크톱 로그인 완료 중 오류가 발생했습니다. ComfyUI 데스크톱 앱에서 다시 로그인을 시작하세요.",
+    "failedDetail": "데스크톱 로그인 완료 중 오류가 발생했습니다. Hyper-Studio 데스크톱 앱에서 다시 로그인을 시작하세요.",
     "failedSummary": "데스크톱 로그인 실패",
-    "successDetail": "ComfyUI 데스크톱 앱으로 돌아가실 수 있습니다.",
+    "successDetail": "Hyper-Studio 데스크톱 앱으로 돌아가실 수 있습니다.",
     "successSummary": "로그인 완료"
   },
   "desktopMenu": {
@@ -1269,12 +1269,12 @@
     "initialising": "초기화 중..."
   },
   "desktopUpdate": {
-    "description": "ComfyUI 데스크톱이 새로운 종속성을 설치하고 있습니다. 이 작업은 몇 분 정도 걸릴 수 있습니다.",
+    "description": "Hyper-Studio 데스크톱이 새로운 종속성을 설치하고 있습니다. 이 작업은 몇 분 정도 걸릴 수 있습니다.",
     "errorCheckingUpdate": "업데이트 확인 중 오류가 발생했습니다",
     "errorInstallingUpdate": "업데이트 설치 중 오류가 발생했습니다",
     "noUpdateFound": "업데이트를 찾을 수 없습니다",
     "terminalDefaultMessage": "업데이트 콘솔 출력은 여기에 표시됩니다.",
-    "title": "ComfyUI 데스크톱 업데이트 중",
+    "title": "Hyper-Studio 데스크톱 업데이트 중",
     "updateAvailableMessage": "업데이트가 가능합니다. 지금 재시작하고 업데이트하시겠습니까?",
     "updateFoundTitle": "업데이트 발견 (v{version})"
   },
@@ -1284,7 +1284,7 @@
     "message": "git 프로그램을 찾을 수 없습니다. 정상적인 작업을 위해서는 git 프로그램이 필요합니다.",
     "skip": "건너뛰기",
     "title": "git 프로그램 다운로드",
-    "warning": "git 프로그램이 이미 설치된 것이 확실하다면, 이 검사 단계를 스킵할 수 있습니다. 현재는 정상적으로 실행 가능한 git 프로그램이 없는 경우, ComfyUI를 실행할 수 없습니다."
+    "warning": "git 프로그램이 이미 설치된 것이 확실하다면, 이 검사 단계를 스킵할 수 있습니다. 현재는 정상적으로 실행 가능한 git 프로그램이 없는 경우, Hyper-Studio를 실행할 수 없습니다."
   },
   "electronFileDownload": {
     "cancel": "다운로드 취소",
@@ -1665,7 +1665,7 @@
         "details": "{nodeName}에서 인식되지 않는 유효성 검사 오류가 반환되었습니다: {errorType}",
         "detailsWithRawDetails": "{nodeName}에서 인식되지 않는 유효성 검사 오류({errorType})가 반환되었습니다: {rawDetails}",
         "itemLabel": "{nodeName}",
-        "message": "노드가 ComfyUI에서 인식하지 못하는 유효성 검사 오류를 반환했습니다.",
+        "message": "노드가 Hyper-Studio에서 인식하지 못하는 유효성 검사 오류를 반환했습니다.",
         "title": "유효성 검사 실패",
         "toastMessage": "{nodeName}에서 인식되지 않는 유효성 검사 오류가 반환되었습니다.",
         "toastTitle": "유효성 검사 실패"
@@ -1829,7 +1829,7 @@
     "color": "색상",
     "comfy": "Comfy",
     "comfyCloud": "Comfy Cloud",
-    "comfyOrgLogoAlt": "ComfyOrg 로고",
+    "comfyOrgLogoAlt": "Hyper-Studio 로고",
     "comfyPackageOutdated": "설치된 {name} 버전 {installedVersion}이(가) 필요한 버전 {requiredVersion}보다 낮습니다.",
     "comingSoon": "곧 출시 예정",
     "command": "명령",
@@ -1967,7 +1967,7 @@
       "exportPreset": "프리셋 내보내기",
       "importKeybindingPreset": "키 바인딩 프리셋 가져오기",
       "importPreset": "프리셋 가져오기",
-      "invalidPresetFile": "프리셋 파일은 ComfyUI에서 내보낸 유효한 JSON이어야 합니다",
+      "invalidPresetFile": "프리셋 파일은 Hyper-Studio에서 내보낸 유효한 JSON이어야 합니다",
       "invalidPresetName": "프리셋 이름은 비어 있거나 \"default\"일 수 없으며, 점(.)으로 시작하거나 경로 구분자를 포함하거나 .json으로 끝날 수 없습니다",
       "loadPresetFailed": "\"{name}\" 프리셋을 불러오지 못했습니다",
       "overwritePresetMessage": "\"{name}\"이라는 이름의 프리셋이 이미 있습니다. 덮어쓰시겠습니까?",
@@ -1992,7 +1992,7 @@
     "loading": "로딩 중",
     "loadingPanel": "{panel} 패널 불러오는 중...",
     "login": "로그인",
-    "logoAlt": "ComfyUI 로고",
+    "logoAlt": "Hyper-Studio 로고",
     "logs": "로그",
     "manageExtensions": "확장 프로그램 관리",
     "markdown": "마크다운",
@@ -2152,7 +2152,7 @@
     "systemInfo": "시스템 정보",
     "systemStatsArguments": "인자",
     "systemStatsCloudVersion": "클라우드 버전",
-    "systemStatsComfyUIVersion": "ComfyUI 버전",
+    "systemStatsComfyUIVersion": "Hyper-Studio 버전",
     "systemStatsEmbeddedPython": "임베디드 Python",
     "systemStatsFrontendVersion": "프론트엔드 버전",
     "systemStatsOS": "OS",
@@ -2282,12 +2282,12 @@
     "reinstall": "재설치",
     "systemStatus": "시스템 상태",
     "updateAvailable": "업데이트",
-    "updateComfyUI": "ComfyUI 업데이트",
-    "updateComfyUIFailed": "ComfyUI 업데이트에 실패했습니다. 다시 시도해 주세요.",
+    "updateComfyUI": "Hyper-Studio 업데이트",
+    "updateComfyUIFailed": "Hyper-Studio 업데이트에 실패했습니다. 다시 시도해 주세요.",
     "updateComfyUIStarted": "업데이트 시작됨",
-    "updateComfyUIStartedDetail": "ComfyUI 업데이트가 대기열에 추가되었습니다. 잠시만 기다려 주세요...",
+    "updateComfyUIStartedDetail": "Hyper-Studio 업데이트가 대기열에 추가되었습니다. 잠시만 기다려 주세요...",
     "updateComfyUISuccess": "업데이트 완료",
-    "updateComfyUISuccessDetail": "ComfyUI가 업데이트되었습니다. 재시작 중...",
+    "updateComfyUISuccessDetail": "Hyper-Studio가 업데이트되었습니다. 재시작 중...",
     "whatsNew": "새로운 소식?"
   },
   "icon": {
@@ -2322,14 +2322,14 @@
     "title": "가져오기 실패"
   },
   "install": {
-    "appDataLocationTooltip": "ComfyUI의 앱 데이터 디렉토리. 저장소:\n- 로그\n- 서버 구성",
-    "appPathLocationTooltip": "ComfyUI의 앱 에셋 디렉토리. ComfyUI 코드 및 에셋을 저장합니다.",
+    "appDataLocationTooltip": "Hyper-Studio의 앱 데이터 디렉토리. 저장소:\n- 로그\n- 서버 구성",
+    "appPathLocationTooltip": "Hyper-Studio의 앱 에셋 디렉토리. Hyper-Studio 코드 및 에셋을 저장합니다.",
     "cannotWrite": "선택한 경로에 쓸 수 없습니다",
     "chooseInstallationLocation": "설치 위치 선택",
     "customNodes": "커스텀 노드",
-    "customNodesDescription": "기존 ComfyUI 설치에서 커스텀 노드를 다시 설치합니다.",
+    "customNodesDescription": "기존 Hyper-Studio 설치에서 커스텀 노드를 다시 설치합니다.",
     "desktopAppSettings": "데스크탑 앱 설정",
-    "desktopAppSettingsDescription": "ComfyUI가 데스크탑에서 어떻게 작동하는지 구성하세요. 이 설정은 나중에 변경할 수 있습니다.",
+    "desktopAppSettingsDescription": "Hyper-Studio가 데스크탑에서 어떻게 작동하는지 구성하세요. 이 설정은 나중에 변경할 수 있습니다.",
     "desktopSettings": "데스크탑 설정",
     "failedToSelectDirectory": "디렉토리 선택 실패",
     "gpu": "GPU",
@@ -2339,7 +2339,7 @@
       "appleMetalDescription": "Mac의 GPU를 활용하여 더 빠른 속도와 더 나은 전반적인 경험을 제공합니다",
       "cpuDescription": "GPU 가속을 사용할 수 없을 때 호환성을 위해 CPU 모드를 사용하세요",
       "cpuSubtitle": "CPU 모드",
-      "manualDescription": "고급 설정이나 지원되지 않는 하드웨어를 위해 ComfyUI를 수동으로 구성하세요",
+      "manualDescription": "고급 설정이나 지원되지 않는 하드웨어를 위해 Hyper-Studio를 수동으로 구성하세요",
       "manualSubtitle": "수동 설정",
       "nvidiaDescription": "최고의 성능을 위해 CUDA 가속과 함께 NVIDIA GPU를 사용하세요.",
       "nvidiaSubtitle": "NVIDIA CUDA",
@@ -2350,7 +2350,7 @@
       "cpuMode": "CPU 모드",
       "cpuModeDescription": "CPU 모드는 개발자와 드문 경우에만 사용됩니다.",
       "cpuModeDescription2": "이것이 필요한지 확실하지 않다면, 이 상자를 무시하고 위에서 GPU를 선택하세요.",
-      "customComfyNeedsPython": "Python이 설정되지 않으면 ComfyUI가 작동하지 않습니다",
+      "customComfyNeedsPython": "Python이 설정되지 않으면 Hyper-Studio가 작동하지 않습니다",
       "customInstallRequirements": "모든 요구 사항과 종속성 설치 (예: 사용자 정의 torch)",
       "customManualVenv": "Python venv를 수동으로 구성",
       "customMayNotWork": "이것은 전혀 지원되지 않으며, 작동하지 않을 수 있습니다",
@@ -2361,28 +2361,28 @@
       "selectGpu": "GPU 선택",
       "selectGpuDescription": "소유한 GPU 유형을 선택하세요"
     },
-    "helpImprove": "ComfyUI 개선에 도움을 주세요",
-    "insideAppInstallDir": "이 폴더는 ComfyUI Desktop 애플리케이션 번들 내부에 있으며, 업데이트 시 삭제됩니다. Documents/ComfyUI와 같은 설치 폴더 외부의 디렉터리를 선택하세요.",
-    "insideUpdaterCache": "이 폴더는 ComfyUI 업데이트 캐시 내부에 있으며, 매번 업데이트 시 삭제됩니다. 데이터 저장을 위해 다른 위치를 선택하세요.",
+    "helpImprove": "Hyper-Studio 개선에 도움을 주세요",
+    "insideAppInstallDir": "이 폴더는 Hyper-Studio Desktop 애플리케이션 번들 내부에 있으며, 업데이트 시 삭제됩니다. Documents/Hyper-Studio와 같은 설치 폴더 외부의 디렉터리를 선택하세요.",
+    "insideUpdaterCache": "이 폴더는 Hyper-Studio 업데이트 캐시 내부에 있으며, 매번 업데이트 시 삭제됩니다. 데이터 저장을 위해 다른 위치를 선택하세요.",
     "installLocation": "설치 위치",
-    "installLocationDescription": "ComfyUI의 사용자 데이터 디렉토리를 선택하십시오. 선택한 위치에 Python 환경이 설치됩니다. 선택한 디스크에 충분한 공간(~15GB)이 남아 있는지 확인하십시오.",
-    "installLocationTooltip": "ComfyUI의 사용자 데이터 디렉토리. 저장소:\n- Python 환경\n- 모델\n- 커스텀 노드\n",
+    "installLocationDescription": "Hyper-Studio의 사용자 데이터 디렉토리를 선택하십시오. 선택한 위치에 Python 환경이 설치됩니다. 선택한 디스크에 충분한 공간(~15GB)이 남아 있는지 확인하십시오.",
+    "installLocationTooltip": "Hyper-Studio의 사용자 데이터 디렉토리. 저장소:\n- Python 환경\n- 모델\n- 커스텀 노드\n",
     "insufficientFreeSpace": "공간이 부족합니다 - 최소한의 여유 공간",
     "isOneDrive": "OneDrive에 설치하면 문제가 발생할 수 있습니다. OneDrive가 아닌 위치에 설치하는 것을 강력히 권장합니다.",
     "locationPicker": {
       "chooseDownloadServers": "다운로드 서버 수동 선택",
       "downloadServersDescription": "위치에 따라 Python, PyPI 패키지 및 PyTorch 다운로드를 위한 특정 미러 서버를 선택하세요.",
-      "migrateDescription": "이전 ComfyUI 설치에서 기존 모델, 커스텀 노드 및 구성을 복사하거나 링크합니다.",
+      "migrateDescription": "이전 Hyper-Studio 설치에서 기존 모델, 커스텀 노드 및 구성을 복사하거나 링크합니다.",
       "migrateFromExisting": "기존 설치에서 마이그레이션",
-      "migrationPathPlaceholder": "기존 ComfyUI 설치 선택 (선택사항)",
-      "pathPlaceholder": "/Users/username/Documents/ComfyUI",
-      "subtitle": "ComfyUI 파일을 위한 폴더를 선택하세요. Python도 자동으로 설정됩니다.",
-      "title": "ComfyUI를 설치할 위치를 선택하세요"
+      "migrationPathPlaceholder": "기존 Hyper-Studio 설치 선택 (선택사항)",
+      "pathPlaceholder": "/Users/username/Documents/Hyper-Studio",
+      "subtitle": "Hyper-Studio 파일을 위한 폴더를 선택하세요. Python도 자동으로 설정됩니다.",
+      "title": "Hyper-Studio를 설치할 위치를 선택하세요"
     },
     "manualConfiguration": {
       "createVenv": "다음 디렉토리에 가상 환경을 생성해야 합니다",
       "requirements": "요구 사항",
-      "restartWhenFinished": "가상 환경 구성을 완료하면 ComfyUI를 다시 시작해주세요.",
+      "restartWhenFinished": "가상 환경 구성을 완료하면 Hyper-Studio를 다시 시작해주세요.",
       "title": "수동 구성",
       "virtualEnvironmentPath": "가상 환경 경로"
     },
@@ -2391,9 +2391,9 @@
     "migrateFromExistingInstallation": "기존 설치에서 마이그레이션",
     "migration": "마이그레이션",
     "migrationOptional": "마이그레이션은 선택 사항입니다. 기존에 설치된 것이 없다면, 이 단계를 건너뛸 수 있습니다.",
-    "migrationSourcePathDescription": "기존에 설치된 ComfyUI가 있으면, 기존 사용자 파일과 모델을 새 설치본으로 복사하거나 링크 할 수 있습니다. 기존의 ComfyUI 설치는 영향을 받지 않습니다.",
+    "migrationSourcePathDescription": "기존에 설치된 Hyper-Studio가 있으면, 기존 사용자 파일과 모델을 새 설치본으로 복사하거나 링크 할 수 있습니다. 기존의 Hyper-Studio 설치는 영향을 받지 않습니다.",
     "moreInfo": "더 많은 정보를 원하시면, 다음을 읽어주세요",
-    "nonDefaultDrive": "ComfyUI를 시스템 드라이브(예: C:\\)에 설치하십시오. 다른 파일 시스템을 가진 드라이브는 예측할 수 없는 문제를 일으킬 수 있습니다. 설치 후에는 모델 및 기타 파일을 다른 드라이브에 저장할 수 있습니다.",
+    "nonDefaultDrive": "Hyper-Studio를 시스템 드라이브(예: C:\\)에 설치하십시오. 다른 파일 시스템을 가진 드라이브는 예측할 수 없는 문제를 일으킬 수 있습니다. 설치 후에는 모델 및 기타 파일을 다른 드라이브에 저장할 수 있습니다.",
     "parentMissing": "경로가 존재하지 않습니다 - 먼저 포함하는 디렉토리를 생성하세요",
     "pathExists": "디렉토리가 이미 존재합니다 - 모든 데이터를 백업했는지 확인해 주세요",
     "pathValidationFailed": "경로 유효성 검사 실패",
@@ -2401,7 +2401,7 @@
     "selectItemsToMigrate": "마이그레이션 항목 선택",
     "settings": {
       "allowMetrics": "사용 통계",
-      "allowMetricsDescription": "익명의 사용 통계를 보내 ComfyUI를 개선하는 데 도움을 줍니다. 개인 정보나 워크플로 내용은 수집되지 않습니다.",
+      "allowMetricsDescription": "익명의 사용 통계를 보내 Hyper-Studio를 개선하는 데 도움을 줍니다. 개인 정보나 워크플로 내용은 수집되지 않습니다.",
       "autoUpdate": "자동 업데이트",
       "autoUpdateDescription": "업데이트가 가능해지면 자동으로 다운로드하고 설치합니다. 업데이트가 설치되기 전에 항상 알림을 받습니다.",
       "checkingMirrors": "Python 미러에 대한 네트워크 액세스 확인 중...",
@@ -2718,12 +2718,12 @@
   },
   "loadWorkflowWarning": {
     "coreNodesFromVersion": "버전 {version}의 코어 노드:",
-    "newerVersionRequired": "일부 노드에는 더 최신 버전의 ComfyUI가 필요합니다(현재: {version}). 모든 노드를 사용하려면 업데이트하세요.",
-    "newerVersionRequiredGeneric": "일부 노드에는 더 최신 버전의 ComfyUI가 필요합니다. 모든 노드를 사용하려면 업데이트하세요.",
+    "newerVersionRequired": "일부 노드에는 더 최신 버전의 Hyper-Studio가 필요합니다(현재: {version}). 모든 노드를 사용하려면 업데이트하세요.",
+    "newerVersionRequiredGeneric": "일부 노드에는 더 최신 버전의 Hyper-Studio가 필요합니다. 모든 노드를 사용하려면 업데이트하세요.",
     "unknownVersion": "알 수 없음"
   },
   "logsTerminal": {
-    "loadError": "로그를 불러올 수 없습니다. ComfyUI 백엔드가 최신인지 확인해 주세요.",
+    "loadError": "로그를 불러올 수 없습니다. Hyper-Studio 백엔드가 최신인지 확인해 주세요.",
     "resyncError": "백엔드 재연결 후 로그를 다시 동기화할 수 없습니다. 다시 시도하려면 콘솔을 다시 여세요."
   },
   "maintenance": {
@@ -2746,12 +2746,12 @@
     "terminalDefaultMessage": "문제 해결 명령을 실행하면 출력이 여기에 표시됩니다.",
     "title": "유지 보수",
     "unsafeMigration": {
-      "action": "아래의 \"기본 경로\" 유지 관리 작업을 사용하여 ComfyUI를 안전한 위치로 이동하세요.",
-      "appInstallDir": "기본 경로가 ComfyUI 데스크톱 애플리케이션 번들 내부에 있습니다. 이 폴더는 업데이트 시 삭제되거나 덮어쓸 수 있습니다. Documents/ComfyUI와 같은 설치 폴더 외부의 디렉터리를 선택하세요.",
-      "generic": "현재 ComfyUI 기본 경로가 업데이트 중 삭제되거나 수정될 수 있는 위치에 있습니다. 데이터 손실을 방지하려면 안전한 폴더로 이동하세요.",
+      "action": "아래의 \"기본 경로\" 유지 관리 작업을 사용하여 Hyper-Studio를 안전한 위치로 이동하세요.",
+      "appInstallDir": "기본 경로가 Hyper-Studio 데스크톱 애플리케이션 번들 내부에 있습니다. 이 폴더는 업데이트 시 삭제되거나 덮어쓸 수 있습니다. Documents/Hyper-Studio와 같은 설치 폴더 외부의 디렉터리를 선택하세요.",
+      "generic": "현재 Hyper-Studio 기본 경로가 업데이트 중 삭제되거나 수정될 수 있는 위치에 있습니다. 데이터 손실을 방지하려면 안전한 폴더로 이동하세요.",
       "oneDrive": "기본 경로가 OneDrive에 있습니다. 이는 동기화 문제 및 우발적인 데이터 손실을 일으킬 수 있습니다. OneDrive에서 관리되지 않는 로컬 폴더를 선택하세요.",
       "title": "안전하지 않은 설치 위치 감지됨",
-      "updaterCache": "기본 경로가 ComfyUI 업데이트 캐시 내부에 있습니다. 이 폴더는 매번 업데이트 시 삭제됩니다. 데이터를 위한 다른 위치를 선택하세요."
+      "updaterCache": "기본 경로가 Hyper-Studio 업데이트 캐시 내부에 있습니다. 이 폴더는 매번 업데이트 시 삭제됩니다. 데이터를 위한 다른 위치를 선택하세요."
     }
   },
   "manager": {
@@ -2766,7 +2766,7 @@
       "conflictMessages": {
         "accelerator": "GPU/가속기가 지원되지 않음 (사용 가능: {current}, 필요: {required})",
         "banned": "이 패키지는 보안상의 이유로 차단되었습니다",
-        "comfyui_version": "ComfyUI 버전 불일치 (현재: {current}, 필요: {required})",
+        "comfyui_version": "Hyper-Studio 버전 불일치 (현재: {current}, 필요: {required})",
         "frontend_version": "프론트엔드 버전 불일치 (현재: {current}, 필요: {required})",
         "generic": "호환성 문제 (현재: {current}, 필요: {required})",
         "import_failed": "가져오기 실패",
@@ -2774,11 +2774,11 @@
         "pending": "보안 확인 대기 중 - 호환성을 확인할 수 없습니다"
       },
       "conflicts": "충돌",
-      "description": "일부 확장과 새 버전의 ComfyUI 간에 충돌이 감지되었습니다. 업데이트하면 해당 확장에 의존하는 워크플로가 중단될 위험이 있습니다.",
+      "description": "일부 확장과 새 버전의 Hyper-Studio 간에 충돌이 감지되었습니다. 업데이트하면 해당 확장에 의존하는 워크플로가 중단될 위험이 있습니다.",
       "enableAnyway": "그래도 활성화",
       "extensionAtRisk": "위험한 확장",
       "importFailedExtensions": "가져오기 실패한 확장",
-      "info": "업데이트를 계속하면 충돌하는 확장이 자동으로 비활성화됩니다. ComfyUI 관리자에서 언제든지 확인하고 관리할 수 있습니다.",
+      "info": "업데이트를 계속하면 충돌하는 확장이 자동으로 비활성화됩니다. Hyper-Studio 관리자에서 언제든지 확인하고 관리할 수 있습니다.",
       "installAnyway": "그래도 설치",
       "title": "노드 팩 문제 감지됨!",
       "understood": "이해했습니다",
@@ -2830,8 +2830,8 @@
     "importFailedGenericError": "패키지 가져오기에 실패했습니다. 자세한 내용은 콘솔을 확인하세요.",
     "inWorkflow": "워크플로 내",
     "incompatibleVersion": {
-      "message": "ComfyUI-Manager를 4.2.1 이상 버전으로 업그레이드해주세요.\n• 데스크톱: ComfyUI Desktop 앱을 업데이트하세요\n• 독립 실행형: pip install -U comfyui-manager 명령 실행 후 재시작하세요\n자세히 보기: https://github.com/Comfy-Org/ComfyUI-Manager",
-      "title": "ComfyUI-Manager 업그레이드 필요"
+      "message": "Node Manager를 4.2.1 이상 버전으로 업그레이드해주세요.\n• 데스크톱: Hyper-Studio Desktop 앱을 업데이트하세요\n• 독립 실행형: pip install -U comfyui-manager 명령 실행 후 재시작하세요\n자세히 보기: https://github.com/Comfy-Org/ComfyUI-Manager",
+      "title": "Node Manager 업그레이드 필요"
     },
     "infoPanelEmpty": "정보를 보려면 항목을 클릭하세요",
     "installAllMissingNodes": "모든 누락된 노드 설치",
@@ -2844,10 +2844,10 @@
     "latestInstallable": "최신 설치 가능 버전",
     "latestStableVersion": "최신 안정 버전",
     "latestVersion": "최신",
-    "legacyManagerSearchTip": "ComfyUI-Manager를 찾고 계신가요? ComfyUI를 --enable-manager-legacy-ui 플래그와 함께 시작하면 레거시 매니저 UI를 활성화할 수 있습니다.",
+    "legacyManagerSearchTip": "Node Manager를 찾고 계신가요? Hyper-Studio를 --enable-manager-legacy-ui 플래그와 함께 시작하면 레거시 매니저 UI를 활성화할 수 있습니다.",
     "legacyManagerUI": "구버전 매니저 UI 사용",
-    "legacyManagerUIDescription": "구버전 매니저 UI를 사용하려면, ComfyUI를 --enable-manager-legacy-ui로 시작하세요",
-    "legacyMenuNotAvailable": "이 버전의 ComfyUI에서는 구버전 매니저 메뉴를 사용할 수 없습니다. 대신 새로운 매니저 메뉴를 사용하십시오.",
+    "legacyManagerUIDescription": "구버전 매니저 UI를 사용하려면, Hyper-Studio를 --enable-manager-legacy-ui로 시작하세요",
+    "legacyMenuNotAvailable": "이 버전의 Hyper-Studio에서는 구버전 매니저 메뉴를 사용할 수 없습니다. 대신 새로운 매니저 메뉴를 사용하십시오.",
     "license": "라이선스",
     "loadingVersions": "버전 로딩 중...",
     "mixedSelectionMessage": "혼합 선택에 대해 일괄 작업을 수행할 수 없습니다",
@@ -2880,7 +2880,7 @@
     "packsSelected": "선택한 노드 팩",
     "queueWaitingToContinue": "작업이 보류 중입니다. 계속하려면 다시 시도하세요.",
     "repository": "저장소",
-    "restartToApplyChanges": "변경 사항을 적용하려면 ComfyUI를 재시작해 주세요",
+    "restartToApplyChanges": "변경 사항을 적용하려면 Hyper-Studio를 재시작해 주세요",
     "restartingBackend": "변경사항을 적용하기 위해 백엔드를 다시 시작하는 중...",
     "retryQueueStart": "다시 시도",
     "searchPlaceholder": "검색",
@@ -3000,7 +3000,7 @@
     "deleteHistoryOnly": "기록에만 영향을 미치며, 파일은 디스크에 남아 있습니다",
     "deleteItems": "이 항목 삭제",
     "deletePermanent": "영구적으로 제거됩니다.",
-    "deleteTombstone": "더 이상 ComfyUI에 표시되지 않지만 디스크에는 남아 있습니다",
+    "deleteTombstone": "더 이상 Hyper-Studio에 표시되지 않지만 디스크에는 남아 있습니다",
     "deletingImportedFilesCloudOnly": "가져온 파일 삭제는 클라우드 버전에서만 지원됩니다",
     "deletionUnsupported": "에셋이 활성화되어 있지만 서버가 삭제를 지원하지 않습니다",
     "failedToCreateNode": "노드 생성에 실패했습니다",
@@ -3081,7 +3081,7 @@
     "toggleBottomPanel": "하단 패널 전환"
   },
   "menuLabels": {
-    "About ComfyUI": "ComfyUI에 대하여",
+    "About ComfyUI": "Hyper-Studio에 대하여",
     "Assets": "에셋",
     "Bottom Panel": "하단 패널",
     "Browse Templates": "템플릿 탐색",
@@ -3096,9 +3096,9 @@
     "Close Current Workflow": "현재 워크플로 닫기",
     "Collapse/Expand Selected Nodes": "선택한 노드 축소/확장",
     "Comfy-Org Discord": "Comfy-Org 디스코드",
-    "ComfyUI Docs": "ComfyUI 문서",
-    "ComfyUI Forum": "ComfyUI 포럼",
-    "ComfyUI Issues": "ComfyUI 이슈 페이지",
+    "ComfyUI Docs": "Hyper-Studio 문서",
+    "ComfyUI Forum": "Hyper-Studio 포럼",
+    "ComfyUI Issues": "Hyper-Studio 이슈 페이지",
     "Contact Support": "고객 지원 문의",
     "Convert Selection to Subgraph": "선택 영역을 서브그래프로 변환",
     "Copy": "복사",
@@ -3246,7 +3246,7 @@
   "nightly": {
     "badge": {
       "label": "미리보기 버전",
-      "tooltip": "현재 ComfyUI의 나이트리 버전을 사용 중입니다. 이 기능들에 대한 의견을 피드백 버튼을 통해 공유해 주세요."
+      "tooltip": "현재 Hyper-Studio의 나이트리 버전을 사용 중입니다. 이 기능들에 대한 의견을 피드백 버튼을 통해 공유해 주세요."
     }
   },
   "nightlySurvey": {
@@ -3628,7 +3628,7 @@
     "stepLabel": "단계 {current} / {total}"
   },
   "onboardingReplay": {
-    "confirmMessage": "이 작업을 수행하면 ComfyUI가 다시 로드되고 이 환경에서 사용할 수 있는 온보딩 단계가 초기화됩니다. 워크플로에는 영향이 없습니다.",
+    "confirmMessage": "이 작업을 수행하면 Hyper-Studio가 다시 로드되고 이 환경에서 사용할 수 있는 온보딩 단계가 초기화됩니다. 워크플로에는 영향이 없습니다.",
     "confirmTitle": "온보딩을 다시 실행할까요?",
     "failedDetail": "온보딩 상태를 초기화하지 못했습니다. 다시 시도하세요.",
     "failedSummary": "온보딩을 다시 실행하지 못했습니다"
@@ -3857,7 +3857,7 @@
       "installAll": "모두 설치",
       "installed": "설치됨",
       "installing": "설치 중...",
-      "ossManagerDisabledHint": "누락된 노드를 설치하려면 먼저 Python 환경에서 {pipCmd}를 실행하여 Node Manager를 설치한 후, {flag} 플래그와 함께 ComfyUI를 다시 시작하세요.",
+      "ossManagerDisabledHint": "누락된 노드를 설치하려면 먼저 Python 환경에서 {pipCmd}를 실행하여 Node Manager를 설치한 후, {flag} 플래그와 함께 Hyper-Studio를 다시 시작하세요.",
       "title": "누락된 노드 팩",
       "unknownPack": "알 수 없는 팩",
       "unsupportedTitle": "지원되지 않는 노드 팩",
@@ -4010,7 +4010,7 @@
     },
     "disable-smart-memory": {
       "name": "스마트 메모리 관리 비활성화",
-      "tooltip": "ComfyUI가 모델을 VRAM에 유지하는 대신 시스템 메모리로 공격적으로 오프로드하도록 강제합니다."
+      "tooltip": "Hyper-Studio가 모델을 VRAM에 유지하는 대신 시스템 메모리로 공격적으로 오프로드하도록 강제합니다."
     },
     "disable-xformers": {
       "name": "xFormers 최적화 비활성화"
@@ -4026,7 +4026,7 @@
     },
     "enable-manager-legacy-ui": {
       "name": "레거시 Manager UI 사용",
-      "tooltip": "새 UI 대신 레거시 ComfyUI-Manager UI를 사용합니다."
+      "tooltip": "새 UI 대신 레거시 Node Manager UI를 사용합니다."
     },
     "fast": {
       "name": "테스트되지 않고 품질 저하 가능성이 있는 실험적 최적화 기능을 활성화 합니다."
@@ -4094,21 +4094,21 @@
   "serverStart": {
     "copyAllTooltip": "모두 복사",
     "copySelectionTooltip": "선택 항목 복사",
-    "errorMessage": "ComfyUI Desktop을 시작할 수 없습니다",
+    "errorMessage": "Hyper-Studio Desktop을 시작할 수 없습니다",
     "installation": {
-      "title": "ComfyUI 설치 중"
+      "title": "Hyper-Studio 설치 중"
     },
     "openLogs": "로그 열기",
     "process": {
-      "error": "ComfyUI Desktop을 시작할 수 없습니다",
+      "error": "Hyper-Studio Desktop을 시작할 수 없습니다",
       "initial-state": "로딩 중...",
       "python-setup": "Python 환경 설정 중...",
       "ready": "마무리 중...",
-      "starting-server": "ComfyUI 서버 시작 중..."
+      "starting-server": "Hyper-Studio 서버 시작 중..."
     },
     "reportIssue": "문제 보고",
     "showTerminal": "터미널 보기",
-    "title": "ComfyUI 시작 중",
+    "title": "Hyper-Studio 시작 중",
     "troubleshoot": "문제 해결"
   },
   "settingsCategories": {
@@ -4196,7 +4196,7 @@
     "acknowledgeCheckbox": "이 미디어 항목들이 게시되어 공개됨을 이해합니다",
     "checkingAssets": "미디어 공개 여부 확인 중…",
     "comfyHubButton": "Comfy Workflows에 업로드",
-    "comfyHubDescription": "Comfy Workflows는 ComfyUI의 공식 커뮤니티 허브입니다.\n워크플로우는 모두가 볼 수 있는 공개 페이지로 등록됩니다.",
+    "comfyHubDescription": "Comfy Workflows는 Hyper-Studio의 공식 커뮤니티 허브입니다.\n워크플로우는 모두가 볼 수 있는 공개 페이지로 등록됩니다.",
     "comfyHubTitle": "Comfy Workflows에 업로드",
     "copyLink": "복사",
     "createLinkButton": "링크 생성",
@@ -4895,7 +4895,7 @@
       "Area Composition": "영역 구성",
       "Audio": "오디오",
       "Basics": "기본",
-      "ComfyUI Examples": "ComfyUI 예시",
+      "ComfyUI Examples": "Hyper-Studio 예시",
       "ControlNet": "컨트롤넷",
       "Custom Nodes": "커스텀 노드",
       "Extensions": "확장 기능",
@@ -4955,7 +4955,7 @@
     "logoProviderSeparator": " & "
   },
   "toastMessages": {
-    "a1111CoreNodesUnavailable": "이 ComfyUI 설치에 핵심 노드가 없어서 워크플로우를 불러올 수 없습니다. 백엔드가 올바르게 시작되었는지 확인하세요.",
+    "a1111CoreNodesUnavailable": "이 Hyper-Studio 설치에 핵심 노드가 없어서 워크플로우를 불러올 수 없습니다. 백엔드가 올바르게 시작되었는지 확인하세요.",
     "a1111EmbeddingsUnavailable": "서버에서 임베딩을 불러올 수 없습니다. 워크플로는 가져왔지만 임베딩 이름은 일반 텍스트로 유지되었습니다.",
     "assetDropFailed": "놓은 에셋을 불러올 수 없습니다",
     "cannotCreateSubgraph": "서브그래프를 생성할 수 없습니다",
@@ -5127,7 +5127,7 @@
   },
   "welcome": {
     "getStarted": "시작하기",
-    "title": "ComfyUI에 오신 것을 환영합니다"
+    "title": "Hyper-Studio에 오신 것을 환영합니다"
   },
   "whatsNewPopup": {
     "later": "나중에",

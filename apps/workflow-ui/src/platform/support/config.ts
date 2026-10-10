@@ -1,4 +1,7 @@
 import { isCloud, isNightly } from '@/platform/distribution/types'
+import { isHyperStudioEmbedded } from '@/platform/distribution/hyperStudio'
+
+const HYPER_STUDIO_ISSUES_URL = 'https://github.com/vjk7989/Hyper-Studio/issues/new'
 
 /**
  * Zendesk ticket form field IDs.
@@ -48,6 +51,7 @@ function getFeedbackTags(source: FeedbackSource): Record<string, string> {
  * by distribution (cloud / oss-nightly / oss) and entry point.
  */
 export function buildFeedbackTypeformUrl(source: FeedbackSource): string {
+  if (isHyperStudioEmbedded) return HYPER_STUDIO_ISSUES_URL
   const params = new URLSearchParams(getFeedbackTags(source))
   return `${FEEDBACK_TYPEFORM_BASE_URL}#${params.toString()}`
 }
@@ -74,6 +78,7 @@ export function buildSupportUrl(params?: {
   userEmail?: string | null
   userId?: string | null
 }): string {
+  if (isHyperStudioEmbedded) return HYPER_STUDIO_ISSUES_URL
   const searchParams = new URLSearchParams({
     [ZENDESK_FIELDS.DISTRIBUTION]: getDistribution()
   })

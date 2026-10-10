@@ -359,7 +359,7 @@ export const SERVER_CONFIG_ITEMS = [
     id: 'disable-smart-memory',
     name: 'Disable smart memory management',
     tooltip:
-      'Force ComfyUI to aggressively offload to regular ram instead of keeping models in vram when it can.',
+      'Force Hyper-Studio to offload models to system RAM instead of keeping them in VRAM when possible.',
     category: ['Memory'],
     type: 'boolean',
     defaultValue: false
@@ -392,7 +392,7 @@ export const SERVER_CONFIG_ITEMS = [
   {
     id: 'enable-manager-legacy-ui',
     name: 'Use legacy Manager UI',
-    tooltip: 'Uses the legacy ComfyUI-Manager UI instead of the new UI.',
+    tooltip: 'Uses the legacy Node Manager UI instead of the new UI.',
     type: 'boolean',
     defaultValue: false
   },

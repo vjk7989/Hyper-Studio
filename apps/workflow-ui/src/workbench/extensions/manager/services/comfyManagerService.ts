@@ -77,7 +77,7 @@ export const useComfyManagerService = () => {
       if (status && routeSpecificErrors?.[status]) {
         message = routeSpecificErrors[status]
       } else if (status === 404) {
-        message = 'Could not connect to ComfyUI-Manager'
+        message = 'Could not connect to Node Manager'
       } else {
         message =
           axiosError.response?.data.message ??
@@ -118,7 +118,7 @@ export const useComfyManagerService = () => {
   }
 
   const startQueue = async (signal?: AbortSignal) => {
-    const errorContext = 'Starting ComfyUI-Manager job queue'
+    const errorContext = 'Starting Node Manager job queue'
     const routeSpecificErrors = {
       403: GENERIC_SECURITY_ERR_MSG
     }
@@ -130,7 +130,7 @@ export const useComfyManagerService = () => {
   }
 
   const getQueueStatus = async (client_id?: string, signal?: AbortSignal) => {
-    const errorContext = 'Getting ComfyUI-Manager queue status'
+    const errorContext = 'Getting Node Manager queue status'
 
     return executeRequest<ManagerQueueStatus>(
       () =>
@@ -252,7 +252,7 @@ export const useComfyManagerService = () => {
     const errorContext = 'Updating all packs'
     const routeSpecificErrors = {
       403: 'Forbidden: To use this action, a security_level of `middle or below` is required',
-      401: 'Unauthorized: ComfyUI-Manager job queue is busy'
+      401: 'Unauthorized: Node Manager job queue is busy'
     }
 
     const queryParams = {
@@ -276,7 +276,7 @@ export const useComfyManagerService = () => {
     ui_id?: string,
     signal?: AbortSignal
   ) => {
-    const errorContext = 'Updating ComfyUI'
+    const errorContext = 'Updating workflow engine'
     const routeSpecificErrors = {
       400: 'Bad Request: Missing required parameters',
       403: 'Forbidden: To use this action, a security_level of `middle or below` is required'
@@ -299,9 +299,9 @@ export const useComfyManagerService = () => {
   }
 
   const rebootComfyUI = async (signal?: AbortSignal) => {
-    const errorContext = 'Rebooting ComfyUI'
+    const errorContext = 'Rebooting workflow engine'
     const routeSpecificErrors = {
-      403: 'Forbidden: Rebooting ComfyUI requires security_level of middle or below'
+      403: 'Forbidden: Rebooting the workflow engine requires security_level of middle or below'
     }
 
     return executeRequest<null>(
@@ -328,7 +328,7 @@ export const useComfyManagerService = () => {
     } = {},
     signal?: AbortSignal
   ) => {
-    const errorContext = 'Getting ComfyUI-Manager task history'
+    const errorContext = 'Getting Node Manager task history'
 
     return executeRequest<ManagerTaskHistory>(
       () =>

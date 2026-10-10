@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="none" aria-label="Hyper-Studio">
+  <g stroke="#fafafa" stroke-width="27" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M222 277 373 180c19-12 39 1 39 23v618c0 10-5 20-14 25L246 943c-20 13-41-1-41-25V305c0-12 6-22 17-28Z"/>
+    <path d="m411 374-87 55c-8 5-13 14-13 24v230c0 10 5 19 13 24l87 56"/>
+    <path d="M630 277 781 180c19-12 39 1 39 23v618c0 10-5 20-14 25L654 943c-20 13-41-1-41-25V305c0-12 6-22 17-28Z"/>
+    <path d="m819 374-87 55c-8 5-13 14-13 24v230c0 10 5 19 13 24l87 56"/>
+    <rect x="458" y="458" width="108" height="108" rx="25"/>
+  </g>
+</svg>

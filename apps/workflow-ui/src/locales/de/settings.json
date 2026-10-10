@@ -23,7 +23,7 @@
       "custom": "Benutzerdefiniert",
       "default": "Standard"
     },
-    "tooltip": "Benutzerdefiniert: Ersetzt die Systemtitelleiste durch das obere Menü von ComfyUI"
+    "tooltip": "Benutzerdefiniert: Ersetzt die Systemtitelleiste durch das obere Menü von Hyper-Studio"
   },
   "Comfy_Appearance_DisableAnimations": {
     "name": "Animationen deaktivieren",

@@ -109,7 +109,7 @@
             @click="showApiKeyForm = true"
           >
             <img
-              src="/assets/images/comfy-logo-mono.svg"
+              src="/assets/images/hyper-studio-logo-mono.svg"
               class="mr-2 size-5"
               :alt="$t('g.comfy')"
             />

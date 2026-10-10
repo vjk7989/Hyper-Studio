@@ -19,7 +19,7 @@
   },
   "Comfy-Desktop_WindowStyle": {
     "name": "Window Style",
-    "tooltip": "Custom: Replace the system title bar with ComfyUI's Top menu",
+    "tooltip": "Custom: Replace the system title bar with Hyper-Studio's Top menu",
     "options": {
       "default": "default",
       "custom": "custom"

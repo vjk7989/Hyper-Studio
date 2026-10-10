@@ -258,7 +258,7 @@ class ComfyList {
     this.element.style.display = 'none'
 
     console.warn(
-      '[ComfyUI] The legacy queue/history menu is deprecated. ' +
+      '[Hyper-Studio] The legacy queue/history menu is deprecated. ' +
         'Core functionality in this menu may break at any time. ' +
         'Issues and feature requests related to the legacy menu will not be addressed. ' +
         'To switch to the new menu: Settings → search "Use new menu" → change from "Disabled" to "Top".'

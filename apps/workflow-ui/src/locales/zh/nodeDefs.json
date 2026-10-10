@@ -11753,7 +11753,7 @@
     }
   },
   "LazyCache": {
-    "description": "EasyCache 的自制版本 - 更'简单'的 EasyCache 实现。总体效果不如 EasyCache，但在某些罕见情况下表现更好，并且与 ComfyUI 中的所有内容具有通用兼容性。",
+    "description": "EasyCache 的自制版本 - 更'简单'的 EasyCache 实现。总体效果不如 EasyCache，但在某些罕见情况下表现更好，并且与 Hyper-Studio 中的所有内容具有通用兼容性。",
     "display_name": "惰性缓存",
     "inputs": {
       "end_percent": {
@@ -13320,7 +13320,7 @@
     }
   },
   "MaskPreview": {
-    "description": "将输入图像保存到您的 ComfyUI 输出目录。",
+    "description": "将输入图像保存到您的 Hyper-Studio 输出目录。",
     "display_name": "预览遮罩",
     "inputs": {
       "mask": {
@@ -18300,7 +18300,7 @@
     }
   },
   "Preview3D": {
-    "description": "预览 3D 模型文件，无需将其保存到 ComfyUI 输出目录。",
+    "description": "预览 3D 模型文件，无需将其保存到 Hyper-Studio 输出目录。",
     "display_name": "预览 3D 和动画（已弃用）",
     "inputs": {
       "bg_image": {
@@ -18319,7 +18319,7 @@
     }
   },
   "Preview3DAdvanced": {
-    "description": "预览 3D 模型文件，无需将其保存到 ComfyUI 输出目录。",
+    "description": "预览 3D 模型文件，无需将其保存到 Hyper-Studio 输出目录。",
     "display_name": "3D 预览（高级）",
     "inputs": {
       "camera_info": {
@@ -18380,7 +18380,7 @@
     }
   },
   "PreviewAudio": {
-    "description": "预览音频，无需将其保存到 ComfyUI 输出目录。",
+    "description": "预览音频，无需将其保存到 Hyper-Studio 输出目录。",
     "display_name": "预览音频",
     "inputs": {
       "audio": {
@@ -18398,7 +18398,7 @@
     }
   },
   "PreviewGaussianSplat": {
-    "description": "预览高斯点云 3D 文件，无需将其保存到 ComfyUI 输出目录。",
+    "description": "预览高斯点云 3D 文件，无需将其保存到 Hyper-Studio 输出目录。",
     "display_name": "预览 Splat",
     "inputs": {
       "camera_info": {
@@ -18445,7 +18445,7 @@
     }
   },
   "PreviewImage": {
-    "description": "将输入图像保存到您的ComfyUI临时目录。",
+    "description": "将输入图像保存到您的Hyper-Studio临时目录。",
     "display_name": "预览图像",
     "inputs": {
       "images": {
@@ -18459,7 +18459,7 @@
     }
   },
   "PreviewPointCloud": {
-    "description": "预览点云 3D 文件，无需将其保存到 ComfyUI 输出目录。",
+    "description": "预览点云 3D 文件，无需将其保存到 Hyper-Studio 输出目录。",
     "display_name": "预览点云",
     "inputs": {
       "camera_info": {
@@ -21948,7 +21948,7 @@
     }
   },
   "SaveAudioAdvanced": {
-    "description": "将输入音频保存到你的 ComfyUI 输出目录。",
+    "description": "将输入音频保存到你的 Hyper-Studio 输出目录。",
     "display_name": "保存音频（高级）",
     "inputs": {
       "audio": {
@@ -22103,7 +22103,7 @@
     }
   },
   "SaveImage": {
-    "description": "将输入图像保存到您的ComfyUI输出目录。",
+    "description": "将输入图像保存到您的Hyper-Studio输出目录。",
     "display_name": "保存图像",
     "inputs": {
       "filename_prefix": {
@@ -22122,7 +22122,7 @@
     }
   },
   "SaveImageAdvanced": {
-    "description": "将输入图像保存到您的 ComfyUI 输出目录。",
+    "description": "将输入图像保存到您的 Hyper-Studio 输出目录。",
     "display_name": "保存图像（高级）",
     "inputs": {
       "filename_prefix": {
@@ -22354,7 +22354,7 @@
     }
   },
   "SaveVideo": {
-    "description": "将输入图像保存到您的 ComfyUI 输出目录。",
+    "description": "将输入图像保存到您的 Hyper-Studio 输出目录。",
     "display_name": "保存视频",
     "inputs": {
       "codec": {
@@ -25539,7 +25539,7 @@
       },
       "compress_geometry": {
         "name": "压缩几何体",
-        "tooltip": "应用 meshopt 几何压缩（EXT_meshopt_compression）。文件更小，但 ComfyUI 的 3D 预览无法显示；编辑前请解压缩。"
+        "tooltip": "应用 meshopt 几何压缩（EXT_meshopt_compression）。文件更小，但 Hyper-Studio 的 3D 预览无法显示；编辑前请解压缩。"
       },
       "enable_image_autofix": {
         "name": "启用图像自动修复",
@@ -25589,7 +25589,7 @@
       },
       "compress_geometry": {
         "name": "压缩几何体",
-        "tooltip": "应用 meshopt 几何压缩（EXT_meshopt_compression）。文件更小，但 ComfyUI 的 3D 预览无法显示；编辑前请解压缩。"
+        "tooltip": "应用 meshopt 几何压缩（EXT_meshopt_compression）。文件更小，但 Hyper-Studio 的 3D 预览无法显示；编辑前请解压缩。"
       },
       "export_uv": {
         "name": "导出 UV",
@@ -25648,7 +25648,7 @@
       },
       "compress_geometry": {
         "name": "压缩几何体",
-        "tooltip": "应用 meshopt 几何压缩（EXT_meshopt_compression）。文件更小，但 ComfyUI 的 3D 预览无法显示；编辑前请解压缩。"
+        "tooltip": "应用 meshopt 几何压缩（EXT_meshopt_compression）。文件更小，但 Hyper-Studio 的 3D 预览无法显示；编辑前请解压缩。"
       },
       "export_uv": {
         "name": "导出 UV",

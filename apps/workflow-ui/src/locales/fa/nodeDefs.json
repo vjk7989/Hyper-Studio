@@ -11753,7 +11753,7 @@
     }
   },
   "LazyCache": {
-    "description": "نسخه خانگی EasyCache - نسخه‌ای حتی «ساده‌تر» از EasyCache برای پیاده‌سازی. به طور کلی عملکرد ضعیف‌تری نسبت به EasyCache دارد، اما در برخی موارد نادر بهتر عمل می‌کند و با همه چیز در ComfyUI سازگاری کامل دارد.",
+    "description": "نسخه خانگی EasyCache - نسخه‌ای حتی «ساده‌تر» از EasyCache برای پیاده‌سازی. به طور کلی عملکرد ضعیف‌تری نسبت به EasyCache دارد، اما در برخی موارد نادر بهتر عمل می‌کند و با همه چیز در Hyper-Studio سازگاری کامل دارد.",
     "display_name": "LazyCache",
     "inputs": {
       "end_percent": {
@@ -13320,7 +13320,7 @@
     }
   },
   "MaskPreview": {
-    "description": "تصاویر ورودی را در پوشه خروجی ComfyUI شما ذخیره می‌کند.",
+    "description": "تصاویر ورودی را در پوشه خروجی Hyper-Studio شما ذخیره می‌کند.",
     "display_name": "پیش‌نمایش ماسک",
     "inputs": {
       "mask": {
@@ -18300,7 +18300,7 @@
     }
   },
   "Preview3D": {
-    "description": "پیش‌نمایش یک فایل مدل سه‌بعدی بدون ذخیره آن در پوشه خروجی ComfyUI.",
+    "description": "پیش‌نمایش یک فایل مدل سه‌بعدی بدون ذخیره آن در پوشه خروجی Hyper-Studio.",
     "display_name": "پیش‌نمایش 3D و انیمیشن (منسوخ‌شده)",
     "inputs": {
       "bg_image": {
@@ -18319,7 +18319,7 @@
     }
   },
   "Preview3DAdvanced": {
-    "description": "پیش‌نمایش یک فایل مدل سه‌بعدی بدون ذخیره آن در پوشه خروجی ComfyUI.",
+    "description": "پیش‌نمایش یک فایل مدل سه‌بعدی بدون ذخیره آن در پوشه خروجی Hyper-Studio.",
     "display_name": "پیش‌نمایش سه‌بعدی (پیشرفته)",
     "inputs": {
       "camera_info": {
@@ -18380,7 +18380,7 @@
     }
   },
   "PreviewAudio": {
-    "description": "پیش‌نمایش صدا بدون ذخیره آن در پوشه خروجی ComfyUI.",
+    "description": "پیش‌نمایش صدا بدون ذخیره آن در پوشه خروجی Hyper-Studio.",
     "display_name": "پیش‌نمایش صوت",
     "inputs": {
       "audio": {
@@ -18398,7 +18398,7 @@
     }
   },
   "PreviewGaussianSplat": {
-    "description": "پیش‌نمایش یک فایل سه‌بعدی gaussian splat بدون ذخیره آن در پوشه خروجی ComfyUI.",
+    "description": "پیش‌نمایش یک فایل سه‌بعدی gaussian splat بدون ذخیره آن در پوشه خروجی Hyper-Studio.",
     "display_name": "پیش‌نمایش Splat",
     "inputs": {
       "camera_info": {
@@ -18445,7 +18445,7 @@
     }
   },
   "PreviewImage": {
-    "description": "تصاویر ورودی را در پوشه خروجی ComfyUI شما ذخیره می‌کند.",
+    "description": "تصاویر ورودی را در پوشه خروجی Hyper-Studio شما ذخیره می‌کند.",
     "display_name": "پیش‌نمایش تصویر",
     "inputs": {
       "images": {
@@ -18459,7 +18459,7 @@
     }
   },
   "PreviewPointCloud": {
-    "description": "پیش‌نمایش یک فایل سه‌بعدی point cloud بدون ذخیره آن در پوشه خروجی ComfyUI.",
+    "description": "پیش‌نمایش یک فایل سه‌بعدی point cloud بدون ذخیره آن در پوشه خروجی Hyper-Studio.",
     "display_name": "پیش‌نمایش Point Cloud",
     "inputs": {
       "camera_info": {
@@ -21948,7 +21948,7 @@
     }
   },
   "SaveAudioAdvanced": {
-    "description": "صدای ورودی را در پوشه خروجی ComfyUI شما ذخیره می‌کند.",
+    "description": "صدای ورودی را در پوشه خروجی Hyper-Studio شما ذخیره می‌کند.",
     "display_name": "ذخیره صدا (پیشرفته)",
     "inputs": {
       "audio": {
@@ -22103,7 +22103,7 @@
     }
   },
   "SaveImage": {
-    "description": "تصاویر ورودی را در پوشه خروجی ComfyUI شما ذخیره می‌کند.",
+    "description": "تصاویر ورودی را در پوشه خروجی Hyper-Studio شما ذخیره می‌کند.",
     "display_name": "ذخیره تصویر",
     "inputs": {
       "filename_prefix": {
@@ -22122,7 +22122,7 @@
     }
   },
   "SaveImageAdvanced": {
-    "description": "تصاویر ورودی را در پوشه خروجی ComfyUI شما ذخیره می‌کند.",
+    "description": "تصاویر ورودی را در پوشه خروجی Hyper-Studio شما ذخیره می‌کند.",
     "display_name": "ذخیره تصویر (پیشرفته)",
     "inputs": {
       "filename_prefix": {
@@ -22354,7 +22354,7 @@
     }
   },
   "SaveVideo": {
-    "description": "تصاویر ورودی را در پوشه خروجی ComfyUI شما ذخیره می‌کند.",
+    "description": "تصاویر ورودی را در پوشه خروجی Hyper-Studio شما ذخیره می‌کند.",
     "display_name": "ذخیره ویدیو",
     "inputs": {
       "codec": {
@@ -25539,7 +25539,7 @@
       },
       "compress_geometry": {
         "name": "compress_geometry",
-        "tooltip": "فشرده‌سازی هندسه meshopt ‏(EXT_meshopt_compression) را اعمال می‌کند. فایل‌ها کوچک‌تر می‌شوند، اما پیش‌نمایش سه‌بعدی ComfyUI نمی‌تواند آن‌ها را نمایش دهد؛ پیش از ویرایش از حالت فشرده خارج کنید."
+        "tooltip": "فشرده‌سازی هندسه meshopt ‏(EXT_meshopt_compression) را اعمال می‌کند. فایل‌ها کوچک‌تر می‌شوند، اما پیش‌نمایش سه‌بعدی Hyper-Studio نمی‌تواند آن‌ها را نمایش دهد؛ پیش از ویرایش از حالت فشرده خارج کنید."
       },
       "enable_image_autofix": {
         "name": "enable_image_autofix",
@@ -25589,7 +25589,7 @@
       },
       "compress_geometry": {
         "name": "compress_geometry",
-        "tooltip": "فشرده‌سازی هندسه meshopt ‏(EXT_meshopt_compression) را اعمال می‌کند. فایل‌ها کوچک‌تر می‌شوند، اما پیش‌نمایش سه‌بعدی ComfyUI نمی‌تواند آن‌ها را نمایش دهد؛ پیش از ویرایش از حالت فشرده خارج کنید."
+        "tooltip": "فشرده‌سازی هندسه meshopt ‏(EXT_meshopt_compression) را اعمال می‌کند. فایل‌ها کوچک‌تر می‌شوند، اما پیش‌نمایش سه‌بعدی Hyper-Studio نمی‌تواند آن‌ها را نمایش دهد؛ پیش از ویرایش از حالت فشرده خارج کنید."
       },
       "export_uv": {
         "name": "export_uv",
@@ -25648,7 +25648,7 @@
       },
       "compress_geometry": {
         "name": "فشرده‌سازی هندسه",
-        "tooltip": "فشرده‌سازی هندسه meshopt ‏(EXT_meshopt_compression) را اعمال می‌کند. فایل‌ها کوچک‌تر می‌شوند، اما پیش‌نمایش سه‌بعدی ComfyUI نمی‌تواند آن‌ها را نمایش دهد؛ پیش از ویرایش از حالت فشرده خارج کنید."
+        "tooltip": "فشرده‌سازی هندسه meshopt ‏(EXT_meshopt_compression) را اعمال می‌کند. فایل‌ها کوچک‌تر می‌شوند، اما پیش‌نمایش سه‌بعدی Hyper-Studio نمی‌تواند آن‌ها را نمایش دهد؛ پیش از ویرایش از حالت فشرده خارج کنید."
       },
       "export_uv": {
         "name": "خروجی UV",

@@ -11753,7 +11753,7 @@
     }
   },
   "LazyCache": {
-    "description": "自製版 EasyCache - 更「簡單」的 EasyCache 實作版本。整體表現不如 EasyCache，但在某些罕見情況下表現更好，且與 ComfyUI 中的所有內容具有通用相容性。",
+    "description": "自製版 EasyCache - 更「簡單」的 EasyCache 實作版本。整體表現不如 EasyCache，但在某些罕見情況下表現更好，且與 Hyper-Studio 中的所有內容具有通用相容性。",
     "display_name": "懶快取",
     "inputs": {
       "end_percent": {
@@ -13320,7 +13320,7 @@
     }
   },
   "MaskPreview": {
-    "description": "將輸入影像儲存到您的 ComfyUI 輸出目錄。",
+    "description": "將輸入影像儲存到您的 Hyper-Studio 輸出目錄。",
     "display_name": "MaskPreview",
     "inputs": {
       "mask": {
@@ -18300,7 +18300,7 @@
     }
   },
   "Preview3D": {
-    "description": "預覽 3D 模型檔案，無需儲存至 ComfyUI 輸出目錄。",
+    "description": "預覽 3D 模型檔案，無需儲存至 Hyper-Studio 輸出目錄。",
     "display_name": "預覽 3D 與動畫（已淘汰）",
     "inputs": {
       "bg_image": {
@@ -18319,7 +18319,7 @@
     }
   },
   "Preview3DAdvanced": {
-    "description": "預覽 3D 模型檔案，無需儲存至 ComfyUI 輸出目錄。",
+    "description": "預覽 3D 模型檔案，無需儲存至 Hyper-Studio 輸出目錄。",
     "display_name": "3D 預覽（進階）",
     "inputs": {
       "camera_info": {
@@ -18380,7 +18380,7 @@
     }
   },
   "PreviewAudio": {
-    "description": "預覽音訊，無需儲存至 ComfyUI 輸出目錄。",
+    "description": "預覽音訊，無需儲存至 Hyper-Studio 輸出目錄。",
     "display_name": "預覽音訊",
     "inputs": {
       "audio": {
@@ -18398,7 +18398,7 @@
     }
   },
   "PreviewGaussianSplat": {
-    "description": "預覽 gaussian splat 3D 檔案，無需儲存至 ComfyUI 輸出目錄。",
+    "description": "預覽 gaussian splat 3D 檔案，無需儲存至 Hyper-Studio 輸出目錄。",
     "display_name": "預覽 Splat",
     "inputs": {
       "camera_info": {
@@ -18445,7 +18445,7 @@
     }
   },
   "PreviewImage": {
-    "description": "將輸入圖片儲存到您的 ComfyUI 輸出目錄。",
+    "description": "將輸入圖片儲存到您的 Hyper-Studio 輸出目錄。",
     "display_name": "預覽圖片",
     "inputs": {
       "images": {
@@ -18459,7 +18459,7 @@
     }
   },
   "PreviewPointCloud": {
-    "description": "預覽點雲 3D 檔案，無需儲存至 ComfyUI 輸出目錄。",
+    "description": "預覽點雲 3D 檔案，無需儲存至 Hyper-Studio 輸出目錄。",
     "display_name": "預覽點雲",
     "inputs": {
       "camera_info": {
@@ -21948,7 +21948,7 @@
     }
   },
   "SaveAudioAdvanced": {
-    "description": "將輸入的音訊儲存到你的 ComfyUI 輸出目錄。",
+    "description": "將輸入的音訊儲存到你的 Hyper-Studio 輸出目錄。",
     "display_name": "儲存音訊（進階）",
     "inputs": {
       "audio": {
@@ -22103,7 +22103,7 @@
     }
   },
   "SaveImage": {
-    "description": "將輸入的圖片儲存到您的 ComfyUI 輸出目錄。",
+    "description": "將輸入的圖片儲存到您的 Hyper-Studio 輸出目錄。",
     "display_name": "儲存圖片",
     "inputs": {
       "filename_prefix": {
@@ -22122,7 +22122,7 @@
     }
   },
   "SaveImageAdvanced": {
-    "description": "將輸入的影像儲存到你的 ComfyUI 輸出目錄。",
+    "description": "將輸入的影像儲存到你的 Hyper-Studio 輸出目錄。",
     "display_name": "儲存影像（進階）",
     "inputs": {
       "filename_prefix": {
@@ -22354,7 +22354,7 @@
     }
   },
   "SaveVideo": {
-    "description": "將輸入的影像儲存到您的 ComfyUI 輸出目錄。",
+    "description": "將輸入的影像儲存到您的 Hyper-Studio 輸出目錄。",
     "display_name": "儲存影片",
     "inputs": {
       "codec": {
@@ -25539,7 +25539,7 @@
       },
       "compress_geometry": {
         "name": "壓縮幾何",
-        "tooltip": "套用 meshopt 幾何壓縮 (EXT_meshopt_compression)。檔案較小，但 ComfyUI 的 3D 預覽無法顯示；編輯前請先解壓縮。"
+        "tooltip": "套用 meshopt 幾何壓縮 (EXT_meshopt_compression)。檔案較小，但 Hyper-Studio 的 3D 預覽無法顯示；編輯前請先解壓縮。"
       },
       "enable_image_autofix": {
         "name": "啟用圖片自動修正",
@@ -25589,7 +25589,7 @@
       },
       "compress_geometry": {
         "name": "壓縮幾何",
-        "tooltip": "套用 meshopt 幾何壓縮 (EXT_meshopt_compression)。檔案較小，但 ComfyUI 的 3D 預覽無法顯示；編輯前請先解壓縮。"
+        "tooltip": "套用 meshopt 幾何壓縮 (EXT_meshopt_compression)。檔案較小，但 Hyper-Studio 的 3D 預覽無法顯示；編輯前請先解壓縮。"
       },
       "export_uv": {
         "name": "匯出 UV",
@@ -25648,7 +25648,7 @@
       },
       "compress_geometry": {
         "name": "壓縮幾何",
-        "tooltip": "套用 meshopt 幾何壓縮 (EXT_meshopt_compression)。檔案較小，但 ComfyUI 的 3D 預覽無法顯示；編輯前請先解壓縮。"
+        "tooltip": "套用 meshopt 幾何壓縮 (EXT_meshopt_compression)。檔案較小，但 Hyper-Studio 的 3D 預覽無法顯示；編輯前請先解壓縮。"
       },
       "export_uv": {
         "name": "匯出 UV",

@@ -11753,7 +11753,7 @@
     }
   },
   "LazyCache": {
-    "description": "نسخة محلية الصنع من EasyCache - نسخة 'أسهل' من EasyCache للتنفيذ. تعمل بشكل عام أسوأ من EasyCache، ولكن أفضل في بعض الحالات النادرة ومتوافقة عالميًا مع كل شيء في ComfyUI.",
+    "description": "نسخة محلية الصنع من EasyCache - نسخة 'أسهل' من EasyCache للتنفيذ. تعمل بشكل عام أسوأ من EasyCache، ولكن أفضل في بعض الحالات النادرة ومتوافقة عالميًا مع كل شيء في Hyper-Studio.",
     "display_name": "ذاكرة_التخزين_المؤقت_الكسولة",
     "inputs": {
       "end_percent": {
@@ -13320,7 +13320,7 @@
     }
   },
   "MaskPreview": {
-    "description": "يحفظ الصور المدخلة في مجلد الإخراج الخاص بـ ComfyUI.",
+    "description": "يحفظ الصور المدخلة في مجلد الإخراج الخاص بـ Hyper-Studio.",
     "display_name": "معاينة القناع",
     "inputs": {
       "mask": {
@@ -18300,7 +18300,7 @@
     }
   },
   "Preview3D": {
-    "description": "معاينة ملف نموذج ثلاثي الأبعاد دون حفظه في دليل مخرجات ComfyUI.",
+    "description": "معاينة ملف نموذج ثلاثي الأبعاد دون حفظه في دليل مخرجات Hyper-Studio.",
     "display_name": "معاينة ثلاثية الأبعاد والرسوم المتحركة (مهمل)",
     "inputs": {
       "bg_image": {
@@ -18319,7 +18319,7 @@
     }
   },
   "Preview3DAdvanced": {
-    "description": "معاينة ملف نموذج ثلاثي الأبعاد دون حفظه في دليل مخرجات ComfyUI.",
+    "description": "معاينة ملف نموذج ثلاثي الأبعاد دون حفظه في دليل مخرجات Hyper-Studio.",
     "display_name": "معاينة ثلاثية الأبعاد (متقدم)",
     "inputs": {
       "camera_info": {
@@ -18380,7 +18380,7 @@
     }
   },
   "PreviewAudio": {
-    "description": "معاينة الصوت دون حفظه في دليل مخرجات ComfyUI.",
+    "description": "معاينة الصوت دون حفظه في دليل مخرجات Hyper-Studio.",
     "display_name": "معاينة الصوت",
     "inputs": {
       "audio": {
@@ -18398,7 +18398,7 @@
     }
   },
   "PreviewGaussianSplat": {
-    "description": "معاينة ملف Gaussian Splat ثلاثي الأبعاد دون حفظه في دليل مخرجات ComfyUI.",
+    "description": "معاينة ملف Gaussian Splat ثلاثي الأبعاد دون حفظه في دليل مخرجات Hyper-Studio.",
     "display_name": "معاينة Splat",
     "inputs": {
       "camera_info": {
@@ -18445,7 +18445,7 @@
     }
   },
   "PreviewImage": {
-    "description": "يحفظ الصور المدخلة في دليل مخرجات ComfyUI الخاص بك.",
+    "description": "يحفظ الصور المدخلة في دليل مخرجات Hyper-Studio الخاص بك.",
     "display_name": "معاينة الصورة",
     "inputs": {
       "images": {
@@ -18459,7 +18459,7 @@
     }
   },
   "PreviewPointCloud": {
-    "description": "معاينة ملف Point Cloud ثلاثي الأبعاد دون حفظه في دليل مخرجات ComfyUI.",
+    "description": "معاينة ملف Point Cloud ثلاثي الأبعاد دون حفظه في دليل مخرجات Hyper-Studio.",
     "display_name": "معاينة سحابة النقاط",
     "inputs": {
       "camera_info": {
@@ -21948,7 +21948,7 @@
     }
   },
   "SaveAudioAdvanced": {
-    "description": "يحفظ الصوت المُدخل في مجلد إخراج ComfyUI الخاص بك.",
+    "description": "يحفظ الصوت المُدخل في مجلد إخراج Hyper-Studio الخاص بك.",
     "display_name": "حفظ الصوت (متقدم)",
     "inputs": {
       "audio": {
@@ -22103,7 +22103,7 @@
     }
   },
   "SaveImage": {
-    "description": "يحفظ الصور المدخلة في مجلد مخرجات ComfyUI الخاص بك.",
+    "description": "يحفظ الصور المدخلة في مجلد مخرجات Hyper-Studio الخاص بك.",
     "display_name": "حفظ الصورة",
     "inputs": {
       "filename_prefix": {
@@ -22122,7 +22122,7 @@
     }
   },
   "SaveImageAdvanced": {
-    "description": "يحفظ الصور المُدخلة في دليل الإخراج الخاص بـ ComfyUI.",
+    "description": "يحفظ الصور المُدخلة في دليل الإخراج الخاص بـ Hyper-Studio.",
     "display_name": "حفظ الصورة (متقدم)",
     "inputs": {
       "filename_prefix": {
@@ -22354,7 +22354,7 @@
     }
   },
   "SaveVideo": {
-    "description": "يحفظ الصور المدخلة في مجلد مخرجات ComfyUI الخاص بك.",
+    "description": "يحفظ الصور المدخلة في مجلد مخرجات Hyper-Studio الخاص بك.",
     "display_name": "حفظ الفيديو",
     "inputs": {
       "codec": {
@@ -25539,7 +25539,7 @@
       },
       "compress_geometry": {
         "name": "ضغط الهندسة",
-        "tooltip": "تطبيق ضغط هندسة meshopt ‏(EXT_meshopt_compression). ملفات أصغر، لكن معاينة ثلاثية الأبعاد في ComfyUI لا يمكنها عرضها؛ فك الضغط قبل التحرير."
+        "tooltip": "تطبيق ضغط هندسة meshopt ‏(EXT_meshopt_compression). ملفات أصغر، لكن معاينة ثلاثية الأبعاد في Hyper-Studio لا يمكنها عرضها؛ فك الضغط قبل التحرير."
       },
       "enable_image_autofix": {
         "name": "تفعيل تصحيح الصورة التلقائي",
@@ -25589,7 +25589,7 @@
       },
       "compress_geometry": {
         "name": "ضغط الهندسة",
-        "tooltip": "تطبيق ضغط هندسة meshopt ‏(EXT_meshopt_compression). ملفات أصغر، لكن معاينة ثلاثية الأبعاد في ComfyUI لا يمكنها عرضها؛ فك الضغط قبل التحرير."
+        "tooltip": "تطبيق ضغط هندسة meshopt ‏(EXT_meshopt_compression). ملفات أصغر، لكن معاينة ثلاثية الأبعاد في Hyper-Studio لا يمكنها عرضها؛ فك الضغط قبل التحرير."
       },
       "export_uv": {
         "name": "تصدير UV",
@@ -25648,7 +25648,7 @@
       },
       "compress_geometry": {
         "name": "ضغط الهندسة",
-        "tooltip": "تطبيق ضغط هندسة meshopt ‏(EXT_meshopt_compression). ملفات أصغر، لكن معاينة ثلاثية الأبعاد في ComfyUI لا يمكنها عرضها؛ فك الضغط قبل التحرير."
+        "tooltip": "تطبيق ضغط هندسة meshopt ‏(EXT_meshopt_compression). ملفات أصغر، لكن معاينة ثلاثية الأبعاد في Hyper-Studio لا يمكنها عرضها؛ فك الضغط قبل التحرير."
       },
       "export_uv": {
         "name": "تصدير UV",

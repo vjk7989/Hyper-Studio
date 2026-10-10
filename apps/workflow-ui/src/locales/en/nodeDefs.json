@@ -10970,7 +10970,7 @@
   },
   "LazyCache": {
     "display_name": "LazyCache",
-    "description": "A homebrew version of EasyCache - even 'easier' version of EasyCache to implement. Overall works worse than EasyCache, but better in some rare cases AND universal compatibility with everything in ComfyUI.",
+    "description": "A homebrew version of EasyCache - even 'easier' version of EasyCache to implement. Overall works worse than EasyCache, but better in some rare cases AND universal compatibility with everything in Hyper-Studio.",
     "inputs": {
       "model": {
         "name": "model",
@@ -13321,7 +13321,7 @@
   },
   "MaskPreview": {
     "display_name": "Preview Mask",
-    "description": "Preview the masks without saving them to the ComfyUI output directory.",
+    "description": "Preview the masks without saving them to the Hyper-Studio output directory.",
     "inputs": {
       "mask": {
         "name": "mask"
@@ -18301,7 +18301,7 @@
   },
   "Preview3D": {
     "display_name": "Preview 3D & Animation (DEPRECATED)",
-    "description": "Preview a 3D model file without saving it to the ComfyUI output directory.",
+    "description": "Preview a 3D model file without saving it to the Hyper-Studio output directory.",
     "inputs": {
       "model_file": {
         "name": "model_file",
@@ -18320,7 +18320,7 @@
   },
   "Preview3DAdvanced": {
     "display_name": "Preview 3D (Advanced)",
-    "description": "Preview a 3D model file without saving it to the ComfyUI output directory.",
+    "description": "Preview a 3D model file without saving it to the Hyper-Studio output directory.",
     "inputs": {
       "model_3d": {
         "name": "model_3d",
@@ -18381,7 +18381,7 @@
   },
   "PreviewAudio": {
     "display_name": "Preview Audio",
-    "description": "Preview the audio without saving it to the ComfyUI output directory.",
+    "description": "Preview the audio without saving it to the Hyper-Studio output directory.",
     "inputs": {
       "audio": {
         "name": "audio"
@@ -18399,7 +18399,7 @@
   },
   "PreviewGaussianSplat": {
     "display_name": "Preview Splat",
-    "description": "Preview a gaussian splat 3D file without saving it to the ComfyUI output directory.",
+    "description": "Preview a gaussian splat 3D file without saving it to the Hyper-Studio output directory.",
     "inputs": {
       "model_3d": {
         "name": "model_3d",
@@ -18446,7 +18446,7 @@
   },
   "PreviewImage": {
     "display_name": "Preview Image",
-    "description": "Preview the images without saving them to the ComfyUI output directory.",
+    "description": "Preview the images without saving them to the Hyper-Studio output directory.",
     "inputs": {
       "images": {
         "name": "images"
@@ -18460,7 +18460,7 @@
   },
   "PreviewPointCloud": {
     "display_name": "Preview Point Cloud",
-    "description": "Preview a point cloud 3D file without saving it to the ComfyUI output directory.",
+    "description": "Preview a point cloud 3D file without saving it to the Hyper-Studio output directory.",
     "inputs": {
       "model_3d": {
         "name": "model_3d",
@@ -21653,7 +21653,7 @@
   },
   "SaveAudioAdvanced": {
     "display_name": "Save Audio (Advanced)",
-    "description": "Saves the input audio to your ComfyUI output directory.",
+    "description": "Saves the input audio to your Hyper-Studio output directory.",
     "inputs": {
       "audio": {
         "name": "audio",
@@ -21808,7 +21808,7 @@
   },
   "SaveImage": {
     "display_name": "Save Image",
-    "description": "Saves the input images to your ComfyUI output directory.",
+    "description": "Saves the input images to your Hyper-Studio output directory.",
     "inputs": {
       "images": {
         "name": "images",
@@ -21827,7 +21827,7 @@
   },
   "SaveImageAdvanced": {
     "display_name": "Save Image (Advanced)",
-    "description": "Saves the input images to your ComfyUI output directory.",
+    "description": "Saves the input images to your Hyper-Studio output directory.",
     "inputs": {
       "images": {
         "name": "images",
@@ -22059,7 +22059,7 @@
   },
   "SaveVideo": {
     "display_name": "Save Video",
-    "description": "Saves the input videos to your ComfyUI output directory.",
+    "description": "Saves the input videos to your Hyper-Studio output directory.",
     "inputs": {
       "video": {
         "name": "video",
@@ -25561,7 +25561,7 @@
       },
       "compress_geometry": {
         "name": "compress_geometry",
-        "tooltip": "Apply meshopt geometry compression (EXT_meshopt_compression). Smaller files, but ComfyUI's 3D preview cannot display them; decompress before editing."
+        "tooltip": "Apply meshopt geometry compression (EXT_meshopt_compression). Smaller files, but Hyper-Studio's 3D preview cannot display them; decompress before editing."
       }
     },
     "outputs": {
@@ -25620,7 +25620,7 @@
       },
       "compress_geometry": {
         "name": "compress_geometry",
-        "tooltip": "Apply meshopt geometry compression (EXT_meshopt_compression). Smaller files, but ComfyUI's 3D preview cannot display them; decompress before editing."
+        "tooltip": "Apply meshopt geometry compression (EXT_meshopt_compression). Smaller files, but Hyper-Studio's 3D preview cannot display them; decompress before editing."
       }
     },
     "outputs": {
@@ -25674,7 +25674,7 @@
       },
       "compress_geometry": {
         "name": "compress_geometry",
-        "tooltip": "Apply meshopt geometry compression (EXT_meshopt_compression). Smaller files, but ComfyUI's 3D preview cannot display them; decompress before editing."
+        "tooltip": "Apply meshopt geometry compression (EXT_meshopt_compression). Smaller files, but Hyper-Studio's 3D preview cannot display them; decompress before editing."
       }
     },
     "outputs": {

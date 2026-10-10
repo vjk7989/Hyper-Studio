@@ -11753,7 +11753,7 @@
     }
   },
   "LazyCache": {
-    "description": "Una versión casera de EasyCache - versión 'más fácil' de EasyCache para implementar. En general funciona peor que EasyCache, pero mejor en algunos casos raros Y compatibilidad universal con todo en ComfyUI.",
+    "description": "Una versión casera de EasyCache - versión 'más fácil' de EasyCache para implementar. En general funciona peor que EasyCache, pero mejor en algunos casos raros Y compatibilidad universal con todo en Hyper-Studio.",
     "display_name": "CachéPerezoso",
     "inputs": {
       "end_percent": {
@@ -13320,7 +13320,7 @@
     }
   },
   "MaskPreview": {
-    "description": "Guarda las imágenes de entrada en tu directorio de salida de ComfyUI.",
+    "description": "Guarda las imágenes de entrada en tu directorio de salida de Hyper-Studio.",
     "display_name": "MaskPreview",
     "inputs": {
       "mask": {
@@ -18300,7 +18300,7 @@
     }
   },
   "Preview3D": {
-    "description": "Previsualiza un archivo de modelo 3D sin guardarlo en el directorio de salida de ComfyUI.",
+    "description": "Previsualiza un archivo de modelo 3D sin guardarlo en el directorio de salida de Hyper-Studio.",
     "display_name": "Vista previa 3D y animación (OBSOLETO)",
     "inputs": {
       "bg_image": {
@@ -18319,7 +18319,7 @@
     }
   },
   "Preview3DAdvanced": {
-    "description": "Previsualiza un archivo de modelo 3D sin guardarlo en el directorio de salida de ComfyUI.",
+    "description": "Previsualiza un archivo de modelo 3D sin guardarlo en el directorio de salida de Hyper-Studio.",
     "display_name": "Vista previa 3D (Avanzado)",
     "inputs": {
       "camera_info": {
@@ -18380,7 +18380,7 @@
     }
   },
   "PreviewAudio": {
-    "description": "Previsualiza el audio sin guardarlo en el directorio de salida de ComfyUI.",
+    "description": "Previsualiza el audio sin guardarlo en el directorio de salida de Hyper-Studio.",
     "display_name": "Vista previa de audio",
     "inputs": {
       "audio": {
@@ -18398,7 +18398,7 @@
     }
   },
   "PreviewGaussianSplat": {
-    "description": "Previsualiza un archivo 3D de gaussian splat sin guardarlo en el directorio de salida de ComfyUI.",
+    "description": "Previsualiza un archivo 3D de gaussian splat sin guardarlo en el directorio de salida de Hyper-Studio.",
     "display_name": "Vista previa de Splat",
     "inputs": {
       "camera_info": {
@@ -18445,7 +18445,7 @@
     }
   },
   "PreviewImage": {
-    "description": "Guarda las imágenes de entrada en tu directorio de salida de ComfyUI.",
+    "description": "Guarda las imágenes de entrada en tu directorio de salida de Hyper-Studio.",
     "display_name": "Vista previa de imagen",
     "inputs": {
       "images": {
@@ -18459,7 +18459,7 @@
     }
   },
   "PreviewPointCloud": {
-    "description": "Previsualiza un archivo de nube de puntos 3D sin guardarlo en el directorio de salida de ComfyUI.",
+    "description": "Previsualiza un archivo de nube de puntos 3D sin guardarlo en el directorio de salida de Hyper-Studio.",
     "display_name": "Vista previa de nube de puntos",
     "inputs": {
       "camera_info": {
@@ -21948,7 +21948,7 @@
     }
   },
   "SaveAudioAdvanced": {
-    "description": "Guarda el audio de entrada en el directorio de salida de ComfyUI.",
+    "description": "Guarda el audio de entrada en el directorio de salida de Hyper-Studio.",
     "display_name": "Guardar audio (avanzado)",
     "inputs": {
       "audio": {
@@ -22103,7 +22103,7 @@
     }
   },
   "SaveImage": {
-    "description": "Guarda las imágenes de entrada en tu directorio de salida de ComfyUI.",
+    "description": "Guarda las imágenes de entrada en tu directorio de salida de Hyper-Studio.",
     "display_name": "Guardar Imagen",
     "inputs": {
       "filename_prefix": {
@@ -22122,7 +22122,7 @@
     }
   },
   "SaveImageAdvanced": {
-    "description": "Guarda las imágenes de entrada en tu directorio de salida de ComfyUI.",
+    "description": "Guarda las imágenes de entrada en tu directorio de salida de Hyper-Studio.",
     "display_name": "Guardar imagen (avanzado)",
     "inputs": {
       "filename_prefix": {
@@ -22354,7 +22354,7 @@
     }
   },
   "SaveVideo": {
-    "description": "Guarda las imágenes de entrada en tu directorio de salida de ComfyUI.",
+    "description": "Guarda las imágenes de entrada en tu directorio de salida de Hyper-Studio.",
     "display_name": "Guardar video",
     "inputs": {
       "codec": {
@@ -25539,7 +25539,7 @@
       },
       "compress_geometry": {
         "name": "comprimir_geometría",
-        "tooltip": "Aplica compresión de geometría meshopt (EXT_meshopt_compression). Archivos más pequeños, pero la vista previa 3D de ComfyUI no puede mostrarlos; descomprímelos antes de editarlos."
+        "tooltip": "Aplica compresión de geometría meshopt (EXT_meshopt_compression). Archivos más pequeños, pero la vista previa 3D de Hyper-Studio no puede mostrarlos; descomprímelos antes de editarlos."
       },
       "enable_image_autofix": {
         "name": "activar_autocorrección_imagen",
@@ -25589,7 +25589,7 @@
       },
       "compress_geometry": {
         "name": "comprimir_geometría",
-        "tooltip": "Aplica compresión de geometría meshopt (EXT_meshopt_compression). Archivos más pequeños, pero la vista previa 3D de ComfyUI no puede mostrarlos; descomprímelos antes de editarlos."
+        "tooltip": "Aplica compresión de geometría meshopt (EXT_meshopt_compression). Archivos más pequeños, pero la vista previa 3D de Hyper-Studio no puede mostrarlos; descomprímelos antes de editarlos."
       },
       "export_uv": {
         "name": "exportar_uv",
@@ -25648,7 +25648,7 @@
       },
       "compress_geometry": {
         "name": "comprimir_geometría",
-        "tooltip": "Aplica compresión de geometría meshopt (EXT_meshopt_compression). Archivos más pequeños, pero la vista previa 3D de ComfyUI no puede mostrarlos; descomprímelos antes de editarlos."
+        "tooltip": "Aplica compresión de geometría meshopt (EXT_meshopt_compression). Archivos más pequeños, pero la vista previa 3D de Hyper-Studio no puede mostrarlos; descomprímelos antes de editarlos."
       },
       "export_uv": {
         "name": "exportar_uv",

@@ -3,6 +3,7 @@ import { useTelemetry } from '@/platform/telemetry'
 import type { TemplateLibraryMetadata } from '@/platform/telemetry/types'
 import { useDialogService } from '@/services/dialogService'
 import { useNewUserService } from '@/services/useNewUserService'
+import { isHyperStudioEmbedded } from '@/platform/distribution/hyperStudio'
 import { useDialogStore } from '@/stores/dialogStore'
 
 const DIALOG_KEY = 'global-workflow-template-selector'
@@ -21,6 +22,9 @@ export const useWorkflowTemplateSelectorDialog = () => {
     source: TemplateLibraryMetadata['source'] = 'command',
     options?: { initialCategory?: string; afterClose?: () => void }
   ) {
+    // The integrated app imports project workflows through its host shell.
+    // The upstream gallery includes separate account and product promotion.
+    if (isHyperStudioEmbedded) return
     useTelemetry()?.trackTemplateLibraryOpened({ source })
 
     const initialCategory =

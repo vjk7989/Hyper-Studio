@@ -159,19 +159,19 @@
     "label": "選択したサブグラフを展開"
   },
   "Comfy_Help_AboutComfyUI": {
-    "label": "ComfyUIについてを開く"
+    "label": "Hyper-Studioについてを開く"
   },
   "Comfy_Help_OpenComfyOrgDiscord": {
     "label": "Comfy-OrgのDiscordを開く"
   },
   "Comfy_Help_OpenComfyUIDocs": {
-    "label": "ComfyUIのドキュメントを開く"
+    "label": "Hyper-Studioのドキュメントを開く"
   },
   "Comfy_Help_OpenComfyUIForum": {
     "label": "Comfy-Orgフォーラムを開く"
   },
   "Comfy_Help_OpenComfyUIIssues": {
-    "label": "ComfyUIの問題を開く"
+    "label": "Hyper-Studioの問題を開く"
   },
   "Comfy_Interrupt": {
     "label": "中断"

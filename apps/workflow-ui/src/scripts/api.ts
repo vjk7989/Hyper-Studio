@@ -1766,7 +1766,7 @@ export class ComfyApi extends EventTarget {
         useToastStore().add({
           severity: 'error',
           summary:
-            'Unloading of models failed. Installed ComfyUI may be an outdated version.'
+            'Unloading models failed. The installed workflow engine may be outdated.'
         })
       }
     } catch (error) {

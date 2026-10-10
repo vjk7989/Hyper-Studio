@@ -728,9 +728,9 @@
     "feature2Title": "يعمل في أي مكان، فورًا",
     "feature3Title": "نماذج جاهزة للاستخدام",
     "feature4Title": "أفضل حزم العقد المخصصة مثبتة مسبقًا",
-    "footer": "ComfyUI يبقى مجانيًا ومفتوح المصدر. السحابة اختيارية.",
+    "footer": "Hyper-Studio يبقى مجانيًا ومفتوح المصدر. السحابة اختيارية.",
     "message": "من الإعداد إلى الإنشاء في ثوانٍ. النماذج الشائعة، الإضافات، ومعالجات الرسوميات القوية — جاهزة متى احتجت إليها.",
-    "title": "تشغيل ComfyUI على السحابة"
+    "title": "تشغيل Hyper-Studio على السحابة"
   },
   "cloudOnboarding": {
     "authTimeout": {
@@ -742,7 +742,7 @@
         "Try a different browser or network"
       ],
       "helpText": "تحتاج مساعدة؟ اتصل بـ",
-      "message": "نواجه مشكلة في الاتصال بـ ComfyUI Cloud. قد يكون هذا بسبب اتصال بطيء أو مشكلة خدمة مؤقتة.",
+      "message": "نواجه مشكلة في الاتصال بـ Hyper-Studio Cloud. قد يكون هذا بسبب اتصال بطيء أو مشكلة خدمة مؤقتة.",
       "restart": "تسجيل الخروج والمحاولة مرة أخرى",
       "supportLink": "الدعم",
       "technicalDetails": "تفاصيل تقنية",
@@ -771,11 +771,11 @@
     "skipToCloudApp": "تخطي إلى تطبيق السحابة",
     "start": {
       "desc": "لا حاجة لإعداد مسبق. يعمل على أي جهاز.",
-      "download": "تنزيل ComfyUI",
+      "download": "تنزيل Hyper-Studio",
       "explain": "أنتج عدة مخرجات في وقت واحد. شارك سير العمل بسهولة.",
       "learnAboutButton": "تعرف على السحابة",
       "title": "ابدأ الإبداع في ثوانٍ",
-      "wantToRun": "هل تريد تشغيل ComfyUI محليًا بدلاً من ذلك؟"
+      "wantToRun": "هل تريد تشغيل Hyper-Studio محليًا بدلاً من ذلك؟"
     },
     "survey": {
       "errors": {
@@ -784,12 +784,12 @@
         "describeAnswer": "يرجى وصف إجابتك.",
         "selectAtLeastOne": "يرجى اختيار خيار واحد على الأقل."
       },
-      "intro": "ساعدنا في تخصيص تجربتك مع ComfyUI.",
+      "intro": "ساعدنا في تخصيص تجربتك مع Hyper-Studio.",
       "navigationFailed": "تم حفظ الاستبيان، لكن تعذّر متابعة الإعداد الأولي",
       "navigationFailedDetail": "يُرجى المحاولة مرة أخرى.",
       "options": {
         "experience": {
-          "new": "جديد على ComfyUI",
+          "new": "جديد على Hyper-Studio",
           "pro": "أنا مستخدم محترف",
           "some": "لدي معرفة جيدة"
         },
@@ -839,10 +839,10 @@
   "cloudStart_explain": "أنتج عدة مخرجات في وقت واحد. شارك سير العمل بسهولة.",
   "cloudStart_learnAboutButton": "تعرف على السحابة",
   "cloudStart_title": "ابدأ الإبداع في ثوانٍ",
-  "cloudSurvey_steps_experience": "ما مدى معرفتك بـ ComfyUI؟",
+  "cloudSurvey_steps_experience": "ما مدى معرفتك بـ Hyper-Studio؟",
   "cloudSurvey_steps_focus": "ماذا تبني؟",
-  "cloudSurvey_steps_intent": "ما الذي ترغب في إنشائه باستخدام ComfyUI؟",
-  "cloudSurvey_steps_source": "من أين سمعت عن ComfyUI؟",
+  "cloudSurvey_steps_intent": "ما الذي ترغب في إنشائه باستخدام Hyper-Studio؟",
+  "cloudSurvey_steps_source": "من أين سمعت عن Hyper-Studio؟",
   "cloudSurvey_steps_source_social": "أي منصة؟",
   "cloudWaitlist_contactLink": "هنا",
   "cloudWaitlist_questionsText": "أسئلة؟ اتصل بنا",
@@ -1250,13 +1250,13 @@
     "WEBCAM": "كاميرا ويب"
   },
   "desktopLogin": {
-    "confirmMessage": "تطبيق ComfyUI لسطح المكتب ينتظر تسجيل الدخول باستخدام حسابك. تابع فقط إذا بدأت عملية تسجيل الدخول من تطبيق ComfyUI لسطح المكتب.",
+    "confirmMessage": "تطبيق Hyper-Studio لسطح المكتب ينتظر تسجيل الدخول باستخدام حسابك. تابع فقط إذا بدأت عملية تسجيل الدخول من تطبيق Hyper-Studio لسطح المكتب.",
     "confirmSummary": "تأكيد تسجيل الدخول من سطح المكتب؟",
-    "expiredDetail": "انتهت صلاحية طلب تسجيل الدخول أو تم استخدامه بالفعل. ابدأ عملية تسجيل الدخول مرة أخرى من تطبيق ComfyUI لسطح المكتب.",
+    "expiredDetail": "انتهت صلاحية طلب تسجيل الدخول أو تم استخدامه بالفعل. ابدأ عملية تسجيل الدخول مرة أخرى من تطبيق Hyper-Studio لسطح المكتب.",
     "expiredSummary": "فشل تسجيل الدخول من سطح المكتب",
-    "failedDetail": "حدث خطأ أثناء إكمال تسجيل الدخول من سطح المكتب. ابدأ عملية تسجيل الدخول مرة أخرى من تطبيق ComfyUI لسطح المكتب.",
+    "failedDetail": "حدث خطأ أثناء إكمال تسجيل الدخول من سطح المكتب. ابدأ عملية تسجيل الدخول مرة أخرى من تطبيق Hyper-Studio لسطح المكتب.",
     "failedSummary": "فشل تسجيل الدخول من سطح المكتب",
-    "successDetail": "يمكنك العودة إلى تطبيق ComfyUI لسطح المكتب.",
+    "successDetail": "يمكنك العودة إلى تطبيق Hyper-Studio لسطح المكتب.",
     "successSummary": "تم تسجيل الدخول"
   },
   "desktopMenu": {
@@ -1269,12 +1269,12 @@
     "initialising": "جارٍ التهيئة..."
   },
   "desktopUpdate": {
-    "description": "يقوم ComfyUI Desktop بتثبيت تبعيات جديدة. قد يستغرق هذا بضع دقائق.",
+    "description": "يقوم Hyper-Studio Desktop بتثبيت تبعيات جديدة. قد يستغرق هذا بضع دقائق.",
     "errorCheckingUpdate": "حدث خطأ أثناء التحقق من التحديثات",
     "errorInstallingUpdate": "حدث خطأ أثناء تثبيت التحديث",
     "noUpdateFound": "لم يتم العثور على تحديث",
     "terminalDefaultMessage": "أي مخرجات من التحديث سيتم عرضها هنا.",
-    "title": "تحديث ComfyUI Desktop",
+    "title": "تحديث Hyper-Studio Desktop",
     "updateAvailableMessage": "يتوفر تحديث. هل تريد إعادة التشغيل والتحديث الآن؟",
     "updateFoundTitle": "تم العثور على تحديث (الإصدار {version})"
   },
@@ -1284,7 +1284,7 @@
     "message": "تعذر العثور على git. مطلوب نسخة عاملة من git للتشغيل السليم.",
     "skip": "تخطي",
     "title": "تنزيل git",
-    "warning": "إذا كنت متأكدًا من أنك لا تحتاج إلى git، أو كان هناك خطأ، يمكنك النقر على تخطي لتجاوز هذا الفحص. محاولة تشغيل ComfyUI بدون git غير مدعومة حالياً."
+    "warning": "إذا كنت متأكدًا من أنك لا تحتاج إلى git، أو كان هناك خطأ، يمكنك النقر على تخطي لتجاوز هذا الفحص. محاولة تشغيل Hyper-Studio بدون git غير مدعومة حالياً."
   },
   "electronFileDownload": {
     "cancel": "إلغاء التنزيل",
@@ -1665,7 +1665,7 @@
         "details": "{nodeName} أعاد خطأ تحقق غير معروف: {errorType}",
         "detailsWithRawDetails": "{nodeName} أعاد خطأ تحقق غير معروف ({errorType}): {rawDetails}",
         "itemLabel": "{nodeName}",
-        "message": "أعاد أحد العقد خطأ تحقق غير معروف لم يتم التعرف عليه من قبل ComfyUI.",
+        "message": "أعاد أحد العقد خطأ تحقق غير معروف لم يتم التعرف عليه من قبل Hyper-Studio.",
         "title": "فشل التحقق",
         "toastMessage": "{nodeName} أعاد خطأ تحقق غير معروف.",
         "toastTitle": "فشل التحقق"
@@ -1829,7 +1829,7 @@
     "color": "اللون",
     "comfy": "Comfy",
     "comfyCloud": "Comfy Cloud",
-    "comfyOrgLogoAlt": "شعار ComfyOrg",
+    "comfyOrgLogoAlt": "شعار Hyper-Studio",
     "comfyPackageOutdated": "إصدار {name} المثبت ({installedVersion}) أقل من الإصدار المطلوب ({requiredVersion}).",
     "comingSoon": "قريباً",
     "command": "أمر",
@@ -1967,7 +1967,7 @@
       "exportPreset": "تصدير الإعداد المسبق",
       "importKeybindingPreset": "استيراد إعداد مفاتيح الاختصار",
       "importPreset": "استيراد الإعداد المسبق",
-      "invalidPresetFile": "يجب أن يكون ملف الإعداد المسبق ملف JSON صالح تم تصديره من ComfyUI",
+      "invalidPresetFile": "يجب أن يكون ملف الإعداد المسبق ملف JSON صالح تم تصديره من Hyper-Studio",
       "invalidPresetName": "يجب ألا يكون اسم الإعداد المسبق فارغًا أو \"default\" أو يبدأ بنقطة أو يحتوي على فواصل مسار أو ينتهي بـ .json",
       "loadPresetFailed": "فشل في تحميل الإعداد المسبق \"{name}\"",
       "overwritePresetMessage": "يوجد إعداد مسبق باسم \"{name}\" بالفعل. هل تريد استبداله؟",
@@ -1992,7 +1992,7 @@
     "loading": "جارٍ التحميل",
     "loadingPanel": "جارٍ تحميل لوحة {panel}...",
     "login": "تسجيل الدخول",
-    "logoAlt": "شعار ComfyUI",
+    "logoAlt": "شعار Hyper-Studio",
     "logs": "السجلات",
     "manageExtensions": "إدارة الإضافات",
     "markdown": "ماركداون",
@@ -2152,7 +2152,7 @@
     "systemInfo": "معلومات النظام",
     "systemStatsArguments": "المعلمات",
     "systemStatsCloudVersion": "إصدار السحابة",
-    "systemStatsComfyUIVersion": "إصدار ComfyUI",
+    "systemStatsComfyUIVersion": "إصدار Hyper-Studio",
     "systemStatsEmbeddedPython": "Python مدمج",
     "systemStatsFrontendVersion": "إصدار الواجهة الأمامية",
     "systemStatsOS": "نظام التشغيل",
@@ -2282,12 +2282,12 @@
     "reinstall": "إعادة التثبيت",
     "systemStatus": "حالة النظام",
     "updateAvailable": "تحديث",
-    "updateComfyUI": "تحديث ComfyUI",
-    "updateComfyUIFailed": "فشل تحديث ComfyUI. يرجى المحاولة مرة أخرى.",
+    "updateComfyUI": "تحديث Hyper-Studio",
+    "updateComfyUIFailed": "فشل تحديث Hyper-Studio. يرجى المحاولة مرة أخرى.",
     "updateComfyUIStarted": "بدأ التحديث",
-    "updateComfyUIStartedDetail": "تمت إضافة تحديث ComfyUI إلى قائمة الانتظار. يرجى الانتظار...",
+    "updateComfyUIStartedDetail": "تمت إضافة تحديث Hyper-Studio إلى قائمة الانتظار. يرجى الانتظار...",
     "updateComfyUISuccess": "اكتمل التحديث",
-    "updateComfyUISuccessDetail": "تم تحديث ComfyUI. جارٍ إعادة التشغيل...",
+    "updateComfyUISuccessDetail": "تم تحديث Hyper-Studio. جارٍ إعادة التشغيل...",
     "whatsNew": "ما الجديد؟"
   },
   "icon": {
@@ -2322,14 +2322,14 @@
     "title": "فشل الاستيراد"
   },
   "install": {
-    "appDataLocationTooltip": "دليل بيانات تطبيق ComfyUI. يحتوي على:\n- السجلات\n- إعدادات الخادم",
-    "appPathLocationTooltip": "دليل أصول تطبيق ComfyUI. يحتوي على كود وأصول ComfyUI",
+    "appDataLocationTooltip": "دليل بيانات تطبيق Hyper-Studio. يحتوي على:\n- السجلات\n- إعدادات الخادم",
+    "appPathLocationTooltip": "دليل أصول تطبيق Hyper-Studio. يحتوي على كود وأصول Hyper-Studio",
     "cannotWrite": "غير قادر على الكتابة إلى المسار المحدد",
     "chooseInstallationLocation": "اختر موقع التثبيت",
     "customNodes": "العقد المخصصة",
-    "customNodesDescription": "إعادة تثبيت العقد المخصصة من تثبيتات ComfyUI السابقة.",
+    "customNodesDescription": "إعادة تثبيت العقد المخصصة من تثبيتات Hyper-Studio السابقة.",
     "desktopAppSettings": "إعدادات تطبيق سطح المكتب",
-    "desktopAppSettingsDescription": "اضبط كيفية تصرف ComfyUI على سطح المكتب. يمكنك تغيير هذه الإعدادات لاحقًا.",
+    "desktopAppSettingsDescription": "اضبط كيفية تصرف Hyper-Studio على سطح المكتب. يمكنك تغيير هذه الإعدادات لاحقًا.",
     "desktopSettings": "إعدادات سطح المكتب",
     "failedToSelectDirectory": "فشل في اختيار الدليل",
     "gpu": "وحدة معالجة الرسومات (GPU)",
@@ -2339,7 +2339,7 @@
       "appleMetalDescription": "يستفيد من وحدة معالجة الرسومات في جهاز Mac الخاص بك لسرعة أكبر وتجربة أفضل بشكل عام",
       "cpuDescription": "استخدم وضع المعالج لضمان التوافق عندما لا تتوفر تسريع GPU",
       "cpuSubtitle": "وضع المعالج",
-      "manualDescription": "قم بإعداد ComfyUI يدويًا للإعدادات المتقدمة أو الأجهزة غير المدعومة",
+      "manualDescription": "قم بإعداد Hyper-Studio يدويًا للإعدادات المتقدمة أو الأجهزة غير المدعومة",
       "manualSubtitle": "إعداد يدوي",
       "nvidiaDescription": "استخدم وحدة معالجة الرسومات NVIDIA الخاصة بك مع تسريع CUDA للحصول على أفضل أداء.",
       "nvidiaSubtitle": "NVIDIA CUDA",
@@ -2350,7 +2350,7 @@
       "cpuMode": "وضع وحدة المعالجة المركزية (CPU)",
       "cpuModeDescription": "وضع المعالج مخصص للمطورين وحالات نادرة فقط.",
       "cpuModeDescription2": "إذا لم تكن متأكدًا تمامًا من حاجتك لهذا الوضع، يرجى تجاهل هذا الخيار واختيار وحدة معالجة الرسومات أعلاه.",
-      "customComfyNeedsPython": "ComfyUI لن يعمل حتى يتم إعداد بايثون",
+      "customComfyNeedsPython": "Hyper-Studio لن يعمل حتى يتم إعداد بايثون",
       "customInstallRequirements": "تثبيت جميع المتطلبات والاعتمادات (مثل torch مخصص)",
       "customManualVenv": "إعداد بيئة بايثون الافتراضية يدويًا",
       "customMayNotWork": "هذا غير مدعوم تمامًا، وقد لا يعمل.",
@@ -2361,28 +2361,28 @@
       "selectGpu": "اختر وحدة معالجة الرسومات",
       "selectGpuDescription": "اختر نوع وحدة معالجة الرسومات التي تملكها"
     },
-    "helpImprove": "يرجى المساعدة في تحسين ComfyUI",
-    "insideAppInstallDir": "هذا المجلد داخل حزمة تطبيق ComfyUI Desktop وسيتم حذفه أثناء التحديثات. اختر مجلدًا خارج مجلد التثبيت، مثل Documents/ComfyUI.",
-    "insideUpdaterCache": "هذا المجلد داخل ذاكرة التخزين المؤقت لمحدث ComfyUI، والتي يتم مسحها في كل تحديث. اختر موقعًا مختلفًا لبياناتك.",
+    "helpImprove": "يرجى المساعدة في تحسين Hyper-Studio",
+    "insideAppInstallDir": "هذا المجلد داخل حزمة تطبيق Hyper-Studio Desktop وسيتم حذفه أثناء التحديثات. اختر مجلدًا خارج مجلد التثبيت، مثل Documents/Hyper-Studio.",
+    "insideUpdaterCache": "هذا المجلد داخل ذاكرة التخزين المؤقت لمحدث Hyper-Studio، والتي يتم مسحها في كل تحديث. اختر موقعًا مختلفًا لبياناتك.",
     "installLocation": "موقع التثبيت",
-    "installLocationDescription": "اختر الدليل الخاص ببيانات مستخدم ComfyUI. سيتم تثبيت بيئة بايثون في الموقع المحدد.",
-    "installLocationTooltip": "دليل بيانات مستخدم ComfyUI. يحتوي على:\n- بيئة بايثون\n- النماذج\n- العقد المخصصة\n",
+    "installLocationDescription": "اختر الدليل الخاص ببيانات مستخدم Hyper-Studio. سيتم تثبيت بيئة بايثون في الموقع المحدد.",
+    "installLocationTooltip": "دليل بيانات مستخدم Hyper-Studio. يحتوي على:\n- بيئة بايثون\n- النماذج\n- العقد المخصصة\n",
     "insufficientFreeSpace": "مساحة غير كافية - الحد الأدنى للمساحة الحرة",
-    "isOneDrive": "OneDrive غير مدعوم. يرجى تثبيت ComfyUI في موقع آخر.",
+    "isOneDrive": "OneDrive غير مدعوم. يرجى تثبيت Hyper-Studio في موقع آخر.",
     "locationPicker": {
       "chooseDownloadServers": "اختر خوادم التنزيل يدويًا",
       "downloadServersDescription": "حدد خوادم المرايا المحددة لتنزيل Python وحزم PyPI وPyTorch بناءً على موقعك.",
-      "migrateDescription": "انسخ أو اربط النماذج الحالية والعقد المخصصة والإعدادات من تثبيت ComfyUI سابق.",
+      "migrateDescription": "انسخ أو اربط النماذج الحالية والعقد المخصصة والإعدادات من تثبيت Hyper-Studio سابق.",
       "migrateFromExisting": "الترحيل من تثبيت موجود",
-      "migrationPathPlaceholder": "حدد تثبيت ComfyUI موجود (اختياري)",
-      "pathPlaceholder": "/Users/username/Documents/ComfyUI",
-      "subtitle": "اختر مجلدًا لملفات ComfyUI. سنقوم أيضًا بإعداد Python هناك تلقائيًا.",
-      "title": "اختر مكان تثبيت ComfyUI"
+      "migrationPathPlaceholder": "حدد تثبيت Hyper-Studio موجود (اختياري)",
+      "pathPlaceholder": "/Users/username/Documents/Hyper-Studio",
+      "subtitle": "اختر مجلدًا لملفات Hyper-Studio. سنقوم أيضًا بإعداد Python هناك تلقائيًا.",
+      "title": "اختر مكان تثبيت Hyper-Studio"
     },
     "manualConfiguration": {
       "createVenv": "ستحتاج إلى إنشاء بيئة افتراضية في الدليل التالي",
       "requirements": "المتطلبات",
-      "restartWhenFinished": "عند الانتهاء من إعداد البيئة الافتراضية، يرجى إعادة تشغيل ComfyUI.",
+      "restartWhenFinished": "عند الانتهاء من إعداد البيئة الافتراضية، يرجى إعادة تشغيل Hyper-Studio.",
       "title": "الإعداد اليدوي",
       "virtualEnvironmentPath": "مسار البيئة الافتراضية"
     },
@@ -2391,9 +2391,9 @@
     "migrateFromExistingInstallation": "الترحيل من تثبيت موجود",
     "migration": "الترحيل",
     "migrationOptional": "الترحيل اختياري. إذا لم يكن لديك تثبيت سابق، يمكنك تخطي هذه الخطوة.",
-    "migrationSourcePathDescription": "إذا كان لديك تثبيت سابق لـ ComfyUI، يمكننا نسخ/ربط ملفات المستخدم والنماذج الخاصة بك إلى التثبيت الجديد. لن يتأثر التثبيت القديم.",
+    "migrationSourcePathDescription": "إذا كان لديك تثبيت سابق لـ Hyper-Studio، يمكننا نسخ/ربط ملفات المستخدم والنماذج الخاصة بك إلى التثبيت الجديد. لن يتأثر التثبيت القديم.",
     "moreInfo": "لمزيد من المعلومات، يرجى قراءة",
-    "nonDefaultDrive": "يرجى تثبيت ComfyUI على محرك النظام الخاص بك (مثلاً C:\\). المحركات التي تستخدم أنظمة ملفات مختلفة قد تسبب مشاكل غير متوقعة. يمكن تخزين النماذج والملفات الأخرى على محركات أخرى بعد التثبيت.",
+    "nonDefaultDrive": "يرجى تثبيت Hyper-Studio على محرك النظام الخاص بك (مثلاً C:\\). المحركات التي تستخدم أنظمة ملفات مختلفة قد تسبب مشاكل غير متوقعة. يمكن تخزين النماذج والملفات الأخرى على محركات أخرى بعد التثبيت.",
     "parentMissing": "المسار غير موجود - يرجى إنشاء الدليل الحاوي أولاً",
     "pathExists": "الدليل موجود بالفعل - يرجى التأكد من نسخ جميع البيانات احتياطياً",
     "pathValidationFailed": "فشل في التحقق من المسار",
@@ -2401,7 +2401,7 @@
     "selectItemsToMigrate": "اختر العناصر للترحيل",
     "settings": {
       "allowMetrics": "إحصائيات الاستخدام",
-      "allowMetricsDescription": "ساعد في تحسين ComfyUI عبر إرسال إحصائيات استخدام مجهولة. لا يتم جمع أي معلومات شخصية أو محتوى سير العمل.",
+      "allowMetricsDescription": "ساعد في تحسين Hyper-Studio عبر إرسال إحصائيات استخدام مجهولة. لا يتم جمع أي معلومات شخصية أو محتوى سير العمل.",
       "autoUpdate": "التحديثات التلقائية",
       "autoUpdateDescription": "تحميل التحديثات تلقائيًا عند توفرها. سيتم إعلامك قبل تثبيت التحديثات.",
       "checkingMirrors": "جارٍ التحقق من الوصول إلى مرايا بايثون...",
@@ -2718,12 +2718,12 @@
   },
   "loadWorkflowWarning": {
     "coreNodesFromVersion": "العقد الأساسية من الإصدار {version}:",
-    "newerVersionRequired": "تتطلب بعض العقد إصدارًا أحدث من ComfyUI (الحالي: {version}). يُرجى التحديث لاستخدام جميع العقد.",
-    "newerVersionRequiredGeneric": "تتطلب بعض العقد إصدارًا أحدث من ComfyUI. يُرجى التحديث لاستخدام جميع العقد.",
+    "newerVersionRequired": "تتطلب بعض العقد إصدارًا أحدث من Hyper-Studio (الحالي: {version}). يُرجى التحديث لاستخدام جميع العقد.",
+    "newerVersionRequiredGeneric": "تتطلب بعض العقد إصدارًا أحدث من Hyper-Studio. يُرجى التحديث لاستخدام جميع العقد.",
     "unknownVersion": "غير معروف"
   },
   "logsTerminal": {
-    "loadError": "تعذر تحميل السجلات، يرجى التأكد من أنك قمت بتحديث الواجهة الخلفية لـ ComfyUI.",
+    "loadError": "تعذر تحميل السجلات، يرجى التأكد من أنك قمت بتحديث الواجهة الخلفية لـ Hyper-Studio.",
     "resyncError": "تعذر إعادة مزامنة السجلات بعد إعادة اتصال الواجهة الخلفية. أعد فتح وحدة التحكم للمحاولة مرة أخرى."
   },
   "maintenance": {
@@ -2746,12 +2746,12 @@
     "terminalDefaultMessage": "عند تشغيل أمر استكشاف الأخطاء، سيتم عرض أي مخرجات هنا.",
     "title": "الصيانة",
     "unsafeMigration": {
-      "action": "استخدم مهمة الصيانة \"المسار الأساسي\" أدناه لنقل ComfyUI إلى موقع آمن.",
-      "appInstallDir": "مسارك الأساسي داخل حزمة تطبيق ComfyUI Desktop. قد يتم حذف هذا المجلد أو الكتابة فوقه أثناء التحديثات. اختر دليلاً خارج مجلد التثبيت، مثل Documents/ComfyUI.",
-      "generic": "مسار ComfyUI الأساسي الحالي في موقع قد يتم حذفه أو تعديله أثناء التحديثات. لتجنب فقدان البيانات، انقله إلى مجلد آمن.",
+      "action": "استخدم مهمة الصيانة \"المسار الأساسي\" أدناه لنقل Hyper-Studio إلى موقع آمن.",
+      "appInstallDir": "مسارك الأساسي داخل حزمة تطبيق Hyper-Studio Desktop. قد يتم حذف هذا المجلد أو الكتابة فوقه أثناء التحديثات. اختر دليلاً خارج مجلد التثبيت، مثل Documents/Hyper-Studio.",
+      "generic": "مسار Hyper-Studio الأساسي الحالي في موقع قد يتم حذفه أو تعديله أثناء التحديثات. لتجنب فقدان البيانات، انقله إلى مجلد آمن.",
       "oneDrive": "مسارك الأساسي على OneDrive، مما قد يسبب مشاكل في المزامنة وفقدان البيانات عن طريق الخطأ. اختر مجلدًا محليًا غير مُدار بواسطة OneDrive.",
       "title": "تم اكتشاف موقع تثبيت غير آمن",
-      "updaterCache": "مسارك الأساسي داخل ذاكرة التخزين المؤقت لمحدث ComfyUI، والتي يتم مسحها في كل تحديث. اختر موقعًا مختلفًا لبياناتك."
+      "updaterCache": "مسارك الأساسي داخل ذاكرة التخزين المؤقت لمحدث Hyper-Studio، والتي يتم مسحها في كل تحديث. اختر موقعًا مختلفًا لبياناتك."
     }
   },
   "manager": {
@@ -2766,7 +2766,7 @@
       "conflictMessages": {
         "accelerator": "المسرّع/GPU غير مدعوم (المتوفر: {current}، المطلوب: {required})",
         "banned": "هذه الحزمة محظورة لأسباب أمنية",
-        "comfyui_version": "عدم تطابق إصدار ComfyUI (الحالي: {current}، المطلوب: {required})",
+        "comfyui_version": "عدم تطابق إصدار Hyper-Studio (الحالي: {current}، المطلوب: {required})",
         "frontend_version": "عدم تطابق إصدار الواجهة (الحالي: {current}، المطلوب: {required})",
         "generic": "مشكلة توافق (الحالي: {current}، المطلوب: {required})",
         "import_failed": "فشل الاستيراد",
@@ -2774,11 +2774,11 @@
         "pending": "في انتظار التحقق الأمني - لا يمكن التحقق من التوافق"
       },
       "conflicts": "تعارضات",
-      "description": "لقد اكتشفنا تعارضات بين بعض إضافاتك والإصدار الجديد من ComfyUI. عند التحديث قد تتعطل سير العمل التي تعتمد على هذه الإضافات.",
+      "description": "لقد اكتشفنا تعارضات بين بعض إضافاتك والإصدار الجديد من Hyper-Studio. عند التحديث قد تتعطل سير العمل التي تعتمد على هذه الإضافات.",
       "enableAnyway": "تفعيل على أي حال",
       "extensionAtRisk": "إضافة معرضة للخطر",
       "importFailedExtensions": "إضافات فشل استيرادها",
-      "info": "إذا واصلت التحديث، سيتم تعطيل الإضافات المتعارضة تلقائيًا. يمكنك مراجعتها وإدارتها في أي وقت من خلال مدير ComfyUI.",
+      "info": "إذا واصلت التحديث، سيتم تعطيل الإضافات المتعارضة تلقائيًا. يمكنك مراجعتها وإدارتها في أي وقت من خلال مدير Hyper-Studio.",
       "installAnyway": "تثبيت على أي حال",
       "title": "تم اكتشاف مشاكل في حزمة العقد!",
       "understood": "فهمت",
@@ -2830,8 +2830,8 @@
     "importFailedGenericError": "فشل استيراد الحزمة. تحقق من وحدة التحكم لمزيد من التفاصيل.",
     "inWorkflow": "في سير العمل",
     "incompatibleVersion": {
-      "message": "يرجى ترقية ComfyUI-Manager إلى الإصدار 4.2.1 أو أعلى.\n• سطح المكتب: قم بتحديث تطبيق ComfyUI Desktop\n• مستقل: شغّل pip install -U comfyui-manager وأعد التشغيل\nلمعرفة المزيد: https://github.com/Comfy-Org/ComfyUI-Manager",
-      "title": "مطلوب ترقية ComfyUI-Manager"
+      "message": "يرجى ترقية Node Manager إلى الإصدار 4.2.1 أو أعلى.\n• سطح المكتب: قم بتحديث تطبيق Hyper-Studio Desktop\n• مستقل: شغّل pip install -U comfyui-manager وأعد التشغيل\nلمعرفة المزيد: https://github.com/Comfy-Org/ComfyUI-Manager",
+      "title": "مطلوب ترقية Node Manager"
     },
     "infoPanelEmpty": "انقر على عنصر لعرض المعلومات",
     "installAllMissingNodes": "تثبيت جميع العقد المفقودة",
@@ -2844,9 +2844,9 @@
     "latestInstallable": "أحدث إصدار قابل للتثبيت",
     "latestStableVersion": "أحدث إصدار مستقر",
     "latestVersion": "الأحدث",
-    "legacyManagerSearchTip": "هل تبحث عن ComfyUI-Manager؟ يمكنك تفعيل واجهة المدير القديمة عن طريق تشغيل ComfyUI مع الخيار --enable-manager-legacy-ui.",
+    "legacyManagerSearchTip": "هل تبحث عن Node Manager؟ يمكنك تفعيل واجهة المدير القديمة عن طريق تشغيل Hyper-Studio مع الخيار --enable-manager-legacy-ui.",
     "legacyManagerUI": "استخدام الواجهة القديمة",
-    "legacyManagerUIDescription": "لاستخدام واجهة مدير الإصدارات القديمة، ابدأ ComfyUI مع --enable-manager-legacy-ui",
+    "legacyManagerUIDescription": "لاستخدام واجهة مدير الإصدارات القديمة، ابدأ Hyper-Studio مع --enable-manager-legacy-ui",
     "legacyMenuNotAvailable": "قائمة مدير الإصدارات القديمة غير متوفرة، سيتم التبديل إلى القائمة الجديدة.",
     "license": "الرخصة",
     "loadingVersions": "جاري تحميل الإصدارات...",
@@ -2880,7 +2880,7 @@
     "packsSelected": "الحزم المحددة",
     "queueWaitingToContinue": "هناك مهام معلّقة. أعد المحاولة للمتابعة.",
     "repository": "المستودع",
-    "restartToApplyChanges": "لـتطبيق التغييرات، يرجى إعادة تشغيل ComfyUI",
+    "restartToApplyChanges": "لـتطبيق التغييرات، يرجى إعادة تشغيل Hyper-Studio",
     "restartingBackend": "جاري إعادة تشغيل الخلفية لتطبيق التغييرات...",
     "retryQueueStart": "إعادة المحاولة",
     "searchPlaceholder": "بحث",
@@ -3000,7 +3000,7 @@
     "deleteHistoryOnly": "سيتأثر السجل فقط، وستبقى الملفات على القرص",
     "deleteItems": "حذف هذه العناصر",
     "deletePermanent": "ستُزال نهائيًا.",
-    "deleteTombstone": "لن تظهر بعد الآن في ComfyUI، لكنها ستبقى على القرص",
+    "deleteTombstone": "لن تظهر بعد الآن في Hyper-Studio، لكنها ستبقى على القرص",
     "deletingImportedFilesCloudOnly": "حذف الملفات المستوردة مدعوم فقط في النسخة السحابية",
     "deletionUnsupported": "الأصول مفعّلة، لكن الخادم لا يدعم الحذف",
     "failedToCreateNode": "فشل في إنشاء العقدة",
@@ -3081,7 +3081,7 @@
     "toggleBottomPanel": "تبديل اللوحة السفلية"
   },
   "menuLabels": {
-    "About ComfyUI": "حول ComfyUI",
+    "About ComfyUI": "حول Hyper-Studio",
     "Assets": "الأصول",
     "Bottom Panel": "لوحة سفلية",
     "Browse Templates": "تصفح القوالب",
@@ -3096,9 +3096,9 @@
     "Close Current Workflow": "إغلاق سير العمل الحالي",
     "Collapse/Expand Selected Nodes": "طي/توسيع العقد المحددة",
     "Comfy-Org Discord": "ديسكورد Comfy-Org",
-    "ComfyUI Docs": "وثائق ComfyUI",
-    "ComfyUI Forum": "منتدى ComfyUI",
-    "ComfyUI Issues": "مشاكل ComfyUI",
+    "ComfyUI Docs": "وثائق Hyper-Studio",
+    "ComfyUI Forum": "منتدى Hyper-Studio",
+    "ComfyUI Issues": "مشاكل Hyper-Studio",
     "Contact Support": "الاتصال بالدعم",
     "Convert Selection to Subgraph": "تحويل التحديد إلى رسم فرعي",
     "Copy": "نسخ",
@@ -3246,7 +3246,7 @@
   "nightly": {
     "badge": {
       "label": "إصدار معاينة",
-      "tooltip": "أنت تستخدم إصدارًا ليليًا من ComfyUI. يرجى استخدام زر الملاحظات لمشاركة آرائك حول هذه الميزات."
+      "tooltip": "أنت تستخدم إصدارًا ليليًا من Hyper-Studio. يرجى استخدام زر الملاحظات لمشاركة آرائك حول هذه الميزات."
     }
   },
   "nightlySurvey": {
@@ -3628,7 +3628,7 @@
     "stepLabel": "الخطوة {current} من {total}"
   },
   "onboardingReplay": {
-    "confirmMessage": "سيؤدي هذا إلى إعادة تحميل ComfyUI وإعادة ضبط خطوات الإعداد الأولي المتاحة في هذه البيئة. لن تتأثر مهام سير العمل الخاصة بك.",
+    "confirmMessage": "سيؤدي هذا إلى إعادة تحميل Hyper-Studio وإعادة ضبط خطوات الإعداد الأولي المتاحة في هذه البيئة. لن تتأثر مهام سير العمل الخاصة بك.",
     "confirmTitle": "إعادة تشغيل الإعداد الأولي؟",
     "failedDetail": "تعذّرت إعادة ضبط حالة الإعداد الأولي. يُرجى المحاولة مرة أخرى.",
     "failedSummary": "تعذّرت إعادة تشغيل الإعداد الأولي"
@@ -3857,7 +3857,7 @@
       "installAll": "تثبيت الكل",
       "installed": "تم التثبيت",
       "installing": "جارٍ التثبيت...",
-      "ossManagerDisabledHint": "لتثبيت العقد المفقودة، قم أولاً بتشغيل {pipCmd} في بيئة بايثون الخاصة بك لتثبيت مدير العقد، ثم أعد تشغيل ComfyUI مع العلم {flag}.",
+      "ossManagerDisabledHint": "لتثبيت العقد المفقودة، قم أولاً بتشغيل {pipCmd} في بيئة بايثون الخاصة بك لتثبيت مدير العقد، ثم أعد تشغيل Hyper-Studio مع العلم {flag}.",
       "title": "حزم العقد المفقودة",
       "unknownPack": "حزمة غير معروفة",
       "unsupportedTitle": "حزم العقد غير المدعومة",
@@ -4010,7 +4010,7 @@
     },
     "disable-smart-memory": {
       "name": "تعطيل إدارة الذاكرة الذكية",
-      "tooltip": "إجبار ComfyUI على نقل النماذج إلى الذاكرة العشوائية بدلاً من إبقائها في ذاكرة الفيديو عند الإمكان."
+      "tooltip": "إجبار Hyper-Studio على نقل النماذج إلى الذاكرة العشوائية بدلاً من إبقائها في ذاكرة الفيديو عند الإمكان."
     },
     "disable-xformers": {
       "name": "تعطيل تحسين xFormers"
@@ -4026,7 +4026,7 @@
     },
     "enable-manager-legacy-ui": {
       "name": "استخدام واجهة مدير قديمة",
-      "tooltip": "يستخدم واجهة ComfyUI-Manager القديمة بدلاً من الواجهة الجديدة."
+      "tooltip": "يستخدم واجهة Node Manager القديمة بدلاً من الواجهة الجديدة."
     },
     "fast": {
       "name": "تمكين بعض التحسينات غير المختبرة والتي قد تؤثر على الجودة."
@@ -4094,21 +4094,21 @@
   "serverStart": {
     "copyAllTooltip": "نسخ الكل",
     "copySelectionTooltip": "نسخ التحديد",
-    "errorMessage": "غير قادر على بدء ComfyUI Desktop",
+    "errorMessage": "غير قادر على بدء Hyper-Studio Desktop",
     "installation": {
-      "title": "جارٍ تثبيت ComfyUI"
+      "title": "جارٍ تثبيت Hyper-Studio"
     },
     "openLogs": "فتح السجلات",
     "process": {
-      "error": "غير قادر على بدء ComfyUI Desktop",
+      "error": "غير قادر على بدء Hyper-Studio Desktop",
       "initial-state": "جارٍ التحميل...",
       "python-setup": "جارٍ إعداد بيئة بايثون...",
       "ready": "جارٍ الانتهاء...",
-      "starting-server": "جارٍ بدء خادم ComfyUI..."
+      "starting-server": "جارٍ بدء خادم Hyper-Studio..."
     },
     "reportIssue": "الإبلاغ عن مشكلة",
     "showTerminal": "إظهار الطرفية",
-    "title": "جارٍ بدء ComfyUI",
+    "title": "جارٍ بدء Hyper-Studio",
     "troubleshoot": "استكشاف الأخطاء"
   },
   "settingsCategories": {
@@ -4196,7 +4196,7 @@
     "acknowledgeCheckbox": "أفهم أن عناصر الوسائط هذه سيتم نشرها وجعلها عامة",
     "checkingAssets": "جارٍ التحقق من ظهور الوسائط…",
     "comfyHubButton": "رفع إلى Comfy Workflows",
-    "comfyHubDescription": "Comfy Workflows هو مركز مجتمع ComfyUI الرسمي.\nسيكون لسير العمل الخاص بك صفحة عامة يمكن للجميع مشاهدتها.",
+    "comfyHubDescription": "Comfy Workflows هو مركز مجتمع Hyper-Studio الرسمي.\nسيكون لسير العمل الخاص بك صفحة عامة يمكن للجميع مشاهدتها.",
     "comfyHubTitle": "رفع إلى Comfy Workflows",
     "copyLink": "نسخ",
     "createLinkButton": "إنشاء رابط",
@@ -4895,7 +4895,7 @@
       "Area Composition": "تكوين المنطقة",
       "Audio": "صوت",
       "Basics": "أساسيات",
-      "ComfyUI Examples": "أمثلة ComfyUI",
+      "ComfyUI Examples": "أمثلة Hyper-Studio",
       "ControlNet": "كونترول نت",
       "Custom Nodes": "عُقد مخصصة",
       "Extensions": "الإضافات",
@@ -4955,7 +4955,7 @@
     "logoProviderSeparator": " و "
   },
   "toastMessages": {
-    "a1111CoreNodesUnavailable": "تعذر تحميل سير العمل لأن تثبيت ComfyUI هذا يفتقد إلى العقد الأساسية. تحقق من أن الواجهة الخلفية بدأت بشكل صحيح.",
+    "a1111CoreNodesUnavailable": "تعذر تحميل سير العمل لأن تثبيت Hyper-Studio هذا يفتقد إلى العقد الأساسية. تحقق من أن الواجهة الخلفية بدأت بشكل صحيح.",
     "a1111EmbeddingsUnavailable": "تعذر تحميل التضمينات من الخادم. تم استيراد سير العمل، لكن تُركت أسماء التضمينات كنص عادي.",
     "assetDropFailed": "تعذر تحميل الأصل المُفلت",
     "cannotCreateSubgraph": "لا يمكن إنشاء مخطط فرعي",
@@ -5127,7 +5127,7 @@
   },
   "welcome": {
     "getStarted": "ابدأ الآن",
-    "title": "مرحباً بك في ComfyUI"
+    "title": "مرحباً بك في Hyper-Studio"
   },
   "whatsNewPopup": {
     "later": "لاحقًا",

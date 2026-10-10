@@ -20,7 +20,7 @@ const meta: Meta<typeof AssetsListItem> = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-const IMAGE_PREVIEW = '/assets/images/comfy-logo-single.svg'
+const IMAGE_PREVIEW = '/assets/images/hyper-studio-logo-single.svg'
 const VIDEO_PREVIEW = '/assets/images/default-template.png'
 
 export const PendingJob: Story = {

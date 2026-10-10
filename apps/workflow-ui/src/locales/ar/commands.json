@@ -159,19 +159,19 @@
     "label": "فك التفرع الفرعي المحدد"
   },
   "Comfy_Help_AboutComfyUI": {
-    "label": "حول ComfyUI"
+    "label": "حول Hyper-Studio"
   },
   "Comfy_Help_OpenComfyOrgDiscord": {
     "label": "فتح خادم Comfy-Org على Discord"
   },
   "Comfy_Help_OpenComfyUIDocs": {
-    "label": "فتح مستندات ComfyUI"
+    "label": "فتح مستندات Hyper-Studio"
   },
   "Comfy_Help_OpenComfyUIForum": {
-    "label": "فتح منتدى ComfyUI"
+    "label": "فتح منتدى Hyper-Studio"
   },
   "Comfy_Help_OpenComfyUIIssues": {
-    "label": "فتح مشكلات ComfyUI"
+    "label": "فتح مشكلات Hyper-Studio"
   },
   "Comfy_Interrupt": {
     "label": "إيقاف مؤقت"

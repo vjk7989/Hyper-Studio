@@ -120,7 +120,7 @@ export function useTemplateWorkflows() {
     const group = allTemplateGroups.value.find(
       (group) =>
         group.label ===
-        t('templateWorkflows.category.ComfyUI Examples', 'ComfyUI Examples')
+        t('templateWorkflows.category.ComfyUI Examples', 'Hyper-Studio Examples')
     )
     const category = group?.modules.find(
       (module) => module.moduleName === 'all'

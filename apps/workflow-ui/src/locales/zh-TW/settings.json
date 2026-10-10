@@ -23,7 +23,7 @@
       "custom": "自訂",
       "default": "預設"
     },
-    "tooltip": "自訂：以 ComfyUI 的頂部選單取代系統標題列"
+    "tooltip": "自訂：以 Hyper-Studio 的頂部選單取代系統標題列"
   },
   "Comfy_Appearance_DisableAnimations": {
     "name": "停用動畫",

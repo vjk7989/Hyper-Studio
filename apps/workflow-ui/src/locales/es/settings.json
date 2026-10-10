@@ -23,7 +23,7 @@
       "custom": "personalizado",
       "default": "predeterminado"
     },
-    "tooltip": "Personalizado: Reemplace la barra de título del sistema con el menú superior de ComfyUI"
+    "tooltip": "Personalizado: Reemplace la barra de título del sistema con el menú superior de Hyper-Studio"
   },
   "Comfy_Appearance_DisableAnimations": {
     "name": "Desactivar animaciones",

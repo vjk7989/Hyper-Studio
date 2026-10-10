@@ -53,7 +53,7 @@ app.registerExtension({
                 error.message
             } else {
               label.textContent =
-                'Unable to load webcam. A secure context is required, if you are not accessing ComfyUI on localhost (127.0.0.1) you will have to enable TLS (https)\n\n' +
+                'Unable to load webcam. A secure context is required. If Hyper-Studio is not accessed on localhost (127.0.0.1), enable TLS (https).\n\n' +
                 // @ts-expect-error fixme ts strict error
                 error.message
             }

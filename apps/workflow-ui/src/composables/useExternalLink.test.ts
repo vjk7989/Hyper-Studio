@@ -1,6 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-const mockData = vi.hoisted(() => ({ isDesktop: false }))
+const mockData = vi.hoisted(() => ({ isDesktop: false, isEmbedded: false }))
+
+vi.mock(import('@/platform/distribution/hyperStudio'), () => ({
+  get isHyperStudioEmbedded() {
+    return mockData.isEmbedded
+  }
+}))
 
 vi.mock(import('@/platform/distribution/types'), () => ({
   get isDesktop() {
@@ -34,6 +40,7 @@ describe('useExternalLink', () => {
     // Reset to default state
     i18n.global.locale.value = 'en'
     mockData.isDesktop = false
+    mockData.isEmbedded = false
   })
 
   describe('staticUrls', () => {
@@ -54,6 +61,17 @@ describe('useExternalLink', () => {
       )
       expect(staticUrls.forum).toBe('https://forum.comfy.org/')
       expect(staticUrls.comfyOrg).toBe('https://comfy.org/')
+    })
+
+    it('uses Hyper-Studio destinations in the embedded app', () => {
+      mockData.isEmbedded = true
+      const { staticUrls, buildDocsUrl } = useExternalLink()
+      expect(staticUrls.githubIssues).toBe(
+        'https://github.com/vjk7989/Hyper-Studio/issues'
+      )
+      expect(buildDocsUrl('/changelog')).toBe(
+        'https://github.com/vjk7989/Hyper-Studio#readme'
+      )
     })
   })
 

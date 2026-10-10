@@ -11753,7 +11753,7 @@
     }
   },
   "LazyCache": {
-    "description": "EasyCacheの自家製バージョン - EasyCacheをさらに「簡単に」実装するバージョン。全体的にはEasyCacheより劣りますが、一部の稀なケースでは優れており、ComfyUIのすべてとの普遍的な互換性があります。",
+    "description": "EasyCacheの自家製バージョン - EasyCacheをさらに「簡単に」実装するバージョン。全体的にはEasyCacheより劣りますが、一部の稀なケースでは優れており、Hyper-Studioのすべてとの普遍的な互換性があります。",
     "display_name": "LazyCache",
     "inputs": {
       "end_percent": {
@@ -13320,7 +13320,7 @@
     }
   },
   "MaskPreview": {
-    "description": "入力画像をComfyUIの出力ディレクトリに保存します。",
+    "description": "入力画像をHyper-Studioの出力ディレクトリに保存します。",
     "display_name": "MaskPreview",
     "inputs": {
       "mask": {
@@ -18300,7 +18300,7 @@
     }
   },
   "Preview3D": {
-    "description": "3DモデルファイルをComfyUIの出力ディレクトリに保存せずにプレビューします。",
+    "description": "3DモデルファイルをHyper-Studioの出力ディレクトリに保存せずにプレビューします。",
     "display_name": "3Dとアニメーションをプレビュー（非推奨）",
     "inputs": {
       "bg_image": {
@@ -18319,7 +18319,7 @@
     }
   },
   "Preview3DAdvanced": {
-    "description": "3DモデルファイルをComfyUIの出力ディレクトリに保存せずにプレビューします。",
+    "description": "3DモデルファイルをHyper-Studioの出力ディレクトリに保存せずにプレビューします。",
     "display_name": "3Dプレビュー（詳細）",
     "inputs": {
       "camera_info": {
@@ -18380,7 +18380,7 @@
     }
   },
   "PreviewAudio": {
-    "description": "音声をComfyUIの出力ディレクトリに保存せずにプレビューします。",
+    "description": "音声をHyper-Studioの出力ディレクトリに保存せずにプレビューします。",
     "display_name": "オーディオプレビュー",
     "inputs": {
       "audio": {
@@ -18398,7 +18398,7 @@
     }
   },
   "PreviewGaussianSplat": {
-    "description": "ガウシアンスプラット3DファイルをComfyUIの出力ディレクトリに保存せずにプレビューします。",
+    "description": "ガウシアンスプラット3DファイルをHyper-Studioの出力ディレクトリに保存せずにプレビューします。",
     "display_name": "スプラットのプレビュー",
     "inputs": {
       "camera_info": {
@@ -18445,7 +18445,7 @@
     }
   },
   "PreviewImage": {
-    "description": "入力画像をComfyUI出力ディレクトリに保存します。",
+    "description": "入力画像をHyper-Studio出力ディレクトリに保存します。",
     "display_name": "画像プレビュー",
     "inputs": {
       "images": {
@@ -18459,7 +18459,7 @@
     }
   },
   "PreviewPointCloud": {
-    "description": "ポイントクラウド3DファイルをComfyUIの出力ディレクトリに保存せずにプレビューします。",
+    "description": "ポイントクラウド3DファイルをHyper-Studioの出力ディレクトリに保存せずにプレビューします。",
     "display_name": "ポイントクラウドのプレビュー",
     "inputs": {
       "camera_info": {
@@ -21948,7 +21948,7 @@
     }
   },
   "SaveAudioAdvanced": {
-    "description": "入力されたオーディオをComfyUIの出力ディレクトリに保存します。",
+    "description": "入力されたオーディオをHyper-Studioの出力ディレクトリに保存します。",
     "display_name": "オーディオを保存（詳細）",
     "inputs": {
       "audio": {
@@ -22103,7 +22103,7 @@
     }
   },
   "SaveImage": {
-    "description": "入力画像をComfyUI出力ディレクトリに保存します。",
+    "description": "入力画像をHyper-Studio出力ディレクトリに保存します。",
     "display_name": "画像を保存",
     "inputs": {
       "filename_prefix": {
@@ -22122,7 +22122,7 @@
     }
   },
   "SaveImageAdvanced": {
-    "description": "入力画像をComfyUIの出力ディレクトリに保存します。",
+    "description": "入力画像をHyper-Studioの出力ディレクトリに保存します。",
     "display_name": "画像を保存（詳細）",
     "inputs": {
       "filename_prefix": {
@@ -22354,7 +22354,7 @@
     }
   },
   "SaveVideo": {
-    "description": "入力画像をComfyUIの出力ディレクトリに保存します。",
+    "description": "入力画像をHyper-Studioの出力ディレクトリに保存します。",
     "display_name": "ビデオを保存",
     "inputs": {
       "codec": {
@@ -25539,7 +25539,7 @@
       },
       "compress_geometry": {
         "name": "ジオメトリ圧縮",
-        "tooltip": "meshopt ジオメトリ圧縮（EXT_meshopt_compression）を適用します。ファイルは小さくなりますが、ComfyUI の 3D プレビューでは表示できません。編集前に展開してください。"
+        "tooltip": "meshopt ジオメトリ圧縮（EXT_meshopt_compression）を適用します。ファイルは小さくなりますが、Hyper-Studio の 3D プレビューでは表示できません。編集前に展開してください。"
       },
       "enable_image_autofix": {
         "name": "画像自動補正を有効化",
@@ -25589,7 +25589,7 @@
       },
       "compress_geometry": {
         "name": "ジオメトリ圧縮",
-        "tooltip": "meshopt ジオメトリ圧縮（EXT_meshopt_compression）を適用します。ファイルは小さくなりますが、ComfyUI の 3D プレビューでは表示できません。編集前に展開してください。"
+        "tooltip": "meshopt ジオメトリ圧縮（EXT_meshopt_compression）を適用します。ファイルは小さくなりますが、Hyper-Studio の 3D プレビューでは表示できません。編集前に展開してください。"
       },
       "export_uv": {
         "name": "UV展開を出力",
@@ -25648,7 +25648,7 @@
       },
       "compress_geometry": {
         "name": "ジオメトリ圧縮",
-        "tooltip": "meshopt ジオメトリ圧縮（EXT_meshopt_compression）を適用します。ファイルは小さくなりますが、ComfyUI の 3D プレビューでは表示できません。編集前に展開してください。"
+        "tooltip": "meshopt ジオメトリ圧縮（EXT_meshopt_compression）を適用します。ファイルは小さくなりますが、Hyper-Studio の 3D プレビューでは表示できません。編集前に展開してください。"
       },
       "export_uv": {
         "name": "UVエクスポート",

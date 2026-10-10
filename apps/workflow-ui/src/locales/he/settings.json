@@ -23,7 +23,7 @@
       "custom": "מותאם אישית",
       "default": "ברירת מחדל"
     },
-    "tooltip": "מותאם אישית: החלפת שורת הכותרת של המערכת בתפריט העליון של ComfyUI"
+    "tooltip": "מותאם אישית: החלפת שורת הכותרת של המערכת בתפריט העליון של Hyper-Studio"
   },
   "Comfy_Appearance_DisableAnimations": {
     "name": "השבתת אנימציות",

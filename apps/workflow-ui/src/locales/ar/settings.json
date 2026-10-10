@@ -23,7 +23,7 @@
       "custom": "مخصص",
       "default": "افتراضي"
     },
-    "tooltip": "مخصص: استبدال شريط عنوان النظام بالقائمة العلوية لـ ComfyUI"
+    "tooltip": "مخصص: استبدال شريط عنوان النظام بالقائمة العلوية لـ Hyper-Studio"
   },
   "Comfy_Appearance_DisableAnimations": {
     "name": "تعطيل الرسوم المتحركة",

@@ -1,6 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const distribution = vi.hoisted(() => ({ isCloud: false, isNightly: false }))
+const embedded = vi.hoisted(() => ({ value: false }))
+
+vi.mock(import('@/platform/distribution/hyperStudio'), () => ({
+  get isHyperStudioEmbedded() {
+    return embedded.value
+  }
+}))
 
 vi.mock(import('@/platform/distribution/types'), () => ({
   get isCloud() {
@@ -15,6 +22,7 @@ describe('buildFeedbackTypeformUrl', () => {
   beforeEach(() => {
     distribution.isCloud = false
     distribution.isNightly = false
+    embedded.value = false
   })
 
   async function build(source: 'topbar' | 'action-bar' | 'help-center') {
@@ -40,6 +48,17 @@ describe('buildFeedbackTypeformUrl', () => {
   it('tags OSS builds with distribution=oss', async () => {
     expect(await build('help-center')).toBe(
       'https://form.typeform.com/to/q7azbWPi#distribution=oss&source=help-center'
+    )
+  })
+
+  it('sends embedded feedback to Hyper-Studio without account details', async () => {
+    embedded.value = true
+    expect(await build('help-center')).toBe(
+      'https://github.com/vjk7989/Hyper-Studio/issues/new'
+    )
+    const { buildSupportUrl } = await import('./config')
+    expect(buildSupportUrl({ userEmail: 'private@example.com' })).toBe(
+      'https://github.com/vjk7989/Hyper-Studio/issues/new'
     )
   })
 

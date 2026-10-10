@@ -11753,7 +11753,7 @@
     }
   },
   "LazyCache": {
-    "description": "גרסה ביתית של EasyCache - גרסה 'קלה יותר' של EasyCache ליישום. בדרך כלל עובדת פחות טוב מ-EasyCache, אך טובה יותר במקרים נדירים מסוימים ועם תאימות אוניברסלית לכל דבר ב-ComfyUI.",
+    "description": "גרסה ביתית של EasyCache - גרסה 'קלה יותר' של EasyCache ליישום. בדרך כלל עובדת פחות טוב מ-EasyCache, אך טובה יותר במקרים נדירים מסוימים ועם תאימות אוניברסלית לכל דבר ב-Hyper-Studio.",
     "display_name": "LazyCache",
     "inputs": {
       "end_percent": {
@@ -13320,7 +13320,7 @@
     }
   },
   "MaskPreview": {
-    "description": "שומר את התמונות שהוזנו בתיקיית הפלט של ComfyUI.",
+    "description": "שומר את התמונות שהוזנו בתיקיית הפלט של Hyper-Studio.",
     "display_name": "תצוגה מקדימה של מסכה",
     "inputs": {
       "mask": {
@@ -18300,7 +18300,7 @@
     }
   },
   "Preview3D": {
-    "description": "תצוגה מקדימה של קובץ מודל תלת-ממדי מבלי לשמור אותו בתיקיית הפלט של ComfyUI.",
+    "description": "תצוגה מקדימה של קובץ מודל תלת-ממדי מבלי לשמור אותו בתיקיית הפלט של Hyper-Studio.",
     "display_name": "תצוגה מקדימה של 3D והנפשה (מיושן)",
     "inputs": {
       "bg_image": {
@@ -18319,7 +18319,7 @@
     }
   },
   "Preview3DAdvanced": {
-    "description": "תצוגה מקדימה של קובץ מודל תלת-ממדי מבלי לשמור אותו בתיקיית הפלט של ComfyUI.",
+    "description": "תצוגה מקדימה של קובץ מודל תלת-ממדי מבלי לשמור אותו בתיקיית הפלט של Hyper-Studio.",
     "display_name": "תצוגה מקדימה בתלת-ממד (מתקדם)",
     "inputs": {
       "camera_info": {
@@ -18380,7 +18380,7 @@
     }
   },
   "PreviewAudio": {
-    "description": "תצוגה מקדימה של האודיו מבלי לשמור אותו בתיקיית הפלט של ComfyUI.",
+    "description": "תצוגה מקדימה של האודיו מבלי לשמור אותו בתיקיית הפלט של Hyper-Studio.",
     "display_name": "תצוגה מקדימה של שמע",
     "inputs": {
       "audio": {
@@ -18398,7 +18398,7 @@
     }
   },
   "PreviewGaussianSplat": {
-    "description": "תצוגה מקדימה של קובץ gaussian splat תלת-ממדי מבלי לשמור אותו בתיקיית הפלט של ComfyUI.",
+    "description": "תצוגה מקדימה של קובץ gaussian splat תלת-ממדי מבלי לשמור אותו בתיקיית הפלט של Hyper-Studio.",
     "display_name": "תצוגה מקדימה Splat",
     "inputs": {
       "camera_info": {
@@ -18445,7 +18445,7 @@
     }
   },
   "PreviewImage": {
-    "description": "שומר את התמונות שהוזנו בתיקיית הפלט של ComfyUI.",
+    "description": "שומר את התמונות שהוזנו בתיקיית הפלט של Hyper-Studio.",
     "display_name": "תצוגה מקדימה של תמונה",
     "inputs": {
       "images": {
@@ -18459,7 +18459,7 @@
     }
   },
   "PreviewPointCloud": {
-    "description": "תצוגה מקדימה של קובץ point cloud תלת-ממדי מבלי לשמור אותו בתיקיית הפלט של ComfyUI.",
+    "description": "תצוגה מקדימה של קובץ point cloud תלת-ממדי מבלי לשמור אותו בתיקיית הפלט של Hyper-Studio.",
     "display_name": "תצוגה מקדימה של ענן נקודות",
     "inputs": {
       "camera_info": {
@@ -21948,7 +21948,7 @@
     }
   },
   "SaveAudioAdvanced": {
-    "description": "שומר את קובץ האודיו שהוזן בתיקיית הפלט של ComfyUI.",
+    "description": "שומר את קובץ האודיו שהוזן בתיקיית הפלט של Hyper-Studio.",
     "display_name": "שמור אודיו (מתקדם)",
     "inputs": {
       "audio": {
@@ -22103,7 +22103,7 @@
     }
   },
   "SaveImage": {
-    "description": "שומר את התמונות שהוזנו בתיקיית הפלט של ComfyUI.",
+    "description": "שומר את התמונות שהוזנו בתיקיית הפלט של Hyper-Studio.",
     "display_name": "שמירת תמונה",
     "inputs": {
       "filename_prefix": {
@@ -22122,7 +22122,7 @@
     }
   },
   "SaveImageAdvanced": {
-    "description": "שומר את התמונות שהוזנו בתיקיית הפלט של ComfyUI.",
+    "description": "שומר את התמונות שהוזנו בתיקיית הפלט של Hyper-Studio.",
     "display_name": "שמירת תמונה (מתקדם)",
     "inputs": {
       "filename_prefix": {
@@ -22354,7 +22354,7 @@
     }
   },
   "SaveVideo": {
-    "description": "שומר את התמונות שהוזנו לתיקיית הפלט של ComfyUI.",
+    "description": "שומר את התמונות שהוזנו לתיקיית הפלט של Hyper-Studio.",
     "display_name": "שמירת וידאו",
     "inputs": {
       "codec": {
@@ -25539,7 +25539,7 @@
       },
       "compress_geometry": {
         "name": "דחיסת גיאומטריה",
-        "tooltip": "החל דחיסת גאומטריה meshopt ‏(EXT_meshopt_compression). הקבצים קטנים יותר, אך התצוגה המקדימה התלת־ממדית של ComfyUI אינה יכולה להציגם; יש לפרוס דחיסה לפני עריכה."
+        "tooltip": "החל דחיסת גאומטריה meshopt ‏(EXT_meshopt_compression). הקבצים קטנים יותר, אך התצוגה המקדימה התלת־ממדית של Hyper-Studio אינה יכולה להציגם; יש לפרוס דחיסה לפני עריכה."
       },
       "enable_image_autofix": {
         "name": "תיקון תמונה אוטומטי",
@@ -25589,7 +25589,7 @@
       },
       "compress_geometry": {
         "name": "דחיסת גיאומטריה",
-        "tooltip": "החל דחיסת גאומטריה meshopt ‏(EXT_meshopt_compression). הקבצים קטנים יותר, אך התצוגה המקדימה התלת־ממדית של ComfyUI אינה יכולה להציגם; יש לפרוס דחיסה לפני עריכה."
+        "tooltip": "החל דחיסת גאומטריה meshopt ‏(EXT_meshopt_compression). הקבצים קטנים יותר, אך התצוגה המקדימה התלת־ממדית של Hyper-Studio אינה יכולה להציגם; יש לפרוס דחיסה לפני עריכה."
       },
       "export_uv": {
         "name": "ייצוא UV",
@@ -25648,7 +25648,7 @@
       },
       "compress_geometry": {
         "name": "דחיסת גיאומטריה",
-        "tooltip": "החל דחיסת גאומטריה meshopt ‏(EXT_meshopt_compression). הקבצים קטנים יותר, אך התצוגה המקדימה התלת־ממדית של ComfyUI אינה יכולה להציגם; יש לפרוס דחיסה לפני עריכה."
+        "tooltip": "החל דחיסת גאומטריה meshopt ‏(EXT_meshopt_compression). הקבצים קטנים יותר, אך התצוגה המקדימה התלת־ממדית של Hyper-Studio אינה יכולה להציגם; יש לפרוס דחיסה לפני עריכה."
       },
       "export_uv": {
         "name": "ייצוא UV",

@@ -181,7 +181,7 @@ const prodDefaultGraph: ComfyWorkflowJSON = {
         secondTabOffset: 80,
         secondTabWidth: 65
       },
-      widgets_values: ['ComfyUI']
+      widgets_values: ['Hyper-Studio']
     },
     {
       id: 62,

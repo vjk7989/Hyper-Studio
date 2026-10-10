@@ -610,7 +610,7 @@ export async function collectCrdtDebugReport(
   ).map(([label, result]) => `- ${label}: ${result.status}`)
 
   const sections: string[] = [
-    '# ComfyUI Agent — CRDT debug report',
+    '# Hyper-Studio Agent — CRDT debug report',
     `Generated ${new Date().toISOString()}`,
     `Report format version: 1 · Document schema version: ${input.crdt.meta.schema_version ?? 'unknown'} · Redaction marker: ${REDACTED}`,
     '## Identifiers',

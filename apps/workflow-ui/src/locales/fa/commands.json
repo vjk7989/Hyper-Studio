@@ -159,19 +159,19 @@
     "label": "بازکردن زیرگراف انتخاب‌شده"
   },
   "Comfy_Help_AboutComfyUI": {
-    "label": "درباره ComfyUI"
+    "label": "درباره Hyper-Studio"
   },
   "Comfy_Help_OpenComfyOrgDiscord": {
     "label": "بازکردن دیسکورد Comfy-Org"
   },
   "Comfy_Help_OpenComfyUIDocs": {
-    "label": "بازکردن مستندات ComfyUI"
+    "label": "بازکردن مستندات Hyper-Studio"
   },
   "Comfy_Help_OpenComfyUIForum": {
-    "label": "بازکردن انجمن ComfyUI"
+    "label": "بازکردن انجمن Hyper-Studio"
   },
   "Comfy_Help_OpenComfyUIIssues": {
-    "label": "بازکردن مشکلات ComfyUI"
+    "label": "بازکردن مشکلات Hyper-Studio"
   },
   "Comfy_Interrupt": {
     "label": "توقف"

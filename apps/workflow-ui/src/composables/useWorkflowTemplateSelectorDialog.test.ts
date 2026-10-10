@@ -11,6 +11,13 @@ const mockNewUserService = vi.hoisted(() => ({
 const mockTelemetry = vi.hoisted(() => ({
   trackTemplateLibraryOpened: vi.fn()
 }))
+const mockDistribution = vi.hoisted(() => ({ embedded: false }))
+
+vi.mock(import('@/platform/distribution/hyperStudio'), () => ({
+  get isHyperStudioEmbedded() {
+    return mockDistribution.embedded
+  }
+}))
 
 vi.mock(import('@/services/dialogService'))
 
@@ -34,9 +41,16 @@ import { useWorkflowTemplateSelectorDialog } from './useWorkflowTemplateSelector
 describe('useWorkflowTemplateSelectorDialog', () => {
   beforeEach(() => {
     mockDialogStore = useDialogStore()
+    mockDistribution.embedded = false
   })
 
   describe('show', () => {
+    it('does not open the upstream gallery in the embedded app', () => {
+      mockDistribution.embedded = true
+      vi.mocked(useDialogService().showLayoutDialog).mockClear()
+      useWorkflowTemplateSelectorDialog().show()
+      expect(useDialogService().showLayoutDialog).not.toHaveBeenCalled()
+    })
     it('defaults to "all" category for non-new users', () => {
       mockNewUserService.isNewUser.mockReturnValue(false)
 

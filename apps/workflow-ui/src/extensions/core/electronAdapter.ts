@@ -23,7 +23,7 @@ void (async () => {
   const onChangeRestartApp = async (newValue: unknown, oldValue: unknown) => {
     // Add a delay to allow changes to take effect before restarting.
     if (oldValue !== undefined && newValue !== oldValue) {
-      await electronAPI.restartApp('Restart ComfyUI to apply changes.', 1500)
+      await electronAPI.restartApp('Restart Hyper-Studio to apply changes.', 1500)
     }
   }
 
@@ -50,7 +50,7 @@ void (async () => {
         id: 'Comfy-Desktop.WindowStyle',
         category: ['Comfy-Desktop', 'General', 'Window Style'],
         name: 'Window Style',
-        tooltip: "Custom: Replace the system title bar with ComfyUI's Top menu",
+        tooltip: "Custom: Replace the system title bar with Hyper-Studio's top menu",
         type: 'combo',
         experimental: true,
         defaultValue: 'default',
@@ -300,7 +300,7 @@ void (async () => {
 
     aboutPageBadges: [
       {
-        label: 'ComfyUI_desktop v' + desktopAppVersion,
+        label: 'Hyper-Studio v' + desktopAppVersion,
         url: staticUrls.githubElectron,
         icon: 'pi pi-github'
       }

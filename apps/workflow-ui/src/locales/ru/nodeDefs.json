@@ -11753,7 +11753,7 @@
     }
   },
   "LazyCache": {
-    "description": "Самодельная версия EasyCache - ещё более 'простая' версия EasyCache для реализации. В целом работает хуже, чем EasyCache, но лучше в некоторых редких случаях И имеет универсальную совместимость со всем в ComfyUI.",
+    "description": "Самодельная версия EasyCache - ещё более 'простая' версия EasyCache для реализации. В целом работает хуже, чем EasyCache, но лучше в некоторых редких случаях И имеет универсальную совместимость со всем в Hyper-Studio.",
     "display_name": "Ленивый кэш",
     "inputs": {
       "end_percent": {
@@ -13320,7 +13320,7 @@
     }
   },
   "MaskPreview": {
-    "description": "Сохраняет входные изображения в ваш выходной каталог ComfyUI.",
+    "description": "Сохраняет входные изображения в ваш выходной каталог Hyper-Studio.",
     "display_name": "MaskPreview",
     "inputs": {
       "mask": {
@@ -18300,7 +18300,7 @@
     }
   },
   "Preview3D": {
-    "description": "Просмотр 3D-модели без сохранения в выходной каталог ComfyUI.",
+    "description": "Просмотр 3D-модели без сохранения в выходной каталог Hyper-Studio.",
     "display_name": "Предпросмотр 3D и анимации (УСТАРЕЛО)",
     "inputs": {
       "bg_image": {
@@ -18319,7 +18319,7 @@
     }
   },
   "Preview3DAdvanced": {
-    "description": "Просмотр 3D-модели без сохранения в выходной каталог ComfyUI.",
+    "description": "Просмотр 3D-модели без сохранения в выходной каталог Hyper-Studio.",
     "display_name": "Просмотр 3D (расширенный)",
     "inputs": {
       "camera_info": {
@@ -18380,7 +18380,7 @@
     }
   },
   "PreviewAudio": {
-    "description": "Прослушать аудио без сохранения в выходной каталог ComfyUI.",
+    "description": "Прослушать аудио без сохранения в выходной каталог Hyper-Studio.",
     "display_name": "Предварительное прослушивание аудио",
     "inputs": {
       "audio": {
@@ -18398,7 +18398,7 @@
     }
   },
   "PreviewGaussianSplat": {
-    "description": "Просмотр 3D-файла gaussian splat без сохранения в выходной каталог ComfyUI.",
+    "description": "Просмотр 3D-файла gaussian splat без сохранения в выходной каталог Hyper-Studio.",
     "display_name": "Предпросмотр Splat",
     "inputs": {
       "camera_info": {
@@ -18445,7 +18445,7 @@
     }
   },
   "PreviewImage": {
-    "description": "Сохраняет входные изображения в вашу директорию вывода ComfyUI.",
+    "description": "Сохраняет входные изображения в вашу директорию вывода Hyper-Studio.",
     "display_name": "Предварительный просмотр изображения",
     "inputs": {
       "images": {
@@ -18459,7 +18459,7 @@
     }
   },
   "PreviewPointCloud": {
-    "description": "Просмотр 3D-файла облака точек без сохранения в выходной каталог ComfyUI.",
+    "description": "Просмотр 3D-файла облака точек без сохранения в выходной каталог Hyper-Studio.",
     "display_name": "Предпросмотр облака точек",
     "inputs": {
       "camera_info": {
@@ -21948,7 +21948,7 @@
     }
   },
   "SaveAudioAdvanced": {
-    "description": "Сохраняет входное аудио в выходной каталог ComfyUI.",
+    "description": "Сохраняет входное аудио в выходной каталог Hyper-Studio.",
     "display_name": "Сохранить аудио (расширенно)",
     "inputs": {
       "audio": {
@@ -22103,7 +22103,7 @@
     }
   },
   "SaveImage": {
-    "description": "Сохраняет входные изображения в вашу директорию вывода ComfyUI.",
+    "description": "Сохраняет входные изображения в вашу директорию вывода Hyper-Studio.",
     "display_name": "Сохранить изображение",
     "inputs": {
       "filename_prefix": {
@@ -22122,7 +22122,7 @@
     }
   },
   "SaveImageAdvanced": {
-    "description": "Сохраняет входные изображения в вашу выходную директорию ComfyUI.",
+    "description": "Сохраняет входные изображения в вашу выходную директорию Hyper-Studio.",
     "display_name": "Сохранить изображение (расширенно)",
     "inputs": {
       "filename_prefix": {
@@ -22354,7 +22354,7 @@
     }
   },
   "SaveVideo": {
-    "description": "Сохраняет входные изображения в вашу папку вывода ComfyUI.",
+    "description": "Сохраняет входные изображения в вашу папку вывода Hyper-Studio.",
     "display_name": "Сохранить видео",
     "inputs": {
       "codec": {
@@ -25539,7 +25539,7 @@
       },
       "compress_geometry": {
         "name": "сжать_геометрию",
-        "tooltip": "Применить сжатие геометрии meshopt (EXT_meshopt_compression). Файлы будут меньше, но 3D-предпросмотр ComfyUI не сможет их отобразить; перед редактированием распакуйте их."
+        "tooltip": "Применить сжатие геометрии meshopt (EXT_meshopt_compression). Файлы будут меньше, но 3D-предпросмотр Hyper-Studio не сможет их отобразить; перед редактированием распакуйте их."
       },
       "enable_image_autofix": {
         "name": "включить_автоисправление_изображения",
@@ -25589,7 +25589,7 @@
       },
       "compress_geometry": {
         "name": "сжать_геометрию",
-        "tooltip": "Применить сжатие геометрии meshopt (EXT_meshopt_compression). Файлы будут меньше, но 3D-предпросмотр ComfyUI не сможет их отобразить; перед редактированием распакуйте их."
+        "tooltip": "Применить сжатие геометрии meshopt (EXT_meshopt_compression). Файлы будут меньше, но 3D-предпросмотр Hyper-Studio не сможет их отобразить; перед редактированием распакуйте их."
       },
       "export_uv": {
         "name": "экспорт_uv",
@@ -25648,7 +25648,7 @@
       },
       "compress_geometry": {
         "name": "compress_geometry",
-        "tooltip": "Применить сжатие геометрии meshopt (EXT_meshopt_compression). Файлы будут меньше, но 3D-предпросмотр ComfyUI не сможет их отобразить; перед редактированием распакуйте их."
+        "tooltip": "Применить сжатие геометрии meshopt (EXT_meshopt_compression). Файлы будут меньше, но 3D-предпросмотр Hyper-Studio не сможет их отобразить; перед редактированием распакуйте их."
       },
       "export_uv": {
         "name": "export_uv",

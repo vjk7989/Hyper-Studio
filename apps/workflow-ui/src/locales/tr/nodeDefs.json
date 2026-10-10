@@ -11753,7 +11753,7 @@
     }
   },
   "LazyCache": {
-    "description": "EasyCache'in ev yapımı bir versiyonu - uygulaması daha 'kolay' bir EasyCache versiyonu. Genel olarak EasyCache'den daha kötü çalışır, ancak bazı nadir durumlarda daha iyidir VE ComfyUI'deki her şeyle evrensel uyumluluğa sahiptir.",
+    "description": "EasyCache'in ev yapımı bir versiyonu - uygulaması daha 'kolay' bir EasyCache versiyonu. Genel olarak EasyCache'den daha kötü çalışır, ancak bazı nadir durumlarda daha iyidir VE Hyper-Studio'deki her şeyle evrensel uyumluluğa sahiptir.",
     "display_name": "Tembel Önbellek",
     "inputs": {
       "end_percent": {
@@ -13320,7 +13320,7 @@
     }
   },
   "MaskPreview": {
-    "description": "Giriş görüntülerini ComfyUI çıktı dizininize kaydeder.",
+    "description": "Giriş görüntülerini Hyper-Studio çıktı dizininize kaydeder.",
     "display_name": "MaskeÖnizleme",
     "inputs": {
       "mask": {
@@ -18300,7 +18300,7 @@
     }
   },
   "Preview3D": {
-    "description": "Bir 3D model dosyasını ComfyUI çıktı dizinine kaydetmeden önizleyin.",
+    "description": "Bir 3D model dosyasını Hyper-Studio çıktı dizinine kaydetmeden önizleyin.",
     "display_name": "3B ve Animasyon Önizleme (KULLANIMDAN KALDIRILDI)",
     "inputs": {
       "bg_image": {
@@ -18319,7 +18319,7 @@
     }
   },
   "Preview3DAdvanced": {
-    "description": "Bir 3D model dosyasını ComfyUI çıktı dizinine kaydetmeden önizleyin.",
+    "description": "Bir 3D model dosyasını Hyper-Studio çıktı dizinine kaydetmeden önizleyin.",
     "display_name": "3D Önizleme (Gelişmiş)",
     "inputs": {
       "camera_info": {
@@ -18380,7 +18380,7 @@
     }
   },
   "PreviewAudio": {
-    "description": "Sesi ComfyUI çıktı dizinine kaydetmeden önizleyin.",
+    "description": "Sesi Hyper-Studio çıktı dizinine kaydetmeden önizleyin.",
     "display_name": "Sesi Önizle",
     "inputs": {
       "audio": {
@@ -18398,7 +18398,7 @@
     }
   },
   "PreviewGaussianSplat": {
-    "description": "Bir gaussian splat 3D dosyasını ComfyUI çıktı dizinine kaydetmeden önizleyin.",
+    "description": "Bir gaussian splat 3D dosyasını Hyper-Studio çıktı dizinine kaydetmeden önizleyin.",
     "display_name": "Splat Önizleme",
     "inputs": {
       "camera_info": {
@@ -18445,7 +18445,7 @@
     }
   },
   "PreviewImage": {
-    "description": "Giriş görüntülerini ComfyUI çıktı dizininize kaydeder.",
+    "description": "Giriş görüntülerini Hyper-Studio çıktı dizininize kaydeder.",
     "display_name": "Görüntüyü Önizle",
     "inputs": {
       "images": {
@@ -18459,7 +18459,7 @@
     }
   },
   "PreviewPointCloud": {
-    "description": "Bir nokta bulutu 3D dosyasını ComfyUI çıktı dizinine kaydetmeden önizleyin.",
+    "description": "Bir nokta bulutu 3D dosyasını Hyper-Studio çıktı dizinine kaydetmeden önizleyin.",
     "display_name": "Nokta Bulutu Önizleme",
     "inputs": {
       "camera_info": {
@@ -21948,7 +21948,7 @@
     }
   },
   "SaveAudioAdvanced": {
-    "description": "Girdi sesini ComfyUI çıktı dizinine kaydeder.",
+    "description": "Girdi sesini Hyper-Studio çıktı dizinine kaydeder.",
     "display_name": "Ses Kaydet (Gelişmiş)",
     "inputs": {
       "audio": {
@@ -22103,7 +22103,7 @@
     }
   },
   "SaveImage": {
-    "description": "Giriş görüntülerini ComfyUI çıktı dizininize kaydeder.",
+    "description": "Giriş görüntülerini Hyper-Studio çıktı dizininize kaydeder.",
     "display_name": "Görüntüyü Kaydet",
     "inputs": {
       "filename_prefix": {
@@ -22122,7 +22122,7 @@
     }
   },
   "SaveImageAdvanced": {
-    "description": "Girdi görüntülerini ComfyUI çıktı dizinine kaydeder.",
+    "description": "Girdi görüntülerini Hyper-Studio çıktı dizinine kaydeder.",
     "display_name": "Görüntüyü Kaydet (Gelişmiş)",
     "inputs": {
       "filename_prefix": {
@@ -22354,7 +22354,7 @@
     }
   },
   "SaveVideo": {
-    "description": "Giriş görüntülerini ComfyUI çıktı dizininize kaydeder.",
+    "description": "Giriş görüntülerini Hyper-Studio çıktı dizininize kaydeder.",
     "display_name": "Videoyu Kaydet",
     "inputs": {
       "codec": {
@@ -25539,7 +25539,7 @@
       },
       "compress_geometry": {
         "name": "geometriyi_sıkıştır",
-        "tooltip": "meshopt geometri sıkıştırmasını (EXT_meshopt_compression) uygulayın. Dosyalar küçülür, ancak ComfyUI'nin 3B önizlemesi bunları görüntüleyemez; düzenlemeden önce sıkıştırmayı açın."
+        "tooltip": "meshopt geometri sıkıştırmasını (EXT_meshopt_compression) uygulayın. Dosyalar küçülür, ancak Hyper-Studio'nin 3B önizlemesi bunları görüntüleyemez; düzenlemeden önce sıkıştırmayı açın."
       },
       "enable_image_autofix": {
         "name": "görüntü_oto_düzeltme_aktif",
@@ -25589,7 +25589,7 @@
       },
       "compress_geometry": {
         "name": "geometriyi_sıkıştır",
-        "tooltip": "meshopt geometri sıkıştırmasını (EXT_meshopt_compression) uygulayın. Dosyalar küçülür, ancak ComfyUI'nin 3B önizlemesi bunları görüntüleyemez; düzenlemeden önce sıkıştırmayı açın."
+        "tooltip": "meshopt geometri sıkıştırmasını (EXT_meshopt_compression) uygulayın. Dosyalar küçülür, ancak Hyper-Studio'nin 3B önizlemesi bunları görüntüleyemez; düzenlemeden önce sıkıştırmayı açın."
       },
       "export_uv": {
         "name": "uv_dışa_aktar",
@@ -25648,7 +25648,7 @@
       },
       "compress_geometry": {
         "name": "geometriyi_sıkıştır",
-        "tooltip": "meshopt geometri sıkıştırmasını (EXT_meshopt_compression) uygulayın. Dosyalar küçülür, ancak ComfyUI'nin 3B önizlemesi bunları görüntüleyemez; düzenlemeden önce sıkıştırmayı açın."
+        "tooltip": "meshopt geometri sıkıştırmasını (EXT_meshopt_compression) uygulayın. Dosyalar küçülür, ancak Hyper-Studio'nin 3B önizlemesi bunları görüntüleyemez; düzenlemeden önce sıkıştırmayı açın."
       },
       "export_uv": {
         "name": "uv_dışa_aktar",

@@ -9,6 +9,7 @@ import { computed, ref, watch } from 'vue'
 import { useFeatureFlags } from '@/composables/useFeatureFlags'
 import { useSubscription } from '@/platform/cloud/subscription/composables/useSubscription'
 import { isCloud } from '@/platform/distribution/types'
+import { isHyperStudioEmbedded } from '@/platform/distribution/hyperStudio'
 import { useOnboardingTourStore } from '@/platform/onboarding/onboardingTourStore'
 import { useSettingStore } from '@/platform/settings/settingStore'
 import { reportError } from '@/platform/telemetry/reportError'
@@ -128,6 +129,7 @@ export const useFirstRunEntry = createSharedComposable(() => {
   }
 
   function isFirstRunCandidate(): boolean {
+    if (isHyperStudioEmbedded) return false
     return decideFirstRun() === 'getting-started'
   }
 
@@ -142,6 +144,7 @@ export const useFirstRunEntry = createSharedComposable(() => {
   }
 
   async function showFirstRunScreen(outcome: StartupOutcome) {
+    if (isHyperStudioEmbedded) return
     if (outcome === 'restored') return
     if (settingStore.get('Comfy.TutorialCompleted')) return
 

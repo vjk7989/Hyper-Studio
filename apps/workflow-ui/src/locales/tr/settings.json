@@ -23,7 +23,7 @@
       "custom": "özel",
       "default": "varsayılan"
     },
-    "tooltip": "Özel: Sistem başlık çubuğunu ComfyUI'nin Üst menüsüyle değiştirin"
+    "tooltip": "Özel: Sistem başlık çubuğunu Hyper-Studio'nin Üst menüsüyle değiştirin"
   },
   "Comfy_Appearance_DisableAnimations": {
     "name": "Animasyonları devre dışı bırak",

@@ -807,8 +807,8 @@ export function useCoreCommands(): ComfyCommand[] {
     {
       id: 'Comfy.Help.OpenComfyUIIssues',
       icon: 'pi pi-github',
-      label: 'Open ComfyUI Issues',
-      menubarLabel: 'ComfyUI Issues',
+      label: 'Open Hyper-Studio Issues',
+      menubarLabel: 'Hyper-Studio Issues',
       versionAdded: '1.5.5',
       function: () => {
         telemetry?.trackHelpResourceClicked({
@@ -822,8 +822,8 @@ export function useCoreCommands(): ComfyCommand[] {
     {
       id: 'Comfy.Help.OpenComfyUIDocs',
       icon: 'pi pi-info-circle',
-      label: 'Open ComfyUI Docs',
-      menubarLabel: 'ComfyUI Docs',
+      label: 'Open Hyper-Studio Docs',
+      menubarLabel: 'Hyper-Studio Docs',
       versionAdded: '1.5.5',
       function: () => {
         telemetry?.trackHelpResourceClicked({
@@ -837,8 +837,8 @@ export function useCoreCommands(): ComfyCommand[] {
     {
       id: 'Comfy.Help.OpenComfyOrgDiscord',
       icon: 'pi pi-discord',
-      label: 'Open Comfy-Org Discord',
-      menubarLabel: 'Comfy-Org Discord',
+      label: 'Open Hyper-Studio Community',
+      menubarLabel: 'Hyper-Studio Community',
       versionAdded: '1.5.5',
       function: () => {
         telemetry?.trackHelpResourceClicked({
@@ -861,8 +861,8 @@ export function useCoreCommands(): ComfyCommand[] {
     {
       id: 'Comfy.Help.AboutComfyUI',
       icon: 'pi pi-info-circle',
-      label: 'Open About ComfyUI',
-      menubarLabel: 'About ComfyUI',
+      label: 'Open About Hyper-Studio',
+      menubarLabel: 'About Hyper-Studio',
       versionAdded: '1.6.4',
       function: () => {
         settingsDialog.showAbout()
@@ -904,8 +904,8 @@ export function useCoreCommands(): ComfyCommand[] {
     {
       id: 'Comfy.Help.OpenComfyUIForum',
       icon: 'pi pi-comments',
-      label: 'Open ComfyUI Forum',
-      menubarLabel: 'ComfyUI Forum',
+      label: 'Open Hyper-Studio Community',
+      menubarLabel: 'Hyper-Studio Community',
       versionAdded: '1.8.2',
       function: () => {
         telemetry?.trackHelpResourceClicked({

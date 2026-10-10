@@ -23,7 +23,7 @@
       "custom": "سفارشی",
       "default": "پیش‌فرض"
     },
-    "tooltip": "سفارشی: نوار عنوان سیستم با منوی بالای ComfyUI جایگزین می‌شود"
+    "tooltip": "سفارشی: نوار عنوان سیستم با منوی بالای Hyper-Studio جایگزین می‌شود"
   },
   "Comfy_Appearance_DisableAnimations": {
     "name": "غیرفعال‌سازی انیمیشن‌ها",

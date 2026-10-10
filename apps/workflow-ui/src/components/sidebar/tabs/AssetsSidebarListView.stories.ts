@@ -78,7 +78,7 @@ const sampleAssets: AssetItem[] = [
     id: 'asset-image-1',
     name: 'image-032.png',
     created_at: baseTimestamp,
-    preview_url: '/assets/images/comfy-logo-single.svg',
+    preview_url: '/assets/images/hyper-studio-logo-single.svg',
     size: 1887437,
     tags: [],
     user_metadata: {

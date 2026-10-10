@@ -11753,7 +11753,7 @@
     }
   },
   "LazyCache": {
-    "description": "Una versione homebrew di EasyCache - una versione ancora più 'semplice' di EasyCache da implementare. In generale funziona peggio di EasyCache, ma meglio in alcuni rari casi E compatibilità universale con tutto in ComfyUI.",
+    "description": "Una versione homebrew di EasyCache - una versione ancora più 'semplice' di EasyCache da implementare. In generale funziona peggio di EasyCache, ma meglio in alcuni rari casi E compatibilità universale con tutto in Hyper-Studio.",
     "display_name": "LazyCache",
     "inputs": {
       "end_percent": {
@@ -13320,7 +13320,7 @@
     }
   },
   "MaskPreview": {
-    "description": "Visualizza in anteprima le maschere senza salvarle nella directory di output di ComfyUI.",
+    "description": "Visualizza in anteprima le maschere senza salvarle nella directory di output di Hyper-Studio.",
     "display_name": "Anteprima Maschera",
     "inputs": {
       "mask": {
@@ -18300,7 +18300,7 @@
     }
   },
   "Preview3D": {
-    "description": "Visualizza in anteprima un file modello 3D senza salvarlo nella directory di output di ComfyUI.",
+    "description": "Visualizza in anteprima un file modello 3D senza salvarlo nella directory di output di Hyper-Studio.",
     "display_name": "Anteprima 3D e animazione (DEPRECATO)",
     "inputs": {
       "bg_image": {
@@ -18319,7 +18319,7 @@
     }
   },
   "Preview3DAdvanced": {
-    "description": "Visualizza in anteprima un file modello 3D senza salvarlo nella directory di output di ComfyUI.",
+    "description": "Visualizza in anteprima un file modello 3D senza salvarlo nella directory di output di Hyper-Studio.",
     "display_name": "Anteprima 3D (Avanzata)",
     "inputs": {
       "camera_info": {
@@ -18380,7 +18380,7 @@
     }
   },
   "PreviewAudio": {
-    "description": "Ascolta l'audio in anteprima senza salvarlo nella directory di output di ComfyUI.",
+    "description": "Ascolta l'audio in anteprima senza salvarlo nella directory di output di Hyper-Studio.",
     "display_name": "Anteprima Audio",
     "inputs": {
       "audio": {
@@ -18398,7 +18398,7 @@
     }
   },
   "PreviewGaussianSplat": {
-    "description": "Visualizza in anteprima un file gaussian splat 3D senza salvarlo nella directory di output di ComfyUI.",
+    "description": "Visualizza in anteprima un file gaussian splat 3D senza salvarlo nella directory di output di Hyper-Studio.",
     "display_name": "Anteprima Splat",
     "inputs": {
       "camera_info": {
@@ -18445,7 +18445,7 @@
     }
   },
   "PreviewImage": {
-    "description": "Visualizza in anteprima le immagini senza salvarle nella directory di output di ComfyUI.",
+    "description": "Visualizza in anteprima le immagini senza salvarle nella directory di output di Hyper-Studio.",
     "display_name": "Anteprima Immagine",
     "inputs": {
       "images": {
@@ -18459,7 +18459,7 @@
     }
   },
   "PreviewPointCloud": {
-    "description": "Visualizza in anteprima un file point cloud 3D senza salvarlo nella directory di output di ComfyUI.",
+    "description": "Visualizza in anteprima un file point cloud 3D senza salvarlo nella directory di output di Hyper-Studio.",
     "display_name": "Anteprima Point Cloud",
     "inputs": {
       "camera_info": {
@@ -21948,7 +21948,7 @@
     }
   },
   "SaveAudioAdvanced": {
-    "description": "Salva l'audio di input nella cartella di output di ComfyUI.",
+    "description": "Salva l'audio di input nella cartella di output di Hyper-Studio.",
     "display_name": "Salva Audio (Avanzato)",
     "inputs": {
       "audio": {
@@ -22103,7 +22103,7 @@
     }
   },
   "SaveImage": {
-    "description": "Salva le immagini di input nella directory di output di ComfyUI.",
+    "description": "Salva le immagini di input nella directory di output di Hyper-Studio.",
     "display_name": "Salva Immagine",
     "inputs": {
       "filename_prefix": {
@@ -22122,7 +22122,7 @@
     }
   },
   "SaveImageAdvanced": {
-    "description": "Salva le immagini di input nella directory di output di ComfyUI.",
+    "description": "Salva le immagini di input nella directory di output di Hyper-Studio.",
     "display_name": "Salva Immagine (Avanzato)",
     "inputs": {
       "filename_prefix": {
@@ -22354,7 +22354,7 @@
     }
   },
   "SaveVideo": {
-    "description": "Salva i video di input nella cartella di output di ComfyUI.",
+    "description": "Salva i video di input nella cartella di output di Hyper-Studio.",
     "display_name": "Salva Video",
     "inputs": {
       "codec": {
@@ -25539,7 +25539,7 @@
       },
       "compress_geometry": {
         "name": "comprimi_geometria",
-        "tooltip": "Applica la compressione della geometria meshopt (EXT_meshopt_compression). File più piccoli, ma l'anteprima 3D di ComfyUI non può visualizzarli; decomprimere prima della modifica."
+        "tooltip": "Applica la compressione della geometria meshopt (EXT_meshopt_compression). File più piccoli, ma l'anteprima 3D di Hyper-Studio non può visualizzarli; decomprimere prima della modifica."
       },
       "enable_image_autofix": {
         "name": "abilita_autocorrezione_immagine",
@@ -25589,7 +25589,7 @@
       },
       "compress_geometry": {
         "name": "comprimi_geometria",
-        "tooltip": "Applica la compressione della geometria meshopt (EXT_meshopt_compression). File più piccoli, ma l'anteprima 3D di ComfyUI non può visualizzarli; decomprimere prima della modifica."
+        "tooltip": "Applica la compressione della geometria meshopt (EXT_meshopt_compression). File più piccoli, ma l'anteprima 3D di Hyper-Studio non può visualizzarli; decomprimere prima della modifica."
       },
       "export_uv": {
         "name": "esporta_uv",
@@ -25648,7 +25648,7 @@
       },
       "compress_geometry": {
         "name": "comprimi geometria",
-        "tooltip": "Applica la compressione della geometria meshopt (EXT_meshopt_compression). File più piccoli, ma l'anteprima 3D di ComfyUI non può visualizzarli; decomprimere prima della modifica."
+        "tooltip": "Applica la compressione della geometria meshopt (EXT_meshopt_compression). File più piccoli, ma l'anteprima 3D di Hyper-Studio non può visualizzarli; decomprimere prima della modifica."
       },
       "export_uv": {
         "name": "esporta UV",

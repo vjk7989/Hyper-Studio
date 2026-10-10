@@ -728,9 +728,9 @@
     "feature2Title": "Her Yerde, Anında Çalışır",
     "feature3Title": "Kullanıma Hazır Modeller",
     "feature4Title": "En İyi Özel Node Paketleri Önceden Yüklü",
-    "footer": "ComfyUI ücretsiz ve açık kaynak olarak kalır. Bulut seçime bağlıdır.",
+    "footer": "Hyper-Studio ücretsiz ve açık kaynak olarak kalır. Bulut seçime bağlıdır.",
     "message": "Kurulumdan üretime saniyeler içinde. Popüler modeller, eklentiler ve güçlü GPU'lar — hazır olduğunuzda kullanıma hazır.",
-    "title": "ComfyUI'yi Bulutta Çalıştırın"
+    "title": "Hyper-Studio'yi Bulutta Çalıştırın"
   },
   "cloudOnboarding": {
     "authTimeout": {
@@ -742,7 +742,7 @@
         "Try a different browser or network"
       ],
       "helpText": "Yardıma mı ihtiyacınız var? İletişime geçin:",
-      "message": "ComfyUI Cloud'a bağlanırken sorun yaşıyoruz. Bu, yavaş bir bağlantı veya geçici bir servis sorunundan kaynaklanıyor olabilir.",
+      "message": "Hyper-Studio Cloud'a bağlanırken sorun yaşıyoruz. Bu, yavaş bir bağlantı veya geçici bir servis sorunundan kaynaklanıyor olabilir.",
       "restart": "Çıkış Yap ve Tekrar Dene",
       "supportLink": "destek",
       "technicalDetails": "Teknik Detaylar",
@@ -771,11 +771,11 @@
     "skipToCloudApp": "Bulut uygulamasına geç",
     "start": {
       "desc": "Kurulum gerekmez. Her cihazda çalışır.",
-      "download": "ComfyUI'ı İndir",
+      "download": "Hyper-Studio'ı İndir",
       "explain": "Aynı anda birden fazla çıktı oluşturun. İş akışlarını kolayca paylaşın.",
       "learnAboutButton": "Cloud hakkında bilgi edinin",
       "title": "saniyeler içinde oluşturmaya başlayın",
-      "wantToRun": "ComfyUI'ı yerel olarak çalıştırmak mı istiyorsunuz?"
+      "wantToRun": "Hyper-Studio'ı yerel olarak çalıştırmak mı istiyorsunuz?"
     },
     "survey": {
       "errors": {
@@ -784,12 +784,12 @@
         "describeAnswer": "Lütfen cevabınızı açıklayın.",
         "selectAtLeastOne": "Lütfen en az bir seçenek seçin."
       },
-      "intro": "ComfyUI deneyiminizi size özel hale getirmemize yardımcı olun.",
+      "intro": "Hyper-Studio deneyiminizi size özel hale getirmemize yardımcı olun.",
       "navigationFailed": "Anket kaydedildi, ancak başlangıç süreci devam edemedi",
       "navigationFailedDetail": "Lütfen tekrar deneyin.",
       "options": {
         "experience": {
-          "new": "ComfyUI'ye yeni",
+          "new": "Hyper-Studio'ye yeni",
           "pro": "Güçlü bir kullanıcıyım",
           "some": "Biraz biliyorum"
         },
@@ -839,10 +839,10 @@
   "cloudStart_explain": "Aynı anda birden fazla çıktı oluşturun. İş akışlarını kolayca paylaşın.",
   "cloudStart_learnAboutButton": "Cloud hakkında bilgi edinin",
   "cloudStart_title": "saniyeler içinde oluşturmaya başlayın",
-  "cloudSurvey_steps_experience": "ComfyUI'yi ne kadar iyi biliyorsunuz?",
+  "cloudSurvey_steps_experience": "Hyper-Studio'yi ne kadar iyi biliyorsunuz?",
   "cloudSurvey_steps_focus": "Ne inşa ediyorsunuz?",
-  "cloudSurvey_steps_intent": "ComfyUI ile ne oluşturmak istiyorsunuz?",
-  "cloudSurvey_steps_source": "ComfyUI'yi nereden duydunuz?",
+  "cloudSurvey_steps_intent": "Hyper-Studio ile ne oluşturmak istiyorsunuz?",
+  "cloudSurvey_steps_source": "Hyper-Studio'yi nereden duydunuz?",
   "cloudSurvey_steps_source_social": "Hangi platform?",
   "cloudWaitlist_contactLink": "burada",
   "cloudWaitlist_questionsText": "Sorularınız mı var? Bize ulaşın",
@@ -1250,13 +1250,13 @@
     "WEBCAM": "WEBCAM"
   },
   "desktopLogin": {
-    "confirmMessage": "ComfyUI masaüstü uygulaması hesabınızla oturum açmayı bekliyor. Yalnızca ComfyUI masaüstü uygulamasından oturum açmayı yeni başlattıysanız devam edin.",
+    "confirmMessage": "Hyper-Studio masaüstü uygulaması hesabınızla oturum açmayı bekliyor. Yalnızca Hyper-Studio masaüstü uygulamasından oturum açmayı yeni başlattıysanız devam edin.",
     "confirmSummary": "Masaüstü oturum açmayı onayla?",
-    "expiredDetail": "Oturum açma isteğinin süresi doldu veya zaten kullanıldı. ComfyUI masaüstü uygulamasından tekrar oturum açmayı başlatın.",
+    "expiredDetail": "Oturum açma isteğinin süresi doldu veya zaten kullanıldı. Hyper-Studio masaüstü uygulamasından tekrar oturum açmayı başlatın.",
     "expiredSummary": "Masaüstü oturum açma başarısız",
-    "failedDetail": "Masaüstü oturum açma tamamlanırken bir hata oluştu. ComfyUI masaüstü uygulamasından tekrar oturum açmayı başlatın.",
+    "failedDetail": "Masaüstü oturum açma tamamlanırken bir hata oluştu. Hyper-Studio masaüstü uygulamasından tekrar oturum açmayı başlatın.",
     "failedSummary": "Masaüstü oturum açma başarısız",
-    "successDetail": "ComfyUI masaüstü uygulamasına dönebilirsiniz.",
+    "successDetail": "Hyper-Studio masaüstü uygulamasına dönebilirsiniz.",
     "successSummary": "Oturum açıldı"
   },
   "desktopMenu": {
@@ -1269,12 +1269,12 @@
     "initialising": "Başlatılıyor..."
   },
   "desktopUpdate": {
-    "description": "ComfyUI Masaüstü yeni bağımlılıkları yüklüyor. Bu birkaç dakika sürebilir.",
+    "description": "Hyper-Studio Masaüstü yeni bağımlılıkları yüklüyor. Bu birkaç dakika sürebilir.",
     "errorCheckingUpdate": "Güncellemeler kontrol edilirken hata oluştu",
     "errorInstallingUpdate": "Güncelleme yüklenirken hata oluştu",
     "noUpdateFound": "Güncelleme bulunamadı",
     "terminalDefaultMessage": "Güncellemeden gelen herhangi bir konsol çıktısı burada gösterilecektir.",
-    "title": "ComfyUI Masaüstü Güncelleniyor",
+    "title": "Hyper-Studio Masaüstü Güncelleniyor",
     "updateAvailableMessage": "Bir güncelleme mevcut. Şimdi yeniden başlatıp güncellemek ister misiniz?",
     "updateFoundTitle": "Güncelleme Bulundu (v{version})"
   },
@@ -1284,7 +1284,7 @@
     "message": "Git bulunamadı. Normal çalışma için çalışan bir git kopyası gereklidir.",
     "skip": "Atla",
     "title": "Git'i indir",
-    "warning": "Git'in kurulu olmasına ihtiyacınız olmadığından veya bir hata olduğundan eminseniz, bu kontrolü atlamak için Atla'yı tıklayabilirsiniz. ComfyUI'yi çalışan bir git kopyası olmadan çalıştırmak şu anda desteklenmemektedir."
+    "warning": "Git'in kurulu olmasına ihtiyacınız olmadığından veya bir hata olduğundan eminseniz, bu kontrolü atlamak için Atla'yı tıklayabilirsiniz. Hyper-Studio'yi çalışan bir git kopyası olmadan çalıştırmak şu anda desteklenmemektedir."
   },
   "electronFileDownload": {
     "cancel": "İndirmeyi İptal Et",
@@ -1665,7 +1665,7 @@
         "details": "{nodeName} tanınmayan bir doğrulama hatası döndürdü: {errorType}",
         "detailsWithRawDetails": "{nodeName} tanınmayan bir doğrulama hatası döndürdü ({errorType}): {rawDetails}",
         "itemLabel": "{nodeName}",
-        "message": "Bir düğüm, ComfyUI'nin tanımadığı bir doğrulama hatası döndürdü.",
+        "message": "Bir düğüm, Hyper-Studio'nin tanımadığı bir doğrulama hatası döndürdü.",
         "title": "Doğrulama başarısız",
         "toastMessage": "{nodeName} tanınmayan bir doğrulama hatası döndürdü.",
         "toastTitle": "Doğrulama başarısız"
@@ -1829,7 +1829,7 @@
     "color": "Renk",
     "comfy": "Comfy",
     "comfyCloud": "Comfy Cloud",
-    "comfyOrgLogoAlt": "ComfyOrg Logosu",
+    "comfyOrgLogoAlt": "Hyper-Studio Logosu",
     "comfyPackageOutdated": "Yüklü {name} sürümü ({installedVersion}), gerekli sürümden ({requiredVersion}) daha eski.",
     "comingSoon": "Çok Yakında",
     "command": "Komut",
@@ -1967,7 +1967,7 @@
       "exportPreset": "Ön ayarı dışa aktar",
       "importKeybindingPreset": "Klavye kısayol ön ayarını içe aktar",
       "importPreset": "Ön ayarı içe aktar",
-      "invalidPresetFile": "Ön ayar dosyası, ComfyUI'den dışa aktarılmış geçerli bir JSON olmalıdır",
+      "invalidPresetFile": "Ön ayar dosyası, Hyper-Studio'den dışa aktarılmış geçerli bir JSON olmalıdır",
       "invalidPresetName": "Ön ayar adı boş, \"default\", nokta ile başlayan, yol ayırıcı içeren veya .json ile biten bir ad olamaz",
       "loadPresetFailed": "\"{name}\" ön ayarı yüklenemedi",
       "overwritePresetMessage": "\"{name}\" adlı bir ön ayar zaten var. Üzerine yazılsın mı?",
@@ -1992,7 +1992,7 @@
     "loading": "Yükleniyor",
     "loadingPanel": "{panel} paneli yükleniyor...",
     "login": "Giriş Yap",
-    "logoAlt": "ComfyUI Logosu",
+    "logoAlt": "Hyper-Studio Logosu",
     "logs": "Kayıtlar",
     "manageExtensions": "Eklentileri yönet",
     "markdown": "markdown",
@@ -2152,7 +2152,7 @@
     "systemInfo": "Sistem Bilgisi",
     "systemStatsArguments": "Argümanlar",
     "systemStatsCloudVersion": "Bulut Sürümü",
-    "systemStatsComfyUIVersion": "ComfyUI Sürümü",
+    "systemStatsComfyUIVersion": "Hyper-Studio Sürümü",
     "systemStatsEmbeddedPython": "Gömülü Python",
     "systemStatsFrontendVersion": "Ön Yüz Sürümü",
     "systemStatsOS": "İşletim Sistemi",
@@ -2282,12 +2282,12 @@
     "reinstall": "Yeniden Yükle",
     "systemStatus": "Sistem Durumu",
     "updateAvailable": "Güncelle",
-    "updateComfyUI": "ComfyUI'yi Güncelle",
-    "updateComfyUIFailed": "ComfyUI güncellenemedi. Lütfen tekrar deneyin.",
+    "updateComfyUI": "Hyper-Studio'yi Güncelle",
+    "updateComfyUIFailed": "Hyper-Studio güncellenemedi. Lütfen tekrar deneyin.",
     "updateComfyUIStarted": "Güncelleme Başladı",
-    "updateComfyUIStartedDetail": "ComfyUI güncellemesi kuyruğa alındı. Lütfen bekleyin...",
+    "updateComfyUIStartedDetail": "Hyper-Studio güncellemesi kuyruğa alındı. Lütfen bekleyin...",
     "updateComfyUISuccess": "Güncelleme Tamamlandı",
-    "updateComfyUISuccessDetail": "ComfyUI güncellendi. Yeniden başlatılıyor...",
+    "updateComfyUISuccessDetail": "Hyper-Studio güncellendi. Yeniden başlatılıyor...",
     "whatsNew": "Yenilikler Neler?"
   },
   "icon": {
@@ -2322,14 +2322,14 @@
     "title": "İçe Aktarma Başarısız"
   },
   "install": {
-    "appDataLocationTooltip": "ComfyUI'nin uygulama veri dizini. Saklar:\n- Kayıtlar\n- Sunucu yapılandırmaları",
-    "appPathLocationTooltip": "ComfyUI'nin uygulama varlık dizini. ComfyUI kodunu ve varlıklarını saklar",
+    "appDataLocationTooltip": "Hyper-Studio'nin uygulama veri dizini. Saklar:\n- Kayıtlar\n- Sunucu yapılandırmaları",
+    "appPathLocationTooltip": "Hyper-Studio'nin uygulama varlık dizini. Hyper-Studio kodunu ve varlıklarını saklar",
     "cannotWrite": "Seçilen yola yazılamıyor",
     "chooseInstallationLocation": "Kurulum Konumunu Seçin",
     "customNodes": "Özel Düğümler",
-    "customNodesDescription": "Mevcut ComfyUI kurulumlarından özel düğümleri yeniden yükleyin.",
+    "customNodesDescription": "Mevcut Hyper-Studio kurulumlarından özel düğümleri yeniden yükleyin.",
     "desktopAppSettings": "Masaüstü Uygulama Ayarları",
-    "desktopAppSettingsDescription": "ComfyUI'nin masaüstünüzde nasıl davranacağını yapılandırın. Bu ayarları daha sonra değiştirebilirsiniz.",
+    "desktopAppSettingsDescription": "Hyper-Studio'nin masaüstünüzde nasıl davranacağını yapılandırın. Bu ayarları daha sonra değiştirebilirsiniz.",
     "desktopSettings": "Masaüstü Ayarları",
     "failedToSelectDirectory": "Dizin seçilemedi",
     "gpu": "GPU",
@@ -2339,7 +2339,7 @@
       "appleMetalDescription": "Daha hızlı hız ve daha iyi genel deneyim için Mac'inizin GPU'sunu kullanır",
       "cpuDescription": "GPU hızlandırma kullanılamadığında uyumluluk için CPU modunu kullanın",
       "cpuSubtitle": "CPU Modu",
-      "manualDescription": "Gelişmiş kurulumlar veya desteklenmeyen donanım için ComfyUI'yi manuel olarak yapılandırın",
+      "manualDescription": "Gelişmiş kurulumlar veya desteklenmeyen donanım için Hyper-Studio'yi manuel olarak yapılandırın",
       "manualSubtitle": "Manuel Kurulum",
       "nvidiaDescription": "En iyi performans için CUDA hızlandırmalı NVIDIA GPU'nuzu kullanın.",
       "nvidiaSubtitle": "NVIDIA CUDA",
@@ -2350,7 +2350,7 @@
       "cpuMode": "CPU Modu",
       "cpuModeDescription": "CPU modu yalnızca geliştiriciler ve nadir uç durumlar için tasarlanmıştır.",
       "cpuModeDescription2": "Buna kesinlikle ihtiyacınız olduğundan emin değilseniz, lütfen bu kutuyu yoksayın ve yukarıdan GPU'nuzu seçin.",
-      "customComfyNeedsPython": "Python kurulana kadar ComfyUI çalışmayacaktır",
+      "customComfyNeedsPython": "Python kurulana kadar Hyper-Studio çalışmayacaktır",
       "customInstallRequirements": "Tüm gereksinimleri ve bağımlılıkları yükleyin (ör. özel torch)",
       "customManualVenv": "Python venv'i manuel olarak yapılandırın",
       "customMayNotWork": "Bu tamamen desteklenmemektedir ve basitçe çalışmayabilir",
@@ -2361,28 +2361,28 @@
       "selectGpu": "GPU Seç",
       "selectGpuDescription": "Sahip olduğunuz GPU türünü seçin"
     },
-    "helpImprove": "Lütfen ComfyUI'yi geliştirmeye yardımcı olun",
-    "insideAppInstallDir": "Bu klasör ComfyUI Desktop uygulama paketinin içindedir ve güncellemeler sırasında silinir. Belgeler/ComfyUI gibi kurulum klasörü dışında bir dizin seçin.",
-    "insideUpdaterCache": "Bu klasör ComfyUI güncelleyici önbelleğinin içindedir ve her güncellemede temizlenir. Verileriniz için farklı bir konum seçin.",
+    "helpImprove": "Lütfen Hyper-Studio'yi geliştirmeye yardımcı olun",
+    "insideAppInstallDir": "Bu klasör Hyper-Studio Desktop uygulama paketinin içindedir ve güncellemeler sırasında silinir. Belgeler/Hyper-Studio gibi kurulum klasörü dışında bir dizin seçin.",
+    "insideUpdaterCache": "Bu klasör Hyper-Studio güncelleyici önbelleğinin içindedir ve her güncellemede temizlenir. Verileriniz için farklı bir konum seçin.",
     "installLocation": "Kurulum Yeri",
-    "installLocationDescription": "ComfyUI'nin kullanıcı verileri için dizini seçin. Seçilen konuma bir python ortamı yüklenecektir.",
-    "installLocationTooltip": "ComfyUI'nin kullanıcı veri dizini. Saklar:\n- Python Ortamı\n- Modeller\n- Özel düğümler\n",
+    "installLocationDescription": "Hyper-Studio'nin kullanıcı verileri için dizini seçin. Seçilen konuma bir python ortamı yüklenecektir.",
+    "installLocationTooltip": "Hyper-Studio'nin kullanıcı veri dizini. Saklar:\n- Python Ortamı\n- Modeller\n- Özel düğümler\n",
     "insufficientFreeSpace": "Yetersiz alan - minimum boş alan",
-    "isOneDrive": "OneDrive desteklenmiyor. Lütfen ComfyUI'yi başka bir konuma yükleyin.",
+    "isOneDrive": "OneDrive desteklenmiyor. Lütfen Hyper-Studio'yi başka bir konuma yükleyin.",
     "locationPicker": {
       "chooseDownloadServers": "İndirme sunucularını manuel olarak seçin",
       "downloadServersDescription": "Konumunuza göre Python, PyPI paketleri ve PyTorch indirmek için belirli yansı sunucularını seçin.",
-      "migrateDescription": "Önceki bir ComfyUI kurulumundan mevcut modellerinizi, özel düğümlerinizi ve yapılandırmalarınızı kopyalayın veya bağlayın.",
+      "migrateDescription": "Önceki bir Hyper-Studio kurulumundan mevcut modellerinizi, özel düğümlerinizi ve yapılandırmalarınızı kopyalayın veya bağlayın.",
       "migrateFromExisting": "Mevcut kurulumdan taşı",
-      "migrationPathPlaceholder": "Mevcut ComfyUI kurulumunu seçin (isteğe bağlı)",
-      "pathPlaceholder": "/Users/username/Documents/ComfyUI",
-      "subtitle": "ComfyUI'nin dosyaları için bir klasör seçin. Python'u da orada otomatik olarak kuracağız.",
-      "title": "ComfyUI'yi nereye kuracağınızı seçin"
+      "migrationPathPlaceholder": "Mevcut Hyper-Studio kurulumunu seçin (isteğe bağlı)",
+      "pathPlaceholder": "/Users/username/Documents/Hyper-Studio",
+      "subtitle": "Hyper-Studio'nin dosyaları için bir klasör seçin. Python'u da orada otomatik olarak kuracağız.",
+      "title": "Hyper-Studio'yi nereye kuracağınızı seçin"
     },
     "manualConfiguration": {
       "createVenv": "Aşağıdaki dizinde bir sanal ortam oluşturmanız gerekecektir",
       "requirements": "Gereksinimler",
-      "restartWhenFinished": "Sanal ortamı yapılandırmayı bitirdiğinizde, lütfen ComfyUI'yi yeniden başlatın.",
+      "restartWhenFinished": "Sanal ortamı yapılandırmayı bitirdiğinizde, lütfen Hyper-Studio'yi yeniden başlatın.",
       "title": "Manuel Yapılandırma",
       "virtualEnvironmentPath": "Sanal ortam yolu"
     },
@@ -2391,9 +2391,9 @@
     "migrateFromExistingInstallation": "Mevcut Kurulumdan Taşı",
     "migration": "Taşıma",
     "migrationOptional": "Taşıma isteğe bağlıdır. Mevcut bir kurulumunuz yoksa bu adımı atlayabilirsiniz.",
-    "migrationSourcePathDescription": "Mevcut bir ComfyUI kurulumunuz varsa, mevcut kullanıcı dosyalarınızı ve modellerinizi yeni kuruluma kopyalayabilir/bağlayabiliriz. Mevcut ComfyUI kurulumunuz etkilenmeyecektir.",
+    "migrationSourcePathDescription": "Mevcut bir Hyper-Studio kurulumunuz varsa, mevcut kullanıcı dosyalarınızı ve modellerinizi yeni kuruluma kopyalayabilir/bağlayabiliriz. Mevcut Hyper-Studio kurulumunuz etkilenmeyecektir.",
     "moreInfo": "Daha fazla bilgi için lütfen okuyun",
-    "nonDefaultDrive": "Lütfen ComfyUI'yi sistem sürücünüze (ör. C:\\) yükleyin. Farklı dosya sistemlerine sahip sürücüler öngörülemeyen sorunlara neden olabilir. Modeller ve diğer dosyalar kurulumdan sonra diğer sürücülerde saklanabilir.",
+    "nonDefaultDrive": "Lütfen Hyper-Studio'yi sistem sürücünüze (ör. C:\\) yükleyin. Farklı dosya sistemlerine sahip sürücüler öngörülemeyen sorunlara neden olabilir. Modeller ve diğer dosyalar kurulumdan sonra diğer sürücülerde saklanabilir.",
     "parentMissing": "Yol mevcut değil - önce içeren dizini oluşturun",
     "pathExists": "Dizin zaten mevcut - lütfen tüm verileri yedeklediğinizden emin olun",
     "pathValidationFailed": "Yol doğrulanamadı",
@@ -2401,7 +2401,7 @@
     "selectItemsToMigrate": "Taşınacak Öğeleri Seçin",
     "settings": {
       "allowMetrics": "Kullanım Metrikleri",
-      "allowMetricsDescription": "Anonim kullanım metrikleri göndererek ComfyUI'yi geliştirmeye yardımcı olun. Kişisel bilgi veya iş akışı içeriği toplanmayacaktır.",
+      "allowMetricsDescription": "Anonim kullanım metrikleri göndererek Hyper-Studio'yi geliştirmeye yardımcı olun. Kişisel bilgi veya iş akışı içeriği toplanmayacaktır.",
       "autoUpdate": "Otomatik Güncellemeler",
       "autoUpdateDescription": "Güncellemeler mevcut olduğunda otomatik olarak indirin. Güncellemeler yüklenmeden önce size bildirilecektir.",
       "checkingMirrors": "Python yansıtmalarına ağ erişimi kontrol ediliyor...",
@@ -2718,12 +2718,12 @@
   },
   "loadWorkflowWarning": {
     "coreNodesFromVersion": "Sürüm {version} çekirdek düğümleri:",
-    "newerVersionRequired": "Bazı düğümler daha yeni bir ComfyUI sürümü gerektiriyor (geçerli: {version}). Tüm düğümleri kullanmak için lütfen güncelleyin.",
-    "newerVersionRequiredGeneric": "Bazı düğümler daha yeni bir ComfyUI sürümü gerektiriyor. Tüm düğümleri kullanmak için lütfen güncelleyin.",
+    "newerVersionRequired": "Bazı düğümler daha yeni bir Hyper-Studio sürümü gerektiriyor (geçerli: {version}). Tüm düğümleri kullanmak için lütfen güncelleyin.",
+    "newerVersionRequiredGeneric": "Bazı düğümler daha yeni bir Hyper-Studio sürümü gerektiriyor. Tüm düğümleri kullanmak için lütfen güncelleyin.",
     "unknownVersion": "bilinmeyen"
   },
   "logsTerminal": {
-    "loadError": "Kayıtlar yüklenemiyor, lütfen ComfyUI arka ucunuzu güncellediğinizden emin olun.",
+    "loadError": "Kayıtlar yüklenemiyor, lütfen Hyper-Studio arka ucunuzu güncellediğinizden emin olun.",
     "resyncError": "Arka uç yeniden bağlandıktan sonra kayıtlar yeniden eşitlenemedi. Tekrar denemek için konsolu yeniden açın."
   },
   "maintenance": {
@@ -2746,12 +2746,12 @@
     "terminalDefaultMessage": "Bir sorun giderme komutu çalıştırdığınızda, herhangi bir çıktı burada gösterilecektir.",
     "title": "Bakım",
     "unsafeMigration": {
-      "action": "ComfyUI'yi güvenli bir konuma taşımak için aşağıdaki \"Ana yol\" bakım görevini kullanın.",
-      "appInstallDir": "Ana yolunuz ComfyUI Masaüstü uygulama paketinin içinde. Bu klasör güncellemeler sırasında silinebilir veya üzerine yazılabilir. Kurulum klasörü dışında, örneğin Belgeler/ComfyUI gibi bir dizin seçin.",
-      "generic": "Mevcut ComfyUI ana yolunuz, güncellemeler sırasında silinebilecek veya değiştirilebilecek bir konumda. Veri kaybını önlemek için güvenli bir klasöre taşıyın.",
+      "action": "Hyper-Studio'yi güvenli bir konuma taşımak için aşağıdaki \"Ana yol\" bakım görevini kullanın.",
+      "appInstallDir": "Ana yolunuz Hyper-Studio Masaüstü uygulama paketinin içinde. Bu klasör güncellemeler sırasında silinebilir veya üzerine yazılabilir. Kurulum klasörü dışında, örneğin Belgeler/Hyper-Studio gibi bir dizin seçin.",
+      "generic": "Mevcut Hyper-Studio ana yolunuz, güncellemeler sırasında silinebilecek veya değiştirilebilecek bir konumda. Veri kaybını önlemek için güvenli bir klasöre taşıyın.",
       "oneDrive": "Ana yolunuz OneDrive üzerinde, bu senkronizasyon sorunlarına ve kazara veri kaybına neden olabilir. OneDrive tarafından yönetilmeyen yerel bir klasör seçin.",
       "title": "Güvensiz kurulum yeri tespit edildi",
-      "updaterCache": "Ana yolunuz ComfyUI güncelleyici önbelleğinin içinde, bu klasör her güncellemede temizlenir. Verileriniz için farklı bir konum seçin."
+      "updaterCache": "Ana yolunuz Hyper-Studio güncelleyici önbelleğinin içinde, bu klasör her güncellemede temizlenir. Verileriniz için farklı bir konum seçin."
     }
   },
   "manager": {
@@ -2766,7 +2766,7 @@
       "conflictMessages": {
         "accelerator": "GPU/Hızlandırıcı desteklenmiyor (mevcut: {current}, gerekli: {required})",
         "banned": "Bu paket güvenlik nedenleriyle yasaklandı",
-        "comfyui_version": "ComfyUI sürüm uyuşmazlığı (mevcut: {current}, gerekli: {required})",
+        "comfyui_version": "Hyper-Studio sürüm uyuşmazlığı (mevcut: {current}, gerekli: {required})",
         "frontend_version": "Ön uç sürüm uyuşmazlığı (mevcut: {current}, gerekli: {required})",
         "generic": "Uyumluluk sorunu (mevcut: {current}, gerekli: {required})",
         "import_failed": "İçe Aktarılamadı",
@@ -2774,11 +2774,11 @@
         "pending": "Güvenlik doğrulaması bekleniyor - uyumluluk doğrulanamıyor"
       },
       "conflicts": "Çakışmalar",
-      "description": "Bazı uzantılarınız ile ComfyUI'nin yeni sürümü arasında çakışmalar tespit ettik. Güncelleyerek bu uzantılara dayanan iş akışlarını bozma riskiyle karşı karşıya kalırsınız.",
+      "description": "Bazı uzantılarınız ile Hyper-Studio'nin yeni sürümü arasında çakışmalar tespit ettik. Güncelleyerek bu uzantılara dayanan iş akışlarını bozma riskiyle karşı karşıya kalırsınız.",
       "enableAnyway": "Yine de Etkinleştir",
       "extensionAtRisk": "Risk Altındaki Uzantı",
       "importFailedExtensions": "İçe Aktarılamayan Uzantılar",
-      "info": "Güncellemeye devam ederseniz, çakışan uzantılar otomatik olarak devre dışı bırakılacaktır. Bunları istediğiniz zaman ComfyUI Yöneticisi'nde inceleyebilir ve yönetebilirsiniz.",
+      "info": "Güncellemeye devam ederseniz, çakışan uzantılar otomatik olarak devre dışı bırakılacaktır. Bunları istediğiniz zaman Hyper-Studio Yöneticisi'nde inceleyebilir ve yönetebilirsiniz.",
       "installAnyway": "Yine de Yükle",
       "title": "Düğüm Paketi Sorunları Tespit Edildi!",
       "understood": "Anlaşıldı",
@@ -2830,8 +2830,8 @@
     "importFailedGenericError": "Paket içe aktarılamadı. Daha fazla ayrıntı için konsolu kontrol edin.",
     "inWorkflow": "İş Akışında",
     "incompatibleVersion": {
-      "message": "Lütfen ComfyUI-Manager'ı 4.2.1 veya daha yüksek bir sürüme yükseltin.\n• Masaüstü: ComfyUI Masaüstü uygulamasını güncelleyin\n• Bağımsız: pip install -U comfyui-manager komutunu çalıştırın ve yeniden başlatın\nDaha fazla bilgi: https://github.com/Comfy-Org/ComfyUI-Manager",
-      "title": "ComfyUI-Manager yükseltmesi gerekli"
+      "message": "Lütfen Node Manager'ı 4.2.1 veya daha yüksek bir sürüme yükseltin.\n• Masaüstü: Hyper-Studio Masaüstü uygulamasını güncelleyin\n• Bağımsız: pip install -U comfyui-manager komutunu çalıştırın ve yeniden başlatın\nDaha fazla bilgi: https://github.com/Comfy-Org/ComfyUI-Manager",
+      "title": "Node Manager yükseltmesi gerekli"
     },
     "infoPanelEmpty": "Bilgileri görmek için bir öğeye tıklayın",
     "installAllMissingNodes": "Tüm Eksik Düğümleri Yükle",
@@ -2844,9 +2844,9 @@
     "latestInstallable": "En Son Yüklenebilir",
     "latestStableVersion": "En son kararlı",
     "latestVersion": "En Son",
-    "legacyManagerSearchTip": "ComfyUI-Manager'ı mı arıyorsunuz? Eski yönetici arayüzünü etkinleştirmek için ComfyUI'yi --enable-manager-legacy-ui bayrağı ile başlatabilirsiniz.",
+    "legacyManagerSearchTip": "Node Manager'ı mı arıyorsunuz? Eski yönetici arayüzünü etkinleştirmek için Hyper-Studio'yi --enable-manager-legacy-ui bayrağı ile başlatabilirsiniz.",
     "legacyManagerUI": "Eski Arayüzü Kullan",
-    "legacyManagerUIDescription": "Eski Yönetici Arayüzünü kullanmak için ComfyUI'yi --enable-manager-legacy-ui ile başlatın",
+    "legacyManagerUIDescription": "Eski Yönetici Arayüzünü kullanmak için Hyper-Studio'yi --enable-manager-legacy-ui ile başlatın",
     "legacyMenuNotAvailable": "Eski yönetici menüsü mevcut değil, yeni yönetici menüsüne varsayılan olarak geçiliyor.",
     "license": "Lisans",
     "loadingVersions": "Sürümler yükleniyor...",
@@ -2880,7 +2880,7 @@
     "packsSelected": "paket seçildi",
     "queueWaitingToContinue": "Görevler beklemede. Devam etmek için yeniden deneyin.",
     "repository": "Depo",
-    "restartToApplyChanges": "Değişiklikleri uygulamak için lütfen ComfyUI'yi yeniden başlatın",
+    "restartToApplyChanges": "Değişiklikleri uygulamak için lütfen Hyper-Studio'yi yeniden başlatın",
     "restartingBackend": "Değişiklikleri uygulamak için arka uç yeniden başlatılıyor...",
     "retryQueueStart": "Yeniden dene",
     "searchPlaceholder": "Ara",
@@ -3000,7 +3000,7 @@
     "deleteHistoryOnly": "Yalnızca geçmiş etkilenir, dosyalar diskte kalır",
     "deleteItems": "Bu öğeleri sil",
     "deletePermanent": "Kalıcı olarak kaldırılacaklar.",
-    "deleteTombstone": "Bunlar artık ComfyUI içinde görüntülenmeyecek, ancak diskte kalacak",
+    "deleteTombstone": "Bunlar artık Hyper-Studio içinde görüntülenmeyecek, ancak diskte kalacak",
     "deletingImportedFilesCloudOnly": "İçe aktarılan dosyaların silinmesi yalnızca bulut sürümünde desteklenir",
     "deletionUnsupported": "Varlıklar etkin, ancak sunucu silmeyi desteklemiyor",
     "failedToCreateNode": "Düğüm oluşturulamadı",
@@ -3081,7 +3081,7 @@
     "toggleBottomPanel": "Alt Paneli Aç/Kapat"
   },
   "menuLabels": {
-    "About ComfyUI": "ComfyUI Hakkında",
+    "About ComfyUI": "Hyper-Studio Hakkında",
     "Assets": "Varlıklar",
     "Bottom Panel": "Alt Panel",
     "Browse Templates": "Şablonlara Gözat",
@@ -3096,9 +3096,9 @@
     "Close Current Workflow": "Mevcut İş Akışını Kapat",
     "Collapse/Expand Selected Nodes": "Seçili Düğümleri Daralt/Genişlet",
     "Comfy-Org Discord": "Comfy-Org Discord",
-    "ComfyUI Docs": "ComfyUI Belgeleri",
-    "ComfyUI Forum": "ComfyUI Forumu",
-    "ComfyUI Issues": "ComfyUI Sorunları",
+    "ComfyUI Docs": "Hyper-Studio Belgeleri",
+    "ComfyUI Forum": "Hyper-Studio Forumu",
+    "ComfyUI Issues": "Hyper-Studio Sorunları",
     "Contact Support": "Destekle İletişime Geç",
     "Convert Selection to Subgraph": "Seçimi Alt Grafiğe Dönüştür",
     "Copy": "Kopyala",
@@ -3246,7 +3246,7 @@
   "nightly": {
     "badge": {
       "label": "Önizleme Sürümü",
-      "tooltip": "ComfyUI'nin nightly sürümünü kullanıyorsunuz. Lütfen bu özelliklerle ilgili görüşlerinizi paylaşmak için geri bildirim butonunu kullanın."
+      "tooltip": "Hyper-Studio'nin nightly sürümünü kullanıyorsunuz. Lütfen bu özelliklerle ilgili görüşlerinizi paylaşmak için geri bildirim butonunu kullanın."
     }
   },
   "nightlySurvey": {
@@ -3628,7 +3628,7 @@
     "stepLabel": "Adım {current} / {total}"
   },
   "onboardingReplay": {
-    "confirmMessage": "Bu işlem ComfyUI'yi yeniden yükler ve bu ortamda kullanılabilen başlangıç adımlarını sıfırlar. İş akışlarınız etkilenmez.",
+    "confirmMessage": "Bu işlem Hyper-Studio'yi yeniden yükler ve bu ortamda kullanılabilen başlangıç adımlarını sıfırlar. İş akışlarınız etkilenmez.",
     "confirmTitle": "Başlangıç süreci yeniden oynatılsın mı?",
     "failedDetail": "Başlangıç durumunuz sıfırlanamadı. Lütfen tekrar deneyin.",
     "failedSummary": "Başlangıç süreci yeniden oynatılamadı"
@@ -3857,7 +3857,7 @@
       "installAll": "Tümünü Yükle",
       "installed": "Yüklendi",
       "installing": "Yükleniyor...",
-      "ossManagerDisabledHint": "Eksik düğümleri yüklemek için önce Python ortamınızda {pipCmd} komutunu çalıştırarak Node Manager'ı yükleyin, ardından ComfyUI'yi {flag} bayrağı ile yeniden başlatın.",
+      "ossManagerDisabledHint": "Eksik düğümleri yüklemek için önce Python ortamınızda {pipCmd} komutunu çalıştırarak Node Manager'ı yükleyin, ardından Hyper-Studio'yi {flag} bayrağı ile yeniden başlatın.",
       "title": "Eksik Düğüm Paketleri",
       "unknownPack": "Bilinmeyen paket",
       "unsupportedTitle": "Desteklenmeyen Düğüm Paketleri",
@@ -4010,7 +4010,7 @@
     },
     "disable-smart-memory": {
       "name": "Akıllı bellek yönetimini devre dışı bırak",
-      "tooltip": "ComfyUI'yi, modelleri VRAM'de tutmak yerine agresif bir şekilde normal RAM'e boşaltmaya zorlayın."
+      "tooltip": "Hyper-Studio'yi, modelleri VRAM'de tutmak yerine agresif bir şekilde normal RAM'e boşaltmaya zorlayın."
     },
     "disable-xformers": {
       "name": "xFormers optimizasyonunu devre dışı bırak"
@@ -4026,7 +4026,7 @@
     },
     "enable-manager-legacy-ui": {
       "name": "Klasik Manager Arayüzünü Kullan",
-      "tooltip": "Yeni arayüz yerine klasik ComfyUI-Manager arayüzünü kullanır."
+      "tooltip": "Yeni arayüz yerine klasik Node Manager arayüzünü kullanır."
     },
     "fast": {
       "name": "Test edilmemiş ve potansiyel olarak kaliteyi düşüren bazı optimizasyonları etkinleştirin."
@@ -4094,21 +4094,21 @@
   "serverStart": {
     "copyAllTooltip": "Tümünü kopyala",
     "copySelectionTooltip": "Seçimi kopyala",
-    "errorMessage": "ComfyUI Desktop başlatılamadı",
+    "errorMessage": "Hyper-Studio Desktop başlatılamadı",
     "installation": {
-      "title": "ComfyUI Yükleniyor"
+      "title": "Hyper-Studio Yükleniyor"
     },
     "openLogs": "Kayıtları Aç",
     "process": {
-      "error": "ComfyUI Desktop başlatılamıyor",
+      "error": "Hyper-Studio Desktop başlatılamıyor",
       "initial-state": "Yükleniyor...",
       "python-setup": "Python Ortamı Kuruluyor...",
       "ready": "Bitiriliyor...",
-      "starting-server": "ComfyUI sunucusu başlatılıyor..."
+      "starting-server": "Hyper-Studio sunucusu başlatılıyor..."
     },
     "reportIssue": "Sorun Bildir",
     "showTerminal": "Terminali Göster",
-    "title": "ComfyUI Başlatılıyor",
+    "title": "Hyper-Studio Başlatılıyor",
     "troubleshoot": "Sorun Giderme"
   },
   "settingsCategories": {
@@ -4196,7 +4196,7 @@
     "acknowledgeCheckbox": "Bu medya öğelerinin yayınlanıp herkese açık olacağını anlıyorum",
     "checkingAssets": "Medya görünürlüğü kontrol ediliyor…",
     "comfyHubButton": "Comfy Workflows'a yükle",
-    "comfyHubDescription": "Comfy Workflows, ComfyUI'nin resmi topluluk merkezidir.\nİş akışınız herkesin görebileceği herkese açık bir sayfada olacak.",
+    "comfyHubDescription": "Comfy Workflows, Hyper-Studio'nin resmi topluluk merkezidir.\nİş akışınız herkesin görebileceği herkese açık bir sayfada olacak.",
     "comfyHubTitle": "Comfy Workflows'a yükle",
     "copyLink": "Kopyala",
     "createLinkButton": "Bağlantı oluştur",
@@ -4895,7 +4895,7 @@
       "Area Composition": "Alan Kompozisyonu",
       "Audio": "Ses",
       "Basics": "Temel Bilgiler",
-      "ComfyUI Examples": "ComfyUI Örnekleri",
+      "ComfyUI Examples": "Hyper-Studio Örnekleri",
       "ControlNet": "ControlNet",
       "Custom Nodes": "Özel Düğümler",
       "Extensions": "Eklentiler",
@@ -4955,7 +4955,7 @@
     "logoProviderSeparator": " & "
   },
   "toastMessages": {
-    "a1111CoreNodesUnavailable": "Çalışma akışı yüklenemedi çünkü bu ComfyUI kurulumunda çekirdek düğümler eksik. Arka ucun doğru başlatıldığından emin olun.",
+    "a1111CoreNodesUnavailable": "Çalışma akışı yüklenemedi çünkü bu Hyper-Studio kurulumunda çekirdek düğümler eksik. Arka ucun doğru başlatıldığından emin olun.",
     "a1111EmbeddingsUnavailable": "Embedding'ler sunucudan yüklenemedi. İş akışı içe aktarıldı, ancak embedding adları düz metin olarak bırakıldı.",
     "assetDropFailed": "Bırakılan varlık yüklenemedi",
     "cannotCreateSubgraph": "Alt grafik oluşturulamıyor",
@@ -5127,7 +5127,7 @@
   },
   "welcome": {
     "getStarted": "Başlayın",
-    "title": "ComfyUI'ye Hoş Geldiniz"
+    "title": "Hyper-Studio'ye Hoş Geldiniz"
   },
   "whatsNewPopup": {
     "later": "Daha Sonra",

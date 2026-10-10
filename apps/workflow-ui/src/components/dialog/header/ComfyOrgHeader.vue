@@ -2,7 +2,7 @@
 <template>
   <div class="px-2 py-4">
     <img
-      src="/assets/images/comfy-logo-single.svg"
+      src="/assets/images/hyper-studio-logo-single.svg"
       :alt="$t('g.comfyOrgLogoAlt')"
       width="32"
       height="32"

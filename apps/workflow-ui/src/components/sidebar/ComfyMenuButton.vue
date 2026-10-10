@@ -16,10 +16,9 @@
       <i
         class="col-span-full row-span-full icon-[lucide--chevron-down] size-3 translate-x-4 text-muted-foreground"
       />
-      <ComfyLogo
-        alt="ComfyUI Logo"
+      <HyperStudioLogo
+        alt="Hyper-Studio logo"
         class="comfyui-logo col-span-full row-span-full size-4.5"
-        mode="fill"
       />
     </div>
   </div>
@@ -103,7 +102,7 @@ import type {
 import { computed, nextTick, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import ComfyLogo from '@/components/icons/ComfyLogo.vue'
+import HyperStudioLogo from '@/components/icons/HyperStudioLogo.vue'
 import Switch from '@/components/ui/switch/Switch.vue'
 import { useWorkflowTemplateSelectorDialog } from '@/composables/useWorkflowTemplateSelectorDialog'
 import { useSettingStore } from '@/platform/settings/settingStore'

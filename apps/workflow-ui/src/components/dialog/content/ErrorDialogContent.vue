@@ -95,8 +95,8 @@ const { error, errorSources = [] } = defineProps<{
   }
 }>()
 
-const repoOwner = 'comfyanonymous'
-const repoName = 'ComfyUI'
+const repoOwner = 'vjk7989'
+const repoName = 'Hyper-Studio'
 const reportContent = ref('')
 const reportOpen = ref(false)
 /**

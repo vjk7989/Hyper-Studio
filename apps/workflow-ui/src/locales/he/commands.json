@@ -159,19 +159,19 @@
     "label": "פריסת תת-הגרף הנבחר"
   },
   "Comfy_Help_AboutComfyUI": {
-    "label": "פתיחת 'אודות ComfyUI'"
+    "label": "פתיחת 'אודות Hyper-Studio'"
   },
   "Comfy_Help_OpenComfyOrgDiscord": {
     "label": "פתיחת ה-Discord של Comfy-Org"
   },
   "Comfy_Help_OpenComfyUIDocs": {
-    "label": "פתיחת התיעוד של ComfyUI"
+    "label": "פתיחת התיעוד של Hyper-Studio"
   },
   "Comfy_Help_OpenComfyUIForum": {
-    "label": "פתיחת הפורום של ComfyUI"
+    "label": "פתיחת הפורום של Hyper-Studio"
   },
   "Comfy_Help_OpenComfyUIIssues": {
-    "label": "פתיחת בעיות (Issues) של ComfyUI"
+    "label": "פתיחת בעיות (Issues) של Hyper-Studio"
   },
   "Comfy_Interrupt": {
     "label": "הפסקה"

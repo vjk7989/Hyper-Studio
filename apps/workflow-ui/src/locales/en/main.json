@@ -54,8 +54,8 @@
     "calculatingDimensions": "Calculating dimensions",
     "import": "Import",
     "loadAllFolders": "Load All Folders",
-    "logoAlt": "ComfyUI Logo",
-    "comfyOrgLogoAlt": "ComfyOrg Logo",
+    "logoAlt": "Hyper-Studio Logo",
+    "comfyOrgLogoAlt": "Hyper-Studio Logo",
     "comfy": "Comfy",
     "refresh": "Refresh",
     "refreshNode": "Refresh Node",
@@ -79,7 +79,7 @@
     "systemStatsRAMFree": "RAM Free",
     "systemStatsTemplatesVersion": "Templates Version",
     "systemStatsCloudVersion": "Cloud Version",
-    "systemStatsComfyUIVersion": "ComfyUI Version",
+    "systemStatsComfyUIVersion": "Hyper-Studio Version",
     "systemStatsFrontendVersion": "Frontend Version",
     "about": "About",
     "add": "Add",
@@ -342,7 +342,7 @@
       "presetSaved": "Preset \"{name}\" saved",
       "presetDeleted": "Preset \"{name}\" deleted",
       "presetImported": "Keybinding preset imported",
-      "invalidPresetFile": "Preset file must be valid JSON exported from ComfyUI",
+      "invalidPresetFile": "Preset file must be valid JSON exported from Hyper-Studio",
       "invalidPresetName": "Preset name must not be empty, \"default\", start with a dot, contain path separators, or end with .json",
       "loadPresetFailed": "Failed to load preset \"{name}\"",
       "deletePresetFailed": "Failed to delete preset \"{name}\"",
@@ -458,12 +458,12 @@
     "selected": "Selected",
     "legacyMenuNotAvailable": "Legacy manager menu is not available, defaulting to the new manager menu.",
     "incompatibleVersion": {
-      "title": "ComfyUI-Manager upgrade required",
-      "message": "Please upgrade ComfyUI-Manager to version 4.2.1 or higher.\n• Desktop: Update the ComfyUI Desktop app\n• Standalone: Run pip install -U comfyui-manager and restart\nLearn more: https://github.com/Comfy-Org/ComfyUI-Manager"
+      "title": "Node Manager upgrade required",
+      "message": "Please upgrade Node Manager to version 4.2.1 or higher.\n• Desktop: Update the Hyper-Studio Desktop app\n• Standalone: Run pip install -U comfyui-manager and restart\nLearn more: https://github.com/Comfy-Org/ComfyUI-Manager"
     },
     "legacyManagerUI": "Use Legacy UI",
-    "legacyManagerUIDescription": "To use the legacy Manager UI, start ComfyUI with --enable-manager-legacy-ui",
-    "legacyManagerSearchTip": "Looking for ComfyUI-Manager? You can enable the legacy manager UI by starting ComfyUI with the --enable-manager-legacy-ui flag.",
+    "legacyManagerUIDescription": "To use the legacy Manager UI, start Hyper-Studio with --enable-manager-legacy-ui",
+    "legacyManagerSearchTip": "Looking for Node Manager? You can enable the legacy manager UI by starting Hyper-Studio with the --enable-manager-legacy-ui flag.",
     "failed": "Failed",
     "failedToInstall": "Failed to Install",
     "installError": "Install Error",
@@ -490,7 +490,7 @@
     },
     "infoPanelEmpty": "Click an item to see the info",
     "applyChanges": "Apply Changes",
-    "restartToApplyChanges": "To apply changes, please restart ComfyUI",
+    "restartToApplyChanges": "To apply changes, please restart Hyper-Studio",
     "clickToFinishSetup": "Click",
     "toFinishSetup": "to finish setup",
     "restartingBackend": "Restarting backend to apply changes...",
@@ -594,8 +594,8 @@
     },
     "conflicts": {
       "title": "Node Pack Issues Detected!",
-      "description": "We've detected conflicts between some of your extensions and the new version of ComfyUI. By updating you risk breaking workflows that rely on those extensions.",
-      "info": "If you continue with the update, the conflicting extensions will be disabled automatically. You can review and manage them anytime in the ComfyUI Manager.",
+      "description": "We've detected conflicts between some of your extensions and the new version of Hyper-Studio. By updating you risk breaking workflows that rely on those extensions.",
+      "info": "If you continue with the update, the conflicting extensions will be disabled automatically. You can review and manage them anytime in the Hyper-Studio Manager.",
       "extensionAtRisk": "Extension at Risk",
       "conflicts": "Conflicts",
       "importFailedExtensions": "Import Failed Extensions",
@@ -609,7 +609,7 @@
         "button": "Learn More..."
       },
       "conflictMessages": {
-        "comfyui_version": "ComfyUI version mismatch (current: {current}, required: {required})",
+        "comfyui_version": "Hyper-Studio version mismatch (current: {current}, required: {required})",
         "frontend_version": "Frontend version mismatch (current: {current}, required: {required})",
         "os": "Operating system not supported (current: {current}, required: {required})",
         "accelerator": "GPU/Accelerator not supported (available: {current}, required: {required})",
@@ -728,7 +728,7 @@
     "exclamation-triangle": "Warning"
   },
   "welcome": {
-    "title": "Welcome to ComfyUI",
+    "title": "Welcome to Hyper-Studio",
     "getStarted": "Get Started"
   },
   "userSelect": {
@@ -755,7 +755,7 @@
     "title": "Download git",
     "message": "Unable to locate git.  A working copy of git is required for normal operation.",
     "instructions": "Please download and install the latest version for your operating system.  The Download git button below opens the git-scm.com downloads page.",
-    "warning": "If you are sure you do not need git installed, or there has been a mistake, you may click Skip to byapss this check.  Attempting to run ComfyUI without a working copy of git is not currently supported.",
+    "warning": "If you are sure you do not need git installed, or there has been a mistake, you may click Skip to byapss this check.  Attempting to run Hyper-Studio without a working copy of git is not currently supported.",
     "gitWebsite": "Download git",
     "skip": "Skip"
   },
@@ -775,15 +775,15 @@
       "nvidiaDescription": "Use your NVIDIA GPU with CUDA acceleration for the best performance.",
       "amdDescription": "Use your AMD GPU with ROCm™ acceleration for the best performance.",
       "cpuDescription": "Use CPU mode for compatibility when GPU acceleration is not available",
-      "manualDescription": "Configure ComfyUI manually for advanced setups or unsupported hardware"
+      "manualDescription": "Configure Hyper-Studio manually for advanced setups or unsupported hardware"
     },
     "locationPicker": {
-      "title": "Choose where to install ComfyUI",
-      "subtitle": "Pick a folder for ComfyUI's files. We'll also set up Python there automatically.",
-      "pathPlaceholder": "/Users/username/Documents/ComfyUI",
-      "migrationPathPlaceholder": "Select existing ComfyUI installation (optional)",
+      "title": "Choose where to install Hyper-Studio",
+      "subtitle": "Pick a folder for Hyper-Studio's files. We'll also set up Python there automatically.",
+      "pathPlaceholder": "/Users/username/Documents/Hyper-Studio",
+      "migrationPathPlaceholder": "Select existing Hyper-Studio installation (optional)",
       "migrateFromExisting": "Migrate from existing installation",
-      "migrateDescription": "Copy or link your existing models, custom nodes, and configurations from a previous ComfyUI installation.",
+      "migrateDescription": "Copy or link your existing models, custom nodes, and configurations from a previous Hyper-Studio installation.",
       "chooseDownloadServers": "Choose download servers manually",
       "downloadServersDescription": "Select specific mirror servers for downloading Python, PyPI packages, and PyTorch based on your location."
     },
@@ -793,22 +793,22 @@
     "pathExists": "Directory already exists - please ensure you have backed up all data",
     "cannotWrite": "Unable to write to the selected path",
     "insufficientFreeSpace": "Insufficient space - minimum free space",
-    "isOneDrive": "OneDrive is not supported. Please install ComfyUI in another location.",
-    "insideAppInstallDir": "This folder is inside the ComfyUI Desktop application bundle and will be deleted during updates. Choose a directory outside the install folder, such as Documents/ComfyUI.",
-    "insideUpdaterCache": "This folder is inside the ComfyUI updater cache, which is cleared on every update. Select a different location for your data.",
-    "nonDefaultDrive": "Please install ComfyUI on your system drive (eg. C:\\). Drives with different file systems may cause unpredicable issues. Models and other files can be stored on other drives after installation.",
+    "isOneDrive": "OneDrive is not supported. Please install Hyper-Studio in another location.",
+    "insideAppInstallDir": "This folder is inside the Hyper-Studio Desktop application bundle and will be deleted during updates. Choose a directory outside the install folder, such as Documents/Hyper-Studio.",
+    "insideUpdaterCache": "This folder is inside the Hyper-Studio updater cache, which is cleared on every update. Select a different location for your data.",
+    "nonDefaultDrive": "Please install Hyper-Studio on your system drive (eg. C:\\). Drives with different file systems may cause unpredicable issues. Models and other files can be stored on other drives after installation.",
     "parentMissing": "Path does not exist - create the containing directory first",
     "unhandledError": "Unknown error",
-    "installLocationDescription": "Select the directory for ComfyUI's user data. A python environment will be installed to the selected location.",
-    "installLocationTooltip": "ComfyUI's user data directory. Stores:\n- Python Environment\n- Models\n- Custom nodes\n",
-    "appDataLocationTooltip": "ComfyUI's app data directory. Stores:\n- Logs\n- Server configs",
-    "appPathLocationTooltip": "ComfyUI's app asset directory. Stores the ComfyUI code and assets",
+    "installLocationDescription": "Select the directory for Hyper-Studio's user data. A python environment will be installed to the selected location.",
+    "installLocationTooltip": "Hyper-Studio's user data directory. Stores:\n- Python Environment\n- Models\n- Custom nodes\n",
+    "appDataLocationTooltip": "Hyper-Studio's app data directory. Stores:\n- Logs\n- Server configs",
+    "appPathLocationTooltip": "Hyper-Studio's app asset directory. Stores the Hyper-Studio code and assets",
     "migrateFromExistingInstallation": "Migrate from Existing Installation",
-    "migrationSourcePathDescription": "If you have an existing ComfyUI installation, we can copy/link your existing user files and models to the new installation. Your existing ComfyUI installation will not be affected.",
+    "migrationSourcePathDescription": "If you have an existing Hyper-Studio installation, we can copy/link your existing user files and models to the new installation. Your existing Hyper-Studio installation will not be affected.",
     "selectItemsToMigrate": "Select Items to Migrate",
     "migrationOptional": "Migration is optional. If you don't have an existing installation, you can skip this step.",
     "desktopAppSettings": "Desktop App Settings",
-    "desktopAppSettingsDescription": "Configure how ComfyUI behaves on your desktop. You can change these settings later.",
+    "desktopAppSettingsDescription": "Configure how Hyper-Studio behaves on your desktop. You can change these settings later.",
     "gpu": "GPU",
     "gpuSelection": {
       "selectGpu": "Select GPU",
@@ -820,7 +820,7 @@
       "nvidiaDescription": "NVIDIA devices are directly supported using pytorch CUDA builds.",
       "mpsDescription": "Apple Metal Performance Shaders are supported using pytorch nightly.",
       "customSkipsPython": "This option skips the normal python setup.",
-      "customComfyNeedsPython": "ComfyUI will not work until python is setup",
+      "customComfyNeedsPython": "Hyper-Studio will not work until python is setup",
       "customManualVenv": "Manually configure python venv",
       "customInstallRequirements": "Install all requirements and dependencies (e.g. custom torch)",
       "customMayNotWork": "This is entirely unsupported, and may simply not work"
@@ -830,7 +830,7 @@
       "requirements": "Requirements",
       "createVenv": "You will need to create a virtual environment in the following directory",
       "virtualEnvironmentPath": "Virtual environment path",
-      "restartWhenFinished": "When you have finished configuring the virtual environment, please restart ComfyUI."
+      "restartWhenFinished": "When you have finished configuring the virtual environment, please restart Hyper-Studio."
     },
     "settings": {
       "autoUpdate": "Automatic Updates",
@@ -838,7 +838,7 @@
       "errorUpdatingConsent": "Error Updating Consent",
       "errorUpdatingConsentDetail": "Failed to update metrics consent settings",
       "autoUpdateDescription": "Automatically download updates when they become available. You will be notified before updates are installed.",
-      "allowMetricsDescription": "Help improve ComfyUI by sending anonymous usage metrics. No personal information or workflow content will be collected.",
+      "allowMetricsDescription": "Help improve Hyper-Studio by sending anonymous usage metrics. No personal information or workflow content will be collected.",
       "learnMoreAboutData": "Learn more about data collection",
       "dataCollectionDialog": {
         "title": "About Data Collection",
@@ -865,8 +865,8 @@
       "mirrorSettings": "Mirror Settings"
     },
     "customNodes": "Custom Nodes",
-    "customNodesDescription": "Reinstall custom nodes from existing ComfyUI installations.",
-    "helpImprove": "Please help improve ComfyUI",
+    "customNodesDescription": "Reinstall custom nodes from existing Hyper-Studio installations.",
+    "helpImprove": "Please help improve Hyper-Studio",
     "moreInfo": "For more info, please read our",
     "privacyPolicy": "privacy policy",
     "metricsEnabled": "Metrics Enabled",
@@ -877,23 +877,23 @@
     "initialising": "Initialising..."
   },
   "serverStart": {
-    "title": "Starting ComfyUI",
+    "title": "Starting Hyper-Studio",
     "troubleshoot": "Troubleshoot",
     "reportIssue": "Report Issue",
     "openLogs": "Open Logs",
     "showTerminal": "Show Terminal",
     "copySelectionTooltip": "Copy selection",
     "copyAllTooltip": "Copy all",
-    "errorMessage": "Unable to start ComfyUI Desktop",
+    "errorMessage": "Unable to start Hyper-Studio Desktop",
     "installation": {
-      "title": "Installing ComfyUI"
+      "title": "Installing Hyper-Studio"
     },
     "process": {
       "initial-state": "Loading...",
       "python-setup": "Setting up Python Environment...",
-      "starting-server": "Starting ComfyUI server...",
+      "starting-server": "Starting Hyper-Studio server...",
       "ready": "Loading Human Interface",
-      "error": "Unable to start ComfyUI Desktop"
+      "error": "Unable to start Hyper-Studio Desktop"
     }
   },
   "serverConfig": {
@@ -1114,12 +1114,12 @@
     "desktopUserGuide": "Desktop User Guide",
     "openDevTools": "Open Dev Tools",
     "reinstall": "Re-Install",
-    "updateComfyUI": "Update ComfyUI",
+    "updateComfyUI": "Update Hyper-Studio",
     "updateComfyUIStarted": "Update Started",
-    "updateComfyUIStartedDetail": "ComfyUI update has been queued. Please wait...",
+    "updateComfyUIStartedDetail": "Hyper-Studio update has been queued. Please wait...",
     "updateComfyUISuccess": "Update Complete",
-    "updateComfyUISuccessDetail": "ComfyUI has been updated. Rebooting...",
-    "updateComfyUIFailed": "Failed to update ComfyUI. Please try again."
+    "updateComfyUISuccessDetail": "Hyper-Studio has been updated. Rebooting...",
+    "updateComfyUIFailed": "Failed to update Hyper-Studio. Please try again."
   },
   "releaseToast": {
     "newVersionAvailable": "New update is out!",
@@ -1179,7 +1179,7 @@
     "loadingMore": "Loading more templates...",
     "searchPlaceholder": "Search templates...",
     "category": {
-      "ComfyUI Examples": "ComfyUI Examples",
+      "ComfyUI Examples": "Hyper-Studio Examples",
       "Custom Nodes": "Custom Nodes",
       "Basics": "Basics",
       "GettingStarted": "Getting Started",
@@ -1275,7 +1275,7 @@
     "enterName": "Enter name"
   },
   "logsTerminal": {
-    "loadError": "Unable to load logs, please ensure you have updated your ComfyUI backend.",
+    "loadError": "Unable to load logs, please ensure you have updated your Hyper-Studio backend.",
     "resyncError": "Unable to resync logs after the backend reconnected. Reopen the console to retry."
   },
   "workflowService": {
@@ -1567,11 +1567,11 @@
     "Group Selected Nodes": "Group Selected Nodes",
     "Toggle promotion of hovered widget": "Toggle promotion of hovered widget",
     "Unpack the selected Subgraph": "Unpack the selected Subgraph",
-    "About ComfyUI": "About ComfyUI",
+    "About ComfyUI": "About Hyper-Studio",
     "Comfy-Org Discord": "Comfy-Org Discord",
-    "ComfyUI Docs": "ComfyUI Docs",
-    "ComfyUI Forum": "ComfyUI Forum",
-    "ComfyUI Issues": "ComfyUI Issues",
+    "ComfyUI Docs": "Hyper-Studio Docs",
+    "ComfyUI Forum": "Hyper-Studio Forum",
+    "ComfyUI Issues": "Hyper-Studio Issues",
     "Interrupt": "Interrupt",
     "Open Layer Editor for Selected Node": "Open Layer Editor for Selected Node",
     "Load Default Workflow": "Load Default Workflow",
@@ -1797,7 +1797,7 @@
     },
     "disable-smart-memory": {
       "name": "Disable smart memory management",
-      "tooltip": "Force ComfyUI to aggressively offload to regular ram instead of keeping models in vram when it can."
+      "tooltip": "Force Hyper-Studio to aggressively offload to regular ram instead of keeping models in vram when it can."
     },
     "deterministic": {
       "name": "Make pytorch use slower deterministic algorithms when it can.",
@@ -1814,7 +1814,7 @@
     },
     "enable-manager-legacy-ui": {
       "name": "Use legacy Manager UI",
-      "tooltip": "Uses the legacy ComfyUI-Manager UI instead of the new UI."
+      "tooltip": "Uses the legacy Node Manager UI instead of the new UI."
     },
     "disable-all-custom-nodes": {
       "name": "Disable loading all custom nodes."
@@ -2138,11 +2138,11 @@
     },
     "unsafeMigration": {
       "title": "Unsafe install location detected",
-      "generic": "Your current ComfyUI base path is in a location that may be deleted or modified during updates. To avoid data loss, move it to a safe folder.",
-      "appInstallDir": "Your base path is inside the ComfyUI Desktop application bundle. This folder may be deleted or overwritten during updates. Choose a directory outside the install folder, such as Documents/ComfyUI.",
-      "updaterCache": "Your base path is inside the ComfyUI updater cache, which is cleared on each update. Choose a different location for your data.",
+      "generic": "Your current Hyper-Studio base path is in a location that may be deleted or modified during updates. To avoid data loss, move it to a safe folder.",
+      "appInstallDir": "Your base path is inside the Hyper-Studio Desktop application bundle. This folder may be deleted or overwritten during updates. Choose a directory outside the install folder, such as Documents/Hyper-Studio.",
+      "updaterCache": "Your base path is inside the Hyper-Studio updater cache, which is cleared on each update. Choose a different location for your data.",
       "oneDrive": "Your base path is on OneDrive, which can cause sync issues and accidental data loss. Choose a local folder that is not managed by OneDrive.",
-      "action": "Use the \"Base path\" maintenance task below to move ComfyUI to a safe location."
+      "action": "Use the \"Base path\" maintenance task below to move Hyper-Studio to a safe location."
     }
   },
   "missingModelsDialog": {
@@ -2168,8 +2168,8 @@
     "dismiss": "Dismiss"
   },
   "loadWorkflowWarning": {
-    "newerVersionRequired": "Some nodes require a newer version of ComfyUI (current: {version}). Please update to use all nodes.",
-    "newerVersionRequiredGeneric": "Some nodes require a newer version of ComfyUI. Please update to use all nodes.",
+    "newerVersionRequired": "Some nodes require a newer version of Hyper-Studio (current: {version}). Please update to use all nodes.",
+    "newerVersionRequiredGeneric": "Some nodes require a newer version of Hyper-Studio. Please update to use all nodes.",
     "coreNodesFromVersion": "Core nodes from version {version}:",
     "unknownVersion": "unknown"
   },
@@ -2193,8 +2193,8 @@
     "signIn": "Sign In"
   },
   "desktopUpdate": {
-    "title": "Updating ComfyUI Desktop",
-    "description": "ComfyUI Desktop is installing new dependencies.  This may take a few minutes.",
+    "title": "Updating Hyper-Studio Desktop",
+    "description": "Hyper-Studio Desktop is installing new dependencies.  This may take a few minutes.",
     "terminalDefaultMessage": "Any console output from the update will be shown here.",
     "updateFoundTitle": "Update Found (v{version})",
     "updateAvailableMessage": "An update is available. Do you want to restart and update now?",
@@ -2496,7 +2496,7 @@
     "failedToExportModel": "Failed to export model as {format}",
     "exportSuccess": "Successfully exported model as {format}",
     "fileLoadError": "Unable to find workflow in {fileName}",
-    "a1111CoreNodesUnavailable": "Could not load the workflow because this ComfyUI installation is missing core nodes. Check that the backend started correctly.",
+    "a1111CoreNodesUnavailable": "Could not load the workflow because this Hyper-Studio installation is missing core nodes. Check that the backend started correctly.",
     "a1111EmbeddingsUnavailable": "Embeddings could not be loaded from the server. The workflow was imported, but embedding names were left as plain text.",
     "dropFileError": "Unable to process dropped item: {error}",
     "assetDropFailed": "Unable to load the dropped asset",
@@ -2738,13 +2738,13 @@
   },
   "desktopLogin": {
     "confirmSummary": "Approve desktop sign-in?",
-    "confirmMessage": "The ComfyUI desktop app is waiting to sign in with your account. Only continue if you just started signing in from the ComfyUI desktop app.",
+    "confirmMessage": "The Hyper-Studio desktop app is waiting to sign in with your account. Only continue if you just started signing in from the Hyper-Studio desktop app.",
     "successSummary": "Signed in",
-    "successDetail": "You can return to the ComfyUI desktop app.",
+    "successDetail": "You can return to the Hyper-Studio desktop app.",
     "expiredSummary": "Desktop sign-in failed",
-    "expiredDetail": "The sign-in request expired or was already used. Start signing in again from the ComfyUI desktop app.",
+    "expiredDetail": "The sign-in request expired or was already used. Start signing in again from the Hyper-Studio desktop app.",
     "failedSummary": "Desktop sign-in failed",
-    "failedDetail": "Something went wrong completing the desktop sign-in. Start signing in again from the ComfyUI desktop app."
+    "failedDetail": "Something went wrong completing the desktop sign-in. Start signing in again from the Hyper-Studio desktop app."
   },
   "validation": {
     "invalidEmail": "Invalid email address",
@@ -3724,7 +3724,7 @@
     "survey": {
       "title": "Let's get to know you",
       "placeholder": "Survey questions placeholder",
-      "intro": "A few quick questions so we can set up ComfyUI for you.",
+      "intro": "A few quick questions so we can set up Hyper-Studio for you.",
       "otherPlaceholder": "Tell us more",
       "submitFailed": "Could not submit the survey",
       "submitFailedDetail": "Your answers were not saved. Please try again.",
@@ -3747,7 +3747,7 @@
           "otherPlaceholder": "What do you want to make?"
         },
         "experience": {
-          "new": "New to ComfyUI",
+          "new": "New to Hyper-Studio",
           "some": "I know my way around",
           "pro": "I'm a power user"
         },
@@ -3796,15 +3796,15 @@
       "desc": "Zero setup required. Works on any device.",
       "explain": "Generate multiple outputs at once. Share workflows with ease.",
       "learnAboutButton": "Learn about Cloud",
-      "wantToRun": "Want to run ComfyUI locally instead?",
-      "download": "Download ComfyUI"
+      "wantToRun": "Want to run Hyper-Studio locally instead?",
+      "download": "Download Hyper-Studio"
     },
     "checkingStatus": "Checking your account status...",
     "retrying": "Retrying...",
     "retry": "Try Again",
     "authTimeout": {
       "title": "Connection Taking Too Long",
-      "message": "We're having trouble connecting to ComfyUI Cloud. This could be due to a slow connection or temporary service issue.",
+      "message": "We're having trouble connecting to Hyper-Studio Cloud. This could be due to a slow connection or temporary service issue.",
       "restart": "Sign Out & Try Again",
       "troubleshooting": "Common causes:",
       "causes": [
@@ -3848,7 +3848,7 @@
   "cloudForgotPassword_passwordResetSent": "Password reset sent",
   "cloudForgotPassword_passwordResetError": "Failed to send password reset email",
   "cloudSurvey_steps_intent": "What do you want to make?",
-  "cloudSurvey_steps_experience": "How well do you know ComfyUI?",
+  "cloudSurvey_steps_experience": "How well do you know Hyper-Studio?",
   "cloudSurvey_steps_focus": "What are you building?",
   "cloudSurvey_steps_source": "How did you find us?",
   "cloudSurvey_steps_source_social": "Which platform?",
@@ -4055,7 +4055,7 @@
     "deleteItems": "Delete these items",
     "deleteHistoryOnly": "Only history will be affected, files will remain on disk",
     "deletePermanent": "They will be permanently removed.",
-    "deleteTombstone": "They will no longer display in ComfyUI, but will remain on disk",
+    "deleteTombstone": "They will no longer display in Hyper-Studio, but will remain on disk",
     "deletingImportedFilesCloudOnly": "Deleting imported files is only supported in cloud version",
     "deletionUnsupported": "Assets are enabled, but server doesn't support deletion",
     "actions": {
@@ -4161,7 +4161,7 @@
     "acknowledgeCheckbox": "I understand anyone with the link can view these files",
     "inLibrary": "In library",
     "comfyHubTitle": "Upload to Comfy Workflows",
-    "comfyHubDescription": "Comfy Workflows is ComfyUI's official community hub.\nYour workflow will have a public page viewable by all.",
+    "comfyHubDescription": "Comfy Workflows is Hyper-Studio's official community hub.\nYour workflow will have a public page viewable by all.",
     "comfyHubButton": "Upload to Comfy Workflows"
   },
   "openSharedWorkflow": {
@@ -4511,7 +4511,7 @@
     "missingNodePacks": {
       "title": "Missing Node Packs",
       "unsupportedTitle": "Unsupported Node Packs",
-      "ossManagerDisabledHint": "To install missing nodes, first run {pipCmd} in your Python environment to install Node Manager, then restart ComfyUI with the {flag} flag.",
+      "ossManagerDisabledHint": "To install missing nodes, first run {pipCmd} in your Python environment to install Node Manager, then restart Hyper-Studio with the {flag} flag.",
       "installAll": "Install All",
       "unknownPack": "Unknown pack",
       "installing": "Installing...",
@@ -4682,7 +4682,7 @@
       },
       "unknown_validation_error": {
         "title": "Validation failed",
-        "message": "A node returned a validation error ComfyUI does not recognize.",
+        "message": "A node returned a validation error Hyper-Studio does not recognize.",
         "details": "{nodeName} returned an unrecognized validation error: {errorType}",
         "detailsWithRawDetails": "{nodeName} returned an unrecognized validation error ({errorType}): {rawDetails}",
         "itemLabel": "{nodeName}",
@@ -5026,7 +5026,7 @@
   "nightly": {
     "badge": {
       "label": "Preview Version",
-      "tooltip": "You are using a nightly version of ComfyUI. Please use the feedback button to share your thoughts about these features."
+      "tooltip": "You are using a nightly version of Hyper-Studio. Please use the feedback button to share your thoughts about these features."
     }
   },
   "nodeFilters": {
@@ -5142,12 +5142,12 @@
     "exitAppBuilder": "Exit app builder"
   },
   "cloudNotification": {
-    "title": "Run ComfyUI in the Cloud",
+    "title": "Run Hyper-Studio in the Cloud",
     "message": "From setup to creation in seconds. Popular models, extensions, and powerful GPUs — ready when you are.",
     "feature2Title": "Works Anywhere, Instantly",
     "feature3Title": "Models Ready to Use",
     "feature4Title": "Top Custom Node Packs Pre-installed",
-    "footer": "ComfyUI stays free and open source. Cloud is optional.",
+    "footer": "Hyper-Studio stays free and open source. Cloud is optional.",
     "continueLocally": "Continue Locally",
     "exploreCloud": "Try Cloud for Free"
   },
@@ -5286,7 +5286,7 @@
   },
   "onboardingReplay": {
     "confirmTitle": "Replay onboarding?",
-    "confirmMessage": "This reloads ComfyUI and resets the onboarding steps available in this environment. Your workflows are not affected.",
+    "confirmMessage": "This reloads Hyper-Studio and resets the onboarding steps available in this environment. Your workflows are not affected.",
     "failedSummary": "Could not replay onboarding",
     "failedDetail": "Your onboarding state could not be reset. Please try again."
   },

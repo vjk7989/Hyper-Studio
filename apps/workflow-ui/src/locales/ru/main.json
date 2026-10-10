@@ -728,9 +728,9 @@
     "feature2Title": "Работает везде и мгновенно",
     "feature3Title": "Модели готовы к использованию",
     "feature4Title": "Лучшие пользовательские пакеты узлов предустановлены",
-    "footer": "ComfyUI остаётся бесплатным и с открытым исходным кодом. Облако — по желанию.",
+    "footer": "Hyper-Studio остаётся бесплатным и с открытым исходным кодом. Облако — по желанию.",
     "message": "От настройки до создания за считанные секунды. Популярные модели, расширения и мощные GPU — всё готово, когда вы готовы.",
-    "title": "Запустите ComfyUI в облаке"
+    "title": "Запустите Hyper-Studio в облаке"
   },
   "cloudOnboarding": {
     "authTimeout": {
@@ -742,7 +742,7 @@
         "Try a different browser or network"
       ],
       "helpText": "Нужна помощь? Свяжитесь с",
-      "message": "У нас возникли проблемы с подключением к ComfyUI Cloud. Это может быть связано с медленным соединением или временными проблемами сервиса.",
+      "message": "У нас возникли проблемы с подключением к Hyper-Studio Cloud. Это может быть связано с медленным соединением или временными проблемами сервиса.",
       "restart": "Выйти и попробовать снова",
       "supportLink": "поддержкой",
       "technicalDetails": "Технические детали",
@@ -771,11 +771,11 @@
     "skipToCloudApp": "Перейти к облачному приложению",
     "start": {
       "desc": "Не требует настройки. Работает на любом устройстве.",
-      "download": "Скачать ComfyUI",
+      "download": "Скачать Hyper-Studio",
       "explain": "Создавайте несколько результатов одновременно. Легко делитесь рабочими процессами.",
       "learnAboutButton": "Узнать об Облаке",
       "title": "начать создавать за секунды",
-      "wantToRun": "Хотите запустить ComfyUI локально?"
+      "wantToRun": "Хотите запустить Hyper-Studio локально?"
     },
     "survey": {
       "errors": {
@@ -784,12 +784,12 @@
         "describeAnswer": "Пожалуйста, опишите ваш ответ.",
         "selectAtLeastOne": "Пожалуйста, выберите хотя бы один вариант."
       },
-      "intro": "Помогите нам адаптировать ваш опыт работы с ComfyUI.",
+      "intro": "Помогите нам адаптировать ваш опыт работы с Hyper-Studio.",
       "navigationFailed": "Опрос сохранён, но не удалось продолжить настройку",
       "navigationFailedDetail": "Попробуйте ещё раз.",
       "options": {
         "experience": {
-          "new": "Впервые в ComfyUI",
+          "new": "Впервые в Hyper-Studio",
           "pro": "Я опытный пользователь",
           "some": "Я немного знаком(а)"
         },
@@ -839,10 +839,10 @@
   "cloudStart_explain": "Генерируйте несколько результатов одновременно. Легко делитесь рабочими процессами.",
   "cloudStart_learnAboutButton": "Узнать о Cloud",
   "cloudStart_title": "начать создавать за секунды",
-  "cloudSurvey_steps_experience": "Насколько хорошо вы знаете ComfyUI?",
+  "cloudSurvey_steps_experience": "Насколько хорошо вы знаете Hyper-Studio?",
   "cloudSurvey_steps_focus": "Что вы создаёте?",
-  "cloudSurvey_steps_intent": "Что вы хотите создавать с помощью ComfyUI?",
-  "cloudSurvey_steps_source": "Где вы узнали о ComfyUI?",
+  "cloudSurvey_steps_intent": "Что вы хотите создавать с помощью Hyper-Studio?",
+  "cloudSurvey_steps_source": "Где вы узнали о Hyper-Studio?",
   "cloudSurvey_steps_source_social": "На какой платформе?",
   "cloudWaitlist_contactLink": "здесь",
   "cloudWaitlist_questionsText": "Есть вопросы? Свяжитесь с нами",
@@ -1250,13 +1250,13 @@
     "WEBCAM": "ВЕБ-КАМЕРА"
   },
   "desktopLogin": {
-    "confirmMessage": "Приложение ComfyUI для рабочего стола ожидает входа в ваш аккаунт. Продолжайте только если вы только что начали вход из приложения ComfyUI для рабочего стола.",
+    "confirmMessage": "Приложение Hyper-Studio для рабочего стола ожидает входа в ваш аккаунт. Продолжайте только если вы только что начали вход из приложения Hyper-Studio для рабочего стола.",
     "confirmSummary": "Подтвердить вход на рабочем столе?",
-    "expiredDetail": "Запрос на вход истёк или уже был использован. Начните вход заново из приложения ComfyUI для рабочего стола.",
+    "expiredDetail": "Запрос на вход истёк или уже был использован. Начните вход заново из приложения Hyper-Studio для рабочего стола.",
     "expiredSummary": "Не удалось войти на рабочем столе",
-    "failedDetail": "Произошла ошибка при завершении входа на рабочем столе. Начните вход заново из приложения ComfyUI для рабочего стола.",
+    "failedDetail": "Произошла ошибка при завершении входа на рабочем столе. Начните вход заново из приложения Hyper-Studio для рабочего стола.",
     "failedSummary": "Не удалось войти на рабочем столе",
-    "successDetail": "Вы можете вернуться в приложение ComfyUI для рабочего стола.",
+    "successDetail": "Вы можете вернуться в приложение Hyper-Studio для рабочего стола.",
     "successSummary": "Вход выполнен"
   },
   "desktopMenu": {
@@ -1269,12 +1269,12 @@
     "initialising": "Инициализация..."
   },
   "desktopUpdate": {
-    "description": "ComfyUI Desktop устанавливает новые зависимости. Это может занять несколько минут.",
+    "description": "Hyper-Studio Desktop устанавливает новые зависимости. Это может занять несколько минут.",
     "errorCheckingUpdate": "Ошибка при проверке обновлений",
     "errorInstallingUpdate": "Ошибка при установке обновления",
     "noUpdateFound": "Обновлений не найдено",
     "terminalDefaultMessage": "Любой вывод консоли из обновления будет отображаться здесь.",
-    "title": "Обновление ComfyUI Desktop",
+    "title": "Обновление Hyper-Studio Desktop",
     "updateAvailableMessage": "Доступно обновление. Вы хотите перезагрузить и обновить сейчас?",
     "updateFoundTitle": "Найдено обновление (v{version})"
   },
@@ -1284,7 +1284,7 @@
     "message": "Не удалось найти git. Рабочая копия git необходима для нормальной работы.",
     "skip": "Пропустить",
     "title": "Скачать git",
-    "warning": "Если вы уверены, что вам не нужно устанавливать git, или произошла ошибка, вы можете нажать «Пропустить», чтобы обойти эту проверку. Попытка запустить ComfyUI без рабочей копии git в настоящее время не поддерживается."
+    "warning": "Если вы уверены, что вам не нужно устанавливать git, или произошла ошибка, вы можете нажать «Пропустить», чтобы обойти эту проверку. Попытка запустить Hyper-Studio без рабочей копии git в настоящее время не поддерживается."
   },
   "electronFileDownload": {
     "cancel": "Отменить загрузку",
@@ -1665,7 +1665,7 @@
         "details": "{nodeName} вернул нераспознанную ошибку валидации: {errorType}",
         "detailsWithRawDetails": "{nodeName} вернул нераспознанную ошибку валидации ({errorType}): {rawDetails}",
         "itemLabel": "{nodeName}",
-        "message": "Узел вернул ошибку валидации, которую ComfyUI не распознаёт.",
+        "message": "Узел вернул ошибку валидации, которую Hyper-Studio не распознаёт.",
         "title": "Ошибка валидации",
         "toastMessage": "{nodeName} вернул нераспознанную ошибку валидации.",
         "toastTitle": "Ошибка валидации"
@@ -1829,7 +1829,7 @@
     "color": "Цвет",
     "comfy": "Comfy",
     "comfyCloud": "Comfy Cloud",
-    "comfyOrgLogoAlt": "Логотип ComfyOrg",
+    "comfyOrgLogoAlt": "Логотип Hyper-Studio",
     "comfyPackageOutdated": "Установленная версия {name} ({installedVersion}) ниже требуемой версии ({requiredVersion}).",
     "comingSoon": "Скоро будет",
     "command": "Команда",
@@ -1967,7 +1967,7 @@
       "exportPreset": "Экспортировать пресет",
       "importKeybindingPreset": "Импортировать пресет горячих клавиш",
       "importPreset": "Импортировать пресет",
-      "invalidPresetFile": "Файл пресета должен быть валидным JSON, экспортированным из ComfyUI",
+      "invalidPresetFile": "Файл пресета должен быть валидным JSON, экспортированным из Hyper-Studio",
       "invalidPresetName": "Имя пресета не должно быть пустым, «default», начинаться с точки, содержать разделители пути или заканчиваться на .json",
       "loadPresetFailed": "Не удалось загрузить пресет «{name}»",
       "overwritePresetMessage": "Пресет с именем «{name}» уже существует. Перезаписать его?",
@@ -1992,7 +1992,7 @@
     "loading": "Загрузка",
     "loadingPanel": "Загрузка панели {panel}...",
     "login": "Вход",
-    "logoAlt": "Логотип ComfyUI",
+    "logoAlt": "Логотип Hyper-Studio",
     "logs": "Логи",
     "manageExtensions": "Управление расширениями",
     "markdown": "markdown",
@@ -2152,7 +2152,7 @@
     "systemInfo": "Информация о системе",
     "systemStatsArguments": "Аргументы",
     "systemStatsCloudVersion": "Версия облака",
-    "systemStatsComfyUIVersion": "Версия ComfyUI",
+    "systemStatsComfyUIVersion": "Версия Hyper-Studio",
     "systemStatsEmbeddedPython": "Встроенный Python",
     "systemStatsFrontendVersion": "Версия фронтенда",
     "systemStatsOS": "ОС",
@@ -2282,12 +2282,12 @@
     "reinstall": "Переустановить",
     "systemStatus": "Статус системы",
     "updateAvailable": "Обновить",
-    "updateComfyUI": "Обновить ComfyUI",
-    "updateComfyUIFailed": "Не удалось обновить ComfyUI. Пожалуйста, попробуйте снова.",
+    "updateComfyUI": "Обновить Hyper-Studio",
+    "updateComfyUIFailed": "Не удалось обновить Hyper-Studio. Пожалуйста, попробуйте снова.",
     "updateComfyUIStarted": "Обновление начато",
-    "updateComfyUIStartedDetail": "Обновление ComfyUI поставлено в очередь. Пожалуйста, подождите...",
+    "updateComfyUIStartedDetail": "Обновление Hyper-Studio поставлено в очередь. Пожалуйста, подождите...",
     "updateComfyUISuccess": "Обновление завершено",
-    "updateComfyUISuccessDetail": "ComfyUI обновлён. Перезагрузка...",
+    "updateComfyUISuccessDetail": "Hyper-Studio обновлён. Перезагрузка...",
     "whatsNew": "Что нового?"
   },
   "icon": {
@@ -2322,14 +2322,14 @@
     "title": "Ошибка импорта"
   },
   "install": {
-    "appDataLocationTooltip": "Директория данных приложения ComfyUI. Хранит:\n- Логи\n- Конфигурации сервера",
-    "appPathLocationTooltip": "Директория активов приложения ComfyUI. Хранит код и активы ComfyUI",
+    "appDataLocationTooltip": "Директория данных приложения Hyper-Studio. Хранит:\n- Логи\n- Конфигурации сервера",
+    "appPathLocationTooltip": "Директория активов приложения Hyper-Studio. Хранит код и активы Hyper-Studio",
     "cannotWrite": "Невозможно записать в выбранный путь",
     "chooseInstallationLocation": "Выберите место установки",
     "customNodes": "Пользовательские ноды",
-    "customNodesDescription": "Переустановите пользовательские ноды из существующих установок ComfyUI.",
+    "customNodesDescription": "Переустановите пользовательские ноды из существующих установок Hyper-Studio.",
     "desktopAppSettings": "Настройки десктопного приложения",
-    "desktopAppSettingsDescription": "Настройте, как ComfyUI ведёт себя на вашем рабочем столе. Вы можете изменить эти настройки позже.",
+    "desktopAppSettingsDescription": "Настройте, как Hyper-Studio ведёт себя на вашем рабочем столе. Вы можете изменить эти настройки позже.",
     "desktopSettings": "Настройки рабочего стола",
     "failedToSelectDirectory": "Не удалось выбрать директорию",
     "gpu": "GPU",
@@ -2339,7 +2339,7 @@
       "appleMetalDescription": "Использует GPU вашего Mac для более высокой скорости и улучшенного общего опыта",
       "cpuDescription": "Используйте режим CPU для совместимости, когда ускорение GPU недоступно",
       "cpuSubtitle": "Режим CPU",
-      "manualDescription": "Настройте ComfyUI вручную для расширенных настроек или неподдерживаемого оборудования",
+      "manualDescription": "Настройте Hyper-Studio вручную для расширенных настроек или неподдерживаемого оборудования",
       "manualSubtitle": "Ручная настройка",
       "nvidiaDescription": "Используйте вашу видеокарту NVIDIA с ускорением CUDA для наилучшей производительности.",
       "nvidiaSubtitle": "NVIDIA CUDA",
@@ -2350,7 +2350,7 @@
       "cpuMode": "Режим CPU",
       "cpuModeDescription": "Режим CPU предназначен только для разработчиков и крайне редких случаев.",
       "cpuModeDescription2": "Если вы не полностью уверены, что вам это нужно, пожалуйста, проигнорируйте эту галочку и выберите ваш GPU выше.",
-      "customComfyNeedsPython": "ComfyUI не будет работать, пока python не будет настроен",
+      "customComfyNeedsPython": "Hyper-Studio не будет работать, пока python не будет настроен",
       "customInstallRequirements": "Установите все требования и зависимости (например, custom torch)",
       "customManualVenv": "Вручную настроить python venv",
       "customMayNotWork": "Это полностью не поддерживается и может просто не работать",
@@ -2361,28 +2361,28 @@
       "selectGpu": "Выберите GPU",
       "selectGpuDescription": "Выберите тип GPU, который у вас есть"
     },
-    "helpImprove": "Пожалуйста, помогите улучшить ComfyUI",
-    "insideAppInstallDir": "Эта папка находится внутри пакета приложения ComfyUI Desktop и будет удалена при обновлении. Выберите каталог вне папки установки, например, Документы/ComfyUI.",
-    "insideUpdaterCache": "Эта папка находится в кэше обновлений ComfyUI, который очищается при каждом обновлении. Выберите другое место для ваших данных.",
+    "helpImprove": "Пожалуйста, помогите улучшить Hyper-Studio",
+    "insideAppInstallDir": "Эта папка находится внутри пакета приложения Hyper-Studio Desktop и будет удалена при обновлении. Выберите каталог вне папки установки, например, Документы/Hyper-Studio.",
+    "insideUpdaterCache": "Эта папка находится в кэше обновлений Hyper-Studio, который очищается при каждом обновлении. Выберите другое место для ваших данных.",
     "installLocation": "Место установки",
-    "installLocationDescription": "Выберите директорию для пользовательских данных ComfyUI. В выбранном месте будет установлена среда Python. Пожалуйста, убедитесь, что на выбранном диске достаточно места (~15 ГБ).",
-    "installLocationTooltip": "Директория пользовательских данных ComfyUI. Хранит:\n- Среда Python\n- Модели\n- Пользовательские ноды\n",
+    "installLocationDescription": "Выберите директорию для пользовательских данных Hyper-Studio. В выбранном месте будет установлена среда Python. Пожалуйста, убедитесь, что на выбранном диске достаточно места (~15 ГБ).",
+    "installLocationTooltip": "Директория пользовательских данных Hyper-Studio. Хранит:\n- Среда Python\n- Модели\n- Пользовательские ноды\n",
     "insufficientFreeSpace": "Недостаточно места — минимально необходимое свободное место",
     "isOneDrive": "Установка в OneDrive может вызвать проблемы. Настоятельно рекомендуем устанавливать в месте, не связанном с OneDrive.",
     "locationPicker": {
       "chooseDownloadServers": "Выбрать серверы загрузки вручную",
       "downloadServersDescription": "Выберите конкретные зеркальные серверы для загрузки Python, пакетов PyPI и PyTorch в зависимости от вашего местоположения.",
-      "migrateDescription": "Скопируйте или свяжите ваши существующие модели, пользовательские ноды и конфигурации из предыдущей установки ComfyUI.",
+      "migrateDescription": "Скопируйте или свяжите ваши существующие модели, пользовательские ноды и конфигурации из предыдущей установки Hyper-Studio.",
       "migrateFromExisting": "Мигрировать из существующей установки",
-      "migrationPathPlaceholder": "Выберите существующую установку ComfyUI (необязательно)",
-      "pathPlaceholder": "/Users/username/Documents/ComfyUI",
-      "subtitle": "Выберите папку для файлов ComfyUI. Мы также автоматически настроим Python там.",
-      "title": "Выберите место установки ComfyUI"
+      "migrationPathPlaceholder": "Выберите существующую установку Hyper-Studio (необязательно)",
+      "pathPlaceholder": "/Users/username/Documents/Hyper-Studio",
+      "subtitle": "Выберите папку для файлов Hyper-Studio. Мы также автоматически настроим Python там.",
+      "title": "Выберите место установки Hyper-Studio"
     },
     "manualConfiguration": {
       "createVenv": "Вам потребуется создать виртуальное окружение в следующем каталоге",
       "requirements": "Требования",
-      "restartWhenFinished": "После завершения настройки виртуального окружения, пожалуйста, перезапустите ComfyUI.",
+      "restartWhenFinished": "После завершения настройки виртуального окружения, пожалуйста, перезапустите Hyper-Studio.",
       "title": "Ручная Конфигурация",
       "virtualEnvironmentPath": "Путь виртуального окружения"
     },
@@ -2391,9 +2391,9 @@
     "migrateFromExistingInstallation": "Миграция из существующей установки",
     "migration": "Миграция",
     "migrationOptional": "Миграция является необязательной. Если у вас нет существующей установки, вы можете пропустить этот шаг.",
-    "migrationSourcePathDescription": "Если у вас уже есть установленный ComfyUI, мы можем скопировать/связать ваши существующие пользовательские файлы и модели с новой установкой. Ваша существующая установка ComfyUI не будет затронута.",
+    "migrationSourcePathDescription": "Если у вас уже есть установленный Hyper-Studio, мы можем скопировать/связать ваши существующие пользовательские файлы и модели с новой установкой. Ваша существующая установка Hyper-Studio не будет затронута.",
     "moreInfo": "Для получения дополнительной информации, пожалуйста, прочтите нашу",
-    "nonDefaultDrive": "Пожалуйста, установите ComfyUI на системный диск (например, C:\\). Диски с другими файловыми системами могут вызвать непредсказуемые проблемы. Модели и другие файлы можно хранить на других дисках после установки.",
+    "nonDefaultDrive": "Пожалуйста, установите Hyper-Studio на системный диск (например, C:\\). Диски с другими файловыми системами могут вызвать непредсказуемые проблемы. Модели и другие файлы можно хранить на других дисках после установки.",
     "parentMissing": "Путь не существует — сначала создайте родительский каталог",
     "pathExists": "Директория уже существует — пожалуйста, убедитесь, что вы сделали резервное копирование всех данных",
     "pathValidationFailed": "Не удалось проверить путь",
@@ -2401,7 +2401,7 @@
     "selectItemsToMigrate": "Выберите элементы для миграции",
     "settings": {
       "allowMetrics": "Метрики использования",
-      "allowMetricsDescription": "Помогите улучшить ComfyUI, отправляя анонимные метрики использования. Личная информация или содержание рабочего процесса не будут собираться.",
+      "allowMetricsDescription": "Помогите улучшить Hyper-Studio, отправляя анонимные метрики использования. Личная информация или содержание рабочего процесса не будут собираться.",
       "autoUpdate": "Автоматические обновления",
       "autoUpdateDescription": "Автоматически загружать и устанавливать обновления, когда они становятся доступными. Вы всегда будете уведомлены перед установкой обновлений.",
       "checkingMirrors": "Проверка доступа к зеркалам python по сети...",
@@ -2718,12 +2718,12 @@
   },
   "loadWorkflowWarning": {
     "coreNodesFromVersion": "Базовые узлы из версии {version}:",
-    "newerVersionRequired": "Для некоторых узлов требуется более новая версия ComfyUI (текущая: {version}). Обновитесь, чтобы использовать все узлы.",
-    "newerVersionRequiredGeneric": "Для некоторых узлов требуется более новая версия ComfyUI. Обновитесь, чтобы использовать все узлы.",
+    "newerVersionRequired": "Для некоторых узлов требуется более новая версия Hyper-Studio (текущая: {version}). Обновитесь, чтобы использовать все узлы.",
+    "newerVersionRequiredGeneric": "Для некоторых узлов требуется более новая версия Hyper-Studio. Обновитесь, чтобы использовать все узлы.",
     "unknownVersion": "неизвестно"
   },
   "logsTerminal": {
-    "loadError": "Не удалось загрузить логи, пожалуйста, убедитесь, что вы обновили ваш ComfyUI backend.",
+    "loadError": "Не удалось загрузить логи, пожалуйста, убедитесь, что вы обновили ваш Hyper-Studio backend.",
     "resyncError": "Не удалось повторно синхронизировать логи после переподключения backend. Откройте консоль заново, чтобы повторить попытку."
   },
   "maintenance": {
@@ -2746,12 +2746,12 @@
     "terminalDefaultMessage": "Когда вы запускаете команду для устранения неполадок, любой вывод будет отображаться здесь.",
     "title": "Обслуживание",
     "unsafeMigration": {
-      "action": "Используйте задачу обслуживания «Базовый путь» ниже, чтобы переместить ComfyUI в безопасное место.",
-      "appInstallDir": "Ваш базовый путь находится внутри пакета приложения ComfyUI Desktop. Эта папка может быть удалена или перезаписана при обновлениях. Выберите каталог вне папки установки, например, Документы/ComfyUI.",
-      "generic": "Ваш текущий базовый путь ComfyUI находится в месте, которое может быть удалено или изменено при обновлениях. Чтобы избежать потери данных, переместите его в безопасную папку.",
+      "action": "Используйте задачу обслуживания «Базовый путь» ниже, чтобы переместить Hyper-Studio в безопасное место.",
+      "appInstallDir": "Ваш базовый путь находится внутри пакета приложения Hyper-Studio Desktop. Эта папка может быть удалена или перезаписана при обновлениях. Выберите каталог вне папки установки, например, Документы/Hyper-Studio.",
+      "generic": "Ваш текущий базовый путь Hyper-Studio находится в месте, которое может быть удалено или изменено при обновлениях. Чтобы избежать потери данных, переместите его в безопасную папку.",
       "oneDrive": "Ваш базовый путь находится на OneDrive, что может привести к проблемам синхронизации и случайной потере данных. Выберите локальную папку, не управляемую OneDrive.",
       "title": "Обнаружено небезопасное место установки",
-      "updaterCache": "Ваш базовый путь находится в кэше обновлений ComfyUI, который очищается при каждом обновлении. Выберите другое место для хранения данных."
+      "updaterCache": "Ваш базовый путь находится в кэше обновлений Hyper-Studio, который очищается при каждом обновлении. Выберите другое место для хранения данных."
     }
   },
   "manager": {
@@ -2766,7 +2766,7 @@
       "conflictMessages": {
         "accelerator": "GPU/Ускоритель не поддерживается (доступно: {current}, требуется: {required})",
         "banned": "Этот пакет заблокирован по соображениям безопасности",
-        "comfyui_version": "Несоответствие версии ComfyUI (текущая: {current}, требуется: {required})",
+        "comfyui_version": "Несоответствие версии Hyper-Studio (текущая: {current}, требуется: {required})",
         "frontend_version": "Несоответствие версии фронтенда (текущая: {current}, требуется: {required})",
         "generic": "Проблема совместимости (текущая: {current}, требуется: {required})",
         "import_failed": "Не удалось импортировать",
@@ -2774,11 +2774,11 @@
         "pending": "Ожидается проверка безопасности - совместимость не может быть проверена"
       },
       "conflicts": "Конфликты",
-      "description": "Мы обнаружили конфликты между некоторыми вашими расширениями и новой версией ComfyUI. При обновлении вы рискуете нарушить работу рабочих процессов, которые зависят от этих расширений.",
+      "description": "Мы обнаружили конфликты между некоторыми вашими расширениями и новой версией Hyper-Studio. При обновлении вы рискуете нарушить работу рабочих процессов, которые зависят от этих расширений.",
       "enableAnyway": "Всё равно включить",
       "extensionAtRisk": "Расширение под угрозой",
       "importFailedExtensions": "Расширения с ошибками импорта",
-      "info": "Если вы продолжите обновление, конфликтующие расширения будут автоматически отключены. Вы можете просмотреть и управлять ими в любое время в Менеджере ComfyUI.",
+      "info": "Если вы продолжите обновление, конфликтующие расширения будут автоматически отключены. Вы можете просмотреть и управлять ими в любое время в Менеджере Hyper-Studio.",
       "installAnyway": "Всё равно установить",
       "title": "Обнаружены проблемы с пакетами нод!",
       "understood": "Понятно",
@@ -2830,8 +2830,8 @@
     "importFailedGenericError": "Не удалось импортировать пакет. Проверьте консоль для получения дополнительной информации.",
     "inWorkflow": "В рабочем процессе",
     "incompatibleVersion": {
-      "message": "Пожалуйста, обновите ComfyUI-Manager до версии 4.2.1 или выше.\n• Для Desktop: обновите приложение ComfyUI Desktop\n• Для Standalone: выполните pip install -U comfyui-manager и перезапустите\nПодробнее: https://github.com/Comfy-Org/ComfyUI-Manager",
-      "title": "Требуется обновление ComfyUI-Manager"
+      "message": "Пожалуйста, обновите Node Manager до версии 4.2.1 или выше.\n• Для Desktop: обновите приложение Hyper-Studio Desktop\n• Для Standalone: выполните pip install -U comfyui-manager и перезапустите\nПодробнее: https://github.com/Comfy-Org/ComfyUI-Manager",
+      "title": "Требуется обновление Node Manager"
     },
     "infoPanelEmpty": "Нажмите на элемент, чтобы увидеть информацию",
     "installAllMissingNodes": "Установить все отсутствующие узлы",
@@ -2844,10 +2844,10 @@
     "latestInstallable": "Последняя доступная для установки",
     "latestStableVersion": "Последняя стабильная",
     "latestVersion": "Последняя",
-    "legacyManagerSearchTip": "Ищете ComfyUI-Manager? Вы можете включить устаревший интерфейс менеджера, запустив ComfyUI с флагом --enable-manager-legacy-ui.",
+    "legacyManagerSearchTip": "Ищете Node Manager? Вы можете включить устаревший интерфейс менеджера, запустив Hyper-Studio с флагом --enable-manager-legacy-ui.",
     "legacyManagerUI": "Использовать устаревший UI",
-    "legacyManagerUIDescription": "Чтобы использовать устаревший UI менеджера, запустите ComfyUI с --enable-manager-legacy-ui",
-    "legacyMenuNotAvailable": "Устаревшее меню менеджера недоступно в этой версии ComfyUI. Пожалуйста, используйте новое меню менеджера.",
+    "legacyManagerUIDescription": "Чтобы использовать устаревший UI менеджера, запустите Hyper-Studio с --enable-manager-legacy-ui",
+    "legacyMenuNotAvailable": "Устаревшее меню менеджера недоступно в этой версии Hyper-Studio. Пожалуйста, используйте новое меню менеджера.",
     "license": "Лицензия",
     "loadingVersions": "Загрузка версий...",
     "mixedSelectionMessage": "Невозможно выполнить массовое действие для смешанного выбора",
@@ -2880,7 +2880,7 @@
     "packsSelected": "Выбрано пакетов",
     "queueWaitingToContinue": "Задачи ожидают выполнения. Повторите попытку, чтобы продолжить.",
     "repository": "Репозиторий",
-    "restartToApplyChanges": "Чтобы применить изменения, пожалуйста, перезапустите ComfyUI",
+    "restartToApplyChanges": "Чтобы применить изменения, пожалуйста, перезапустите Hyper-Studio",
     "restartingBackend": "Перезапуск бэкенда для применения изменений...",
     "retryQueueStart": "Повторить попытку",
     "searchPlaceholder": "Поиск",
@@ -3000,7 +3000,7 @@
     "deleteHistoryOnly": "Будет затронута только история, файлы останутся на диске",
     "deleteItems": "Удалить эти элементы",
     "deletePermanent": "Они будут удалены без возможности восстановления.",
-    "deleteTombstone": "Они больше не будут отображаться в ComfyUI, но останутся на диске",
+    "deleteTombstone": "Они больше не будут отображаться в Hyper-Studio, но останутся на диске",
     "deletingImportedFilesCloudOnly": "Удаление импортированных файлов поддерживается только в облачной версии",
     "deletionUnsupported": "Ресурсы включены, но сервер не поддерживает удаление",
     "failedToCreateNode": "Не удалось создать узел",
@@ -3081,7 +3081,7 @@
     "toggleBottomPanel": "Переключить нижнюю панель"
   },
   "menuLabels": {
-    "About ComfyUI": "О ComfyUI",
+    "About ComfyUI": "О Hyper-Studio",
     "Assets": "Активы",
     "Bottom Panel": "Нижняя панель",
     "Browse Templates": "Просмотреть шаблоны",
@@ -3096,9 +3096,9 @@
     "Close Current Workflow": "Закрыть текущий рабочий процесс",
     "Collapse/Expand Selected Nodes": "Свернуть/развернуть выбранные ноды",
     "Comfy-Org Discord": "Discord Comfy-Org",
-    "ComfyUI Docs": "Документация ComfyUI",
-    "ComfyUI Forum": "Форум ComfyUI",
-    "ComfyUI Issues": "Проблемы ComfyUI",
+    "ComfyUI Docs": "Документация Hyper-Studio",
+    "ComfyUI Forum": "Форум Hyper-Studio",
+    "ComfyUI Issues": "Проблемы Hyper-Studio",
     "Contact Support": "Связаться с поддержкой",
     "Convert Selection to Subgraph": "Преобразовать выделенное в подграф",
     "Copy": "Копировать",
@@ -3246,7 +3246,7 @@
   "nightly": {
     "badge": {
       "label": "Предварительная версия",
-      "tooltip": "Вы используете ночную версию ComfyUI. Пожалуйста, используйте кнопку обратной связи, чтобы поделиться своим мнением об этих функциях."
+      "tooltip": "Вы используете ночную версию Hyper-Studio. Пожалуйста, используйте кнопку обратной связи, чтобы поделиться своим мнением об этих функциях."
     }
   },
   "nightlySurvey": {
@@ -3628,7 +3628,7 @@
     "stepLabel": "Шаг {current} из {total}"
   },
   "onboardingReplay": {
-    "confirmMessage": "Это перезагрузит ComfyUI и сбросит шаги настройки, доступные в этой среде. Ваши рабочие процессы не будут затронуты.",
+    "confirmMessage": "Это перезагрузит Hyper-Studio и сбросит шаги настройки, доступные в этой среде. Ваши рабочие процессы не будут затронуты.",
     "confirmTitle": "Повторить настройку?",
     "failedDetail": "Не удалось сбросить состояние настройки. Попробуйте ещё раз.",
     "failedSummary": "Не удалось повторить настройку"
@@ -3857,7 +3857,7 @@
       "installAll": "Установить все",
       "installed": "Установлено",
       "installing": "Установка...",
-      "ossManagerDisabledHint": "Чтобы установить отсутствующие узлы, сначала выполните {pipCmd} в вашей среде Python для установки Node Manager, затем перезапустите ComfyUI с флагом {flag}.",
+      "ossManagerDisabledHint": "Чтобы установить отсутствующие узлы, сначала выполните {pipCmd} в вашей среде Python для установки Node Manager, затем перезапустите Hyper-Studio с флагом {flag}.",
       "title": "Отсутствующие пакеты узлов",
       "unknownPack": "Неизвестный пакет",
       "unsupportedTitle": "Неподдерживаемые пакеты узлов",
@@ -4010,7 +4010,7 @@
     },
     "disable-smart-memory": {
       "name": "Отключить управление умной памятью",
-      "tooltip": "Принудить ComfyUI агрессивно выгружать в обычную оперативную память вместо того, чтобы держать модели в VRAM, когда это возможно."
+      "tooltip": "Принудить Hyper-Studio агрессивно выгружать в обычную оперативную память вместо того, чтобы держать модели в VRAM, когда это возможно."
     },
     "disable-xformers": {
       "name": "Отключить оптимизацию xFormers"
@@ -4026,7 +4026,7 @@
     },
     "enable-manager-legacy-ui": {
       "name": "Использовать устаревший интерфейс Manager",
-      "tooltip": "Использует устаревший интерфейс ComfyUI-Manager вместо нового."
+      "tooltip": "Использует устаревший интерфейс Node Manager вместо нового."
     },
     "fast": {
       "name": "Включить некоторые непроверенные и потенциально ухудшающие качество оптимизации."
@@ -4094,21 +4094,21 @@
   "serverStart": {
     "copyAllTooltip": "Копировать всё",
     "copySelectionTooltip": "Копировать выделение",
-    "errorMessage": "Не удалось запустить ComfyUI Desktop",
+    "errorMessage": "Не удалось запустить Hyper-Studio Desktop",
     "installation": {
-      "title": "Установка ComfyUI"
+      "title": "Установка Hyper-Studio"
     },
     "openLogs": "Открыть логи",
     "process": {
-      "error": "Не удалось запустить ComfyUI Desktop",
+      "error": "Не удалось запустить Hyper-Studio Desktop",
       "initial-state": "Загрузка…",
       "python-setup": "Настройка окружения Python…",
       "ready": "Завершение…",
-      "starting-server": "Запуск сервера ComfyUI…"
+      "starting-server": "Запуск сервера Hyper-Studio…"
     },
     "reportIssue": "Сообщить о проблеме",
     "showTerminal": "Показать терминал",
-    "title": "Запуск ComfyUI",
+    "title": "Запуск Hyper-Studio",
     "troubleshoot": "Устранение неполадок"
   },
   "settingsCategories": {
@@ -4196,7 +4196,7 @@
     "acknowledgeCheckbox": "Я понимаю, что эти медиафайлы будут опубликованы и станут общедоступными",
     "checkingAssets": "Проверка видимости медиафайлов…",
     "comfyHubButton": "Загрузить в Comfy Workflows",
-    "comfyHubDescription": "Comfy Workflows — это официальный хаб сообщества ComfyUI.\nВаш рабочий процесс получит публичную страницу, доступную для всех.",
+    "comfyHubDescription": "Comfy Workflows — это официальный хаб сообщества Hyper-Studio.\nВаш рабочий процесс получит публичную страницу, доступную для всех.",
     "comfyHubTitle": "Загрузить в Comfy Workflows",
     "copyLink": "Копировать",
     "createLinkButton": "Создать ссылку",
@@ -4895,7 +4895,7 @@
       "Area Composition": "Композиция области",
       "Audio": "Аудио",
       "Basics": "Основы",
-      "ComfyUI Examples": "Примеры ComfyUI",
+      "ComfyUI Examples": "Примеры Hyper-Studio",
       "ControlNet": "ControlNet",
       "Custom Nodes": "Пользовательские узлы",
       "Extensions": "Расширения",
@@ -4955,7 +4955,7 @@
     "logoProviderSeparator": " & "
   },
   "toastMessages": {
-    "a1111CoreNodesUnavailable": "Не удалось загрузить рабочий процесс, так как в этой установке ComfyUI отсутствуют основные узлы. Проверьте, что сервер запущен корректно.",
+    "a1111CoreNodesUnavailable": "Не удалось загрузить рабочий процесс, так как в этой установке Hyper-Studio отсутствуют основные узлы. Проверьте, что сервер запущен корректно.",
     "a1111EmbeddingsUnavailable": "Не удалось загрузить embeddings с сервера. Рабочий процесс импортирован, но имена embeddings оставлены в виде обычного текста.",
     "assetDropFailed": "Не удалось загрузить добавленный ресурс",
     "cannotCreateSubgraph": "Невозможно создать подграф",
@@ -5127,7 +5127,7 @@
   },
   "welcome": {
     "getStarted": "Начать",
-    "title": "Добро пожаловать в ComfyUI"
+    "title": "Добро пожаловать в Hyper-Studio"
   },
   "whatsNewPopup": {
     "later": "Позже",

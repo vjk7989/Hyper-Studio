@@ -159,19 +159,19 @@
     "label": "Décompresser le sous-graphe sélectionné"
   },
   "Comfy_Help_AboutComfyUI": {
-    "label": "Ouvrir À propos de ComfyUI"
+    "label": "Ouvrir À propos de Hyper-Studio"
   },
   "Comfy_Help_OpenComfyOrgDiscord": {
     "label": "Ouvrir Comfy-Org Discord"
   },
   "Comfy_Help_OpenComfyUIDocs": {
-    "label": "Ouvrir les documents ComfyUI"
+    "label": "Ouvrir les documents Hyper-Studio"
   },
   "Comfy_Help_OpenComfyUIForum": {
     "label": "Ouvrir le forum Comfy-Org"
   },
   "Comfy_Help_OpenComfyUIIssues": {
-    "label": "Ouvrir les problèmes ComfyUI"
+    "label": "Ouvrir les problèmes Hyper-Studio"
   },
   "Comfy_Interrupt": {
     "label": "Interrompre"

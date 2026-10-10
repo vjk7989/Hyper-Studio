@@ -11753,7 +11753,7 @@
     }
   },
   "LazyCache": {
-    "description": "Une version maison d'EasyCache - une version encore 'plus facile' d'EasyCache à implémenter. Fonctionne globalement moins bien qu'EasyCache, mais mieux dans certains cas rares ET une compatibilité universelle avec tout dans ComfyUI.",
+    "description": "Une version maison d'EasyCache - une version encore 'plus facile' d'EasyCache à implémenter. Fonctionne globalement moins bien qu'EasyCache, mais mieux dans certains cas rares ET une compatibilité universelle avec tout dans Hyper-Studio.",
     "display_name": "CacheParesseux",
     "inputs": {
       "end_percent": {
@@ -13320,7 +13320,7 @@
     }
   },
   "MaskPreview": {
-    "description": "Enregistre les images d'entrée dans votre répertoire de sortie ComfyUI.",
+    "description": "Enregistre les images d'entrée dans votre répertoire de sortie Hyper-Studio.",
     "display_name": "MaskPreview",
     "inputs": {
       "mask": {
@@ -18300,7 +18300,7 @@
     }
   },
   "Preview3D": {
-    "description": "Prévisualisez un fichier de modèle 3D sans l'enregistrer dans le répertoire de sortie ComfyUI.",
+    "description": "Prévisualisez un fichier de modèle 3D sans l'enregistrer dans le répertoire de sortie Hyper-Studio.",
     "display_name": "Aperçu 3D et animation (OBSOLÈTE)",
     "inputs": {
       "bg_image": {
@@ -18319,7 +18319,7 @@
     }
   },
   "Preview3DAdvanced": {
-    "description": "Prévisualisez un fichier de modèle 3D sans l'enregistrer dans le répertoire de sortie ComfyUI.",
+    "description": "Prévisualisez un fichier de modèle 3D sans l'enregistrer dans le répertoire de sortie Hyper-Studio.",
     "display_name": "Aperçu 3D (Avancé)",
     "inputs": {
       "camera_info": {
@@ -18380,7 +18380,7 @@
     }
   },
   "PreviewAudio": {
-    "description": "Prévisualisez l'audio sans l'enregistrer dans le répertoire de sortie ComfyUI.",
+    "description": "Prévisualisez l'audio sans l'enregistrer dans le répertoire de sortie Hyper-Studio.",
     "display_name": "AperçuAudio",
     "inputs": {
       "audio": {
@@ -18398,7 +18398,7 @@
     }
   },
   "PreviewGaussianSplat": {
-    "description": "Prévisualisez un fichier 3D gaussian splat sans l'enregistrer dans le répertoire de sortie ComfyUI.",
+    "description": "Prévisualisez un fichier 3D gaussian splat sans l'enregistrer dans le répertoire de sortie Hyper-Studio.",
     "display_name": "Aperçu Splat",
     "inputs": {
       "camera_info": {
@@ -18445,7 +18445,7 @@
     }
   },
   "PreviewImage": {
-    "description": "Enregistre les images d'entrée dans votre répertoire de sortie ComfyUI.",
+    "description": "Enregistre les images d'entrée dans votre répertoire de sortie Hyper-Studio.",
     "display_name": "Aperçu Image",
     "inputs": {
       "images": {
@@ -18459,7 +18459,7 @@
     }
   },
   "PreviewPointCloud": {
-    "description": "Prévisualisez un fichier 3D de nuage de points sans l'enregistrer dans le répertoire de sortie ComfyUI.",
+    "description": "Prévisualisez un fichier 3D de nuage de points sans l'enregistrer dans le répertoire de sortie Hyper-Studio.",
     "display_name": "Aperçu Nuage de Points",
     "inputs": {
       "camera_info": {
@@ -21948,7 +21948,7 @@
     }
   },
   "SaveAudioAdvanced": {
-    "description": "Enregistre l’audio d’entrée dans le dossier de sortie ComfyUI.",
+    "description": "Enregistre l’audio d’entrée dans le dossier de sortie Hyper-Studio.",
     "display_name": "Enregistrer l’Audio (Avancé)",
     "inputs": {
       "audio": {
@@ -22103,7 +22103,7 @@
     }
   },
   "SaveImage": {
-    "description": "Enregistre les images d'entrée dans votre répertoire de sortie ComfyUI.",
+    "description": "Enregistre les images d'entrée dans votre répertoire de sortie Hyper-Studio.",
     "display_name": "Enregistrer Image",
     "inputs": {
       "filename_prefix": {
@@ -22122,7 +22122,7 @@
     }
   },
   "SaveImageAdvanced": {
-    "description": "Enregistre les images d’entrée dans votre dossier de sortie ComfyUI.",
+    "description": "Enregistre les images d’entrée dans votre dossier de sortie Hyper-Studio.",
     "display_name": "Enregistrer l’image (Avancé)",
     "inputs": {
       "filename_prefix": {
@@ -22354,7 +22354,7 @@
     }
   },
   "SaveVideo": {
-    "description": "Enregistre les images d'entrée dans votre répertoire de sortie ComfyUI.",
+    "description": "Enregistre les images d'entrée dans votre répertoire de sortie Hyper-Studio.",
     "display_name": "Enregistrer la vidéo",
     "inputs": {
       "codec": {
@@ -25539,7 +25539,7 @@
       },
       "compress_geometry": {
         "name": "compress_geometry",
-        "tooltip": "Applique la compression de géométrie meshopt (EXT_meshopt_compression). Fichiers plus petits, mais l’aperçu 3D de ComfyUI ne peut pas les afficher ; décompressez-les avant modification."
+        "tooltip": "Applique la compression de géométrie meshopt (EXT_meshopt_compression). Fichiers plus petits, mais l’aperçu 3D de Hyper-Studio ne peut pas les afficher ; décompressez-les avant modification."
       },
       "enable_image_autofix": {
         "name": "enable_image_autofix",
@@ -25589,7 +25589,7 @@
       },
       "compress_geometry": {
         "name": "compress_geometry",
-        "tooltip": "Applique la compression de géométrie meshopt (EXT_meshopt_compression). Fichiers plus petits, mais l’aperçu 3D de ComfyUI ne peut pas les afficher ; décompressez-les avant modification."
+        "tooltip": "Applique la compression de géométrie meshopt (EXT_meshopt_compression). Fichiers plus petits, mais l’aperçu 3D de Hyper-Studio ne peut pas les afficher ; décompressez-les avant modification."
       },
       "export_uv": {
         "name": "export_uv",
@@ -25648,7 +25648,7 @@
       },
       "compress_geometry": {
         "name": "compresser la géométrie",
-        "tooltip": "Applique la compression de géométrie meshopt (EXT_meshopt_compression). Fichiers plus petits, mais l’aperçu 3D de ComfyUI ne peut pas les afficher ; décompressez-les avant modification."
+        "tooltip": "Applique la compression de géométrie meshopt (EXT_meshopt_compression). Fichiers plus petits, mais l’aperçu 3D de Hyper-Studio ne peut pas les afficher ; décompressez-les avant modification."
       },
       "export_uv": {
         "name": "exporter UV",

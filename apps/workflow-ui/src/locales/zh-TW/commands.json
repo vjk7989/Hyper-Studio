@@ -159,19 +159,19 @@
     "label": "解開所選子圖"
   },
   "Comfy_Help_AboutComfyUI": {
-    "label": "開啟關於 ComfyUI"
+    "label": "開啟關於 Hyper-Studio"
   },
   "Comfy_Help_OpenComfyOrgDiscord": {
     "label": "開啟 Comfy-Org Discord"
   },
   "Comfy_Help_OpenComfyUIDocs": {
-    "label": "開啟 ComfyUI 文件"
+    "label": "開啟 Hyper-Studio 文件"
   },
   "Comfy_Help_OpenComfyUIForum": {
-    "label": "開啟 ComfyUI 論壇"
+    "label": "開啟 Hyper-Studio 論壇"
   },
   "Comfy_Help_OpenComfyUIIssues": {
-    "label": "開啟 ComfyUI 問題追蹤"
+    "label": "開啟 Hyper-Studio 問題追蹤"
   },
   "Comfy_Interrupt": {
     "label": "中斷"

@@ -201,7 +201,7 @@ export const useWorkflowTemplatesStore = defineStore(
         {
           label: st(
             'templateWorkflows.category.ComfyUI Examples',
-            'ComfyUI Examples'
+            'Hyper-Studio Examples'
           ),
           modules: [
             createAllCategory(),
