@@ -8,7 +8,7 @@ Status: `[x]` verified complete; `[·]` in progress or only partly verified; `[ 
 - [x] Verify app-only removal preserves files and can be reopened; pass installed OS Trash/failure recovery, manifest/path guards, and active-job blocking.
 - [x] Verify create, open, rename, initial mode, close/reopen, and restart persistence in the final5 installed app.
 - [·] Run the Windows first-party interaction audit across Home, Explore Tools, Connections, Settings, Editor, Workflow, Manager, and export. The final5 scoped installed checks pass; untested upstream controls and optional visual states remain in the gate report.
-- [ ] After the Windows gate passes, run macOS and Linux packaged smokes in GitHub Actions and fix any failures.
+- [x] After the scoped Windows gate, pass macOS and Linux packaged smokes in GitHub Actions run 38093974210; both jobs also passed the embedded-account, local node-pack, desktop, and brand-audit steps.
 - [·] At each completed gate, refresh the architecture record, handoff, code map, codebase-memory snapshot, and Graft graph. Final5 Windows documents and Graft are refreshed; the separate codebase-memory worker crashed during fast reindex, so its snapshot remains unverified.
 
 ## Phase 1 — Baseline and containment

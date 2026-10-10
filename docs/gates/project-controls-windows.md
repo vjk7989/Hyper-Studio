@@ -13,7 +13,9 @@ The unsigned NSIS is 419,861,488 bytes, SHA-256 `68A98957838B9B2287865A81E4FAA44
 - Embedded Workflow with a locally installed pack no longer requests `api.comfy.org/bulk/nodes/versions`. `useConflictDetection` now retains local conflict/import-failure analysis without the upstream Registry lookup. Its focused Vue suite passed 12/12, Vue TypeScript and embedded build passed, and the fresh installed packaged smoke observed no account button or upstream Comfy/LTX cloud request. Desktop full tests passed 1,483/1,483 after the desktop source changes.
 - Read-only brand audit: 232 source matches, 178 classified review candidates, 253 tracked visuals, and zero legacy visual filenames in three built trees. The scan does not prove all rendered states or optional artwork.
 
-The scoped Windows package gate is ready for macOS/Linux packaged smoke. The broader all-controls/release gate remains open: render/video export, active Workflow cancellation and mouse port dragging, theme persistence, broader Manager browse/update/uninstall, external third-party install, live provider acceptance, and remaining visual states were not established by these tests.
+The macOS and Linux package jobs subsequently passed in [GitHub Actions run 38093974210](https://github.com/vjk7989/Hyper-Studio/actions/runs/38093974210). Linux launched the packaged Hyper-Studio window, ran `EmptyImage` → `SaveImage`, and indexed one output; macOS passed the packaged canvas, JSON roundtrip, and bidirectional usable media smoke. Both jobs passed the 166-test scoped embedded Vue suite, local node-pack catalog step, desktop build/tests, and packaged brand audit with zero residual visual filenames in three built trees. These are package smokes, not macOS/Linux installer installation/uninstall checks.
+
+The broader all-controls/release gate remains open: rendered video export, active Workflow cancellation and mouse port dragging, theme persistence, broader Manager browse/update/uninstall, external third-party install, live provider acceptance, and remaining visual states were not established by these tests.
 
 ## Project lifecycle
 
