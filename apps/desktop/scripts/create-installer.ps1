@@ -24,10 +24,12 @@ if (-not (Test-Path "dist") -or -not (Test-Path "dist-electron") -or -not (Test-
     exit 1
 }
 
-if (-not (Test-Path "python-embed")) {
-    Write-Host "ERROR: Python environment not found. Run local-build.ps1 or prepare-python.ps1 first." -ForegroundColor Red
-    exit 1
+if (-not (Test-Path "..\workflow-ui\dist\index.html")) {
+    throw "Workflow canvas is not built. Build apps/workflow-ui first."
 }
+
+& (Join-Path $ProjectDir "..\..\scripts\prepare-workflow-tool.ps1")
+if ($LASTEXITCODE -ne 0) { throw "Could not prepare pinned workflow runtime installer" }
 
 # Build with electron-builder
 if ($Unpack) {
@@ -54,7 +56,7 @@ Write-Host "========================================" -ForegroundColor Green
 
 if ($Unpack) {
     $UnpackedDir = Join-Path $ReleaseDir "win-unpacked"
-    $ExePath = Join-Path $UnpackedDir "LTX Desktop.exe"
+    $ExePath = Join-Path $UnpackedDir "Hyper-Studio.exe"
     Write-Host "`nUnpacked app ready!" -ForegroundColor Cyan
     Write-Host "Run: $ExePath" -ForegroundColor Cyan
     Write-Host "`nTip: Just restart the app after code changes - no rebuild needed!" -ForegroundColor Green
@@ -68,4 +70,4 @@ if ($Unpack) {
     }
 }
 
-Write-Host "`nNote: AI models (~150GB) will be downloaded on first run." -ForegroundColor Yellow
+Write-Host "`nThe workflow Python runtime installs into the selected shared storage on first use. Models are not downloaded automatically." -ForegroundColor Yellow

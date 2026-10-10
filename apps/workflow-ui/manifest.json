@@ -1,0 +1,15 @@
+{
+  "name": "Hyper-Studio",
+  "short_name": "Hyper-Studio",
+  "description": "Hyper-Studio workflow editor",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "/assets/hyper-studio-mark.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "display": "standalone"
+}

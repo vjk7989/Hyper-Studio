@@ -1,10 +1,11 @@
 # local-build.ps1
-# All-in-one local build script for creating the LTX Desktop installer.
+# All-in-one local build script for creating the Hyper-Studio installer.
 # Prepares the Python environment, installs pnpm deps, builds the frontend,
 # then packages with electron-builder via create-installer.ps1.
 
 param(
     [switch]$SkipPython,
+    [switch]$SkipInstall,
     [switch]$Clean,
     [switch]$Unpack,
     [string]$Publish = ""
@@ -19,13 +20,7 @@ $ReleaseDir = Join-Path $ProjectDir "release"
 
 Write-Host @"
 
-  _   _______  __  ____            _    _
- | | |_   _\ \/ / |  _ \  ___  ___| | _| |_ ___  _ __
- | |   | |  \  /  | | | |/ _ \/ __| |/ / __/ _ \| '_ \
- | |___| |  /  \  | |_| |  __/\__ \   <| || (_) | |_) |
- |_____|_| /_/\_\ |____/ \___||___/_|\_\\__\___/| .__/
-                                                 |_|
-  Local Build Script
+  Hyper-Studio Local Build Script
 
 "@ -ForegroundColor Cyan
 
@@ -81,11 +76,19 @@ if (-not (Test-Path $PythonEmbedDir)) {
 # ============================================================
 # Step 2: Install pnpm dependencies
 # ============================================================
-Write-Host "`n[2/3] Installing pnpm dependencies..." -ForegroundColor Yellow
-pnpm install
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "Failed to install pnpm dependencies!" -ForegroundColor Red
-    exit 1
+if ($SkipInstall) {
+    if (-not (Test-Path (Join-Path $ProjectDir 'node_modules'))) {
+        Write-Host "Cannot skip install: node_modules is missing" -ForegroundColor Red
+        exit 1
+    }
+    Write-Host "`n[2/3] Using installed pnpm dependencies..." -ForegroundColor DarkYellow
+} else {
+    Write-Host "`n[2/3] Installing pnpm dependencies..." -ForegroundColor Yellow
+    pnpm install
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "Failed to install pnpm dependencies!" -ForegroundColor Red
+        exit 1
+    }
 }
 
 # ============================================================

@@ -140,6 +140,11 @@ export const providerJobSchema = z.object({
 });
 export type ProviderJobInput = z.infer<typeof providerJobInputSchema>;
 export type ProviderJob = z.infer<typeof providerJobSchema>;
+export const workflowEngineStatusSchema = z.object({
+  state: z.enum(['stopped', 'starting', 'running', 'failed']),
+  projectId: z.string().optional(), url: z.string().url().optional(), error: z.string().optional(),
+});
+export type WorkflowEngineStatus = z.infer<typeof workflowEngineStatusSchema>;
 
 const updateStatePayload = z.object({
   status: z.enum([
@@ -365,6 +370,14 @@ export const electronAPISchemas = {
     input: z.object({ confirmed: z.literal(true) }),
     output: z.object({ imported: z.array(z.string()) }),
   },
+  startWorkflowEngine: { input: z.object({ projectId: z.string().min(1) }), output: workflowEngineStatusSchema },
+  getWorkflowEngineStatus: { input: z.object({}), output: workflowEngineStatusSchema },
+  stopWorkflowEngine: { input: z.object({}), output: workflowEngineStatusSchema },
+  listProjectWorkflows: { input: z.object({ projectId: z.string().min(1) }), output: z.array(z.string()) },
+  openProjectWorkflow: { input: z.object({ projectId: z.string().min(1), name: z.string().min(1) }), output: z.object({ name: z.string(), contents: z.string() }) },
+  saveProjectWorkflow: { input: z.object({ projectId: z.string().min(1), name: z.string().min(1), contents: z.string().max(20 * 1024 * 1024) }), output: z.object({ name: z.string() }) },
+  importProjectWorkflow: { input: z.object({ projectId: z.string().min(1) }), output: z.object({ name: z.string(), contents: z.string() }).nullable() },
+  exportProjectWorkflow: { input: z.object({ projectId: z.string().min(1), name: z.string().min(1) }), output: z.boolean() },
   getSharedStorageRoot: {
     input: z.object({}),
     output: z.string().nullable(),

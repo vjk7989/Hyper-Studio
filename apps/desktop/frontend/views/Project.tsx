@@ -13,6 +13,7 @@ import { VideoEditor } from './VideoEditor'
 import { WorkflowWorkspace } from './WorkflowWorkspace'
 import { ProjectConnectionPicker } from '../components/ProjectConnectionPicker'
 import { ProviderJobComposer } from '../components/ProviderJobComposer'
+import { readProject } from '../lib/project-storage'
 import type { ProjectTab } from '../types/project-model'
 import {
   hasVisualAssetMetadataForMigration,
@@ -84,7 +85,18 @@ export function Project() {
 
   const handleSaveActiveProject = useCallback((project: typeof activeProject extends null ? never : NonNullable<typeof activeProject>) => {
     if (!activeProjectId) return
-    setProject(activeProjectId, project)
+    const latest = readProject(activeProjectId)
+    if (!latest) return
+    const editorAssetIds = new Set(project.assets.map(asset => asset.id))
+    const newWorkspaceAssets = latest.assets.filter(asset => asset.id.startsWith('workspace-') && !editorAssetIds.has(asset.id))
+    setProject(activeProjectId, {
+      ...latest,
+      bins: project.bins,
+      assets: [...newWorkspaceAssets, ...project.assets],
+      timelines: project.timelines,
+      activeTimelineId: project.activeTimelineId,
+      updatedAt: Date.now(),
+    })
   }, [activeProjectId, setProject])
 
   useEffect(() => {

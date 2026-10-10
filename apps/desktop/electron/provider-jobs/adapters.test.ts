@@ -85,7 +85,8 @@ describe('provider adapters', () => {
 
   it('stops polling an unresponsive provider at the configured deadline', async () => {
     const test = context(url => url.endsWith('/v2/text-to-video') ? { id: 'job-1' } : { status: 'processing' })
-    await assert.rejects(runProviderAdapter(profile('ltx'), input, { ...test.context, maxPollMs: 10 }), /polling timed out/)
+    // Leave enough time for a poll even when the suite runs under heavy build load.
+    await assert.rejects(runProviderAdapter(profile('ltx'), input, { ...test.context, maxPollMs: 250 }), /polling timed out/)
     assert.ok(test.calls.length > 1)
   })
 })

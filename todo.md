@@ -29,11 +29,11 @@ Status: `[x]` completed with its phase gate passing; `[·]` in progress or await
 
 ## Phase 4 — Integrated workflow UI
 
-- [ ] Manage the local workflow engine inside the desktop app with project-scoped paths and shared provider bridge.
-- [ ] Pin and brand the Vue canvas; embed it in the Electron window with the host header and mode switch.
-- [ ] Open, save, import, and export compatible workflow JSON without renaming node identifiers.
-- [ ] Show missing third-party nodes and require a reviewed install action.
-- [ ] Verify workflow output in Editor, Editor media in Workflow, restart, mode changes during jobs, and the full phase gate.
+- [·] Manage the local workflow engine inside the desktop app with project-scoped paths and shared provider bridge.
+- [·] Pin and brand the Vue canvas; embed it in the Electron window with the host header and mode switch.
+- [·] Open, save, import, and export compatible workflow JSON without renaming node identifiers; packaged toolbar byte roundtrip and an installed-app synthetic third-party workflow with preserved node IDs pass, broader real-world workflows remain.
+- [·] Show missing third-party nodes and require a reviewed install action; installed-app missing-node guidance and embedded review unit tests pass, manager-backed install availability remains to verify.
+- [·] Verify workflow output in Editor, Editor media in Workflow, restart, mode changes during jobs, and the full phase gate. Packaged bidirectional media, Editor image as Workflow graph input, restart/reopen, and one saved Custom profile across a running-job mode switch passed with a local mock. Windows installer installation and app smoke passed; other release gates remain.
 - [ ] Update architecture record, handoff, code map, and Graft graph.
 
 ## Phase 5 — Surface rebrand and release
@@ -48,5 +48,5 @@ Status: `[x]` completed with its phase gate passing; `[·]` in progress or await
 
 - [x] Verify the official stable V2 version and any existing installation; install a separate Windows CLI under `.tools/opencode`.
 - [x] Confirm its configured database, state, cache, log, download, and temporary paths and observed writes stay inside this repository.
-- [·] Have a Codex runner write a bounded read-only Phase 3 test task under `docs/agent-tasks/`, run it, and save concise findings plus full logs.
-- [ ] Codex reviews the findings; assign one non-overlapping coding task only after the investigation works.
+- [x] Have a Codex runner write a bounded read-only Phase 3 test task under `docs/agent-tasks/`, run it, and save concise findings plus full logs.
+- [x] Codex reviewed the passing investigation and the separate Phase 4 workflow-file coding task; focused 20/20, desktop 1,467/1,467, and TypeScript checks passed.

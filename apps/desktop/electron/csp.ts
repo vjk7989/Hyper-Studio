@@ -1,10 +1,13 @@
 import { session } from 'electron'
 import { isDev } from './config'
+import { getWorkflowEngineStatus } from './workflow-engine'
 
 // Enforce Content Security Policy via response headers (tamper-proof from renderer)
 export function setupCSP(): void {
   // Model catalog assets may be hosted on Google storage.
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+    const engineUrl = getWorkflowEngineStatus().url
+    const isWorkflowResponse = engineUrl && new URL(details.url).origin === new URL(engineUrl).origin
     const csp = isDev
       ? [
           "default-src 'self'",
@@ -17,7 +20,8 @@ export function setupCSP(): void {
           "object-src 'none'",
           "base-uri 'self'",
           "form-action 'self'",
-          "frame-ancestors 'none'",
+          "frame-src http://127.0.0.1:*",
+          isWorkflowResponse ? "frame-ancestors file: http://localhost:* http://127.0.0.1:*" : "frame-ancestors 'none'",
         ].join('; ')
       : [
           "default-src 'self'",
@@ -32,14 +36,16 @@ export function setupCSP(): void {
           "object-src 'none'",
           "base-uri 'self'",
           "form-action 'self'",
-          "frame-ancestors 'none'",
+          "frame-src http://127.0.0.1:*",
+          isWorkflowResponse ? "frame-ancestors file: http://localhost:* http://127.0.0.1:*" : "frame-ancestors 'none'",
         ].join('; ')
 
-    callback({
-      responseHeaders: {
-        ...details.responseHeaders,
-        'Content-Security-Policy': [csp],
-      },
-    })
+    const responseHeaders = { ...details.responseHeaders }
+    if (isWorkflowResponse) {
+      for (const key of Object.keys(responseHeaders)) {
+        if (key.toLowerCase() === 'x-frame-options') delete responseHeaders[key]
+      }
+    }
+    callback({ responseHeaders: { ...responseHeaders, 'Content-Security-Policy': [csp] } })
   })
 }

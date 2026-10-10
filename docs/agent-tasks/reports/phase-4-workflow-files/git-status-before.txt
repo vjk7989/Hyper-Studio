@@ -1,0 +1,40 @@
+ M .gitignore
+ M apps/desktop/electron-builder.yml
+ M apps/desktop/electron/csp.ts
+ M apps/desktop/electron/main.ts
+ M apps/desktop/electron/provider-jobs/adapters.test.ts
+ M apps/desktop/frontend/App.tsx
+ M apps/desktop/frontend/lib/boot-phase.test.ts
+ M apps/desktop/frontend/lib/boot-phase.ts
+ M apps/desktop/frontend/views/Project.module.scss
+ M apps/desktop/frontend/views/WorkflowWorkspace.tsx
+ M apps/desktop/index.html
+ M apps/desktop/scripts/create-installer.ps1
+ M apps/desktop/scripts/local-build.ps1
+ M apps/desktop/shared/electron-api-schema.ts
+ M docs/agent-tasks/reports/phase-3-investigation/report.md
+ M docs/architecture-decision-record.md
+ M docs/codebase-map.md
+ M docs/phase-handoff.md
+ M scripts/run-opencode-local.ps1
+ M todo.md
+?? apps/desktop/backend/requirements-dist.txt
+?? apps/desktop/electron/ipc/workflow-engine-handlers.ts
+?? apps/desktop/electron/ipc/workflow-file-handlers.ts
+?? apps/desktop/electron/workflow-engine-config.test.ts
+?? apps/desktop/electron/workflow-engine-config.ts
+?? apps/desktop/electron/workflow-engine.ts
+?? apps/desktop/electron/workflow-files.test.ts
+?? apps/desktop/electron/workflow-files.ts
+?? apps/desktop/electron/workflow-runtime.ts
+?? apps/desktop/frontend/lib/workflow-canvas-url.test.ts
+?? apps/desktop/frontend/lib/workflow-canvas-url.ts
+?? apps/desktop/resources/workflow-requirements-win.lock
+?? apps/workflow-ui/
+?? docs/agent-tasks/phase-4-workflow-files-edge-cases.md
+?? docs/agent-tasks/reports/phase-4-workflow-files/
+?? docs/gates/phase-4.md
+?? scripts/bootstrap-workflow-runtime.ps1
+?? scripts/prepare-workflow-tool.ps1
+?? scripts/smoke-packaged-electron.mjs
+?? scripts/smoke-workflow-engine.mjs

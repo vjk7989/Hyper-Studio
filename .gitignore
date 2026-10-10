@@ -19,3 +19,4 @@ graft/
 *.log
 .DS_Store
 Thumbs.db
+apps/desktop/Microsoft/Windows/PowerShell/ModuleAnalysisCache

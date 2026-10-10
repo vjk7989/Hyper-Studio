@@ -26,6 +26,7 @@ import struct
 import ssl
 import socket
 import ipaddress
+import hmac
 from PIL import Image, ImageOps
 from PIL.PngImagePlugin import PngInfo
 from io import BytesIO
@@ -202,7 +203,14 @@ def create_origin_only_middleware():
         if 'Sec-Fetch-Site' in request.headers:
             sec_fetch_site = request.headers['Sec-Fetch-Site']
             if sec_fetch_site == 'cross-site':
-                return web.Response(status=403)
+                expected = os.environ.get('HYPER_STUDIO_EMBED_TOKEN', '')
+                supplied = request.headers.get('X-Hyper-Studio-Embed-Token', '')
+                trusted_embed = (request.method == 'GET'
+                                 and request.headers.get('Sec-Fetch-Dest') == 'iframe'
+                                 and bool(expected)
+                                 and hmac.compare_digest(supplied, expected))
+                if not trusted_embed:
+                    return web.Response(status=403)
         #this code is used to prevent the case where a random website can queue comfy workflows by making a POST to 127.0.0.1 which browsers don't prevent for some dumb reason.
         #in that case the Host and Origin hostnames won't match
         #I know the proper fix would be to add a cookie but this should take care of the problem in the meantime

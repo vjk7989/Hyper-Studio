@@ -69,6 +69,7 @@ function AppContent() {
   // One phase drives one view (see ./lib/boot-phase.ts for the precedence).
   const phase = resolveBootPhase({
     pythonReady,
+    allowHostedOnly: sharedStorageReady,
     isBackendDead,
     backendLoading,
     connected,
@@ -118,15 +119,15 @@ function AppContent() {
         setPythonReady(result.ready)
       } catch (e) {
         logger.error(`Failed to check Python readiness: ${e}`)
-        setPythonReady(true)
+        // A failed probe must not start the legacy backend speculatively.
+        setPythonReady(false)
       }
     }
     void check()
   }, [sharedStorageReady])
 
-  // The splash-embedded download reports progress but no completion signal,
-  // so re-check readiness while python is missing; the phase advances to the
-  // regular splash gates once the download lands.
+  // Detect a runtime installed later in this session without blocking the
+  // hosted workspace or starting an automatic download.
   useEffect(() => {
     if (pythonReady !== false) return
     const id = window.setInterval(() => {
@@ -298,7 +299,7 @@ function AppContent() {
           connected={connected}
           // 'ready' implies setupState is loaded (the splash gate returns
           // otherwise); the loading arm is unreachable.
-          needsSetup={setupState !== 'loading' && setupState.needsSetup}
+          needsSetup={pythonReady === true && setupState !== 'loading' && setupState.needsSetup}
           isBackendRestarting={isBackendRestarting}
         >
           <QueryClientProvider client={queryClient}>
@@ -307,6 +308,12 @@ function AppContent() {
               <RouterProvider router={router} />
             </DevFlagsProvider>
           </QueryClientProvider>
+
+          {pythonReady === false && (
+            <div role="status" className="fixed bottom-4 left-4 z-50 max-w-sm rounded-lg border border-separator bg-surface-primary px-4 py-3 text-sm text-fg-secondary shadow-lg">
+              Hosted providers and Workflow mode are available. Local processing needs the optional Python runtime.
+            </div>
+          )}
 
           {isForcedFirstRun && isLoaded && isFinalizingFirstRun && (
             <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 backdrop-blur-sm">

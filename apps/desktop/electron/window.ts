@@ -18,6 +18,7 @@ import {
   shouldTrustMediaPermissionSource,
 } from './media-permission'
 import { isAllowedExternalUrl } from './allowed-external-url'
+import { getWorkflowEmbedToken, getWorkflowEngineStatus } from './workflow-engine'
 import { APP_WINDOW_BOUNDS, INSTALL_WINDOW_BOUNDS, centeredBounds, fitToWorkArea } from '../shared/window-bounds'
 import {
   APP_THEME_PREFERENCE,
@@ -220,18 +221,34 @@ export function createWindow(mode: 'install' | 'app'): BrowserWindow {
 
   const allowRendererUrl = (url: string): boolean =>
     isTrustedAppOrigin(url, trustedRendererOrigin())
+  const allowWorkflowFrameUrl = (url: string): boolean => {
+    const engine = getWorkflowEngineStatus()
+    if (engine.state !== 'running' || !engine.url) return false
+    try {
+      const target = new URL(url)
+      const trusted = new URL(engine.url)
+      return target.origin === trusted.origin && target.username === '' && target.password === ''
+    } catch { return false }
+  }
+  renderer.session.webRequest.onBeforeSendHeaders((details, callback) => {
+    const headers = { ...details.requestHeaders }
+    if (details.webContentsId === renderer.id && details.resourceType === 'subFrame' && allowWorkflowFrameUrl(details.url)) {
+      headers['X-Hyper-Studio-Embed-Token'] = getWorkflowEmbedToken()
+    }
+    callback({ requestHeaders: headers })
+  })
   renderer.on('will-navigate', (event, url) => {
-    if (!allowRendererUrl(url)) {
+    if (!allowRendererUrl(url) && !allowWorkflowFrameUrl(url)) {
       event.preventDefault()
     }
   })
   renderer.on('will-redirect', (event, url) => {
-    if (!allowRendererUrl(url)) {
+    if (!allowRendererUrl(url) && !allowWorkflowFrameUrl(url)) {
       event.preventDefault()
     }
   })
   renderer.on('will-frame-navigate', (details) => {
-    if (!details.isMainFrame || !allowRendererUrl(details.url)) {
+    if (details.isMainFrame ? !allowRendererUrl(details.url) : !allowWorkflowFrameUrl(details.url)) {
       details.preventDefault()
     }
   })

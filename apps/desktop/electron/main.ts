@@ -17,6 +17,9 @@ import { registerLogHandlers } from './ipc/log-handlers'
 import { registerVideoProcessingHandlers } from './ipc/video-processing-handlers'
 import { registerProjectWorkspaceHandlers } from './ipc/project-workspace-handlers'
 import { registerProviderProfileHandlers } from './ipc/provider-profile-handlers'
+import { registerWorkflowEngineHandlers } from './ipc/workflow-engine-handlers'
+import { registerWorkflowFileHandlers } from './ipc/workflow-file-handlers'
+import { stopWorkflowEngine } from './workflow-engine'
 import { logger } from './logger'
 import { initSessionLog } from './logging-management'
 import { stopPythonBackend } from './python-backend'
@@ -141,6 +144,8 @@ if (!gotLock) {
   registerProjectWorkspaceHandlers()
   registerProviderProfileHandlers()
   registerProviderJobHandlers()
+  registerWorkflowEngineHandlers()
+  registerWorkflowFileHandlers()
 
   app.whenReady().then(async () => {
     setupCSP()
@@ -169,6 +174,7 @@ if (!gotLock) {
 
   app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
+      void stopWorkflowEngine()
       stopPythonBackend()
       app.quit()
     }
@@ -181,6 +187,7 @@ if (!gotLock) {
   })
 
   app.on('before-quit', () => {
+    void stopWorkflowEngine()
     void stopProviderJobBridge()
     stopRemoteKeepAwake()
     stopExportProcess()

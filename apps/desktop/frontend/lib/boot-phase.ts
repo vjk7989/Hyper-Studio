@@ -5,7 +5,8 @@
  * model-gate state, connectivity) into one discriminated union so App renders
  * exactly one view per phase. Precedence is explicit and top-to-bottom:
  *
- *   python readiness → dead backend → splash → setup → missing-models → ready
+ *   python readiness → hosted-only workspace (when enabled) → dead backend
+ *   → splash → setup → missing-models → ready
  *
  * Python readiness folds INTO the splash (no separate screen): missing python
  * resolves to the splash phase with pythonRequired, and App feeds the live
@@ -17,6 +18,8 @@ export type BootModelsGate = 'checking' | 'missing' | 'ready'
 
 export interface BootInputs {
   pythonReady: boolean | null
+  /** Permit the shared-workspace shell without the optional local LTX runtime. */
+  allowHostedOnly?: boolean
   isBackendDead: boolean
   backendLoading: boolean
   connected: boolean
@@ -37,6 +40,7 @@ export type BootPhase =
 export function resolveBootPhase(inputs: BootInputs): BootPhase {
   const {
     pythonReady,
+    allowHostedOnly,
     isBackendDead,
     backendLoading,
     connected,
@@ -52,6 +56,13 @@ export function resolveBootPhase(inputs: BootInputs): BootPhase {
   // runtime itself is absent (unreachable in practice — the backend never
   // starts before python is ready). The install window is definitively known.
   if (pythonReady === null) return { kind: 'boot-spinner' }
+  if (pythonReady === false && allowHostedOnly) {
+    // The project workspace, hosted provider broker, and managed workflow engine
+    // do not need the legacy Python backend. The storage chooser runs before this.
+    return setupState === 'loading'
+      ? { kind: 'splash', pythonRequired: false, liveInstall: false, windowModeKnown: false }
+      : { kind: 'ready' }
+  }
   if (pythonReady === false) {
     return { kind: 'splash', pythonRequired: true, liveInstall: true, windowModeKnown: true }
   }

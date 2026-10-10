@@ -1,0 +1,78 @@
+name: Phase 4 platform gate
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - phase4-platform-gate
+
+permissions:
+  contents: read
+
+jobs:
+  package-and-smoke:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-15
+            platform: mac
+          - os: ubuntu-24.04
+            platform: linux
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    env:
+      NPM_CONFIG_CACHE: ${{ github.workspace }}/.local-cache/npm
+      XDG_CACHE_HOME: ${{ github.workspace }}/.local-cache
+      COREPACK_HOME: ${{ github.workspace }}/.local-cache/corepack
+      ELECTRON_CACHE: ${{ github.workspace }}/.local-cache/electron
+      ELECTRON_BUILDER_CACHE: ${{ github.workspace }}/.local-cache/electron-builder
+      UV_CACHE_DIR: ${{ github.workspace }}/.local-cache/uv
+      UV_PYTHON_INSTALL_DIR: ${{ github.workspace }}/.tools/python
+      TMPDIR: ${{ github.workspace }}/.local-tmp
+      TEMP: ${{ github.workspace }}/.local-tmp
+      TMP: ${{ github.workspace }}/.local-tmp
+      HYPER_STUDIO_USER_DATA: ${{ github.workspace }}/.local-cache/hyper-studio-user-data
+      CSC_IDENTITY_AUTO_DISCOVERY: "false"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "26"
+      - name: Prepare repository-local tools and caches
+        shell: bash
+        run: |
+          mkdir -p .local-cache .local-tmp .tools/pnpm10 .tools/pnpm11
+          npm install --prefix .tools/pnpm10 --no-audit --no-fund pnpm@10.30.3
+          npm install --prefix .tools/pnpm11 --no-audit --no-fund pnpm@11.13.1
+      - name: Build pinned workflow canvas
+        shell: bash
+        run: |
+          node .tools/pnpm11/node_modules/pnpm/bin/pnpm.cjs --dir apps/workflow-ui install --frozen-lockfile --store-dir "$GITHUB_WORKSPACE/.local-cache/pnpm11"
+          node .tools/pnpm11/node_modules/pnpm/bin/pnpm.cjs --dir apps/workflow-ui exec vite build --config vite.config.mts
+      - name: Build and test desktop shell
+        shell: bash
+        run: |
+          node .tools/pnpm10/node_modules/pnpm/bin/pnpm.cjs --dir apps/desktop install --frozen-lockfile --store-dir "$GITHUB_WORKSPACE/.local-cache/pnpm10"
+          node .tools/pnpm10/node_modules/pnpm/bin/pnpm.cjs --dir apps/desktop run scripts:test
+          node .tools/pnpm10/node_modules/pnpm/bin/pnpm.cjs --dir apps/desktop exec tsc --noEmit
+          node apps/desktop/scripts/typecheck-internal.mjs
+          node .tools/pnpm10/node_modules/pnpm/bin/pnpm.cjs --dir apps/desktop exec vite build
+          node .tools/pnpm10/node_modules/pnpm/bin/pnpm.cjs --dir apps/desktop exec vite build --config vite.remote.config.ts
+      - name: Prepare pinned workflow runtime tool
+        shell: bash
+        run: node scripts/prepare-workflow-tool.mjs ${{ matrix.platform == 'mac' && 'macos-arm64' || 'linux-x64' }}
+      - name: Package and smoke macOS
+        if: matrix.platform == 'mac'
+        shell: bash
+        run: |
+          node .tools/pnpm10/node_modules/pnpm/bin/pnpm.cjs --dir apps/desktop exec electron-builder --mac --arm64 --dir --publish never
+          export HYPER_STUDIO_SMOKE_EXE="$GITHUB_WORKSPACE/apps/desktop/release/mac-arm64/Hyper-Studio.app/Contents/MacOS/Hyper-Studio"
+          node scripts/smoke-packaged-electron.mjs
+      - name: Package and smoke Linux
+        if: matrix.platform == 'linux'
+        shell: bash
+        run: |
+          node .tools/pnpm10/node_modules/pnpm/bin/pnpm.cjs --dir apps/desktop exec electron-builder --linux --x64 --dir --publish never
+          export HYPER_STUDIO_SMOKE_EXE="$GITHUB_WORKSPACE/apps/desktop/release/linux-unpacked/hyper-studio"
+          xvfb-run -a node scripts/smoke-packaged-electron.mjs

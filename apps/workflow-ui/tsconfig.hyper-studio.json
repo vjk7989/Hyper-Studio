@@ -1,0 +1,22 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "global.d.ts",
+    "src/**/*.d.ts",
+    "src/platform/distribution/hyperStudio.ts",
+    "src/config.ts",
+    "src/main.ts",
+    "src/composables/useBrowserTabTitle.ts",
+    "src/views/GraphView.vue",
+    "src/views/layouts/LayoutDefault.vue",
+    "src/components/TopMenuSection.vue",
+    "src/components/sidebar/SideToolbar.vue",
+    "src/components/topbar/WorkflowTabs.vue",
+    "src/components/actionbar/ComfyActionbar.vue",
+    "src/components/dialog/content/setting/AboutPanel.vue",
+    "src/components/rightSidePanel/errors/MissingNodeCard.vue",
+    "src/workbench/extensions/manager/composables/nodePack/usePackInstall.ts",
+    "src/workbench/extensions/manager/composables/nodePack/usePackInstall.hyperStudio.test.ts",
+    "vite.config.mts"
+  ]
+}

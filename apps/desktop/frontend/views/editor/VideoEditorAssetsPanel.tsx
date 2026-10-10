@@ -860,11 +860,7 @@ export const VideoEditorAssetsPanel = forwardRef<VideoEditorAssetsPanelHandle, V
                         <p className="text-[9px] text-blue-300/70 font-medium">Adjustment Layer</p>
                       </div>
                     ) : (
-                      asset.smallThumbnailPath ? (
-                        <img src={pathToFileUrl(asset.smallThumbnailPath)} alt="" className="w-full aspect-video object-cover" />
-                      ) : (
-                        <div className="w-full aspect-video bg-action" />
-                      )
+                      <img src={pathToFileUrl(asset.smallThumbnailPath ?? asset.path)} alt="" className="w-full aspect-video object-cover" />
                     )}
                     {selectedAssetIds.has(asset.id) && <div className="absolute inset-0 bg-blue-600/25 pointer-events-none z-[1]" />}
                     {!selectedAssetIds.has(asset.id) && (
@@ -1086,11 +1082,7 @@ export const VideoEditorAssetsPanel = forwardRef<VideoEditorAssetsPanelHandle, V
                       ) : asset.type === 'adjustment' ? (
                         <div className="w-full h-full flex items-center justify-center bg-blue-900/30"><Layers className="h-2.5 w-2.5 text-blue-400" /></div>
                       ) : (
-                        asset.smallThumbnailPath ? (
-                          <img src={pathToFileUrl(asset.smallThumbnailPath)} alt="" className="w-full h-full object-cover" />
-                        ) : (
-                          <div className="w-full h-full bg-action" />
-                        )
+                        <img src={pathToFileUrl(asset.smallThumbnailPath ?? asset.path)} alt="" className="w-full h-full object-cover" />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">

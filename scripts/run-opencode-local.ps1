@@ -25,6 +25,11 @@ foreach ($path in $paths.Values) {
     New-Item -ItemType Directory -Force -Path $path | Out-Null
 }
 
+$configFile = Join-Path $paths.config 'opencode.json'
+if (-not (Test-Path -LiteralPath $configFile)) {
+    [System.IO.File]::WriteAllText($configFile, "{`n  `"update`": `"disable`",`n  `"snapshots`": false,`n  `"share`": `"manual`"`n}`n")
+}
+
 # Scope every home, XDG, Windows profile, and temporary path to this process.
 $env:HOME = $paths.home
 $env:USERPROFILE = $paths.home
@@ -40,7 +45,7 @@ $env:TEMP = $paths.temp
 $env:TMP = $paths.temp
 $env:TMPDIR = $paths.temp
 $env:OPENCODE_DB = Join-Path $paths.data 'opencode.db'
-$env:OPENCODE_CONFIG = Join-Path $paths.config 'opencode.json'
+$env:OPENCODE_CONFIG = $configFile
 $env:OPENCODE_DISABLE_AUTOUPDATE = '1'
 $env:npm_config_cache = Join-Path $paths.cache 'npm'
 

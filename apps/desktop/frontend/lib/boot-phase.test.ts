@@ -39,6 +39,32 @@ describe('resolveBootPhase', () => {
     })
   })
 
+  it('opens the hosted workspace without starting a Python download', () => {
+    assert.deepEqual(resolveBootPhase({
+      ...ready,
+      pythonReady: false,
+      allowHostedOnly: true,
+      backendLoading: true,
+      connected: false,
+      isBackendDead: true,
+      setupState: { needsSetup: true },
+    }), { kind: 'ready' })
+  })
+
+  it('waits for the first-run state before opening the hosted workspace', () => {
+    assert.deepEqual(resolveBootPhase({
+      ...ready,
+      pythonReady: false,
+      allowHostedOnly: true,
+      setupState: 'loading',
+    }), {
+      kind: 'splash',
+      pythonRequired: false,
+      liveInstall: false,
+      windowModeKnown: false,
+    })
+  })
+
   it('prefers the splash download payload over a dead backend', () => {
     assert.deepEqual(
       resolveBootPhase({ ...ready, pythonReady: false, isBackendDead: true }),
