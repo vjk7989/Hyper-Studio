@@ -113,7 +113,7 @@ describe('useTemplateFiltering', () => {
       'Portrait',
       'Video'
     ])
-    expect(availableRunsOn.value).toEqual(['ComfyUI', 'External or Remote API'])
+    expect(availableRunsOn.value).toEqual(['Hyper-Studio', 'External or Remote API'])
 
     searchQuery.value = 'enterprise'
     await nextTick()
@@ -269,7 +269,7 @@ describe('useTemplateFiltering', () => {
     expect(defaultRankingStore.computeDefaultScore).not.toHaveBeenCalled()
   })
 
-  it('filters to ComfyUI templates via the Runs On filter', async () => {
+  it('filters to local Hyper-Studio templates via the Runs On filter', async () => {
     const templates = ref<TemplateInfo[]>([
       {
         name: 'open',
@@ -291,7 +291,7 @@ describe('useTemplateFiltering', () => {
 
     const { selectedRunsOn, filteredTemplates } =
       useTemplateFiltering(templates)
-    selectedRunsOn.value = ['ComfyUI']
+    selectedRunsOn.value = ['Hyper-Studio']
     await nextTick()
 
     expect(filteredTemplates.value.map((template) => template.name)).toEqual([

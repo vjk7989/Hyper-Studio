@@ -18,6 +18,7 @@ const env = vi.hoisted(() => {
   const state = {
     isCloud: false,
     isDesktop: false,
+    isEmbedded: false,
     workspaceRole: 'owner' as 'owner' | 'member',
     partnerNodeGovernanceStatus: 'inactive' as
       | 'inactive'
@@ -45,6 +46,12 @@ vi.mock(import('@/platform/distribution/types'), () => ({
   },
   get isDesktop() {
     return env.state.isDesktop
+  }
+}))
+
+vi.mock(import('@/platform/distribution/hyperStudio'), () => ({
+  get isHyperStudioEmbedded() {
+    return env.state.isEmbedded
   }
 }))
 
@@ -124,6 +131,7 @@ describe('useSettingUI', () => {
     Object.assign(env.state, {
       isCloud: false,
       isDesktop: false,
+      isEmbedded: false,
       workspaceRole: 'owner',
       partnerNodeGovernanceStatus: 'inactive',
       partnerNodeGovernanceProviders: []
@@ -176,6 +184,41 @@ describe('useSettingUI', () => {
       'NonExistent.Setting'
     )
     expect(defaultCategory.value).toBe(settingCategories.value[0])
+  })
+
+  it('keeps embedded Settings local even when an account panel is requested directly', () => {
+    env.state.isEmbedded = true
+    useCurrentUser().isLoggedIn = computed(() => true)
+    vi.mocked(useFeatureFlags().flags).userSecretsEnabled = true
+
+    const { defaultCategory, findPanelByKey, navGroups } = useSettingUI('user')
+    const navKeys = navGroups.value.flatMap((group) =>
+      group.items.map((item) => item.id)
+    )
+
+    expect(navKeys).not.toContain('user')
+    expect(navGroups.value.map((group) => group.title)).not.toContain(
+      'Workspace'
+    )
+    for (const key of [
+      'user',
+      'credits',
+      'workspace',
+      'workspace-members',
+      'workspace-allowlist',
+      'secrets'
+    ]) {
+      expect(findPanelByKey(key)).toBeNull()
+      expect(navKeys).not.toContain(key)
+    }
+    expect(defaultCategory.value.key).not.toBe('user')
+    expect(useSettingUI('credits').defaultCategory.value.key).not.toBe('credits')
+    expect(useSettingUI('workspace').defaultCategory.value.key).not.toBe(
+      'workspace'
+    )
+    expect(navKeys).toContain('keybinding')
+    expect(navKeys).toContain('extension')
+    expect(navKeys).toContain('about')
   })
 
   it.for([false, true])(

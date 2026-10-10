@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n'
 import { useCurrentUser } from '@/composables/auth/useCurrentUser'
 import { useFeatureFlags } from '@/composables/useFeatureFlags'
 import { useVueFeatureFlags } from '@/composables/useVueFeatureFlags'
+import { isHyperStudioEmbedded } from '@/platform/distribution/hyperStudio'
 import { isCloud, isDesktop } from '@/platform/distribution/types'
 import {
   getSettingInfo,
@@ -183,7 +184,9 @@ export function useSettingUI(
     props: { section: 'allowlist' }
   }
 
-  const shouldShowWorkspacePanel = computed(() => isLoggedIn.value)
+  const shouldShowWorkspacePanel = computed(
+    () => !isHyperStudioEmbedded && isLoggedIn.value
+  )
   const shouldShowWorkspaceAllowlist = computed(
     () =>
       isCloud &&
@@ -214,7 +217,7 @@ export function useSettingUI(
   }
 
   const shouldShowSecretsPanel = computed(
-    () => flags.userSecretsEnabled && isLoggedIn.value
+    () => !isHyperStudioEmbedded && flags.userSecretsEnabled && isLoggedIn.value
   )
 
   const keybindingPanel: SettingPanelItem = {
@@ -252,8 +255,7 @@ export function useSettingUI(
 
   const panels = computed<SettingPanelItem[]>(() => [
     aboutPanel,
-    creditsPanel,
-    userPanel,
+    ...(!isHyperStudioEmbedded ? [creditsPanel, userPanel] : []),
     ...visibleWorkspacePanels.value,
     keybindingPanel,
     extensionPanel,
@@ -309,7 +311,7 @@ export function useSettingUI(
       key: 'general',
       label: 'General',
       children: [
-        translateCategory(userPanel.node),
+        ...(!isHyperStudioEmbedded ? [translateCategory(userPanel.node)] : []),
         ...coreSettingCategories.value.slice(0, 1).map(translateCategory),
         ...(shouldShowSecretsPanel.value
           ? [translateCategory(secretsPanel.node)]

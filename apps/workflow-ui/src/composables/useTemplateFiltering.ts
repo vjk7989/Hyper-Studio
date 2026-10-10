@@ -141,7 +141,7 @@ export function useTemplateFiltering<T extends TemplateInfo>(
   })
 
   const availableRunsOn = computed(() => {
-    return ['ComfyUI', 'External or Remote API']
+    return ['Hyper-Studio', 'External or Remote API']
   })
 
   // Compute which selected filters are actually applicable to the current scope
@@ -242,15 +242,15 @@ export function useTemplateFiltering<T extends TemplateInfo>(
     return filteredByUseCases.value.filter((template) => {
       // Use openSource field to determine where template runs
       // openSource === false -> External/Remote API
-      // openSource !== false -> ComfyUI (includes true and undefined)
+      // openSource !== false -> local Hyper-Studio (includes true and undefined)
       const isExternalAPI = template.openSource === false
-      const isComfyUI = template.openSource !== false
+      const isLocal = template.openSource !== false
 
       return selectedRunsOn.value.some((runsOn) => {
         if (runsOn === 'External or Remote API') {
           return isExternalAPI
-        } else if (runsOn === 'ComfyUI') {
-          return isComfyUI
+        } else if (runsOn === 'Hyper-Studio') {
+          return isLocal
         }
         return false
       })
