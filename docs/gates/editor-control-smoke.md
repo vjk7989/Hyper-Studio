@@ -1,5 +1,11 @@
 # Installed Editor control smoke — Windows
 
+## Rebuilt installed build verification
+
+The tracked [Editor control smoke](../../scripts/smoke-editor-controls.mjs) passed **14/14 asserted steps** against `.local-tmp/installed-project-controls-final4/Hyper-Studio.exe`. It created an isolated Editor project, verified `Timeline 2` for the New Timeline fix and `Timeline 2 Copy` for Duplicate, added video/audio/subtitle tracks, imported SRT/PNG/WAV fixtures, reopened and verified media and timeline persistence, added a text overlay and observed Undo/Redo (`1 → 0 → 1` clips), toggled zoom/snapping/Properties/Clip Viewer, observed playback timecode `00:00:00:00 → 00:00:00:14`, and opened the Export settings dialog. [Results and screenshot](../../.local-tmp/editor-controls-1791672513275/) and [run log](../../.local-tmp/smoke-editor-controls-final4-rerun3.log) are repository-local. The dialog was not submitted; no render, XML export, or model-backed operation was attempted.
+
+The first two final-build attempts exposed harness assumptions: waiting for project autosave before Undo let history availability change, and the displayed zoom minimum rose from 100% to 102%; the Export dialog's uppercase heading was visual styling rather than exact DOM text. The final assertions use visible clip counts immediately for Undo/Redo, allow the zoom control's dynamic minimum, and check stable dialog content. These are harness corrections; no new Editor source fix was made. The smoke does not establish whether Undo remains available after a longer idle period.
+
 **Build:** `.local-tmp/installed-project-controls-final/Hyper-Studio.exe` (the pre-fix installed binary).  **Scope:** Editor mode → Video Editor, in an isolated repository-local user profile and project.  The run used a 70-byte PNG, a 1-second generated WAV, and a one-cue SRT. No model packs, hosted providers, or live keys were used. This is a bounded control smoke, not a phase-gate pass.
 
 Evidence: [main results](../../.local-tmp/editor-control-smoke-1791671433560/results.json), [main screenshots and UI snapshots](../../.local-tmp/editor-control-smoke-1791671433560/), [reopen follow-up results](../../.local-tmp/editor-control-smoke-1791671433560/followup/results.json), and the [persisted Editor model](../../.local-tmp/editor-control-smoke-1791671433560/project/.hyper-studio/editor.json). The scripts and Electron logs remain under `.local-tmp`; fixture files remain under that run's `fixture` directory.
@@ -29,7 +35,7 @@ Evidence: [main results](../../.local-tmp/editor-control-smoke-1791671433560/res
 
 `createTimeline` called `createDefaultTimeline()` without a name, so every new timeline received the constructor default `Timeline 1`. It now picks the first unused `Timeline N` name from the current Editor model. A focused regression test covers existing `Timeline 1` and `Timeline 2`, checks the next timeline is `Timeline 3`, and checks the existing timeline objects and active ID transition. The test passes with Node's TypeScript stripper and the Editor-local resolution loader. `pnpm run typecheck:ts` also passes.
 
-This changes only names assigned to newly created timelines. It does not rename or migrate existing projects, and explicit timeline names continue through the existing path. The installed binary used above predates this source fix; a rebuilt installer must be used to verify the fixed menu behavior in the app.
+This changes only names assigned to newly created timelines. It does not rename or migrate existing projects, and explicit timeline names continue through the existing path. The rebuilt final4 installed build verified the fixed menu behavior as described above.
 
 ## Limits
 
