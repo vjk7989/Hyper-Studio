@@ -437,7 +437,7 @@ export function ProjectsPage() {
 
   return (
     <>
-      <div className="pb-8">
+      <div className="pb-8 text-base">
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3"><Text as="p" variant="body" size="sm" className="text-fg-secondary">Shared storage: {storageRoot}</Text><button type="button" disabled={isOpeningFolder} onClick={() => { void handleOpenExistingFolder(); }} className="rounded-lg border border-separator px-3 py-2 text-fg-primary hover:bg-action"><FolderOpen className="inline h-4 w-4 mr-2" />Open project folder</button></div>
         {createError && !isCreating && <Text as="p" variant="body" size="sm" className="mb-4 text-fg-danger">{createError}</Text>}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -456,8 +456,8 @@ export function ProjectsPage() {
       </div>
 
       {removalProject && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-surface-overlay p-4">
-          <div ref={removalDialogRef} role="dialog" aria-modal="true" aria-labelledby="project-remove-title" aria-busy={isRemoving} data-testid="project-remove-dialog" className="w-full max-w-lg rounded-[var(--radius-lg)] border border-separator bg-surface-primary p-6 shadow-xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-surface-overlay p-4 text-base">
+          <div ref={removalDialogRef} role="dialog" aria-modal="true" aria-labelledby="project-remove-title" aria-busy={isRemoving} data-testid="project-remove-dialog" className="max-h-[calc(100dvh-2rem)] w-full max-w-lg overflow-y-auto rounded-[var(--radius-lg)] border border-separator bg-surface-primary p-6 shadow-xl">
             <Text as="h2" id="project-remove-title" variant="heading" size="lg">Remove project</Text>
             <Text as="p" variant="body" size="md" className="mt-3 text-fg-secondary">Choose what happens to <strong className="text-fg-primary">{removalProject.name}</strong>.</Text>
             <Text as="p" variant="body" size="sm" className="mt-2 break-all rounded-md bg-surface-secondary p-3 text-fg-secondary">{removalProject.projectFolder ?? 'Legacy project — no managed folder'}</Text>
@@ -481,13 +481,13 @@ export function ProjectsPage() {
       )}
 
       {isCreating && (
-        <div className="fixed inset-0 bg-surface-overlay flex items-center justify-center z-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-surface-overlay p-4 text-base">
           <form
             role="dialog"
             aria-modal="true"
             aria-labelledby="project-create-title"
             aria-busy={isSubmitting}
-            className="bg-surface-primary rounded-[var(--radius-lg)] p-6 w-full max-w-md border border-separator"
+            className="max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto rounded-[var(--radius-lg)] border border-separator bg-surface-primary p-6"
             onKeyDown={event => handleFormDialogKeyDown(event, closeCreateDialog, isSubmitting)}
             onSubmit={(e) => {
               e.preventDefault();
@@ -509,18 +509,18 @@ export function ProjectsPage() {
                 void window.electronAPI.selectProjectFolder().then(folder => {
                   if (folder) { setProjectFolder(folder); setCreateError(null); }
                 }).catch(() => setCreateError('Could not open the folder picker.'));
-              }} className="w-full rounded-lg border border-separator px-3 py-2 text-left text-fg-primary hover:bg-action">
-                <Folder className="inline h-4 w-4 mr-2" />
-                {projectFolder ?? 'Choose a folder'}
+              }} title={projectFolder ?? 'Choose a folder'} className="flex w-full min-w-0 items-center gap-2 rounded-lg border border-separator px-3 py-2 text-left text-sm text-fg-primary hover:bg-action">
+                <Folder className="h-4 w-4 shrink-0" />
+                <span className="min-w-0 truncate">{projectFolder ?? 'Choose a folder'}</span>
               </button>
             </div>
             <div className="mt-5">
               <Text as="p" variant="label" size="md" className="mb-2">Start in</Text>
               <div className="grid grid-cols-2 gap-2">
-                <button type="button" aria-pressed={workspaceMode === 'editor'} onClick={() => setWorkspaceMode('editor')} className={`rounded-lg border p-3 text-left ${workspaceMode === 'editor' ? 'border-fg-primary bg-action' : 'border-separator'}`}>
+                <button type="button" aria-pressed={workspaceMode === 'editor'} onClick={() => setWorkspaceMode('editor')} className={`rounded-lg border p-3 text-left text-sm leading-5 ${workspaceMode === 'editor' ? 'border-fg-primary bg-action' : 'border-separator'}`}>
                   <Film className="mb-2 h-5 w-5" />Editor mode
                 </button>
-                <button type="button" aria-pressed={workspaceMode === 'workflow'} onClick={() => setWorkspaceMode('workflow')} className={`rounded-lg border p-3 text-left ${workspaceMode === 'workflow' ? 'border-fg-primary bg-action' : 'border-separator'}`}>
+                <button type="button" aria-pressed={workspaceMode === 'workflow'} onClick={() => setWorkspaceMode('workflow')} className={`rounded-lg border p-3 text-left text-sm leading-5 ${workspaceMode === 'workflow' ? 'border-fg-primary bg-action' : 'border-separator'}`}>
                   <Workflow className="mb-2 h-5 w-5" />Workflow mode
                 </button>
               </div>
@@ -549,13 +549,13 @@ export function ProjectsPage() {
       )}
 
       {renamingId && (
-        <div className="fixed inset-0 bg-surface-overlay flex items-center justify-center z-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-surface-overlay p-4 text-base">
           <form
             role="dialog"
             aria-modal="true"
             aria-labelledby="project-rename-title"
             aria-busy={isRenaming}
-            className="bg-surface-primary rounded-[var(--radius-lg)] p-6 w-full max-w-md border border-separator"
+            className="max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto rounded-[var(--radius-lg)] border border-separator bg-surface-primary p-6"
             onKeyDown={event => handleFormDialogKeyDown(event, closeRenameDialog, isRenaming)}
             onSubmit={(e) => {
               e.preventDefault();

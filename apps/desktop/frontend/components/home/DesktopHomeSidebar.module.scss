@@ -274,6 +274,7 @@
 .recentProjectCreate,
 .recentProjectMenu button {
   color: var(--semantic-fg-primary);
+  font-size: 14px;
   border-radius: var(--radius-sm);
   -webkit-app-region: no-drag;
   &:focus-visible { outline: 2px solid var(--semantic-fg-primary); outline-offset: 2px; }
