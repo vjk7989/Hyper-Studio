@@ -91,6 +91,7 @@ jobs:
             .local-tmp/packaged-electron-smoke/linux/electron.log
             .local-tmp/packaged-electron-smoke/linux/electron-stdout.log
             .local-tmp/packaged-electron-smoke/linux/electron-stderr.log
+            .local-tmp/packaged-electron-smoke/linux/version-probe.log
             .local-tmp/packaged-electron-smoke/linux/startup-diagnostics.log
             .local-tmp/packaged-electron-smoke/user-data/logs/session_*.log
             .local-tmp/packaged-electron-smoke/linux/user-data/logs/session_*.log
