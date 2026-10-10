@@ -80,10 +80,7 @@ jobs:
         if: matrix.platform == 'linux'
         shell: bash
         run: |
-          node scripts/diagnostics/mark-linux-entry.mjs apps/desktop/dist-electron/main.js
           node .tools/pnpm10/node_modules/pnpm/bin/pnpm.cjs --dir apps/desktop exec electron-builder --linux --x64 --dir --publish never
-          cc -shared -fPIC -O2 -o "$GITHUB_WORKSPACE/.local-tmp/disable-core.so" scripts/diagnostics/disable-core.c
-          export HYPER_STUDIO_DIAGNOSTIC_PRELOAD="$GITHUB_WORKSPACE/.local-tmp/disable-core.so"
           export HYPER_STUDIO_SMOKE_EXE="$GITHUB_WORKSPACE/apps/desktop/release/linux-unpacked/hyper-studio"
           xvfb-run -a node scripts/smoke-packaged-linux-cdp.mjs
       - name: Preserve packaged smoke diagnostics
@@ -98,13 +95,6 @@ jobs:
             .local-tmp/packaged-electron-smoke/linux/electron.log
             .local-tmp/packaged-electron-smoke/linux/electron-stdout.log
             .local-tmp/packaged-electron-smoke/linux/electron-stderr.log
-            .local-tmp/packaged-electron-smoke/linux/packaged-version-probe.log
-            .local-tmp/packaged-electron-smoke/linux/base-electron-version-probe.log
-            .local-tmp/packaged-electron-smoke/linux/raw-electron-version-probe.log
-            .local-tmp/packaged-electron-smoke/linux/raw-with-app-version-probe.log
-            .local-tmp/packaged-electron-smoke/linux/strace-version-stdout.log
-            .local-tmp/packaged-electron-smoke/linux/strace-version.*
-            .local-tmp/packaged-electron-smoke/linux/startup-diagnostics.log
             .local-tmp/packaged-electron-smoke/user-data/logs/session_*.log
             .local-tmp/hs-linux/ud/logs/session_*.log
             .local-tmp/packaged-electron-smoke/shared-storage/caches/workflow/diagnostics/engine-startup.log
