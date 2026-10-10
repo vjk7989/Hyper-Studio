@@ -15,7 +15,7 @@ if (-not (Test-Path -LiteralPath $vite)) {
 $env:PATH = (Split-Path -Parent $node) + [IO.Path]::PathSeparator + $env:PATH
 $env:FRONTEND_COMMIT_HASH = '3ac95778a0be903c9c9ed7682c811ecd6da02f0e'
 $env:VITE_HYPER_STUDIO_EMBEDDED = 'true'
-$env:DISTRIBUTION = 'localhost'
+$env:DISTRIBUTION = 'desktop'
 $env:SENTRY_DSN = ''
 
 Push-Location $workflowRoot

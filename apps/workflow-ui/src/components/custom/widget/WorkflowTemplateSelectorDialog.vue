@@ -671,6 +671,9 @@ watch(sortSelection, () => coordinateNavAndSort('sort'))
 const toSelectOptions = (values: string[]): SelectOption[] =>
   values.map((value) => ({ name: value, value }))
 
+const runsOnLabel = (value: string): string =>
+  value === 'ComfyUI' ? 'Hyper-Studio' : value
+
 // active* hides out-of-scope model/use-case selections; availableRunsOn is
 // static so runs-on selections are always in scope and need no filtering.
 const selectedModelObjects = computed({
@@ -688,7 +691,10 @@ const selectedUseCaseObjects = computed({
 })
 
 const selectedRunsOnObjects = computed({
-  get: () => toSelectOptions(selectedRunsOn.value),
+  get: () => selectedRunsOn.value.map((value) => ({
+    name: runsOnLabel(value),
+    value
+  })),
   set: (value: SelectOption[]) => {
     selectedRunsOn.value = value.map((item) => item.value)
   }
@@ -736,7 +742,7 @@ const useCaseOptions = computed(() =>
 
 const runsOnOptions = computed(() =>
   availableRunsOn.value.map((runsOn) => ({
-    name: runsOn,
+    name: runsOnLabel(runsOn),
     value: runsOn
   }))
 )
