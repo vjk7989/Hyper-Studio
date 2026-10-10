@@ -12,6 +12,13 @@ const gateState = vi.hoisted(() => ({
   gate: { value: 'none' },
   partnerNodes: { value: [] as PartnerNode[] }
 }))
+const embeddedState = vi.hoisted(() => ({ enabled: false }))
+
+vi.mock('@/platform/distribution/hyperStudio', () => ({
+  get isHyperStudioEmbedded() {
+    return embeddedState.enabled
+  }
+}))
 
 vi.mock<unknown>(
   import('@/composables/billing/usePartnerNodesRunGate'),
@@ -65,6 +72,15 @@ describe('LocalRunButtonWrapper', () => {
   beforeEach(() => {
     gateState.gate.value = 'none'
     gateState.partnerNodes.value = []
+    embeddedState.enabled = false
+  })
+
+  it('uses the queue button in the embedded app even when upstream would require sign-in', () => {
+    embeddedState.enabled = true
+    gateState.gate.value = 'sign-in'
+    renderWrapper()
+    expect(screen.getByTestId('queue-button')).toBeInTheDocument()
+    expect(screen.queryByTestId('partner-sign-in-to-run-button')).not.toBeInTheDocument()
   })
 
   it('renders the normal queue button when not gated', () => {

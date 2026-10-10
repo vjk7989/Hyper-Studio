@@ -93,6 +93,12 @@ vi.mock<unknown>(import('@/scripts/api'), () => ({
 }))
 
 const mockDistributionState = vi.hoisted(() => ({ isCloud: false }))
+const embeddedState = vi.hoisted(() => ({ enabled: false }))
+vi.mock('@/platform/distribution/hyperStudio', () => ({
+  get isHyperStudioEmbedded() {
+    return embeddedState.enabled
+  }
+}))
 vi.mock(import('@/platform/distribution/types'), () => ({
   get isCloud() {
     return mockDistributionState.isCloud
@@ -230,6 +236,7 @@ describe('useCoreCommands', () => {
     >({ changeTracker: mockChangeTracker })
     useCanvasStore().canvas = app.canvas
     mockDistributionState.isCloud = false
+    embeddedState.enabled = false
     mockBillingState.canAccessSubscriptionFeatures = true
     mockBillingState.subscriptionTier = null
     vi.mocked(app.refreshComboInNodes).mockResolvedValue(undefined)
@@ -243,6 +250,13 @@ describe('useCoreCommands', () => {
     useSettingStore().settingValues['Comfy.ConfirmClear'] = false
 
     global.confirm = vi.fn().mockReturnValue(true)
+  })
+
+  it('does not register account sign-in or sign-out commands in the embedded app', () => {
+    embeddedState.enabled = true
+    const ids = useCoreCommands().map((command) => command.id)
+    expect(ids).not.toContain('Comfy.User.OpenSignInDialog')
+    expect(ids).not.toContain('Comfy.User.SignOut')
   })
 
   describe('ClearWorkflow command', () => {

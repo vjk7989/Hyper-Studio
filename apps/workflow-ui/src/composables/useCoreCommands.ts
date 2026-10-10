@@ -24,6 +24,7 @@ import { useBillingContext } from '@/composables/billing/useBillingContext'
 import { openModelLibraryBrowser } from '@/platform/assets/composables/openModelLibraryBrowser'
 import { isSalesManagedTier } from '@/platform/cloud/subscription/constants/tierPricing'
 import { isCloud } from '@/platform/distribution/types'
+import { isHyperStudioEmbedded } from '@/platform/distribution/hyperStudio'
 import { useMissingModelStore } from '@/platform/missingModel/missingModelStore'
 import { useSettingStore } from '@/platform/settings/settingStore'
 import { buildSupportUrl } from '@/platform/support/config'
@@ -1344,5 +1345,12 @@ export function useCoreCommands(): ComfyCommand[] {
     }
   ]
 
-  return commands.map((command) => ({ ...command, source: 'System' }))
+  return commands
+    .filter(
+      (command) =>
+        !isHyperStudioEmbedded ||
+        (command.id !== 'Comfy.User.OpenSignInDialog' &&
+          command.id !== 'Comfy.User.SignOut')
+    )
+    .map((command) => ({ ...command, source: 'System' }))
 }

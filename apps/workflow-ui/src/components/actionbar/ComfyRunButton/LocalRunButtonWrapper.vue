@@ -1,6 +1,6 @@
 <template>
   <div ref="root" class="contents">
-    <ComfyQueueButton v-if="gate === 'none'" />
+    <ComfyQueueButton v-if="isHyperStudioEmbedded || gate === 'none'" />
     <Button
       v-else
       v-tooltip.bottom="{
@@ -27,6 +27,7 @@ import { useI18n } from 'vue-i18n'
 import ComfyQueueButton from '@/components/actionbar/ComfyRunButton/ComfyQueueButton.vue'
 import Button from '@/components/ui/button/Button.vue'
 import { usePartnerNodesRunGate } from '@/composables/billing/usePartnerNodesRunGate'
+import { isHyperStudioEmbedded } from '@/platform/distribution/hyperStudio'
 import { useDialogService } from '@/services/dialogService'
 
 const { t } = useI18n()
