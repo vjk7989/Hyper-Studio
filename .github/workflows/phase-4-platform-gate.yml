@@ -80,6 +80,7 @@ jobs:
         if: matrix.platform == 'linux'
         shell: bash
         run: |
+          node scripts/diagnostics/mark-linux-entry.mjs apps/desktop/dist-electron/main.js
           node .tools/pnpm10/node_modules/pnpm/bin/pnpm.cjs --dir apps/desktop exec electron-builder --linux --x64 --dir --publish never
           cc -shared -fPIC -O2 -o "$GITHUB_WORKSPACE/.local-tmp/disable-core.so" scripts/diagnostics/disable-core.c
           export HYPER_STUDIO_DIAGNOSTIC_PRELOAD="$GITHUB_WORKSPACE/.local-tmp/disable-core.so"
