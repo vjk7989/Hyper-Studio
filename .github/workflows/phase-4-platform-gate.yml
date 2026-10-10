@@ -85,8 +85,8 @@ jobs:
         with:
           name: phase4-smoke-${{ matrix.platform }}
           path: |
-            .local-tmp/packaged-electron-smoke/**/*.png
             .local-tmp/packaged-electron-smoke/*.png
+            .local-tmp/packaged-electron-smoke/linux/*.png
             .local-tmp/packaged-electron-smoke/electron.log
             .local-tmp/packaged-electron-smoke/linux/electron.log
             .local-tmp/packaged-electron-smoke/linux/electron-stdout.log
@@ -94,6 +94,8 @@ jobs:
             .local-tmp/packaged-electron-smoke/linux/startup-diagnostics.log
             .local-tmp/packaged-electron-smoke/user-data/logs/session_*.log
             .local-tmp/packaged-electron-smoke/linux/user-data/logs/session_*.log
-            .local-tmp/packaged-electron-smoke/shared-storage/caches/workflow/engine-startup.log
-            .local-tmp/packaged-electron-smoke/linux/shared-storage/caches/workflow/engine-startup.log
+            .local-tmp/packaged-electron-smoke/shared-storage/caches/workflow/diagnostics/engine-startup.log
+            .local-tmp/packaged-electron-smoke/shared-storage/caches/workflow/*/install.log
+            .local-tmp/packaged-electron-smoke/linux/shared-storage/caches/workflow/diagnostics/engine-startup.log
+            .local-tmp/packaged-electron-smoke/linux/shared-storage/caches/workflow/*/install.log
           if-no-files-found: ignore

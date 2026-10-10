@@ -56,7 +56,8 @@ try {
   await window.getByText(projectFolder, { exact: true }).waitFor({ state: 'visible', timeout: 10000 })
   await window.getByPlaceholder('Project name').press('Enter')
   try {
-    await window.locator('iframe[title="Hyper-Studio workflow canvas"]').waitFor({ state: 'visible', timeout: 45000 })
+    // First use installs the managed workflow Python runtime into shared storage.
+    await window.locator('iframe[title="Hyper-Studio workflow canvas"]').waitFor({ state: 'visible', timeout: 180000 })
     await window.frameLocator('iframe[title="Hyper-Studio workflow canvas"]').locator('#graph-canvas').waitFor({ state: 'visible', timeout: 45000 })
   } catch {
     await window.screenshot({ path: path.join(home, 'workflow-start-error.png') })
