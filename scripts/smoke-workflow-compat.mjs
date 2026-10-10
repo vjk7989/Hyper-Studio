@@ -45,7 +45,13 @@ try {
   await window.getByText('Choose a folder', { exact: true }).click()
   await window.getByPlaceholder('Project name').press('Enter')
   const iframe = window.locator('iframe[title="Hyper-Studio workflow canvas"]')
-  await iframe.waitFor({ state: 'visible', timeout: 45000 })
+  try {
+    await iframe.waitFor({ state: 'visible', timeout: 45000 })
+  } catch (error) {
+    await window.screenshot({ path: path.join(home, 'canvas-startup-failed.png') })
+    const state = await window.locator('body').innerText().catch(() => '')
+    throw new Error(`Canvas did not appear: ${String(error)}; visible UI: ${state.slice(0, 1200)}`)
+  }
   const canvas = window.frameLocator('iframe[title="Hyper-Studio workflow canvas"]')
   await canvas.locator('#graph-canvas').waitFor({ state: 'visible', timeout: 45000 })
   await window.waitForTimeout(1500)
@@ -87,21 +93,50 @@ try {
     properties: { cnr_id: 'comfyui-impact-pack' }, widgets_values: [42],
   })
   fixture.last_node_id = Math.max(Number(fixture.last_node_id) || 0, unknownId)
-  const source = path.join(home, 'third-party-workflow.json')
-  fs.writeFileSync(source, JSON.stringify(fixture))
-  await app.evaluate(({ dialog }, sourcePath) => {
-    dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [sourcePath] })
-  }, source)
-  await window.getByRole('button', { name: 'Import', exact: true }).click()
-  const imported = path.join(projectFolder, 'workflows', path.basename(source))
-  for (let attempt = 0; attempt < 40 && !fs.existsSync(imported); attempt++) await new Promise(resolve => setTimeout(resolve, 250))
-  if (!fs.existsSync(imported) || !fs.readFileSync(imported).equals(fs.readFileSync(source))) throw new Error('Imported workflow JSON was not preserved byte for byte')
-  await window.waitForTimeout(1500)
-  const loaded = await snapshot()
-  if (!loaded.nodes.some(node => node.id === knownId)) throw new Error(`Imported workflow lost known node ID ${knownId}`)
-  if (!loaded.nodes.some(node => node.id === unknownId && node.type === unknownType && node.properties?.cnr_id === 'comfyui-impact-pack')) {
-    throw new Error(`Imported workflow lost third-party node ${unknownId}/${unknownType} or its package ID`)
+  const linked = structuredClone(fixture)
+  const linkId = 811
+  linked.nodes.find(node => node.id === knownId).outputs[0].links = [linkId]
+  linked.nodes.push({
+    id: 38, type: 'SaveImage', pos: [700, 100], size: [250, 90],
+    flags: {}, order: linked.nodes.length, mode: 0,
+    inputs: [{ name: 'images', type: 'IMAGE', link: linkId }], outputs: [],
+    properties: { 'Node name for S&R': 'SaveImage' }, widgets_values: ['Hyper-Studio'],
+  })
+  linked.links = [...(Array.isArray(linked.links) ? linked.links : []), [linkId, knownId, 0, 38, 0, 'IMAGE']]
+  linked.last_node_id = Math.max(Number(linked.last_node_id) || 0, 38)
+  linked.last_link_id = Math.max(Number(linked.last_link_id) || 0, linkId)
+  const grouped = structuredClone(linked)
+  grouped.groups = [...(Array.isArray(grouped.groups) ? grouped.groups : []), {
+    title: 'Imported scene', bounding: [60, 60, 950, 460], color: '#444444', font_size: 24,
+  }]
+
+  const importAndCheck = async (name, workflow, expectLink = false) => {
+    const source = path.join(home, `${name}.json`)
+    fs.writeFileSync(source, JSON.stringify(workflow))
+    await app.evaluate(({ dialog }, sourcePath) => {
+      dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [sourcePath] })
+    }, source)
+    await window.getByRole('button', { name: 'Import', exact: true }).click()
+    const imported = path.join(projectFolder, 'workflows', path.basename(source))
+    for (let attempt = 0; attempt < 40 && !fs.existsSync(imported); attempt++) await new Promise(resolve => setTimeout(resolve, 250))
+    if (!fs.existsSync(imported) || !fs.readFileSync(imported).equals(fs.readFileSync(source))) {
+      throw new Error(`${name}: imported workflow JSON was not preserved byte for byte`)
+    }
+    await window.waitForTimeout(1500)
+    const loaded = await snapshot()
+    if (!loaded.nodes.some(node => node.id === knownId)) throw new Error(`${name}: lost known node ID ${knownId}`)
+    if (!loaded.nodes.some(node => node.id === unknownId && node.type === unknownType && node.properties?.cnr_id === 'comfyui-impact-pack')) {
+      throw new Error(`${name}: lost third-party node ${unknownId}/${unknownType} or its package ID`)
+    }
+    if (expectLink && !loaded.links.some(link => link[0] === linkId && link[1] === knownId && link[3] === 38)) {
+      throw new Error(`${name}: lost link ${linkId} between ${knownId} and 38`)
+    }
+    return loaded
   }
+  await importAndCheck('missing-third-party-node', fixture)
+  await importAndCheck('linked-editor-nodes', linked, true)
+  await importAndCheck('grouped-third-party-node', grouped, true)
+  process.stdout.write('PASS: three imported workflow variants preserved JSON, core/third-party node IDs, and links\n')
   const reviewText = await canvas.locator('body').innerText()
   const reviewEvidence = reviewText.split('\n').filter(line => /missing|HyperStudioThirdParty|install/i.test(line)).slice(0, 12)
   if (!reviewText.includes(`Missing node: ${unknownType}`) ||
@@ -112,6 +147,13 @@ try {
   const guidanceVisible = await canvas.getByText(`Missing node: ${unknownType}`, { exact: true }).first().isVisible()
   const systemStats = await (await fetch(new URL('system_stats', engine.url))).json()
   const managerEnabled = systemStats?.system?.argv?.includes('--enable-manager') === true
+  const [managerVersion, installedPacks] = await Promise.all([
+    fetch(new URL('v2/manager/version', engine.url)),
+    fetch(new URL('v2/customnode/installed', engine.url)),
+  ])
+  if (!managerVersion.ok || !installedPacks.ok) {
+    throw new Error(`Managed engine did not expose manager APIs: enabled=${managerEnabled}, version=${managerVersion.status}, installed=${installedPacks.status}`)
+  }
   const templateGallery = canvas.locator('[data-dialog-key="global-workflow-template-selector"]')
   if (await templateGallery.isVisible()) {
     await templateGallery.getByRole('button', { name: /close dialog/i }).click()
@@ -145,6 +187,26 @@ try {
   }
   if (installRequests.length) throw new Error(`Install request was sent before review confirmation: ${installRequests.join(', ')}`)
   process.stdout.write('PASS: install action opens explicit third-party source review before any package download\n')
+  let reviewedTask = null
+  await window.route('**/v2/manager/queue/task', async route => {
+    reviewedTask = JSON.parse(route.request().postData() || '{}')
+    // Stop before the manager receives an install task. This tests the reviewed
+    // UI-to-manager contract without downloading or executing third-party code.
+    await route.fulfill({ status: 200, contentType: 'text/plain', body: 'queued-for-smoke' })
+  })
+  const reviewDialog = canvas.getByRole('dialog').last()
+  const reviewButtons = await reviewDialog.locator('button').evaluateAll(buttons => buttons.map(button => button.textContent?.trim()))
+  process.stdout.write(`REVIEW_BUTTONS ${JSON.stringify(reviewButtons)}\n`)
+  await reviewDialog.locator('button').last().click({ timeout: 5000 })
+  for (let attempt = 0; attempt < 40 && !reviewedTask; attempt++) await new Promise(resolve => setTimeout(resolve, 250))
+  if (reviewedTask?.kind !== 'install' || reviewedTask.params?.id !== 'comfyui-impact-pack' ||
+      reviewedTask.params?.repository !== 'https://github.com/ltdrdata/ComfyUI-Impact-Pack') {
+    throw new Error(`Reviewed action did not submit the expected manager install task: ${JSON.stringify(reviewedTask)}`)
+  }
+  if (JSON.stringify(fs.readdirSync(extensions).sort()) !== JSON.stringify(extensionsBefore)) {
+    throw new Error('Node pack files changed during the intercepted install request')
+  }
+  process.stdout.write('PASS: managed engine APIs respond; confirmed review queues the correct install task (intercepted before download)\n')
 } finally {
   await app.close()
 }
