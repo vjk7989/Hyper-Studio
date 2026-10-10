@@ -207,6 +207,39 @@ try {
     throw new Error('Node pack files changed during the intercepted install request')
   }
   process.stdout.write('PASS: managed engine APIs respond; confirmed review queues the correct install task (intercepted before download)\n')
+
+  const nodeCatalog = await (await fetch(new URL('object_info', engine.url))).json()
+  if (nodeCatalog.ComfyCloudFlux2TextToImageNode || !nodeCatalog.HyperStudioGenerateVideo) {
+    throw new Error('Managed engine did not replace upstream cloud nodes with the shared-provider node')
+  }
+  const removedCloudId = 91001
+  const removedCloudType = 'ComfyCloudFlux2TextToImageNode'
+  const cloudFixture = structuredClone(original)
+  cloudFixture.nodes.push({
+    id: removedCloudId, type: removedCloudType, pos: [420, 420], size: [240, 80],
+    flags: {}, order: cloudFixture.nodes.length, mode: 0, inputs: [], outputs: [],
+    properties: { 'Node name for S&R': removedCloudType }, widgets_values: [],
+  })
+  cloudFixture.last_node_id = Math.max(Number(cloudFixture.last_node_id) || 0, removedCloudId)
+  const cloudSource = path.join(home, 'removed-cloud-node.json')
+  fs.writeFileSync(cloudSource, JSON.stringify(cloudFixture))
+  await app.evaluate(({ dialog }, sourcePath) => {
+    dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [sourcePath] })
+  }, cloudSource)
+  await window.getByRole('button', { name: 'Import', exact: true }).click()
+  const cloudImported = path.join(projectFolder, 'workflows', 'removed-cloud-node.json')
+  for (let attempt = 0; attempt < 40 && !fs.existsSync(cloudImported); attempt++) await new Promise(resolve => setTimeout(resolve, 250))
+  if (!fs.existsSync(cloudImported) || !fs.readFileSync(cloudImported).equals(fs.readFileSync(cloudSource))) {
+    throw new Error('Imported cloud-node workflow JSON was not preserved byte for byte')
+  }
+  const cloudLoaded = await snapshot()
+  if (!cloudLoaded.nodes.some(node => node.id === removedCloudId && node.type === removedCloudType)) {
+    throw new Error('Imported cloud-node identifier was rewritten or dropped')
+  }
+  if (!(await canvas.locator('body').innerText()).includes(`Missing node: ${removedCloudType}`)) {
+    throw new Error('Removed cloud node did not show missing-node guidance')
+  }
+  process.stdout.write(`PASS: removed upstream cloud node ${removedCloudType} stays in imported JSON with ID ${removedCloudId} and shows missing-node guidance\n`)
 } finally {
   await app.close()
 }
