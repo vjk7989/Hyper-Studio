@@ -104,10 +104,14 @@ const env = {
   HYPER_STUDIO_USER_DATA: path.join(home, 'user-data'),
   ELECTRON_ENABLE_LOGGING: '1', ELECTRON_ENABLE_STACK_DUMPING: '1', ELECTRON_LOG_FILE: path.join(home, 'electron.log'),
 }
-async function probePackagedVersion() {
-  const output = path.join(home, 'version-probe.log')
+async function probeVersion(binary, label) {
+  if (!fs.existsSync(binary)) {
+    diagnosticLines.push(`${label}-version-probe=binary missing`)
+    return
+  }
+  const output = path.join(home, `${label}-version-probe.log`)
   const fd = fs.openSync(output, 'w')
-  const probe = spawn(executable, ['--version', '--no-sandbox'], { cwd: root, env, detached: true, stdio: ['ignore', fd, fd] })
+  const probe = spawn(binary, ['--version', '--no-sandbox'], { cwd: root, env, detached: true, stdio: ['ignore', fd, fd] })
   const result = await new Promise(resolve => {
     const timer = setTimeout(() => resolve('timeout after 5s'), 5000)
     probe.once('exit', (code, signal) => { clearTimeout(timer); resolve(`exit=${code} signal=${signal}`) })
@@ -115,7 +119,7 @@ async function probePackagedVersion() {
   })
   if (result.startsWith('timeout')) { probe.kill('SIGTERM'); probe.unref() }
   fs.closeSync(fd)
-  diagnosticLines.push(`version-probe=${result} output=${fs.readFileSync(output, 'utf8').slice(0, 500).replace(/\s+/g, ' ')}`)
+  diagnosticLines.push(`${label}-version-probe=${result} output=${fs.readFileSync(output, 'utf8').slice(0, 500).replace(/\s+/g, ' ')}`)
   fs.writeFileSync(diagnosticFile, diagnosticLines.join('\n') + '\n')
 }
 const child = spawn(executable, [`--remote-debugging-port=${port}`, '--no-sandbox', '--no-zygote', '--disable-gpu', '--disable-dev-shm-usage'], { cwd: root, env, stdio: ['ignore', stdoutFd, stderrFd] })
@@ -194,7 +198,10 @@ try {
   await page.screenshot({ path: path.join(home, 'workflow-engine.png') })
   console.log(`Linux packaged workflow: engine, EmptyImage → SaveImage, shared media index passed (${media.length} media)`)
 } catch (error) {
-  if (stage === 'launch') await probePackagedVersion()
+  if (stage === 'launch') {
+    await probeVersion(executable, 'packaged')
+    await probeVersion(path.join(root, 'apps/desktop/node_modules/electron/dist/electron'), 'base-electron')
+  }
   if (page) await page.screenshot({ path: path.join(home, `failure-${stage}.png`) }).catch(() => {})
   console.error(`Linux packaged smoke failed at ${stage}: ${error instanceof Error ? error.message : String(error)}`)
   const tail = fs.existsSync(path.join(home, 'electron-stderr.log')) ? fs.readFileSync(path.join(home, 'electron-stderr.log'), 'utf8').slice(-2000) : ''
