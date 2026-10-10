@@ -69,6 +69,9 @@ jobs:
             src/composables/useTemplateFiltering.test.ts \
             src/workbench/extensions/manager/composables/nodePack/localManagerPackCatalog.test.ts \
             src/components/rightSidePanel/errors/MissingPackGroupRow.test.ts
+      - name: Test local managed node-pack catalog
+        shell: bash
+        run: PYTHONPATH=services/workflow python3 -m unittest services/workflow/tests-unit/hyper_studio_pack_catalog_test.py
       - name: Build and test desktop shell
         shell: bash
         run: |
