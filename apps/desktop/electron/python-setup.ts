@@ -8,6 +8,7 @@ import path from 'path'
 import { isDev } from './config'
 import { logger } from './logger'
 import { getSharedStorageRoot } from './project-registry'
+import { hasBundledMacPython } from './bundled-mac-python'
 
 export interface PythonSetupProgress {
   status: 'downloading' | 'extracting' | 'complete' | 'error'
@@ -88,7 +89,10 @@ export function getPythonDir(): string {
  */
 export function isPythonReady(): { ready: boolean } {
   if (process.platform === 'darwin') {
-    return { ready: true }
+    // A packaged app can omit the optional legacy LTX runtime. In that case
+    // the renderer opens the hosted/workflow workspace instead of waiting for
+    // a backend that cannot start. Development keeps its existing local path.
+    return { ready: isDev || hasBundledMacPython(getPythonDir(), fs.existsSync) }
   }
 
   if (isDev) {
