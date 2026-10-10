@@ -1,0 +1,143 @@
+appId: studio.hyper.desktop
+productName: Hyper-Studio
+copyright: Copyright © 2026 Hyper-Studio contributors
+
+protocols:
+  name: Hyper-Studio
+  schemes:
+    - hyperstudio
+
+directories:
+  output: release
+  buildResources: resources
+
+files:
+  - dist/**/*
+  - dist-electron/**/*
+  - package.json
+  - LICENSE.txt
+  - NOTICES.md
+  - "!**/*.map"
+
+asarUnpack:
+  - dist/splash/**
+  # koffi 3.x loads ../../@koromix/koffi-${platform}-${arch} from its JS.
+  # Unpack that package so require() can load the .node from disk, not asar.
+  - node_modules/@koromix/**/*
+
+# Also copy the .node to resources/koffi/${platform}_${arch}/ (Koffi's Electron
+# lookup). Pack fails if the optional native package is missing on the builder.
+afterPack: scripts/copy-koffi-native.cjs
+
+extraResources:
+  - from: resources/explore-assets
+    to: explore-assets
+  - from: dist-remote
+    to: dist-remote
+  - from: backend
+    to: backend
+    filter:
+      - "**/*.py"
+      - "**/*.sql"
+      - pyproject.toml
+      - runtime_config/lora_catalog.json
+      - "!**/__pycache__/**"
+      - "!**/*.pyc"
+      - "!.venv/**"
+      - "!outputs/**"
+      - "!models/**"
+      - "!tests/**"
+  # The backend reads this file at import time (services/features/ic_lora_recipes.py).
+  # Name each file. Do not use a glob.
+  - from: shared
+    to: shared
+    filter:
+      - ic-lora-input-cap.json
+  - from: python-deps-hash.txt
+    to: python-deps-hash.txt
+
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  icon: resources/icon.ico
+  artifactName: ${productName}-Setup.${ext}
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  include: resources/installer.nsh
+  installerIcon: resources/icon.ico
+  uninstallerIcon: resources/icon.ico
+  installerHeaderIcon: resources/icon.ico
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Hyper-Studio
+
+mac:
+  hardenedRuntime: true
+  entitlements: resources/entitlements.mac.plist
+  entitlementsInherit: resources/entitlements.mac.plist
+  notarize: false
+  signIgnore:
+    # Skip non-binary files in the bundled Python environment during codesign.
+    # Without this, @electron/osx-sign walks all ~25k files to find ~360 Mach-O
+    # binaries, hitting the macOS 10240 open-files-per-process limit.
+    - "/python/.*\\.(py|pyc|pyi|pxd|pyx|h|hpp|cpp|c|cuh|cu|tcl|txt|json|yaml|yml|toml|cfg|md|rst|html|css|enc|msg|cmake|gif|png|jpg|svg|xml|jinja|typed|al)$"
+    - "/python/.*\\.dist-info/"
+    # The prebuilt mpsgraph_zc cache's relocatable object is Mach-O but never loaded
+    # (only its .so is dlopen'd); skip signing it — codesign rejects relocatable .o.
+    - "/python/mps-ext-prebuilt/.*\\.o$"
+  extraResources:
+    # python-embed includes the prebuilt mps-sdpa mpsgraph_zc extension under
+    # mps-ext-prebuilt/ (prepare-python.sh Step 6.5), so it's bundled to
+    # resources/python/mps-ext-prebuilt — where LTX_MPS_EXT_PREBUILT_DIR points.
+    - from: python-embed
+      to: python
+      filter:
+        - "**/*"
+        - "!__pycache__/**"
+        - "!*.pyc"
+  target:
+    - target: dmg
+      arch:
+        - arm64
+    - target: zip
+      arch:
+        - arm64
+  icon: resources/icon.icns
+  category: public.app-category.video
+  artifactName: ${productName}-${arch}.${ext}
+  extendInfo:
+    NSMicrophoneUsageDescription: Hyper-Studio needs the microphone to record audio for Audio to Video.
+
+dmg:
+  contents:
+    - x: 130
+      y: 220
+    - x: 410
+      y: 220
+      type: link
+      path: /Applications
+
+linux:
+  target:
+    - AppImage
+    - deb
+  icon: resources/icons
+  category: Video
+  artifactName: ${productName}-${arch}.${ext}
+
+deb:
+  depends:
+    - libgtk-3-0
+    - libnotify4
+    - libnss3
+    - libxss1
+    - libxtst6
+    - xdg-utils
+    - libatspi2.0-0
+    - libuuid1
+    - libsecret-1-0
+

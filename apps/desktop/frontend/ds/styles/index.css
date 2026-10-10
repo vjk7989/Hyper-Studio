@@ -1,0 +1,94 @@
+/*
+  Design-system stylesheet — single entry.
+
+  The one place to load the design system's styles: base tokens, light/dark themes, fonts,
+  and the typography ramp.
+
+  Scoping: Desktop is a single-document app that ships its own global reset (Tailwind preflight)
+  and styling. To avoid touching it, everything that *applies* styling is scoped under `.ltx-io`.
+  `ThemeProvider` renders that `.ltx-io` root and sets `data-theme` on it (not on `document.body`).
+  Design tokens (`reference.module.scss` `:root`) and semantic themes (`[data-theme]`) stay
+  top-level but are inert until consumed inside `.ltx-io`, and their names don't collide with
+  Desktop's own CSS variables. `@font-face` rules are also top-level (they cannot be nested).
+*/
+
+/* Design tokens + semantic light/dark themes */
+@import "./themes/reference.module.scss";
+@import "./themes/light.module.scss";
+@import "./themes/dark.module.scss";
+
+/* Aeonik @font-face + scoped --app-font-family */
+@import "./fonts.scss";
+
+/* Typography ramp (scoped .ltx-io [data-variant]) */
+@import "./typography.scss";
+
+/* Scrollbar styling (scoped to .ltx-io in the source file) */
+@import "./scrollBarStyle.scss";
+
+/* Base applied ONLY inside the `.ltx-io` subtree. */
+.ltx-io {
+  height: 100%;
+  background-color: var(--semantic-bg-transparent);
+  color: var(--semantic-fg-primary);
+  font-family: var(--app-font-family);
+  font-size: 40px;
+  accent-color: var(--semantic-fg-primary);
+  /* Window glass follows this root. Nested scheme overrides (setup is light)
+     must not repaint chrome text that sits on the glass. */
+  --window-fg: var(--semantic-fg-primary);
+
+  .ltx-io {
+    --window-fg: inherit;
+  }
+
+  /* Token override: Modal/confirmation shells use 8px corners. */
+  --modal-border-radius: var(--radius-md);
+
+  :focus {
+    outline: none;
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--semantic-border-focus);
+    outline-offset: 1px;
+  }
+}
+
+/* Hyper-Studio's monochrome Vercel palette on the existing semantic tokens. */
+.ltx-io[data-theme="light"] {
+  --semantic-bg-primary: oklch(1 0 0);
+  --semantic-bg-secondary: oklch(0.985 0 0);
+  --semantic-bg-tertiary: oklch(0.922 0 0);
+  --semantic-bg-action-secondary-enabled: oklch(0.97 0 0);
+  --semantic-bg-action-secondary-hover: oklch(0.922 0 0);
+  --semantic-bg-brand-primary-enabled: oklch(0.205 0 0);
+  --semantic-bg-brand-primary-hover: oklch(0.3 0 0);
+  --semantic-fg-brand-primary-enabled: oklch(0.205 0 0);
+  --semantic-fg-primary: oklch(0.145 0 0);
+  --semantic-fg-secondary: oklch(0.45 0 0);
+  --semantic-bg-separator-primary: oklch(0.9 0 0);
+  --semantic-bg-separator-secondary: oklch(0.93 0 0);
+  --radius-md: 8px;
+  --radius-lg: 10px;
+}
+
+.ltx-io[data-theme="dark"] {
+  --semantic-bg-primary: oklch(0.145 0 0);
+  --semantic-bg-secondary: oklch(0.205 0 0);
+  --semantic-bg-tertiary: oklch(0.269 0 0);
+  --semantic-bg-action-secondary-enabled: oklch(0.269 0 0);
+  --semantic-bg-action-secondary-hover: oklch(0.371 0 0);
+  --semantic-bg-brand-primary-enabled: oklch(0.4 0 0);
+  --semantic-bg-brand-primary-hover: oklch(0.48 0 0);
+  --semantic-fg-brand-primary-enabled: oklch(0.985 0 0);
+  --semantic-fg-primary: oklch(0.985 0 0);
+  --semantic-fg-secondary: oklch(0.708 0 0);
+  --semantic-bg-separator-primary: oklch(0.32 0 0);
+  --semantic-bg-separator-secondary: oklch(0.27 0 0);
+  --hyper-logo-filter: invert(1);
+  --radius-md: 8px;
+  --radius-lg: 10px;
+}
+
+.ltx-io[data-theme="dark"] img[src="/assets/hyper-studio-logo.png"] { filter: invert(1); }
