@@ -1,5 +1,17 @@
 # Codebase map
 
+## Latest project-control/Editor checkpoint
+
+| Need to change | Go to | Verified boundary |
+| --- | --- | --- |
+| Metadata upgrade without resetting Editor history | `apps/desktop/frontend/views/Project.tsx`, `frontend/lib/project-asset-metadata-migration.ts`, `frontend/lib/project-asset-metadata-migration.test.mjs` | A stable incomplete-job key avoids rerunning on unrelated autosave; installed delayed Undo smoke passed. |
+| Editor control regression and local export | `scripts/smoke-editor-controls.mjs`, `frontend/views/editor/`, `frontend/types/project-model.ts` | Installed 17-check smoke covers reopen, Undo after autosave, timeline actions, and parseable FCPXML. |
+| General/Legacy generation Settings | `apps/desktop/frontend/components/SettingsModal.tsx`, `components/settings/{EnhanceSettingsSection,LegacySettingsSection}.tsx` | Duplicate legacy LTX/fal API-key controls removed; Connections remains the shared provider setup. |
+| App-owned Gen Space copy and local-runtime error state | `apps/desktop/frontend/views/{Project,GenSpace}.tsx`, `views/editor/VideoEditorTimelineEditingPanel.tsx` | Retirement banner removed; optional local runtime guidance shown when its settings fetch fails. |
+| Installed interaction evidence | `scripts/smoke-first-party-controls.mjs`, `scripts/smoke-project-controls.mjs`, `scripts/smoke-workflow-run-isolation.mjs`, `docs/gates/project-controls-interaction-audit.md` | First-party, project lifecycle 7/7, Editor 17, and Workflow local Run passed on the newer unsigned Windows install. |
+
+Graft build/map for this checkpoint: 7,085 files, 64,494 nodes, 161,124 edges. The separate codebase-memory MCP index may still be stale; prefer graph search for existing symbols, then inspect current files for new code. Broader release verification remains open.
+
 Use this as a navigation index, then use Graft for symbol discovery. The project-controls final5 scoped Windows installed and macOS/Linux packaged gates passed on 2026-10-11 in [run 38093974210](https://github.com/vjk7989/Hyper-Studio/actions/runs/38093974210); broader release review remains open. Final5 Graft build/map passed (7,084 files, 64,492 nodes, 161,122 edges). The separate codebase-memory MCP fast reindex crashed again and omits the new `removeWorkspaceProject` symbol, so verify its snapshot before relying on its edges (`search_graph` → `trace_path` → `get_code_snippet`). Check [phase-handoff.md](phase-handoff.md), [gates/project-controls-windows.md](gates/project-controls-windows.md), and [gates/phase-5-brand-audit.md](gates/phase-5-brand-audit.md) before editing.
 
 | Concern | Start here | Current state and edit boundary |

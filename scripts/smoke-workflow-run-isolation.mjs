@@ -56,6 +56,8 @@ try {
   log('BODY AFTER RUN',(await canvas.locator('body').innerText()).slice(-1800))
   const outputs=fs.existsSync(path.join(projectFolder,'outputs'))?fs.readdirSync(path.join(projectFolder,'outputs')):[]
   log('OUTPUTS',outputs)
+  if(!outputs.some(name=>/^workflow-control-ui_.*\.png$/.test(name))) throw new Error('Linked local workflow did not produce its PNG')
+  if((await canvas.locator('body').innerText()).includes('Required input missing')) throw new Error('Successful linked workflow still shows a required-input warning')
   await window.screenshot({path:path.join(home,'after-run.png')})
   log('MANAGER BUTTONS',await canvas.locator('button').evaluateAll(els=>els.filter(e=>e.getBoundingClientRect().width).map(e=>({text:e.textContent?.trim(),aria:e.getAttribute('aria-label')})).filter(x=>/manager|extension|install|update|uninstall/i.test(`${x.text} ${x.aria}`))))
   await canvas.getByRole('button',{name:'Graph mode, workflow actions'}).click()

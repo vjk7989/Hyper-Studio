@@ -206,7 +206,6 @@ export function SettingsScreen({
     forceApiGenerations,
     cudaAvailable,
   } = useAppSettings();
-  const onSettingsChange = (next: AppSettings) => updateSettings(next);
   const [activeTab, setActiveTab] = useState<TabId>("general");
   const tabBodyRef = useRef<HTMLDivElement>(null);
   const geminiSectionRef = useRef<HTMLElement>(null);
@@ -423,7 +422,7 @@ export function SettingsScreen({
               <SettingsSubsection
                 showDivider
                 title="Generation"
-                description="Prompt rewriting and decode speed for local and API video generation."
+                description="Prompt rewriting and decode speed for local video generation."
                 descriptionClassName={contentStyles.apiKeysDescriptionLine}
                 descriptionSize="sm"
               >
@@ -434,11 +433,6 @@ export function SettingsScreen({
                       onToggleAutoEnhance={() =>
                         updateSettings({
                           exploreAutoEnhancePrompts: !settings.exploreAutoEnhancePrompts,
-                        })
-                      }
-                      onToggleApiEnhance={() =>
-                        updateSettings({
-                          promptEnhancerEnabled: !settings.promptEnhancerEnabled,
                         })
                       }
                     />
@@ -488,11 +482,7 @@ export function SettingsScreen({
             <SettingsAnchorSection
               title="Legacy"
             >
-            <LegacySettingsSection
-              settings={settings}
-              onSettingsChange={onSettingsChange}
-              onOpenFalApiKeys={() => falApiKey.openAndFocus()}
-            />
+            <LegacySettingsSection />
             </SettingsAnchorSection>
           )}
 

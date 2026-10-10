@@ -1,9 +1,7 @@
-import { useCallback, useEffect, useLayoutEffect, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import { Sparkles, Film, Workflow } from 'lucide-react'
 import { Link, Navigate, useParams } from 'react-router'
 import { Text } from '@ds/Text/Text'
-// eslint-disable-next-line no-restricted-imports
-import { useQuickSearch } from '@/ltx-io/components/QuickSearch/QuickSearchContext'
 import { useProjects } from '../contexts/ProjectContext'
 import { recordRecentProjectId } from '../lib/home-recent-projects-preference'
 import { decideProjectRoute } from '../lib/project-navigation'
@@ -16,14 +14,13 @@ import { ProviderJobComposer } from '../components/ProviderJobComposer'
 import { readProject } from '../lib/project-storage'
 import type { ProjectTab } from '../types/project-model'
 import {
-  hasVisualAssetMetadataForMigration,
+  visualAssetMetadataMigrationKey,
   runVisualAssetMetadataMigration,
 } from '../lib/project-asset-metadata-migration'
 import styles from './Project.module.scss'
 
 export function Project() {
   const { projectId } = useParams()
-  const { open: openQuickSearch } = useQuickSearch()
   const {
     activeProject,
     currentTab,
@@ -80,9 +77,13 @@ export function Project() {
   const [upgradePassProjectId, setUpgradePassProjectId] = useState<string | null>(null)
   const activeProjectId = activeProject?.id ?? null
   const activeProjectAssets = activeProject?.assets ?? null
-  const needsAssetMetadataMigration = activeProjectAssets
-    ? hasVisualAssetMetadataForMigration(activeProjectAssets)
-    : false
+  const migrationKey = activeProjectAssets
+    ? visualAssetMetadataMigrationKey(activeProjectAssets)
+    : '[]'
+  const needsAssetMetadataMigration = migrationKey !== '[]'
+  const migrationAssetsRef = useRef(activeProjectAssets)
+  migrationAssetsRef.current = activeProjectAssets
+  const attemptedMigrationRef = useRef<{ projectId: string; key: string } | null>(null)
 
   const handleSaveActiveProject = useCallback((project: typeof activeProject extends null ? never : NonNullable<typeof activeProject>) => {
     if (!activeProjectId) return
@@ -101,12 +102,15 @@ export function Project() {
   }, [activeProjectId, setProject])
 
   useEffect(() => {
-    if (!activeProjectId || !activeProjectAssets || !needsAssetMetadataMigration) return
+    const assets = migrationAssetsRef.current
+    if (!activeProjectId || !assets || !needsAssetMetadataMigration) return
+    if (attemptedMigrationRef.current?.projectId === activeProjectId && attemptedMigrationRef.current.key === migrationKey) return
+    attemptedMigrationRef.current = { projectId: activeProjectId, key: migrationKey }
 
     let cancelled = false
 
     const runAssetMetadataMigration = async () => {
-      for await (const event of runVisualAssetMetadataMigration(activeProjectAssets, window.electronAPI)) {
+      for await (const event of runVisualAssetMetadataMigration(assets, window.electronAPI)) {
         if (cancelled) return
 
         if (event.kind === 'progress') {
@@ -128,7 +132,7 @@ export function Project() {
     return () => {
       cancelled = true
     }
-  }, [activeProjectAssets, activeProjectId, needsAssetMetadataMigration, updateAsset])
+  }, [activeProjectId, migrationKey, needsAssetMetadataMigration, updateAsset])
 
   useEffect(() => {
     if (currentTab !== 'video-editor') return
@@ -220,13 +224,6 @@ export function Project() {
       </header>
 
       {showProviderJobComposer && <div className="max-h-[48vh] overflow-y-auto border-b border-separator p-3"><ProviderJobComposer projectId={activeProject.id} defaultProfileId={activeProject.defaultProfileId} defaultModelId={activeProject.defaultModelId} /></div>}
-
-      {workspaceMode === 'editor' && currentTab === 'gen-space' && (
-        <Text as="p" variant="body" size="md" className={styles.deprecation}>
-          Gen Space is retiring soon. Visit <Link to={paths.home}>Home</Link> or{' '}
-          <button type="button" onClick={openQuickSearch}>Explore Tools</button> to keep generating with all workflows.
-        </Text>
-      )}
 
       <div className={styles.main}>
         {workspaceSaveError && <div role="alert" className={styles.deprecation}>Project changes could not be saved: {workspaceSaveError}</div>}

@@ -150,6 +150,15 @@ export function hasVisualAssetMetadataForMigration(assets: Asset[]): boolean {
   })
 }
 
+/** Stable across unrelated project saves, so an unresolved asset is not retried on every autosave. */
+export function visualAssetMetadataMigrationKey(assets: Asset[]): string {
+  return JSON.stringify(
+    collectVisualAssetMetadataMigrationJobs(assets)
+      .map(job => [job.path, job.type, job.needsThumbnails, job.needsDimensions])
+      .sort((left, right) => String(left[0]).localeCompare(String(right[0]))),
+  )
+}
+
 export async function* runVisualAssetMetadataMigration(
   assets: Asset[],
   electronAPI: Pick<ElectronAPI, 'makeThumbnailsForProjectAsset' | 'makeDimensionsForProjectAsset'>,

@@ -6,17 +6,10 @@ import { SettingToggle } from "./SettingToggle";
 export function EnhanceSettingsSection({
   settings,
   onToggleAutoEnhance,
-  onToggleApiEnhance,
 }: {
-  settings: Pick<
-    AppSettings,
-    "exploreAutoEnhancePrompts" | "promptEnhancerEnabled" | "hasLtxApiKey"
-  >;
+  settings: Pick<AppSettings, "exploreAutoEnhancePrompts">;
   onToggleAutoEnhance: () => void;
-  onToggleApiEnhance: () => void;
 }) {
-  const apiEnabled = settings.promptEnhancerEnabled;
-
   return (
     <SettingsStack loose>
       <SettingToggle
@@ -29,20 +22,6 @@ export function EnhanceSettingsSection({
         }
         enabled={settings.exploreAutoEnhancePrompts}
         onToggle={onToggleAutoEnhance}
-      />
-
-      <SettingToggle
-        rowLayout="preference"
-        title="Auto-enhance on API generation"
-        description={
-          settings.hasLtxApiKey
-            ? apiEnabled
-              ? "LTX API rewrites prompts before Text to Video, Image to Video, and Audio to Video generation."
-              : "API prompts are sent as written for Text to Video, Image to Video, and Audio to Video."
-            : "Requires an LTX API key on the API Keys tab."
-        }
-        enabled={apiEnabled}
-        onToggle={onToggleApiEnhance}
       />
     </SettingsStack>
   );

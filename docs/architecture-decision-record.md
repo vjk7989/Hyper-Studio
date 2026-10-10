@@ -1,5 +1,12 @@
 # Architecture decision record
 
+## ADR 0010: Keep Editor history stable during asset metadata upgrades
+
+- **Status:** Implemented and verified in the later Windows installed project-controls refresh; cross-platform rerun pending.
+- **Decision:** Key visual-asset metadata migration to the sorted set of incomplete media jobs, rather than the project assets array identity. Unrelated autosaves do not restart an unresolved migration or remount the Editor. Keep the migration's project-specific updates and initial progress UI.
+- **Reason:** An imported media asset with unavailable optional metadata could trigger the migration effect on every Editor save. Its progress screen temporarily unmounted the Editor, clearing in-memory Undo history. A delayed installed smoke reproduced the failure; the rebuilt installer passed the same delayed Undo/Redo path.
+- **Evidence:** `project-asset-metadata-migration.test.mjs` and Editor action tests passed 2/2; installed Editor smoke passed 17 controls including Undo after autosave and FCPXML export; desktop tests passed 1,483/1,483, TypeScript and NSIS build passed. The installed first-party sweep also verified Light/Dark Settings, Connections, and removed duplicate legacy key prompts. Graft refresh: 7,085 files, 64,494 nodes, 161,124 edges. Separate codebase-memory index and macOS/Linux rerun remain pending.
+
 This record separates accepted product decisions from verified implementation. Phase 4 passed its scoped integration gate on 2026-10-10. Phase 5 final7 scoped Windows installed and macOS/Linux packaged gates passed; broader release work remains open. See [phase-handoff.md](phase-handoff.md), [gates/phase-4.md](gates/phase-4.md), and [gates/phase-5-brand-audit.md](gates/phase-5-brand-audit.md).
 
 ## ADR 0001: Desktop editor as host

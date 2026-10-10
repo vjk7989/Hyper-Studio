@@ -1455,7 +1455,7 @@ export function GenSpace() {
   const videoSettingsMessage = isLoadingVideoGenerationModelSpecs
     ? 'Loading generation settings...'
     : videoGenerationModelSpecsErrorMessage
-      ? `Could not load generation settings: ${videoGenerationModelSpecsErrorMessage}`
+      ? 'Local generation needs the optional Python runtime. You can use a saved provider connection in the project header.'
       : null
   const sanitizeVideoSettings = useCallback(
     (

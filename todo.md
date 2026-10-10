@@ -1,13 +1,15 @@
 # Hyper-Studio phase to-do list
 
-Status: `[x]` verified complete; `[·]` in progress or only partly verified; `[ ]` not started. Phase 4's scoped integration gate and Phase 5 final7 Windows installed/macOS/Linux packaged gates passed. Broader release checks remain open.
+Status: `[x]` verified complete; `[·]` in progress or only partly verified; `[ ]` not started. Phase 4's scoped integration gate and Phase 5 final7 Windows installed/macOS/Linux packaged gates passed. The later project-controls Windows refresh passes its focused checks; its macOS/Linux rerun and broader release checks remain open.
 
 ## Current checkpoint — project controls and functional smoke
 
 - [x] Show New Project from an empty Recent projects list; provide one remove dialog from Recent and Projects with app-only and OS Trash choices.
 - [x] Verify app-only removal preserves files and can be reopened; pass installed OS Trash/failure recovery, manifest/path guards, and active-job blocking.
 - [x] Verify create, open, rename, initial mode, close/reopen, and restart persistence in the final5 installed app.
-- [·] Run the Windows first-party interaction audit across Home, Explore Tools, Connections, Settings, Editor, Workflow, Manager, and export. The final5 scoped installed checks pass; untested upstream controls and optional visual states remain in the gate report.
+- [·] Run the Windows first-party interaction audit across Home, Explore Tools, Connections, Settings, Editor, Workflow, Manager, and export. A later installed refresh passed first-party controls, Editor 17/17, local Workflow Run, project lifecycle 7/7, and 1,483/1,483 desktop tests; untested upstream controls and optional visual states remain in the gate report.
+- [x] Remove inherited Gen Space retirement copy and duplicate LTX/fal key-entry controls; verify light/dark Settings selection and delayed Editor Undo after autosave in the rebuilt Windows installer.
+- [·] Rerun macOS/Linux packaged gates for the latest Windows source refresh before claiming that refresh cross-platform.
 - [x] After the scoped Windows gate, pass macOS and Linux packaged smokes in GitHub Actions run 38093974210; both jobs also passed the embedded-account, local node-pack, desktop, and brand-audit steps.
 - [·] At each completed gate, refresh the architecture record, handoff, code map, codebase-memory snapshot, and Graft graph. Final5 Windows documents and Graft are refreshed; the separate codebase-memory worker crashed during fast reindex, so its snapshot remains unverified.
 

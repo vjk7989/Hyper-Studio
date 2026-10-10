@@ -487,7 +487,7 @@ export function VideoEditorTimelineEditingPanel(props: VideoEditorTimelineEditin
   const gapVideoSettingsMessage = isLoadingVideoGenerationModelSpecs
     ? 'Loading generation settings...'
     : videoGenerationModelSpecsErrorMessage
-      ? `Could not load generation settings: ${videoGenerationModelSpecsErrorMessage}`
+      ? 'Local generation needs the optional Python runtime. You can use a saved provider connection in the project header.'
       : gapGenerateMode !== 'text-to-image' && selectedGap && !gapCanGenerateVideo
         ? 'This gap is too long to fill with a single video generation.'
         : null

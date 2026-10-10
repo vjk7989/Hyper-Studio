@@ -73,9 +73,24 @@ try {
   await page.getByRole('button', { name: 'Settings', exact: true }).focus()
   await page.getByRole('button', { name: 'Settings', exact: true }).press('Enter')
   await describe('settings-general')
+  if (await page.getByText('Auto-enhance on API generation', { exact: true }).count() || await page.getByText('Requires an LTX API key on the API Keys tab.', { exact: true }).count()) {
+    throw new Error('General Settings still exposes the retired legacy API-key enhancer')
+  }
+  const themeTabs = page.getByRole('tablist', { name: 'Theme' })
+  const darkTheme = themeTabs.getByRole('tab', { name: 'Dark' })
+  await darkTheme.click()
+  await page.waitForFunction(() => document.querySelector('[role="tablist"][aria-label="Theme"] [role="tab"][aria-selected="true"]')?.textContent?.includes('Dark'), undefined, { timeout: 5000 })
+  await page.screenshot({ path: path.join(home, 'settings-dark.png') })
+  const lightTheme = themeTabs.getByRole('tab', { name: 'Light' })
+  await lightTheme.click()
+  await page.waitForFunction(() => document.querySelector('[role="tablist"][aria-label="Theme"] [role="tab"][aria-selected="true"]')?.textContent?.includes('Light'), undefined, { timeout: 5000 })
+  record('Settings light and dark theme controls', 'PASS')
   record('Settings sidebar button', 'PASS')
   for (const tab of ['Connections', 'Legacy', 'About', 'General']) {
     await page.getByRole('button', { name: tab, exact: true }).last().click()
+    if (tab === 'Legacy' && await page.getByText('Generate with FAL API', { exact: true }).count()) {
+      throw new Error('Legacy Settings still exposes a duplicate FAL key preference')
+    }
     await describe(`settings-${tab.toLowerCase()}`)
     record(`Settings ${tab} tab`, 'PASS')
   }
@@ -129,6 +144,9 @@ try {
   await describe('video-editor')
   record('Editor Video Editor tab', 'PASS')
   await page.getByRole('tab', { name: 'Gen Space' }).click()
+  if (await page.getByText('Gen Space is retiring soon.', { exact: false }).count() || await page.getByText(/Could not load generation settings: Failed to fetch/).count()) {
+    throw new Error('Editor still shows inherited deprecation copy or a raw backend fetch error')
+  }
   record('Editor Gen Space tab', 'PASS')
   const manifest = JSON.parse(fs.readFileSync(path.join(project, '.hyper-studio', 'project.json'), 'utf8'))
   const projectId = manifest.projectId

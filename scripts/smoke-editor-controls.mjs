@@ -141,7 +141,10 @@ try {
   await page.getByRole('tablist', { name: 'Editor views' }).waitFor({ state: 'visible', timeout: 45000 })
   await page.getByRole('tab', { name: 'Video Editor' }).click()
   await page.getByText('Timeline 2 Copy', { exact: true }).first().waitFor({ state: 'visible' })
-  await waitUntil(() => readEditor().assets.filter(asset => /assets\/(red\.png|tone\.wav)$/.test(asset.path)).length === 2, 'reopened imported assets')
+  await waitUntil(() => {
+    const paths = new Set(readEditor().assets.map(asset => asset.path))
+    return paths.has('assets/red.png') && paths.has('assets/tone.wav')
+  }, 'reopened imported assets')
   assert.equal(activeTimeline()?.name, 'Timeline 2 Copy')
   record('Reopen preserves imported assets and timeline')
 
@@ -155,6 +158,12 @@ try {
   await activeCard.getByText('1 clip', { exact: true }).waitFor({ state: 'visible' })
   await waitUntil(() => activeTimeline()?.clips.length === 1, 'restored text overlay in saved timeline')
   record('Text overlay Undo and Redo', 'clip count 1 → 0 → 1')
+  await page.waitForTimeout(1000)
+  await menu('Edit', 'Undo')
+  await activeCard.getByText('0 clips', { exact: true }).waitFor({ state: 'visible' })
+  await menu('Edit', 'Redo')
+  await activeCard.getByText('1 clip', { exact: true }).waitFor({ state: 'visible' })
+  record('Undo remains available after autosave', 'clip count 1 → 0 → 1 after persisted overlay')
 
   const zoom = page.locator('input[type=range][title^="Zoom:"]')
   const zoomBefore = Number(await zoom.inputValue())
