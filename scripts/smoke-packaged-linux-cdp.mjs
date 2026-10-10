@@ -22,6 +22,8 @@ function command(program, args) {
 }
 const diagnosticLines = [
   `display=${process.env.DISPLAY || '(unset)'}`,
+  `core-pattern=${fs.readFileSync('/proc/sys/kernel/core_pattern', 'utf8').trim()}`,
+  `core-pipe-limit=${fs.readFileSync('/proc/sys/kernel/core_pipe_limit', 'utf8').trim()}`,
   `x-socket=${fs.existsSync(`/tmp/.X11-unix/X${(process.env.DISPLAY || '').match(/^:(\d+)/)?.[1] || ''}`)}`,
   `x-authority-file-present=${Boolean(process.env.XAUTHORITY && fs.existsSync(process.env.XAUTHORITY))}`,
   `x-display=${command('xdpyinfo', ['-display', process.env.DISPLAY || '']) .split('\n').slice(0, 6).join(' | ')}`,
@@ -68,7 +70,7 @@ function snapshot(label, pid) {
   for (const name of ['status', 'wchan']) {
     try {
       const content = fs.readFileSync(`/proc/${pid}/${name}`, 'utf8')
-      lines.push(`${name}=${name === 'status' ? content.split('\n').filter(line => /^(Name|State|Threads|VmRSS|Sig)/.test(line)).join(' | ') : content.trim()}`)
+      lines.push(`${name}=${name === 'status' ? content.split('\n').filter(line => /^(Name|State|Threads|VmRSS|CoreDumping|Sig)/.test(line)).join(' | ') : content.trim()}`)
     } catch { lines.push(`${name}=(unavailable)`) }
   }
   try {
@@ -107,6 +109,7 @@ const env = {
 async function probeVersion(binary, label) {
   if (!fs.existsSync(binary)) {
     diagnosticLines.push(`${label}-version-probe=binary missing`)
+    fs.writeFileSync(diagnosticFile, diagnosticLines.join('\n') + '\n')
     return
   }
   const output = path.join(home, `${label}-version-probe.log`)
