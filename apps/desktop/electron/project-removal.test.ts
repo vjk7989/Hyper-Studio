@@ -37,6 +37,21 @@ it('rejects trashing a folder that contains another registered project or app da
   assert.throws(() => validateProjectTrashTarget({ ...input, userData: path.join(folder, 'settings') }), /overlaps app data/)
 })
 
+it('rejects aliased app data and another project inside the selected folder', () => {
+  const { sandbox, folder, input } = fixture()
+  const settings = path.join(folder, 'settings')
+  const nested = path.join(folder, 'nested')
+  fs.mkdirSync(settings)
+  fs.mkdirSync(nested)
+  const settingsAlias = path.join(sandbox, 'settings-alias')
+  const nestedAlias = path.join(sandbox, 'nested-alias')
+  fs.symlinkSync(settings, settingsAlias, 'junction')
+  fs.symlinkSync(nested, nestedAlias, 'junction')
+  assert.throws(() => validateProjectTrashTarget({ ...input, userData: settingsAlias }), /overlaps app data/)
+  assert.throws(() => validateProjectTrashTarget({ ...input, registeredFolders: [...input.registeredFolders,
+    { projectId: 'other', folder: nestedAlias }] }), /contains another registered project/)
+})
+
 it('rejects trashing a project that overlaps shared storage', () => {
   const { folder, input } = fixture()
   fs.mkdirSync(path.join(folder, 'models'))

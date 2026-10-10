@@ -10,6 +10,11 @@ function sameOrAncestor(left: string, right: string): boolean {
   return contains(left, right) || contains(right, left)
 }
 
+function realPathIfPresent(value: string): string {
+  const resolved = path.resolve(value)
+  return fs.existsSync(resolved) ? fs.realpathSync(resolved) : resolved
+}
+
 export function validateProjectTrashTarget(input: {
   projectId: string
   folder: string
@@ -28,12 +33,12 @@ export function validateProjectTrashTarget(input: {
   }
   const canonical = fs.realpathSync(folder)
   if (canonical !== folder) throw new Error('Project folder path changed')
-  if (sharedRoot && sameOrAncestor(canonical, fs.realpathSync(sharedRoot))) {
+  if (sharedRoot && sameOrAncestor(canonical, realPathIfPresent(sharedRoot))) {
     throw new Error('Project folder overlaps shared storage')
   }
-  if (sameOrAncestor(canonical, path.resolve(userData))) throw new Error('Project folder overlaps app data')
+  if (sameOrAncestor(canonical, realPathIfPresent(userData))) throw new Error('Project folder overlaps app data')
   for (const other of registeredFolders) {
-    if (other.projectId !== projectId && contains(canonical, path.resolve(other.folder))) {
+    if (other.projectId !== projectId && contains(canonical, realPathIfPresent(other.folder))) {
       throw new Error('Project folder contains another registered project')
     }
   }
