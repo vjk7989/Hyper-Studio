@@ -65,6 +65,8 @@ jobs:
           node node_modules/vitest/vitest.mjs run \
             src/platform/cloud/onboarding/embeddedAccountIsolation.test.ts \
             src/platform/distribution/embeddedAccountIdentity.test.ts \
+            src/platform/distribution/hyperStudioEmbedBridge.test.ts \
+            src/platform/workflow/core/services/workflowActionsService.test.ts \
             src/components/actionbar/ComfyRunButton/LocalRunButtonWrapper.test.ts \
             src/renderer/extensions/layerEditor/composables/useLayerEditorExport.test.ts \
             src/utils/errorReportUtil.test.ts \
