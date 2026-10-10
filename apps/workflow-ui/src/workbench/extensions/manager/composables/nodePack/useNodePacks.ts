@@ -1,6 +1,9 @@
 import { get, useAsyncState } from '@vueuse/core'
 import type { Ref } from 'vue'
 
+import { localManagerPacksForIds } from './localManagerPackCatalog'
+import { isHyperStudioEmbedded } from '@/platform/distribution/hyperStudio'
+import { api } from '@/scripts/api'
 import { useComfyRegistryStore } from '@/stores/comfyRegistryStore'
 import type { UseNodePacksOptions } from '@/workbench/extensions/manager/types/comfyManagerTypes'
 
@@ -14,7 +17,14 @@ export const useNodePacks = (
   const { immediate = false } = options
   const { getPacksByIds } = useComfyRegistryStore()
 
-  const fetchPacks = () => getPacksByIds.call(get(packsIds).filter(Boolean))
+  const fetchPacks = async () => {
+    const ids = get(packsIds).filter(Boolean)
+    if (!ids.length) return []
+    if (!isHyperStudioEmbedded) return getPacksByIds.call(ids)
+    const response = await api.fetchApi('/v2/customnode/getlist?mode=local&skip_update=true')
+    if (!response.ok) return []
+    return localManagerPacksForIds(await response.json(), ids)
+  }
 
   const {
     isReady,

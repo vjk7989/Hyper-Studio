@@ -147,12 +147,18 @@ try {
   const guidanceVisible = await canvas.getByText(`Missing node: ${unknownType}`, { exact: true }).first().isVisible()
   const systemStats = await (await fetch(new URL('system_stats', engine.url))).json()
   const managerEnabled = systemStats?.system?.argv?.includes('--enable-manager') === true
-  const [managerVersion, installedPacks] = await Promise.all([
+  const [managerVersion, installedPacks, localCatalogResponse] = await Promise.all([
     fetch(new URL('v2/manager/version', engine.url)),
     fetch(new URL('v2/customnode/installed', engine.url)),
+    fetch(new URL('v2/customnode/getlist?mode=local&skip_update=true', engine.url)),
   ])
-  if (!managerVersion.ok || !installedPacks.ok) {
-    throw new Error(`Managed engine did not expose manager APIs: enabled=${managerEnabled}, version=${managerVersion.status}, installed=${installedPacks.status}`)
+  if (!managerVersion.ok || !installedPacks.ok || !localCatalogResponse.ok) {
+    throw new Error(`Managed engine did not expose local manager APIs: enabled=${managerEnabled}, version=${managerVersion.status}, installed=${installedPacks.status}, catalog=${localCatalogResponse.status}`)
+  }
+  const localCatalog = await localCatalogResponse.json()
+  const localCatalogEntry = Object.entries(localCatalog.node_packs ?? {}).find(([key, pack]) => key === 'comfyui-impact-pack' || pack?.id === 'comfyui-impact-pack')
+  if (!localCatalogEntry || ![localCatalogEntry[1].repository, localCatalogEntry[1].reference, localCatalogEntry[1].files?.[0]].includes('https://github.com/ltdrdata/ComfyUI-Impact-Pack')) {
+    throw new Error('Managed engine local catalog did not provide the reviewed Impact Pack source')
   }
   const templateGallery = canvas.locator('[data-dialog-key="global-workflow-template-selector"]')
   if (await templateGallery.isVisible()) {
@@ -199,8 +205,10 @@ try {
   process.stdout.write(`REVIEW_BUTTONS ${JSON.stringify(reviewButtons)}\n`)
   await reviewDialog.locator('button').last().click({ timeout: 5000 })
   for (let attempt = 0; attempt < 40 && !reviewedTask; attempt++) await new Promise(resolve => setTimeout(resolve, 250))
-  if (reviewedTask?.kind !== 'install' || reviewedTask.params?.id !== 'comfyui-impact-pack' ||
-      reviewedTask.params?.repository !== 'https://github.com/ltdrdata/ComfyUI-Impact-Pack') {
+  if (reviewedTask?.kind !== 'install' || reviewedTask.params?.id !== localCatalogEntry[0] ||
+      reviewedTask.params?.repository !== 'https://github.com/ltdrdata/ComfyUI-Impact-Pack' ||
+      reviewedTask.params?.mode !== 'local' || reviewedTask.params?.channel !== 'default' ||
+      reviewedTask.params?.selected_version !== 'nightly') {
     throw new Error(`Reviewed action did not submit the expected manager install task: ${JSON.stringify(reviewedTask)}`)
   }
   if (JSON.stringify(fs.readdirSync(extensions).sort()) !== JSON.stringify(extensionsBefore)) {

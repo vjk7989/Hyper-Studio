@@ -9,6 +9,7 @@ import { useConflictDetection } from '@/workbench/extensions/manager/composables
 import { useNodeConflictDialog } from '@/workbench/extensions/manager/composables/useNodeConflictDialog'
 import { useComfyManagerStore } from '@/workbench/extensions/manager/stores/comfyManagerStore'
 import type { ConflictDetail } from '@/workbench/extensions/manager/types/conflictDetectionTypes'
+import type { LocalManagerPack } from './localManagerPackCatalog'
 
 type NodePack = components['schemas']['Node']
 
@@ -35,16 +36,20 @@ export function usePackInstall(
       return
     }
 
-    const isUnclaimedPack = installItem.publisher?.name === 'Unclaimed'
+    const localManagerPack = isHyperStudioEmbedded &&
+      (installItem as Partial<LocalManagerPack>).hyperStudioLocalCatalog === true
+    const isUnclaimedPack = localManagerPack || installItem.publisher?.name === 'Unclaimed'
     const versionToInstall = isUnclaimedPack
       ? ('nightly' as ManagerComponents['schemas']['SelectedVersion'])
       : (installItem.latest_version?.version ?? 'latest')
 
     return {
-      id: installItem.id,
+      id: localManagerPack
+        ? (installItem as LocalManagerPack).hyperStudioManagerPackId
+        : installItem.id,
       repository: installItem.repository ?? '',
-      channel: 'dev' as ManagerComponents['schemas']['ManagerChannel'],
-      mode: 'cache' as ManagerComponents['schemas']['ManagerDatabaseSource'],
+      channel: (localManagerPack ? 'default' : 'dev') as ManagerComponents['schemas']['ManagerChannel'],
+      mode: (localManagerPack ? 'local' : 'cache') as ManagerComponents['schemas']['ManagerDatabaseSource'],
       selected_version: versionToInstall,
       version: versionToInstall
     }
