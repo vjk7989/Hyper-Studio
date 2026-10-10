@@ -70,6 +70,7 @@ jobs:
             src/composables/useTemplateFiltering.test.ts \
             src/platform/settings/composables/useSettingUI.test.ts \
             src/platform/settings/composables/useSettingSearch.test.ts \
+            src/platform/settings/components/SettingGroup.test.ts \
             src/workbench/extensions/manager/composables/nodePack/localManagerPackCatalog.test.ts \
             src/components/rightSidePanel/errors/MissingPackGroupRow.test.ts
       - name: Test local managed node-pack catalog
