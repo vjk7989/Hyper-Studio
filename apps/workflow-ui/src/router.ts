@@ -91,11 +91,13 @@ const router = createRouter({
             }
           }
         },
-        {
-          path: 'user-select',
-          name: 'UserSelectView',
-          component: () => import('@/views/UserSelectView.vue')
-        }
+        ...(!isHyperStudioEmbedded
+          ? [{
+              path: 'user-select',
+              name: 'UserSelectView',
+              component: () => import('@/views/UserSelectView.vue')
+            }]
+          : [])
       ]
     },
     { path: '/:pathMatch(.*)*', redirect: unmatchedRouteRedirect }

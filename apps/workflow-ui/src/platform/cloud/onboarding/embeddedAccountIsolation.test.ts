@@ -113,6 +113,7 @@ describe('embedded startup cannot open a cloud account route', () => {
 
     const names = router.getRoutes().map((route) => route.name)
     expect(names).toContain('GraphView')
+    expect(names).not.toContain('UserSelectView')
     for (const cloudName of CLOUD_ROUTE_NAMES) {
       expect(names).not.toContain(cloudName)
     }
@@ -156,6 +157,12 @@ describe('embedded startup cannot open a cloud account route', () => {
 
     expect(to.path).toBe('/')
     expect(String(to.name)).not.toMatch(/^cloud-/)
+  })
+
+  it('redirects the upstream user-selection path to the graph', async () => {
+    const router = await loadRouter(true)
+    const to = await observeNavigation(router, '/user-select')
+    expect(to.path).toBe('/')
   })
 })
 
