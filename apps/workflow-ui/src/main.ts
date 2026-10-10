@@ -29,7 +29,7 @@ import { syncHostUserIdWithFirebaseAuth } from '@/platform/telemetry/hostUserIdS
 import { flushErrorReports } from '@/platform/telemetry/reportError'
 import { bootstrapTracer } from '@/platform/telemetry/perf/bootstrapTracer'
 import '@/lib/litegraph/public/css/litegraph.css'
-import router from '@/router'
+import router, { cloudAccountSurfacesEnabled } from '@/router'
 import { isDesktop, isNightly } from '@/platform/distribution/types'
 import { stripPaymentReturnParams } from '@/platform/cloud/subscription/utils/paymentReturnUrl'
 import { useToastStore } from '@/platform/updates/common/toastStore'
@@ -82,12 +82,14 @@ const ComfyUIPreset = definePreset(Aura, {
   }
 })
 
-const phaseFirebase = bootstrapTracer.startPhase('startup/firebase-init')
-// Throws unless remote config has settled; the awaited remote-config phase above guarantees it has.
-try {
-  firebaseIdentity.initialize()
-} finally {
-  phaseFirebase.stop()
+if (!isHyperStudioEmbedded) {
+  const phaseFirebase = bootstrapTracer.startPhase('startup/firebase-init')
+  // Throws unless remote config has settled; the awaited remote-config phase above guarantees it has.
+  try {
+    firebaseIdentity.initialize()
+  } finally {
+    phaseFirebase.stop()
+  }
 }
 
 const app = createApp(App)
@@ -168,7 +170,7 @@ app
 
 markStoresReady()
 
-if (isCloud && hasHostTelemetryBridge) {
+if (cloudAccountSurfacesEnabled && hasHostTelemetryBridge) {
   syncHostUserIdWithFirebaseAuth()
 }
 

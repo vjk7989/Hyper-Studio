@@ -8,6 +8,7 @@ import {
 import type { RouteLocationNormalized } from 'vue-router'
 
 import { useFeatureFlags } from '@/composables/useFeatureFlags'
+import { isHyperStudioEmbedded } from '@/platform/distribution/hyperStudio'
 import { isCloud, isDesktop } from '@/platform/distribution/types'
 import { useTelemetry } from '@/platform/telemetry'
 import { useDialogService } from '@/services/dialogService'
@@ -22,7 +23,19 @@ import { installPreservedQueryTracker } from '@/platform/navigation/preservedQue
 import { unmatchedRouteRedirect } from '@/platform/navigation/unmatchedRoute'
 import { preserveLoggedOutShareAuthAttribution } from '@/platform/workflow/sharing/utils/shareAuthAttribution'
 
-const cloudOnboardingRoutes = isCloud
+/**
+ * The embedded canvas is served by the local workflow engine and has no
+ * Cloud account to authenticate against. Cloud routes and guards that can
+ * open sign-in or redeem an account stay unregistered there.
+ *
+ * Exported so startup only syncs a cloud host identity when these cloud
+ * routes and guards are active. Standalone desktop Firebase setup uses its
+ * own distribution path.
+ */
+export const cloudAccountSurfacesEnabled =
+  isCloud && !isHyperStudioEmbedded
+
+const cloudOnboardingRoutes = cloudAccountSurfacesEnabled
   ? (await import('./platform/cloud/onboarding/onboardingCloudRoutes'))
       .cloudOnboardingRoutes
   : []
@@ -58,7 +71,7 @@ const router = createRouter({
       // we need this base path or assets will incorrectly resolve from 'http://localhost:7801/'
       createWebHistory(basePath),
   routes: [
-    ...(isCloud ? cloudOnboardingRoutes : []),
+    ...(cloudAccountSurfacesEnabled ? cloudOnboardingRoutes : []),
     {
       path: '/',
       component: LayoutDefault,
@@ -99,16 +112,18 @@ const router = createRouter({
 
 installPreservedQueryTracker(router, PRESERVED_QUERY_DEFINITIONS)
 
-router.beforeEach((to, _from, next) => {
-  captureOAuthRequestId(to.query)
-  next()
-})
+if (cloudAccountSurfacesEnabled) {
+  router.beforeEach((to, _from, next) => {
+    captureOAuthRequestId(to.query)
+    next()
+  })
+}
 
 router.afterEach(() => {
   trackPageView()
 })
 
-if (isCloud) {
+if (cloudAccountSurfacesEnabled) {
   const { flags } = useFeatureFlags()
   const PUBLIC_ROUTE_NAMES = new Set([
     'cloud-login',
