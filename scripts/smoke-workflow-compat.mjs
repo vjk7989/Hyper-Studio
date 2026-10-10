@@ -112,9 +112,12 @@ try {
   const guidanceVisible = await canvas.getByText(`Missing node: ${unknownType}`, { exact: true }).first().isVisible()
   const systemStats = await (await fetch(new URL('system_stats', engine.url))).json()
   const managerEnabled = systemStats?.system?.argv?.includes('--enable-manager') === true
-  await canvas.locator('body').press('Escape')
-  const viewDetails = canvas.getByTestId('error-overlay-see-errors')
-  if (await viewDetails.count()) await viewDetails.click({ timeout: 5000 })
+  const templateGallery = canvas.locator('[data-dialog-key="global-workflow-template-selector"]')
+  if (await templateGallery.isVisible()) {
+    await templateGallery.getByRole('button', { name: /close dialog/i }).click()
+  }
+  await canvas.getByRole('button', { name: 'Toggle properties panel' }).click({ timeout: 5000 })
+  await canvas.getByTestId('panel-tab-errors').click({ timeout: 5000 })
   const missingCard = canvas.getByTestId('missing-node-card')
   await missingCard.waitFor({ state: 'attached', timeout: 10000 }).catch(() => {})
   const installButton = missingCard.getByText('Install', { exact: true }).first()
