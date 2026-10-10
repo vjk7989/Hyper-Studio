@@ -11,6 +11,9 @@ export type WorkflowLaunchPaths = {
   database: string
   models: string
   cache: string
+  extensions: string
+  extraPathsConfig: string
+  processTemp: string
 }
 
 export function prepareWorkflowPaths(projectFolder: string, sharedRoot: string): WorkflowLaunchPaths {
@@ -21,15 +24,25 @@ export function prepareWorkflowPaths(projectFolder: string, sharedRoot: string):
   const database = resolveProjectPath(projectFolder, '.hyper-studio/workflow/workflow.db')
   const models = path.join(sharedRoot, 'models')
   const cache = path.join(sharedRoot, 'caches', 'workflow')
-  for (const dir of [models, cache]) {
+  const extensions = path.join(sharedRoot, 'extensions', 'workflow')
+  const extraPathsConfig = path.join(cache, 'extra-paths.yaml')
+  const processTemp = path.join(cache, 'tmp')
+  for (const dir of [models, cache, extensions, processTemp]) {
     let current = fs.realpathSync(sharedRoot)
     for (const segment of path.relative(current, dir).split(path.sep).filter(Boolean)) {
       current = path.join(current, segment)
       if (fs.existsSync(current) && fs.lstatSync(current).isSymbolicLink()) throw new Error('Workflow storage path uses a symbolic link')
     }
   }
-  for (const dir of [input, output, user, temp, models, cache]) fs.mkdirSync(dir, { recursive: true })
-  return { input, output, user, temp, database, models, cache }
+  for (const dir of [input, output, user, temp, models, cache, extensions, processTemp]) fs.mkdirSync(dir, { recursive: true })
+  try {
+    if (fs.lstatSync(extraPathsConfig).isSymbolicLink()) throw new Error('Workflow storage path uses a symbolic link')
+  } catch (error) {
+    if (!(error instanceof Error && 'code' in error && error.code === 'ENOENT')) throw error
+  }
+  const quoted = JSON.stringify(extensions.replaceAll('\\', '/'))
+  fs.writeFileSync(extraPathsConfig, `hyper_studio:\n  is_default: true\n  custom_nodes: ${quoted}\n`, { mode: 0o600 })
+  return { input, output, user, temp, database, models, cache, extensions, extraPathsConfig, processTemp }
 }
 
 export function workflowArguments(paths: WorkflowLaunchPaths, frontendRoot: string, port: number): string[] {
@@ -41,6 +54,7 @@ export function workflowArguments(paths: WorkflowLaunchPaths, frontendRoot: stri
     '--user-directory', paths.user, '--temp-directory', paths.temp,
     '--database-url', `sqlite:///${dbPath}`,
     '--models-directory', paths.models, '--front-end-root', frontendRoot,
+    '--extra-model-paths-config', paths.extraPathsConfig, '--enable-manager',
   ]
 }
 

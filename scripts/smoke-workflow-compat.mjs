@@ -20,6 +20,12 @@ const env = {
 const app = await electron.launch({ executablePath, cwd: root, env, args: ['--no-sandbox'], timeout: 45000 })
 try {
   const window = await app.firstWindow({ timeout: 45000 })
+  const installRequests = []
+  window.on('request', request => {
+    if (request.method() === 'POST' && /\/(?:manager|customnode)\/.*(?:install|queue)/.test(request.url())) {
+      installRequests.push(request.url())
+    }
+  })
   await window.waitForLoadState('domcontentloaded', { timeout: 45000 })
   // Reuse the already bootstrapped managed runtime without sharing Electron user data.
   const shared = path.join(root, '.local-tmp', 'packaged-electron-smoke', 'shared-storage')
@@ -66,7 +72,8 @@ try {
   if (!Array.isArray(original?.nodes)) throw new Error('Canvas did not provide workflow JSON')
   const knownId = 37
   const unknownId = 90909
-  const unknownType = 'HyperStudioThirdPartyNodeForCompatibilityTest'
+  // ImpactInt is a real third-party node type from the upstream browser fixture manifest.
+  const unknownType = 'ImpactInt'
   const fixture = structuredClone(original)
   fixture.nodes.push({
     id: knownId, type: 'EmptyImage', pos: [100, 100], size: [240, 90],
@@ -77,7 +84,7 @@ try {
   fixture.nodes.push({
     id: unknownId, type: unknownType, pos: [400, 400], size: [240, 80],
     flags: {}, order: fixture.nodes.length, mode: 0, inputs: [], outputs: [],
-    properties: {}, widgets_values: [],
+    properties: { cnr_id: 'comfyui-impact-pack' }, widgets_values: [42],
   })
   fixture.last_node_id = Math.max(Number(fixture.last_node_id) || 0, unknownId)
   const source = path.join(home, 'third-party-workflow.json')
@@ -92,8 +99,8 @@ try {
   await window.waitForTimeout(1500)
   const loaded = await snapshot()
   if (!loaded.nodes.some(node => node.id === knownId)) throw new Error(`Imported workflow lost known node ID ${knownId}`)
-  if (!loaded.nodes.some(node => node.id === unknownId && node.type === unknownType)) {
-    throw new Error(`Imported workflow lost unknown node ${unknownId}/${unknownType}`)
+  if (!loaded.nodes.some(node => node.id === unknownId && node.type === unknownType && node.properties?.cnr_id === 'comfyui-impact-pack')) {
+    throw new Error(`Imported workflow lost third-party node ${unknownId}/${unknownType} or its package ID`)
   }
   const reviewText = await canvas.locator('body').innerText()
   const reviewEvidence = reviewText.split('\n').filter(line => /missing|HyperStudioThirdParty|install/i.test(line)).slice(0, 12)
@@ -103,8 +110,38 @@ try {
     throw new Error(`Missing-node review did not explain ${unknownType}; evidence: ${JSON.stringify(reviewEvidence)}`)
   }
   const guidanceVisible = await canvas.getByText(`Missing node: ${unknownType}`, { exact: true }).first().isVisible()
+  const systemStats = await (await fetch(new URL('system_stats', engine.url))).json()
+  const managerEnabled = systemStats?.system?.argv?.includes('--enable-manager') === true
+  await canvas.locator('body').press('Escape')
+  const viewDetails = canvas.getByTestId('error-overlay-see-errors')
+  if (await viewDetails.count()) await viewDetails.click({ timeout: 5000 })
+  const missingCard = canvas.getByTestId('missing-node-card')
+  await missingCard.waitFor({ state: 'attached', timeout: 10000 }).catch(() => {})
+  const installButton = missingCard.getByText('Install', { exact: true }).first()
+  await installButton.waitFor({ state: 'attached', timeout: 20000 }).catch(() => {})
+  const missingCardCount = await missingCard.count()
+  const cardText = missingCardCount ? await missingCard.innerText() : ''
+  const installButtons = await missingCard.getByText('Install', { exact: true }).count()
+  const actions = missingCardCount ? await missingCard.locator('button').evaluateAll(buttons => buttons.map(button => ({ text: button.textContent?.trim(), label: button.getAttribute('aria-label') }))) : []
+  process.stdout.write(`INSTALL_DIAGNOSTIC managerEnabled=${managerEnabled} missingCardCount=${missingCardCount} installButtons=${installButtons} actions=${JSON.stringify(actions)} card=${JSON.stringify(cardText.slice(0, 500))}\n`)
   await window.screenshot({ path: path.join(home, 'compatibility-passed.png') })
   process.stdout.write(`PASS: imported third-party workflow; preserved IDs ${knownId}, ${unknownId}; missing-node guidance surfaced ${unknownType}; guidance visible=${guidanceVisible}\n`)
+  if (!managerEnabled || installButtons === 0) {
+    throw new Error('PHASE 4 GATE: reviewed third-party node installation is unavailable in the packaged managed engine')
+  }
+  const extensions = path.join(shared, 'extensions', 'workflow')
+  const extensionsBefore = fs.readdirSync(extensions).sort()
+  await installButton.click({ timeout: 5000 })
+  await canvas.getByText('Review third-party node installation', { exact: true }).waitFor({ state: 'visible', timeout: 10000 })
+  const reviewContents = await canvas.locator('body').innerText()
+  if (!reviewContents.includes('ComfyUI Impact Pack') || !reviewContents.includes('https://github.com/ltdrdata/ComfyUI-Impact-Pack')) {
+    throw new Error('Install review did not show the node pack name and source repository')
+  }
+  if (JSON.stringify(fs.readdirSync(extensions).sort()) !== JSON.stringify(extensionsBefore)) {
+    throw new Error('Node pack files changed before install review was confirmed')
+  }
+  if (installRequests.length) throw new Error(`Install request was sent before review confirmation: ${installRequests.join(', ')}`)
+  process.stdout.write('PASS: install action opens explicit third-party source review before any package download\n')
 } finally {
   await app.close()
 }
