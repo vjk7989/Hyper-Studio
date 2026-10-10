@@ -12,6 +12,7 @@ import {
 } from '../lib/project-storage'
 import { mergeWorkspaceMedia, projectRelativePath } from '../lib/workspace-media'
 import { hydrateProjectFromWorkspace, prepareWorkspaceProject } from '../lib/workspace-project-data'
+import { loadAfterWorkspaceWrite } from '../lib/workspace-write-barrier'
 
 interface ProjectContextType {
   currentTab: ProjectTab
@@ -33,7 +34,7 @@ interface ProjectContextType {
   workspaceSaveError: string | null
   deleteProject: (id: string) => void
   removeProject: (id: string, mode: 'forget' | 'trash') => Promise<void>
-  renameProject: (id: string, name: string) => void
+  renameProject: (id: string, name: string) => Promise<void>
   activateProject: (id: string) => void
   clearActiveProject: () => void
   reloadProjectIds: () => void
@@ -187,9 +188,11 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
       return cached
     }
     try {
-      const manifest = await window.electronAPI.openWorkspaceProject({ folder: cached.projectFolder })
+      const folder = cached.projectFolder
+      const manifest = await loadAfterWorkspaceWrite(writeQueues.current, id, () =>
+        window.electronAPI.openWorkspaceProject({ folder }))
       if (manifest.projectId !== id) throw new Error('The selected folder belongs to another project.')
-      return await registerWorkspaceProject(manifest, cached.projectFolder)
+      return await registerWorkspaceProject(manifest, folder)
     } catch (error) {
       setWorkspaceOpenStatus('error')
       setWorkspaceOpenError(error instanceof Error ? error.message : String(error))
@@ -315,12 +318,13 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
     forgetProjectLocally(id)
   }, [forgetProjectLocally])
 
-  const renameProject = useCallback((id: string, name: string) => {
+  const renameProject = useCallback(async (id: string, name: string) => {
     mutateProject(id, project => ({
       ...project,
       name,
       updatedAt: Date.now(),
     }))
+    await writeQueues.current.get(id)
   }, [mutateProject])
 
   const addAsset = useCallback((projectId: string, assetData: Omit<Asset, 'id' | 'createdAt'>): Asset => {

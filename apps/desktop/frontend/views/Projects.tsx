@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { Plus, Folder, MoreVertical, Trash2, Pencil, Film, Workflow, FolderOpen } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router";
 import { Button } from "@ds/Button/Button";
@@ -21,6 +21,20 @@ function formatDate(timestamp: number): string {
     hour: "2-digit",
     minute: "2-digit",
   });
+}
+
+function handleFormDialogKeyDown(event: ReactKeyboardEvent<HTMLFormElement>, close: () => void, busy = false) {
+  if (event.key === 'Escape' && !busy) {
+    event.preventDefault();
+    close();
+  }
+  if (event.key !== 'Tab') return;
+  const focusable = event.currentTarget.querySelectorAll<HTMLElement>('input:not(:disabled), button:not(:disabled), select:not(:disabled), textarea:not(:disabled)');
+  if (!focusable.length) return;
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+  else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
 }
 
 function ProjectCard({
@@ -204,6 +218,8 @@ export function ProjectsPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [renamingId, setRenamingId] = useState<string | null>(null);
   const [renameValue, setRenameValue] = useState("");
+  const [renameError, setRenameError] = useState<string | null>(null);
+  const [isRenaming, setIsRenaming] = useState(false);
   const [removalProjectId, setRemovalProjectId] = useState<string | null>(null);
   const [removalMode, setRemovalMode] = useState<'forget' | 'trash'>('forget');
   const [removalError, setRemovalError] = useState<string | null>(null);
@@ -222,6 +238,24 @@ export function ProjectsPage() {
       (target ?? document.querySelector<HTMLElement>('[data-testid="new-project-card"]'))?.focus();
     });
   }, [removalProjectId]);
+
+  const closeCreateDialog = () => {
+    setIsCreating(false);
+    setNewProjectName("");
+    setProjectFolder(null);
+    setCreateError(null);
+    requestAnimationFrame(() => document.querySelector<HTMLElement>('[data-testid="new-project-card"]')?.focus());
+  };
+
+  const closeRenameDialog = () => {
+    const targetId = renamingId;
+    setRenamingId(null);
+    setRenameValue("");
+    setRenameError(null);
+    requestAnimationFrame(() => {
+      if (targetId) document.querySelector<HTMLElement>(`[data-testid="project-card-menu-${CSS.escape(targetId)}"]`)?.focus();
+    });
+  };
 
   useEffect(() => {
     if (migrationStatus.status !== "needed" || migrationStartedRef.current)
@@ -339,14 +373,21 @@ export function ProjectsPage() {
   const handleRenameProject = (id: string, currentName: string) => {
     setRenamingId(id);
     setRenameValue(currentName);
+    setRenameError(null);
   };
 
-  const submitRename = () => {
-    if (renamingId && renameValue.trim()) {
-      renameProject(renamingId, renameValue.trim());
+  const submitRename = async () => {
+    if (!renamingId || !renameValue.trim() || isRenaming) return;
+    setIsRenaming(true);
+    setRenameError(null);
+    try {
+      await renameProject(renamingId, renameValue.trim());
+      setIsRenaming(false);
+      closeRenameDialog();
+    } catch (error) {
+      setRenameError(error instanceof Error ? error.message : 'Could not save the new project name.');
+      setIsRenaming(false);
     }
-    setRenamingId(null);
-    setRenameValue("");
   };
 
   const submitRemoval = async () => {
@@ -442,13 +483,18 @@ export function ProjectsPage() {
       {isCreating && (
         <div className="fixed inset-0 bg-surface-overlay flex items-center justify-center z-50">
           <form
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="project-create-title"
+            aria-busy={isSubmitting}
             className="bg-surface-primary rounded-[var(--radius-lg)] p-6 w-full max-w-md border border-separator"
+            onKeyDown={event => handleFormDialogKeyDown(event, closeCreateDialog, isSubmitting)}
             onSubmit={(e) => {
               e.preventDefault();
               void handleCreateProject();
             }}
           >
-            <Text as="h2" variant="heading" size="lg" className="mb-4">
+            <Text as="h2" id="project-create-title" variant="heading" size="lg" className="mb-4">
               Create New Project
             </Text>
             <TextField
@@ -486,12 +532,8 @@ export function ProjectsPage() {
                 hierarchy="secondary"
                 size="md"
                 label="Cancel"
-                onClick={() => {
-                  setIsCreating(false);
-                  setNewProjectName("");
-                  setProjectFolder(null);
-                  setCreateError(null);
-                }}
+                onClick={closeCreateDialog}
+                disabled={isSubmitting}
               />
               <Button
                 appearance="brand"
@@ -509,13 +551,18 @@ export function ProjectsPage() {
       {renamingId && (
         <div className="fixed inset-0 bg-surface-overlay flex items-center justify-center z-50">
           <form
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="project-rename-title"
+            aria-busy={isRenaming}
             className="bg-surface-primary rounded-[var(--radius-lg)] p-6 w-full max-w-md border border-separator"
+            onKeyDown={event => handleFormDialogKeyDown(event, closeRenameDialog, isRenaming)}
             onSubmit={(e) => {
               e.preventDefault();
-              submitRename();
+              void submitRename();
             }}
           >
-            <Text as="h2" variant="heading" size="lg" className="mb-4">
+            <Text as="h2" id="project-rename-title" variant="heading" size="lg" className="mb-4">
               Rename Project
             </Text>
             <TextField
@@ -524,16 +571,15 @@ export function ProjectsPage() {
               placeholder="Project name"
               autoFocus
             />
+            {renameError && <p role="alert" className="mt-3 text-sm text-fg-danger">{renameError}</p>}
             <div className="flex justify-end gap-3 mt-6">
               <Button
                 appearance="neutral"
                 hierarchy="secondary"
                 size="md"
                 label="Cancel"
-                onClick={() => {
-                  setRenamingId(null);
-                  setRenameValue("");
-                }}
+                onClick={closeRenameDialog}
+                disabled={isRenaming}
               />
               <Button
                 appearance="brand"
@@ -541,7 +587,8 @@ export function ProjectsPage() {
                 size="md"
                 label="Save"
                 type="submit"
-                disabled={!renameValue.trim()}
+                disabled={!renameValue.trim() || isRenaming}
+                isLoading={isRenaming}
               />
             </div>
           </form>
