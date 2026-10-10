@@ -433,9 +433,7 @@ export function ProjectsPage() {
             {removalError && <div role="alert"><Text as="p" variant="body" size="sm" className="mt-4 text-fg-danger">{removalError}</Text></div>}
             <div className="mt-6 flex justify-end gap-3">
               <button type="button" disabled={isRemoving} onClick={() => closeRemovalDialog()} className="rounded-lg border border-separator px-4 py-2 text-fg-primary hover:bg-action disabled:opacity-50">Cancel</button>
-              <button type="button" data-testid="confirm-project-removal" disabled={isRemoving} onClick={() => { void submitRemoval(); }} className={`rounded-lg px-4 py-2 text-white disabled:opacity-50 ${removalMode === 'trash' ? 'bg-red-700 hover:bg-red-800' : 'bg-brand hover:opacity-90'}`}>
-                {isRemoving ? 'Removing…' : removalMode === 'trash' ? 'Move to Trash' : 'Remove project'}
-              </button>
+              <Button type="button" data-testid="confirm-project-removal" appearance={removalMode === 'trash' ? 'danger' : 'brand'} hierarchy="primary" size="md" disabled={isRemoving} isLoading={isRemoving} label={removalMode === 'trash' ? 'Move to Trash' : 'Remove project'} onClick={() => { void submitRemoval(); }} />
             </div>
           </div>
         </div>
