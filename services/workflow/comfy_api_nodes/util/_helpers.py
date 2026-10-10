@@ -78,6 +78,16 @@ def default_base_url() -> str:
     return normalize_comfy_api_base(getattr(args, "comfy_api_base", "https://api.comfy.org"))
 
 
+def ensure_managed_api_url_allowed(url: str) -> None:
+    """Keep managed projects off the upstream account proxy before I/O starts."""
+    if not os.environ.get("HYPER_STUDIO_PROJECT_ID"):
+        return
+    parsed = urlparse(url)
+    host = (parsed.hostname or "").lower()
+    if (not parsed.scheme and not parsed.netloc) or host == "comfy.org" or host.endswith(".comfy.org"):
+        raise RuntimeError("Upstream cloud API calls are unavailable in managed Hyper-Studio projects.")
+
+
 async def diagnose_connectivity() -> dict[str, bool]:
     """Best-effort connectivity diagnostics to distinguish local vs. server issues."""
     results = {
@@ -112,6 +122,8 @@ async def diagnose_connectivity() -> dict[str, bool]:
         if not results["internet_accessible"]:
             return results
 
+        if os.environ.get("HYPER_STUDIO_PROJECT_ID"):
+            return results
         parsed = urlparse(default_base_url())
         health_url = f"{parsed.scheme}://{parsed.netloc}/health"
         with contextlib.suppress(ClientError, OSError):

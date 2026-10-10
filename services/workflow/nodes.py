@@ -2572,6 +2572,13 @@ async def init_builtin_extra_nodes():
 
 
 async def init_builtin_api_nodes():
+    # These upstream partner nodes all submit through the Comfy account proxy.
+    # Hyper-Studio's managed engine uses first-party profile-backed nodes
+    # instead. Leave imported partner node IDs in workflow JSON so the canvas
+    # can report them as missing without rewriting a user's workflow.
+    if os.environ.get("HYPER_STUDIO_PROJECT_ID"):
+        return []
+
     api_nodes_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "comfy_api_nodes")
     api_nodes_files = sorted(glob.glob(os.path.join(api_nodes_dir, "nodes_*.py")))
 

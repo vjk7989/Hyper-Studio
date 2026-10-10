@@ -18,6 +18,7 @@ from . import request_logger
 from ._helpers import (
     default_base_url,
     diagnose_connectivity,
+    ensure_managed_api_url_allowed,
     get_comfy_api_headers,
     is_processing_interrupted,
     sleep_with_interrupt,
@@ -59,6 +60,8 @@ async def download_url_to_bytesio(
     """
     if not isinstance(dest, (str, Path)) and not hasattr(dest, "write"):
         raise ValueError("dest must be a path (str|Path) or a binary-writable object providing .write().")
+
+    ensure_managed_api_url_allowed(url)
 
     attempt = 0
     delay = retry_delay

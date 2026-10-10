@@ -9,6 +9,7 @@ from aiohttp import web
 from aiohttp.test_utils import TestClient, TestServer
 
 from comfy.cli_args import args
+args.cpu = True
 import server
 
 
@@ -53,3 +54,16 @@ async def test_csp_header(monkeypatch, offline, expect_csp):
         assert "connect-src 'self' data:" in csp
     else:
         assert csp is None
+
+
+@pytest.mark.asyncio
+async def test_managed_offline_csp_excludes_upstream_cloud(monkeypatch):
+    monkeypatch.setattr(args, "offline", True)
+    monkeypatch.setenv("HYPER_STUDIO_PROJECT_ID", "project-1")
+    prompt_server = server.PromptServer(None, MagicMock(enabled=False))
+    prompt_server.app.router.add_get("/ping", pong)
+    async with TestClient(TestServer(prompt_server.app)) as client:
+        resp = await client.get("/ping")
+        csp = resp.headers.get("Content-Security-Policy")
+    assert "connect-src 'self' data: blob:" in csp
+    assert "api.comfy.org" not in csp

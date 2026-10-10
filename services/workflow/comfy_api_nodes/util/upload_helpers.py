@@ -13,7 +13,7 @@ from pydantic import BaseModel, Field
 from comfy_api.latest import IO, Input, Types
 
 from . import request_logger
-from ._helpers import diagnose_connectivity, is_processing_interrupted, sleep_with_interrupt
+from ._helpers import diagnose_connectivity, ensure_managed_api_url_allowed, is_processing_interrupted, sleep_with_interrupt
 from .client import (
     ApiEndpoint,
     _display_time_progress,
@@ -241,6 +241,7 @@ async def upload_file(
     Raises:
         ProcessingInterrupted, LocalNetworkError, ApiServerError, Exception
     """
+    ensure_managed_api_url_allowed(upload_url)
     if isinstance(file, BytesIO):
         with contextlib.suppress(Exception):
             file.seek(0)

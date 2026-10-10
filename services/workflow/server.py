@@ -254,7 +254,8 @@ def create_block_external_middleware():
         else:
             response = await handler(request)
 
-        response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self'; connect-src 'self' data: blob: https://api.comfy.org; frame-src 'self'; object-src 'self';"
+        cloud_origin = "" if os.environ.get("HYPER_STUDIO_PROJECT_ID") else " https://api.comfy.org"
+        response.headers['Content-Security-Policy'] = f"default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self'; connect-src 'self' data: blob:{cloud_origin}; frame-src 'self'; object-src 'self';"
         return response
 
     return block_external_middleware

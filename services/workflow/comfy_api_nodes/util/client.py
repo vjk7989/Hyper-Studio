@@ -31,6 +31,7 @@ from ._helpers import (
     _retry_after_wait,
     default_base_url,
     diagnose_connectivity,
+    ensure_managed_api_url_allowed,
     get_comfy_api_headers,
     get_node_id,
     is_processing_interrupted,
@@ -867,6 +868,7 @@ async def _download_asset(asset_url: str, cfg: _RequestConfig) -> bytes:
 async def _request_base(cfg: _RequestConfig, expect_binary: bool):
     """Core request with retries, per-second interruption monitoring, true cancellation, and friendly errors."""
     url = cfg.endpoint.path
+    ensure_managed_api_url_allowed(url)
     parsed_url = urlparse(url)
     is_comfy_api_request = not parsed_url.scheme and not parsed_url.netloc  # is URL relative?
     if is_comfy_api_request:
