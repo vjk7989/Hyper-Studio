@@ -6,6 +6,13 @@ import { _electron as electron } from '../apps/workflow-ui/node_modules/@playwri
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const executablePath = process.env.HYPER_STUDIO_SMOKE_EXE || path.join(root, 'apps', 'desktop', 'release', 'win-unpacked', 'Hyper-Studio.exe')
 if (!fs.existsSync(executablePath)) throw new Error('Build the Windows unpacked app first')
+const resources = process.platform === 'darwin'
+  ? path.resolve(path.dirname(executablePath), '..', 'Resources')
+  : path.join(path.dirname(executablePath), 'resources')
+const packagedCustomNodes = path.join(resources, 'workflow-engine', 'custom_nodes')
+if (!fs.existsSync(packagedCustomNodes) || !fs.statSync(packagedCustomNodes).isDirectory()) {
+  throw new Error(`Packaged workflow engine is missing its custom_nodes directory: ${packagedCustomNodes}`)
+}
 const home = path.join(root, '.local-tmp', 'packaged-electron-smoke')
 for (const folder of [home, path.join(home, 'appdata'), path.join(home, 'localappdata'), path.join(home, 'temp')]) {
   fs.mkdirSync(folder, { recursive: true })
