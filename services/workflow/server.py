@@ -404,6 +404,13 @@ class PromptServer():
             response.headers["Expires"] = "0"
             return response
 
+        @routes.get("/hyper-studio/node-packs")
+        async def get_hyper_studio_node_packs(request):
+            if not os.environ.get("HYPER_STUDIO_PROJECT_ID"):
+                return web.Response(status=404)
+            from hyper_studio_pack_catalog import local_node_packs
+            return web.json_response(local_node_packs(request.query.getall("id", [])))
+
         @routes.get("/embeddings")
         def get_embeddings(request):
             embeddings = folder_paths.get_filename_list("embeddings")

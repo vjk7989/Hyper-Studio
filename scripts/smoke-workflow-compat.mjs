@@ -150,7 +150,7 @@ try {
   const [managerVersion, installedPacks, localCatalogResponse] = await Promise.all([
     fetch(new URL('v2/manager/version', engine.url)),
     fetch(new URL('v2/customnode/installed', engine.url)),
-    fetch(new URL('v2/customnode/getlist?mode=local&skip_update=true', engine.url)),
+    fetch(new URL('hyper-studio/node-packs?id=comfyui-impact-pack', engine.url)),
   ])
   if (!managerVersion.ok || !installedPacks.ok || !localCatalogResponse.ok) {
     throw new Error(`Managed engine did not expose local manager APIs: enabled=${managerEnabled}, version=${managerVersion.status}, installed=${installedPacks.status}, catalog=${localCatalogResponse.status}`)

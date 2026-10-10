@@ -21,7 +21,9 @@ export const useNodePacks = (
     const ids = get(packsIds).filter(Boolean)
     if (!ids.length) return []
     if (!isHyperStudioEmbedded) return getPacksByIds.call(ids)
-    const response = await api.fetchApi('/v2/customnode/getlist?mode=local&skip_update=true')
+    const params = new URLSearchParams()
+    ids.forEach((id) => params.append('id', id))
+    const response = await api.fetchApi(`/hyper-studio/node-packs?${params}`)
     if (!response.ok) return []
     return localManagerPacksForIds(await response.json(), ids)
   }
