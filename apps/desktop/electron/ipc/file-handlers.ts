@@ -18,7 +18,8 @@ import {
   resolvePathWithinDirectory,
   validateTempRecordingInput,
 } from '../path-validation'
-import { getProjectAssetsPath, getProjectFolder, removeProjectFolder, setProjectAssetsPath, setProjectFolder } from '../app-state'
+import { getProjectAssetsPath, getProjectFolder, setProjectAssetsPath, setProjectFolder } from '../app-state'
+import { unbindProject } from '../project-registry'
 import { extractVideoFrameToFile, getVideoDimensions } from '../export/ffmpeg-utils'
 import { createDownsampledThumbnail, getImageDimensions, getThumbnailPaths } from './image-utils'
 import { handle } from './typed-handle'
@@ -195,7 +196,7 @@ export function registerFileHandlers(): void {
 
   handle('removeProjectFolder', ({ projectId }) => {
     if (!/^[a-zA-Z0-9_-]+$/.test(projectId)) throw new Error('Invalid project ID')
-    removeProjectFolder(projectId)
+    unbindProject(projectId)
     return true
   })
   handle('openLtxApiKeyPage', async () => {

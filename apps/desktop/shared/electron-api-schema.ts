@@ -395,6 +395,10 @@ export const electronAPISchemas = {
     }),
     output: workspaceManifestSchema,
   },
+  removeWorkspaceProject: {
+    input: z.object({ projectId: z.string().regex(/^[a-zA-Z0-9_-]{1,128}$/), mode: z.enum(['forget', 'trash']) }),
+    output: z.object({ folder: z.string().nullable() }),
+  },
   importLegacyProject: {
     input: z.object({
       folder: z.string().min(1),

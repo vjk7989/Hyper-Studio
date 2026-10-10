@@ -2,7 +2,7 @@ import { app } from 'electron'
 import fs from 'node:fs'
 import path from 'node:path'
 import { randomUUID } from 'node:crypto'
-import { getProjectFolder, setProjectFolder } from './app-state'
+import { getProjectFolder, readAppState, removeProjectFolder, setProjectFolder } from './app-state'
 import { resolveProjectPath } from './project-workspace'
 
 type Registry = { version: 1; projects: Record<string, string> }
@@ -50,6 +50,36 @@ export function registeredProjectFolder(projectId: string): string {
   const manifest = JSON.parse(fs.readFileSync(resolveProjectPath(canonical, '.hyper-studio/project.json'), 'utf8')) as { projectId?: string }
   if (manifest.projectId !== projectId) throw new Error('Project folder manifest does not match ID')
   return canonical
+}
+
+/** A missing folder can still be forgotten; only a validated managed folder can be trashed. */
+export function projectFolderRecord(projectId: string): string | null {
+  if (!/^[a-zA-Z0-9_-]{1,128}$/.test(projectId)) throw new Error('Invalid project ID')
+  return readRegistry().projects[projectId] ?? getProjectFolder(projectId) ?? null
+}
+
+export function allProjectFolderRecords(): Array<{ projectId: string; folder: string }> {
+  return [
+    ...Object.entries(readRegistry().projects).map(([projectId, folder]) => ({ projectId, folder })),
+    ...Object.entries(readAppState().projectFolders ?? {}).map(([projectId, folder]) => ({ projectId, folder })),
+  ]
+}
+
+export function unbindProject(projectId: string): void {
+  if (!/^[a-zA-Z0-9_-]{1,128}$/.test(projectId)) throw new Error('Invalid project ID')
+  const registry = readRegistry()
+  if (registry.projects[projectId]) {
+    delete registry.projects[projectId]
+    const target = getProjectRegistryPath()
+    const temp = `${target}.${randomUUID()}.tmp`
+    try {
+      fs.writeFileSync(temp, JSON.stringify(registry, null, 2), { flag: 'wx', mode: 0o600 })
+      fs.renameSync(temp, target)
+    } finally {
+      if (fs.existsSync(temp)) fs.unlinkSync(temp)
+    }
+  }
+  removeProjectFolder(projectId)
 }
 
 export function getSharedStorageRoot(): string | null {

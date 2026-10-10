@@ -26,6 +26,8 @@ export class ProviderJobBroker {
   private readonly waiting = new Map<string, Array<{ job: ProviderJob; input: ProviderJobInput; profile: ProfileSnapshot }>>()
   private readonly active = new Map<string, number>()
   private readonly controllers = new Map<string, AbortController>()
+  private readonly removingProjects = new Set<string>()
+  private readonly closedProjects = new Set<string>()
   private readonly events = new EventEmitter()
   private readonly limit: number
 
@@ -46,8 +48,10 @@ export class ProviderJobBroker {
 
   async submit(input: ProviderJobInput): Promise<ProviderJob> {
     if (!input.prompt.trim() || !input.modelId.trim()) throw new Error('Prompt and model are required')
+    if (this.removingProjects.has(input.projectId) || this.closedProjects.has(input.projectId)) throw new Error('Project is closing')
     this.deps.projectFolder(input.projectId) // Verify trusted registry before queueing.
     const profile = structuredClone(await this.deps.profile(input.profileId))
+    if (this.removingProjects.has(input.projectId) || this.closedProjects.has(input.projectId)) throw new Error('Project is closing')
     if (profile.id !== input.profileId) throw new Error('Profile ID mismatch')
     const now = Date.now()
     const job: ProviderJob = { id: randomUUID(), projectId: input.projectId, profileId: input.profileId, modelId: input.modelId, status: 'queued', progress: 0, outputs: [], createdAt: now, updatedAt: now }
@@ -61,6 +65,23 @@ export class ProviderJobBroker {
   }
 
   get(jobId: string): ProviderJob | null { const job = this.jobs.get(jobId); return job ? structuredClone(job) : null }
+
+  beginProjectRemoval(projectId: string): (completed: boolean) => void {
+    if (this.removingProjects.has(projectId)) throw new Error('Project removal is already in progress')
+    if ([...this.jobs.values()].some(job => job.projectId === projectId && (job.status === 'queued' || job.status === 'running'))) {
+      throw new Error('Project has active generation jobs')
+    }
+    this.removingProjects.add(projectId)
+    return completed => {
+      this.removingProjects.delete(projectId)
+      if (completed) this.closedProjects.add(projectId)
+    }
+  }
+
+  resumeProject(projectId: string): void {
+    if (this.removingProjects.has(projectId)) throw new Error('Project removal is in progress')
+    this.closedProjects.delete(projectId)
+  }
 
   cancel(jobId: string): ProviderJob | null {
     const job = this.jobs.get(jobId)

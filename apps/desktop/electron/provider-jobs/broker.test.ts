@@ -36,6 +36,26 @@ async function terminal(broker: ProviderJobBroker, id: string): Promise<Provider
 }
 
 describe('provider job broker', () => {
+  it('blocks project removal while a job runs and prevents submissions until reopen', async () => {
+    let finish!: () => void
+    const held = new Promise<void>(resolve => { finish = resolve })
+    const { broker } = fixture(async url => {
+      if (String(url).endsWith('/create')) { await held; return Response.json({ video: { url: 'http://localhost:3000/output.mp4' } }) }
+      return new Response(Buffer.from('video'), { status: 200 })
+    })
+    const input = { projectId: 'project-1', profileId: 'p1', modelId: 'movie', prompt: 'sky' }
+    const job = await broker.submit(input)
+    assert.throws(() => broker.beginProjectRemoval('project-1'), /active generation jobs/)
+    finish()
+    assert.equal((await terminal(broker, job.id)).status, 'succeeded')
+    const finishRemoval = broker.beginProjectRemoval('project-1')
+    await assert.rejects(broker.submit(input), /Project is closing/)
+    finishRemoval(true)
+    await assert.rejects(broker.submit(input), /Project is closing/)
+    broker.resumeProject('project-1')
+    const second = await broker.submit(input)
+    assert.equal((await terminal(broker, second.id)).status, 'succeeded')
+  })
   it('saves generated output in registered project and snapshots profile keys', async () => {
     const requests: Array<{ url: string; auth?: string }> = []
     const { broker, folder, profile } = fixture(async (url, init) => {
