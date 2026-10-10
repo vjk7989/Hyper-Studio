@@ -1,9 +1,21 @@
 # Phase 5 surface-brand audit (Windows checkpoint)
 
-Status: **open**. This is a reproducible checkpoint, not a release pass. Run
+Status: **open**. This is a reproducible checkpoint, not a release pass. Phase 5 source fixes are committed through `7290c2f`; the final installed Windows gate and new macOS/Linux package gates are pending. Run
 `scripts/with-local-env.ps1 .tools/node-v26.8.2-win-x64/node.exe scripts/audit-branding.mjs`
 from the repository root after every fresh UI build/package. The full machine
 inventory stays in `.local-cache/brand-audit/audit.json`; it is not committed.
+
+## Current Phase 5 evidence (2026-10-10)
+
+| Gate | Evidence | Status |
+| --- | --- | --- |
+| Read-only tracked-source and built-tree audit | 21:04 local `.local-cache/phase5-final-brand-audit-diagnostic.log`: 232 source matches, 178 unallowlisted review candidates, 253 tracked visuals, zero residual legacy visual filenames in tracked source and three built trees (Vue dist, Windows workflow frontend, Windows remote UI). | **Diagnostic only.** It predates the latest Vue build/package; string matches require contextual review and media frames require visual inspection. |
+| Managed cloud policy | 10 focused Python tests passed; 65 upstream compatibility tests passed with 2 skipped; 8 provider-adapter and 8 server/CSP tests passed. | Source-level pass. Live hosted API/network behavior is not proven. |
+| Embedded account and node-pack unit tests | Five-file account suite: 79/79 passed. Two-file local catalog/pack suite: 32/32 passed. Direct Vue typecheck (`node_modules/.bin/vue-tsc --noEmit -p tsconfig.hyper-studio.json`) and latest embedded Vue build passed. | Focused pass. A later `useSettingUI.ts` filter was added after the first installed settings diagnostic; its final package behavior is pending. |
+| Windows package diagnostics | An earlier installed smoke passed canvas, JSON roundtrip, bidirectional media, and observed no account button or upstream Comfy/LTX request. Compatibility diagnostic retained IDs 37, 90909, and 91001; missing-node guidance and explicit source-review confirmation were visible, and task submission was intercepted before download. | Partial pass. The first settings diagnostic failed on an inherited `user` category; recheck a fresh installed build after the source filter. |
+| New platform packages | `.github/workflows/phase-4-platform-gate.yml` now includes Phase 5 catalog, account, typecheck, and brand checks. | **Pending** new macOS arm64 and Linux x64 run; the prior Phase 4 run is not Phase 5 evidence. |
+
+No model packs or live hosted credentials were used. The current checks do not prove a completed third-party node install, account-free behavior in every optional overlay, or all frame/theme/icon states.
 
 ## Scope and exact exceptions
 
@@ -23,50 +35,36 @@ An unallowlisted hit is a **review candidate**, not proof of visible branding.
 Internal CSS classes, store/type names, upstream provider labels, and inactive
 cloud code can match. Conversely, bitmap/video branding requires visual review.
 
-## Fresh packaged Windows scan
+## Historical packaged Windows scan and fixes
 
 The 2026-10-10 scan of a `win-unpacked` UI tree built at approximately 19:32
 found 300 tracked-source string/URL matches, 249 review candidates, and 253
 tracked visual assets. The packed workflow frontend still contained six old
-`comfy-*` asset **filenames**. The tracked source files with those names have
-already been removed; their binary contents had been replaced by a Hyper-Studio
-mark before removal. Their presence in both `apps/workflow-ui/dist` and the
-package indicates stale build output and requires a clean Vue dist rebuild and
-repackage. The names themselves remain a shipped fingerprint until that is done.
+`comfy-*` asset **filenames**. The tracked source files with those names were
+removed, and later clean local builds reached zero residual legacy visual filenames
+in the three available built trees. The latest build/package still needs a fresh audit.
 
-**Visible blocker:** `apps/workflow-ui/public/assets/images/og-image.png`
+**Former visible blocker:** `apps/workflow-ui/public/assets/images/og-image.png`
 (269,193 bytes) visibly says “Comfy CLOUD” and “Run ComfyUI anywhere.” The same
 image was present in Vue dist and the packaged Windows frontend. It is referenced
 by `src/renderer/extensions/firstRunTour/nudge/FirstRunTourNudge.vue`. The
-embedded first-run entry appears disabled, but the asset is bundled and must be
-replaced or excluded, then checked in a fresh package.
+embedded first-run entry appears disabled. The asset was replaced in `b95d6b3`;
+its final package appearance must still be checked.
 
-The bundled `cloud-subscription.webm` remains in Vue dist and Windows package.
+The earlier bundled `cloud-subscription.webm` remained in Vue dist and Windows package.
 A representative frame at one second showed a cloud/old-monitor scene with no
 visible upstream wordmark. It is cloud-promotion media, so release review should
 confirm the related subscription components cannot be reached in embedded mode
-or exclude the video. The desktop splash video frame and representative mode,
+or exclude the video. References were removed in `f029ad0`; the desktop splash video frame and representative mode,
 template, partner-node, and favicon images inspected at one second/static state
 showed no visible upstream mark. These spot checks do not prove every frame or
 light/dark/installer state is clean.
 
-## Actionable source candidates
+## Source candidates and disposition
 
-- `apps/desktop/electron/csp.ts` still permits `https://api.comfy.org` in both
-  development and production `connect-src`. The managed engine now blocks
-  upstream proxy requests; the desktop CSP should match that policy.
-- Workflow `src/locales/*/main.json` still has user-facing version mismatch
-  help links to `docs.comfy.org` and manager-incompatible messages linking to
-  the upstream manager. Rewrite the embedded presentation or route to local
-  Hyper-Studio help while preserving manager package compatibility IDs.
-- Dormant workflow account/cloud components still contain Comfy account terms,
-  privacy, pricing, key, and support links: `components/dialog/content/signin/`,
-  `platform/cloud/`, `platform/workspace/`, and `workbench/extensions/agent/`.
-  Verify all are unreachable in embedded mode or remove them from shipped code.
-- The first-run tutorial cards still point to `docs.comfy.org`; the bundled
-  first-run image above is the direct visual issue.
-- Workflow telemetry providers retain `mp.comfy.org` and `t.comfy.org` strings.
-  Runtime telemetry must stay disabled; verify no packaged request is sent.
+- Desktop production CSP no longer permits the upstream account origin (`be1dbdf`). Embedded help links and first-run destinations were rerouted or hidden (`8c4b1d6`), while manager package and workflow compatibility IDs remain.
+- Embedded account/login/billing dialogs, user route, cloud promotion, templates, and settings panels were removed from the active path (`1471b1a` through `01047cd`). Source-only upstream strings can remain in dormant compatibility code and legal attribution; a final installed navigation/network check must show they are unreachable.
+- The last local packaged smoke observed no account button or upstream Comfy/LTX request. The first settings diagnostic nevertheless found `user`; the `useSettingUI.ts` filter added afterward must be checked against a newly installed package. Do not infer a pass from the unit test alone.
 
 ## Managed workflow engine boundary
 
@@ -94,7 +92,12 @@ flows; no live provider credentials or model packs were used.
 
 ## Remaining release checks
 
-Replace/exclude the old OG image, clean Vue dist before packaging, rerun this
-audit on fresh Windows/macOS/Linux packages, inspect light and dark UI states,
-and verify network silence plus installer/window/OS icons. Phase 5 stays open
-until those checks pass.
+Rebuild/reinstall the latest Windows package, rerun the read-only audit, and
+pass the installed settings/account/compatibility smoke. Record the exact
+installer path, commit, commands, exit statuses, logs, and screenshots. Inspect
+light and dark UI states, rounded logo contrast, template gallery, node-pack
+review flow, network silence, and installer/window/OS icons. Run equivalent
+fresh macOS arm64 and Linux x64 package gates, keeping temp and caches inside
+the repository. Audit assets and locale values contextually; zero old filenames
+is not a complete visual or behavioral proof. Phase 5 stays open until these
+checks pass and their limits are recorded.

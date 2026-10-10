@@ -1,6 +1,30 @@
 # Phase handoff
 
-## Current checkpoint: Phase 4 managed Workflow integration (passed 2026-10-10)
+## Current checkpoint: Phase 5 brand and containment (open, 2026-10-10)
+
+Phase 4 passed its scoped gate. Phase 5 source work is committed through `7290c2f`; the final installed Windows brand/settings/compatibility gate and the new macOS arm64 and Linux x64 package gates are **pending**. Do not mark `todo.md` complete until those results and the release-limit review are recorded in [gates/phase-5-brand-audit.md](gates/phase-5-brand-audit.md).
+
+### Implemented in this checkpoint
+
+- Desktop and embedded Workflow use the rounded Hyper-Studio mark, bundled Geist, neutral light/dark colors, and 8 px primary corners. PrimeVue's primary scale is neutral. This is a token mapping; a full screen-by-screen visual review remains pending.
+- Embedded Workflow hides or blocks inherited account, billing, cloud promotion, upstream help, and telemetry paths. Managed engine projects do not register the 43 account-proxy node modules. The bridge to desktop provider jobs remains available to the first-party `HyperStudioGenerateVideo` node. Imported IDs stay byte-for-byte in workflow JSON, including missing cloud/third-party nodes.
+- A local `GET /hyper-studio/node-packs?id=<id>` endpoint reads the installed manager's bundled `custom-node-list.json`. The embedded canvas does not use the upstream registry for missing-pack lookup. Install guidance shows name/source and requires explicit confirmation before submitting a local manager task. The packaged diagnostic intercepted that submission before any download; actual third-party installation was not exercised.
+- The old OG image, cloud video references, upstream help links, optional icon artwork, and template labels were replaced or excluded from the embedded build. A later source change removes inherited account/billing categories from embedded Workflow settings after the first installed diagnostic revealed `user`.
+
+### Verified evidence and open gates
+
+- Earlier focused managed-cloud Python tests: 10 passed; upstream compatibility: 65 passed, 2 skipped; provider adapters: 8 passed; server/CSP: 8 passed. Embedded-account Vue suite: 79 passed across five files. Local node-pack Vue tests: 32 passed across two files. Direct `apps/workflow-ui/node_modules/.bin/vue-tsc --noEmit -p tsconfig.hyper-studio.json` passed on Windows; the later final account-free Vue build passed. `pnpm typecheck` itself was not a valid gate here because pnpm 11 attempted an install in the noninteractive shell; use the direct binary after a local install.
+- A read-only brand audit at 21:04 local time found 232 tracked-source matches, 178 unallowlisted review candidates, 253 visual assets, and **zero** legacy visual filenames in tracked source and the three built trees then present (Vue dist, Windows workflow frontend, Windows remote UI). Unallowlisted matches are not all visible branding; review is contextual. The scan predates the latest build and package.
+- Packaged diagnostics preserved imported workflow JSON and IDs 37/90909/91001, showed third-party missing-node guidance, and confirmed a reviewed manager task would be queued. A packaged smoke observed no account button or upstream Comfy/LTX request. The first installed settings diagnostic failed because `user` remained in its category list; source filtering and a focused test were committed afterward. Re-run the settings and no-upstream-request assertions in a **fresh installed Windows build**. The macOS/Linux Phase 5 workflow has been updated to run equivalent gates, but no new passing run is recorded here.
+- Limits: No live LTX/Runway/Veo/fal.ai credential acceptance; no model-pack inference; no completed third-party pack install; no final installer/uninstaller/signing proof on all platforms; no broker restart recovery. Keep license notices and internal workflow identifiers. The Phase 4 platform run remains evidence for Phase 4 only.
+
+### Next agent entry points
+
+1. Read [gates/phase-5-brand-audit.md](gates/phase-5-brand-audit.md), then verify the latest installed Windows package and record exact command/log/exit status. Inspect light and dark UI, Workflow settings categories, logo contrast, template gallery, missing-node guidance, and network silence.
+2. Run the updated `.github/workflows/phase-4-platform-gate.yml` on macOS arm64 and Linux x64; capture package smoke, Vue typecheck, account isolation, catalog tests, and brand-audit output before changing gate status.
+3. Refresh Graft and this handoff after fixes. Keep all installs, caches, temp, and generated media under the repository/shared project folder. Do not rerun model downloads for the baseline gate.
+
+## Prior checkpoint: Phase 4 managed Workflow integration (passed 2026-10-10)
 
 Phase 3 is checkpointed at `6859617`. The scoped Phase 4 integration gate passed on Windows locally and on macOS/Linux in [GitHub Actions run 38057082762](https://github.com/vjk7989/Hyper-Studio/actions/runs/38057082762). Phase 4 Graft build/map passed (7,058 files, 64,373 nodes, 158,848 edges); the separate codebase-memory MCP fast reindex is unverified and may be stale. The release rebrand remains Phase 5. See [gates/phase-4.md](gates/phase-4.md) for exact checks and limits.
 
