@@ -4,7 +4,7 @@ import { useReducedMotion } from "framer-motion";
 import { Button } from "@ds/Button/Button";
 import { Text } from "@ds/Text/Text";
 import ExternalLinkIcon from "@ds/assets/Icons/ExternalLink.svg?react";
-import LtxLogo from "@/assets/home/icons/LTX-logo.svg?react";
+import HyperStudioMark from "@/assets/brand/HyperStudioMark.svg?react";
 import {
   openExternalBrowserUrl,
   shouldInterceptHomeExternalUrl,
@@ -147,7 +147,7 @@ function FeatureCreditLine({ credit }: { credit: FeatureCredit }) {
     <div className={styles.meta}>
       <span className={styles.avatar} aria-hidden="true">
         {credit.affiliation === "ltx" ? (
-          <LtxLogo className={styles.avatarMark} aria-hidden="true" />
+          <HyperStudioMark className={styles.avatarMark} aria-hidden="true" />
         ) : (
           <Text variant="label" size="md">
             C

@@ -31,7 +31,7 @@ describe("feature chrome model", () => {
   it("matches LTX.io Text to Video details", () => {
     const details = buildFeatureDetails("text-to-video");
     assert.equal(details.credit.affiliation, "ltx");
-    assert.equal(details.credit.name, "LTX Team");
+    assert.equal(details.credit.name, "Hyper-Studio");
     assert.equal(details.rows[0]?.value, "Workflow");
     assert.equal(details.rows[1]?.value, "Text to Video");
     assert.equal(details.rows.length, 2);

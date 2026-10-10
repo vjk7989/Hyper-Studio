@@ -1,7 +1,7 @@
 import Lottie from "react-lottie";
 
 import { Flex } from "@ds/layout/Flex/Flex";
-import LtxLogo from "@/ltx-io/assets/LTX-Studio-logo.svg?react";
+import HyperStudioMark from "@/assets/brand/HyperStudioMark.svg?react";
 import animationData from "@/ltx-io/assets/lottie/infinite-progress.json";
 
 import styles from "./PageLoader.module.scss";
@@ -25,7 +25,7 @@ export function PageLoader() {
         width="120px"
       >
         <div className={styles.logo}>
-          <LtxLogo />
+          <HyperStudioMark aria-label="Hyper-Studio" />
         </div>
         <div className={styles.animation}>
           <Lottie

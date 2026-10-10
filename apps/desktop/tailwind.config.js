@@ -19,7 +19,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Geist', 'system-ui', 'sans-serif'],
       },
       colors: {
         // ── LTX.io design-system tokens ──
@@ -89,44 +89,44 @@ export default {
           DEFAULT: 'rgb(var(--surface) / <alpha-value>)',
           raised:  'rgb(var(--surface-raised) / <alpha-value>)',
         },
-        // ── Override blue palette → #2B61FF brand scale ──
+        // Legacy blue utility names use the neutral Hyper-Studio brand scale.
         // All blue-* classes use this scale; update these values to retheme
         blue: {
-          50:  '#eef3ff',
-          100: '#e0e9ff',
-          200: '#c7d7fe',
-          300: '#a5bafd',
-          400: '#7394fb',
-          500: '#2B61FF',
-          600: '#1a50e0',
-          700: '#1540b8',
-          800: '#163090',
-          900: '#162970',
-          950: '#0f1a45',
+          50:  '#fafafa',
+          100: '#f5f5f5',
+          200: '#e5e5e5',
+          300: '#d4d4d4',
+          400: '#a3a3a3',
+          500: '#737373',
+          600: '#525252',
+          700: '#404040',
+          800: '#262626',
+          900: '#171717',
+          950: '#0a0a0a',
         },
         // ── Legacy tokens (kept for compatibility) ──
-        background: '#1a1a1a',
-        foreground: '#ffffff',
-        card: '#242424',
-        'card-foreground': '#ffffff',
-        border: '#333333',
-        input: '#2a2a2a',
+        background: 'rgb(var(--bg) / <alpha-value>)',
+        foreground: 'rgb(var(--text) / <alpha-value>)',
+        card: 'rgb(var(--surface) / <alpha-value>)',
+        'card-foreground': 'rgb(var(--text) / <alpha-value>)',
+        border: 'rgb(var(--border-color) / <alpha-value>)',
+        input: 'rgb(var(--surface-raised) / <alpha-value>)',
         primary: {
           DEFAULT: 'rgb(var(--accent) / <alpha-value>)',
-          foreground: '#ffffff',
+          foreground: 'rgb(var(--primary-fg) / <alpha-value>)',
         },
         secondary: {
-          DEFAULT: '#3f3f46',
-          foreground: '#ffffff',
+          DEFAULT: 'rgb(var(--surface-raised) / <alpha-value>)',
+          foreground: 'rgb(var(--text) / <alpha-value>)',
         },
         muted: {
-          DEFAULT: '#27272a',
-          foreground: '#a1a1aa',
+          DEFAULT: 'rgb(var(--surface) / <alpha-value>)',
+          foreground: 'rgb(var(--text-muted) / <alpha-value>)',
         },
       },
       borderRadius: {
-        lg: '0.75rem',
-        md: '0.5rem',
+        lg: '0.5rem',
+        md: '0.375rem',
         sm: '0.25rem',
       },
     },

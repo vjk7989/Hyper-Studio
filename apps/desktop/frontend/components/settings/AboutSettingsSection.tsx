@@ -139,7 +139,7 @@ export function AboutSettingsSection(_props: {
         size="xs"
         className={contentStyles.aboutCopyright}
       >
-        Copyright © 2026 Lightricks
+        Copyright © 2026 Hyper-Studio contributors
       </Text>
     </SettingsStack>
   );

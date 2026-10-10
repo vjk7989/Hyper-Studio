@@ -9,7 +9,7 @@ import ResolutionSmIcon from "@ds/assets/Icons/Resolution/Sm.svg?react";
 import ResolutionXlIcon from "@ds/assets/Icons/Resolution/Xl.svg?react";
 import DurationIcon from "@ds/assets/Icons/StopWatch.svg?react";
 
-import LtxLogo from "@/assets/home/icons/LTX-logo.svg?react";
+import HyperStudioMark from "@/assets/brand/HyperStudioMark.svg?react";
 
 import type { ImageToVideoSchema } from "./definitions/imageToVideo";
 import type { FeatureFormPresentationAdapter } from "./FeatureFormView";
@@ -35,7 +35,7 @@ function getImageToVideoOptionIcon(
   field: OptionsFieldDef<ImageToVideoSchema>,
   option: FieldOption,
 ): ReactNode | undefined {
-  if (field.dataKey === "model") return <LtxLogo aria-hidden />;
+  if (field.dataKey === "model") return <HyperStudioMark aria-hidden width={24} height={24} />;
   if (field.dataKey === "duration") return <DurationIcon aria-hidden />;
   if (field.dataKey === "aspectRatio") {
     return getAspectRatioIcon(String(option.value));

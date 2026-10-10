@@ -128,7 +128,7 @@ export function buildFeatureDetails(featureId: HomeFeatureId): FeatureDetails {
     featureId,
     title: feature.title,
     blurb: listing.blurb,
-    credit: { name: "LTX Team", affiliation: "ltx" },
+    credit: { name: "Hyper-Studio", affiliation: "ltx" },
     rows: [categoriesRow(listing.categories), typeRow(listing.typeLabel)],
     externalLink: listing.huggingfaceUrl
       ? { label: "Hugging Face", url: listing.huggingfaceUrl }
