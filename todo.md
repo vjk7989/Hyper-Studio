@@ -1,6 +1,6 @@
 # Hyper-Studio phase to-do list
 
-Status: `[x]` verified complete; `[·]` in progress or only partly verified; `[ ]` not started. Phase 4's scoped integration gate, Phase 5 final5 Windows functional smokes, and macOS/Linux packaged gates passed. Final5 Windows dark Workflow contrast needs a fix and fresh package rerun; broader release checks remain open.
+Status: `[x]` verified complete; `[·]` in progress or only partly verified; `[ ]` not started. Phase 4's scoped integration gate and Phase 5 final7 Windows installed/macOS/Linux packaged gates passed. Broader release checks remain open.
 
 ## Phase 1 — Baseline and containment
 
@@ -48,12 +48,12 @@ Status: `[x]` verified complete; `[·]` in progress or only partly verified; `[ 
 - [x] Build and freshly install the final4 Windows NSIS; pass cold-start media/Settings smoke, three compatibility variants, reviewed queue interception, and removed cloud node ID 91001 on that embedded bundle.
 - [x] Verify the final4 Windows installer size/hash/unsigned status and read-only brand audit with zero legacy visual filenames in three built trees.
 - [x] Pass macOS arm64 and Linux x64 Phase 5 package smoke and brand-audit jobs in GitHub Actions run 38067616426.
-- [·] Freshly install final5 Windows NSIS; cold-start media/Settings smoke, three compatibility variants, and a real Manager queue/install/restart using a repository-local ImpactInt fixture passed. Host Import/Open now waits for canvas tab restoration after restart. Dark Workflow Overview heading and “NO FAVORITED INPUTS” contrast need a fix and fresh installed rerun.
-- [x] Verify final5 unsigned Windows installer artifact (419,861,117 bytes; SHA-256 `CB776DBDE7E64388B3EF00C129BB6A38BE917443F5A5E4754BEED332AAE564AC`) and read-only brand inventory with zero legacy visual filenames in three built trees. This is artifact evidence, not final visual acceptance.
-- [x] Pass macOS arm64 and Linux x64 final5 package smoke and brand-audit jobs in GitHub Actions run 38070896043.
+- [x] Freshly install final7 Windows NSIS; pass cold-start media/Settings smoke, three compatibility variants, and real Manager queue/install/restart using a repository-local ImpactInt fixture. Host Import/Open waits for canvas tab restoration after restart. Post-restart dark screenshot confirms legible Overview/favorites, minimap zoom/menu icons and 100%, and Run toolbar “0 active” after contrast fixes `29680d8` and `6003ba8`.
+- [x] Verify final7 unsigned Windows installer artifact (419,861,344 bytes; SHA-256 `920590668D80F52CB973CDB6D4FACB4BFE33ADC3DB6EEDF9B2A562CDE38E60D2`) and read-only brand inventory with zero legacy visual filenames in three built trees.
+- [x] Pass macOS arm64 and Linux x64 final7 package smoke and brand-audit jobs in GitHub Actions run 38073188574.
 - [·] Review generic auth compatibility chunks, 178 source string candidates, light/dark and optional visual states, and individual PSD/error-report interactions.
 - [·] Complete release packaging checks: scoped Windows installed and macOS/Linux packaged gates passed; macOS/Linux installer installation/uninstall, full rebrand review, installation from a real external third-party source, and live provider acceptance remain.
-- [x] Update architecture record, handoff, code map, and Graft graph (final5: 7,073 files; 64,447 nodes; 159,003 edges).
+- [x] Update architecture record, handoff, code map, and Graft graph (final7: 7,073 files; 64,447 nodes; 159,003 edges).
 - [·] Verify the separate codebase-memory snapshot after two fast-reindex worker crashes and finish the broader release checkpoint.
 
 ## Managed OpenCode V2 worker
