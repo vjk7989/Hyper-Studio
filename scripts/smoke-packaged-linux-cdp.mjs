@@ -10,7 +10,13 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const executable = process.env.HYPER_STUDIO_SMOKE_EXE || path.join(root, 'apps/desktop/release/linux-unpacked/hyper-studio')
 if (!fs.existsSync(executable)) throw new Error(`Packaged Linux executable is missing: ${executable}`)
 const home = path.join(root, '.local-tmp/packaged-electron-smoke/linux')
-for (const folder of [home, path.join(home, 'temp'), path.join(home, 'user-data'), path.join(home, 'config'), path.join(home, 'data'), path.join(home, 'state'), path.join(home, 'cache')]) fs.mkdirSync(folder, { recursive: true })
+// Chromium's Linux process singleton binds an AF_UNIX socket inside TMPDIR.
+// Keep this path short: sockaddr_un.sun_path has a 108-byte limit.
+const socketRoot = path.join(root, '.local-tmp/hs-linux')
+const temp = path.join(socketRoot, 'tmp')
+const userData = path.join(socketRoot, 'ud')
+if (Buffer.byteLength(temp) + 40 >= 108) throw new Error(`Repository path is too deep for Chromium's Linux singleton socket: ${temp}`)
+for (const folder of [home, temp, userData, path.join(home, 'config'), path.join(home, 'data'), path.join(home, 'state'), path.join(home, 'cache')]) fs.mkdirSync(folder, { recursive: true })
 // Give Electron regular files, not Node pipes: a blocked pipe write can stall
 // Chromium before its debugging endpoint or app window is created.
 const stdoutFd = fs.openSync(path.join(home, 'electron-stdout.log'), 'w')
@@ -83,7 +89,7 @@ function snapshot(label, pid) {
       catch { return `${tid}:unavailable` }
     }).join(' ')}`)
   } catch { lines.push('thread-wchan=(unavailable)') }
-  for (const crashFolder of [path.join(home, 'user-data/Crashpad'), path.join(home, 'user-data/Crash Reports')]) {
+  for (const crashFolder of [path.join(userData, 'Crashpad'), path.join(userData, 'Crash Reports')]) {
     if (!fs.existsSync(crashFolder)) continue
     const reports = fs.readdirSync(crashFolder, { recursive: true }).slice(0, 30)
     lines.push(`crash-reports=${path.relative(home, crashFolder)}:${reports.join(',') || '(empty)'}`)
@@ -104,10 +110,10 @@ const env = {
   ...(process.env.HYPER_STUDIO_DIAGNOSTIC_PRELOAD ? { LD_PRELOAD: process.env.HYPER_STUDIO_DIAGNOSTIC_PRELOAD } : {}),
   HOME: home,
   USERPROFILE: home,
-  TMPDIR: path.join(home, 'temp'), TEMP: path.join(home, 'temp'), TMP: path.join(home, 'temp'),
+  TMPDIR: temp, TEMP: temp, TMP: temp,
   XDG_CONFIG_HOME: path.join(home, 'config'), XDG_DATA_HOME: path.join(home, 'data'),
   XDG_STATE_HOME: path.join(home, 'state'), XDG_CACHE_HOME: path.join(home, 'cache'),
-  HYPER_STUDIO_USER_DATA: path.join(home, 'user-data'),
+  HYPER_STUDIO_USER_DATA: userData,
   ELECTRON_ENABLE_LOGGING: '1', ELECTRON_ENABLE_STACK_DUMPING: '1', ELECTRON_LOG_FILE: path.join(home, 'electron.log'),
 }
 async function probeVersion(binary, label) {

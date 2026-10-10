@@ -106,7 +106,7 @@ jobs:
             .local-tmp/packaged-electron-smoke/linux/strace-version.*
             .local-tmp/packaged-electron-smoke/linux/startup-diagnostics.log
             .local-tmp/packaged-electron-smoke/user-data/logs/session_*.log
-            .local-tmp/packaged-electron-smoke/linux/user-data/logs/session_*.log
+            .local-tmp/hs-linux/ud/logs/session_*.log
             .local-tmp/packaged-electron-smoke/shared-storage/caches/workflow/diagnostics/engine-startup.log
             .local-tmp/packaged-electron-smoke/shared-storage/caches/workflow/*/install.log
             .local-tmp/packaged-electron-smoke/linux/shared-storage/caches/workflow/diagnostics/engine-startup.log
