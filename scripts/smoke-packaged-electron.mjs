@@ -220,6 +220,12 @@ try {
   }
   if (!inputOutput) throw new Error('Editor-imported image did not execute as a Workflow input')
   await window.screenshot({ path: path.join(home, 'workflow-after-editor-import.png') })
+  await window.evaluate(() => localStorage.setItem('ltxio.theme', 'dark'))
+  await window.reload({ waitUntil: 'domcontentloaded' })
+  await window.locator('.ltx-io[data-theme="dark"]').first().waitFor({ state: 'visible', timeout: 15000 })
+  await window.locator('iframe[title="Hyper-Studio workflow canvas"]').waitFor({ state: 'visible', timeout: 45000 })
+  await window.frameLocator('iframe[title="Hyper-Studio workflow canvas"]').locator('#graph-canvas').waitFor({ state: 'visible', timeout: 45000 })
+  await window.screenshot({ path: path.join(home, 'workflow-dark.png') })
   if (upstreamCloudRequests.length) throw new Error(`Unexpected upstream cloud requests: ${upstreamCloudRequests.join(', ')}`)
   process.stdout.write('No account button or observed renderer request to upstream Comfy/LTX cloud during packaged workflow smoke\n')
   process.stdout.write(`Packaged Electron Workflow canvas, JSON roundtrip, and bidirectional usable media passed: ${title}\n`)

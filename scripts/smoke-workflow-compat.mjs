@@ -240,13 +240,16 @@ try {
   if (!fs.existsSync(cloudImported) || !fs.readFileSync(cloudImported).equals(fs.readFileSync(cloudSource))) {
     throw new Error('Imported cloud-node workflow JSON was not preserved byte for byte')
   }
-  const cloudLoaded = await snapshot()
-  if (!cloudLoaded.nodes.some(node => node.id === removedCloudId && node.type === removedCloudType)) {
+  let cloudLoaded
+  for (let attempt = 0; attempt < 40; attempt++) {
+    cloudLoaded = await snapshot()
+    if (cloudLoaded.nodes.some(node => node.id === removedCloudId && node.type === removedCloudType)) break
+    await new Promise(resolve => setTimeout(resolve, 250))
+  }
+  if (!cloudLoaded?.nodes.some(node => node.id === removedCloudId && node.type === removedCloudType)) {
     throw new Error('Imported cloud-node identifier was rewritten or dropped')
   }
-  if (!(await canvas.locator('body').innerText()).includes(`Missing node: ${removedCloudType}`)) {
-    throw new Error('Removed cloud node did not show missing-node guidance')
-  }
+  await canvas.getByText(`Missing node: ${removedCloudType}`, { exact: true }).first().waitFor({ state: 'visible', timeout: 10000 })
   process.stdout.write(`PASS: removed upstream cloud node ${removedCloudType} stays in imported JSON with ID ${removedCloudId} and shows missing-node guidance\n`)
 } finally {
   await app.close()
