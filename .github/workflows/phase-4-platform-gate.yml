@@ -64,7 +64,10 @@ jobs:
           cd apps/workflow-ui
           node node_modules/vitest/vitest.mjs run \
             src/platform/cloud/onboarding/embeddedAccountIsolation.test.ts \
+            src/platform/distribution/embeddedAccountIdentity.test.ts \
             src/components/actionbar/ComfyRunButton/LocalRunButtonWrapper.test.ts \
+            src/renderer/extensions/layerEditor/composables/useLayerEditorExport.test.ts \
+            src/utils/errorReportUtil.test.ts \
             src/services/dialogService.subscriptionRequired.test.ts \
             src/stores/userStore.test.ts \
             src/composables/useTemplateFiltering.test.ts \
