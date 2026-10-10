@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { computed, ref, watchEffect } from 'vue'
 
 import type { UserConfigResponse } from '@/platform/remote/comfyui/types'
+import { isHyperStudioEmbedded } from '@/platform/distribution/hyperStudio'
 import { api } from '@/scripts/api'
 
 export interface User {
@@ -22,7 +23,7 @@ export const useUserStore = defineStore('user', () => {
     () => userConfig.value && 'users' in userConfig.value
   )
   const needsLogin = computed(
-    () => !currentUserId.value && isMultiUserServer.value
+    () => !isHyperStudioEmbedded && !currentUserId.value && isMultiUserServer.value
   )
   const users = computed<User[]>(() =>
     Object.entries(userConfig.value?.users ?? {}).map(([userId, username]) => ({

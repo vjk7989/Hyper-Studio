@@ -1,8 +1,15 @@
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { useUserStore } from './userStore'
 
 const getUserConfig = vi.fn()
+const embeddedState = vi.hoisted(() => ({ enabled: false }))
+
+vi.mock('@/platform/distribution/hyperStudio', () => ({
+  get isHyperStudioEmbedded() {
+    return embeddedState.enabled
+  }
+}))
 
 vi.mock<unknown>(import('@/scripts/api'), () => ({
   api: {
@@ -11,6 +18,24 @@ vi.mock<unknown>(import('@/scripts/api'), () => ({
 }))
 
 describe('userStore', () => {
+  beforeEach(() => {
+    vi.stubGlobal('localStorage', {})
+    embeddedState.enabled = false
+  })
+
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  it('does not require an upstream user-selection login in embedded mode', async () => {
+    embeddedState.enabled = true
+    getUserConfig.mockResolvedValue({ users: { upstream: 'Upstream user' } })
+    const store = useUserStore()
+    await store.initialize()
+    expect(store.needsLogin).toBe(false)
+    embeddedState.enabled = false
+  })
+
   describe('initialize', () => {
     it('fetches user config on first call', async () => {
       getUserConfig.mockResolvedValue({})
