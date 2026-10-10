@@ -284,7 +284,7 @@
   place-items: center;
   width: 32px;
   height: 32px;
-  &:hover { background: var(--semantic-bg-transparent); }
+  &:hover { background: var(--semantic-bg-action-secondary-hover); }
 }
 .recentProjectCreate {
   display: flex;
@@ -294,7 +294,7 @@
   min-height: 32px;
   padding: 0 var(--spacing-md);
   text-align: left;
-  &:hover { background: var(--semantic-bg-transparent); }
+  &:hover { background: var(--semantic-bg-action-secondary-hover); }
 }
 .recentProjectMenu {
   padding: 0 0 var(--spacing-xs) var(--spacing-xl);
@@ -302,7 +302,7 @@
     width: 100%;
     padding: var(--spacing-xs) var(--spacing-md);
     text-align: left;
-    &:hover { background: var(--semantic-bg-transparent); }
+    &:hover { background: var(--semantic-bg-action-secondary-hover); }
   }
 }
 .recentProjectEmpty {
