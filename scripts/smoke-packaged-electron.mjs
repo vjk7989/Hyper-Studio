@@ -55,7 +55,7 @@ try {
   await window.reload({ waitUntil: 'domcontentloaded' })
   await window.evaluate(() => { window.location.hash = '#/projects' })
   try {
-    await window.getByText('New Project', { exact: true }).waitFor({ state: 'visible', timeout: 30000 })
+    await window.getByTestId('new-project-card').waitFor({ state: 'visible', timeout: 30000 })
   } catch {
     await window.screenshot({ path: path.join(home, 'after-storage-error.png') })
     throw new Error(`Packaged app did not reach Projects; URL ${window.url()}; body ${(await window.locator('body').innerText()).slice(0, 2000)}; errors ${JSON.stringify(pageErrors)}`)
@@ -74,7 +74,7 @@ try {
   await app.evaluate(({ dialog }, folder) => {
     dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [folder] })
   }, projectFolder)
-  await window.getByText('New Project', { exact: true }).click()
+  await window.getByTestId('new-project-card').click()
   await window.getByPlaceholder('Project name').fill('Package smoke')
   await window.getByText('Workflow mode', { exact: true }).click()
   await window.getByText('Choose a folder', { exact: true }).click()

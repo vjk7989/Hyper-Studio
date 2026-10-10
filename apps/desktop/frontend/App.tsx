@@ -46,6 +46,7 @@ function AppContent() {
   useGenerationRecoveryWatcher()
 
   const [pythonReady, setPythonReady] = useState<boolean | null>(null)
+  const [showPythonAvailabilityNotice, setShowPythonAvailabilityNotice] = useState(false)
   const [sharedStorageRoot, setSharedStorageRoot] = useState<string | null | undefined>(undefined)
   const [sharedStorageError, setSharedStorageError] = useState<string | null>(null)
   const sharedStorageReady = canStartRuntimeSetup(sharedStorageRoot)
@@ -142,6 +143,16 @@ function AppContent() {
       void recheck()
     }, 2000)
     return () => window.clearInterval(id)
+  }, [pythonReady])
+
+  useEffect(() => {
+    if (pythonReady !== false) {
+      setShowPythonAvailabilityNotice(false)
+      return
+    }
+    setShowPythonAvailabilityNotice(true)
+    const id = window.setTimeout(() => setShowPythonAvailabilityNotice(false), 8000)
+    return () => window.clearTimeout(id)
   }, [pythonReady])
 
   useEffect(() => {
@@ -309,8 +320,8 @@ function AppContent() {
             </DevFlagsProvider>
           </QueryClientProvider>
 
-          {pythonReady === false && (
-            <div role="status" className="fixed bottom-4 left-4 z-50 max-w-sm rounded-lg border border-separator bg-surface-primary px-4 py-3 text-sm text-fg-secondary shadow-lg">
+          {showPythonAvailabilityNotice && (
+            <div role="status" className="pointer-events-none fixed bottom-4 left-4 z-50 max-w-sm rounded-lg border border-separator bg-surface-primary px-4 py-3 text-sm text-fg-secondary shadow-lg">
               Hosted providers and Workflow mode are available. Local processing needs the optional Python runtime.
             </div>
           )}

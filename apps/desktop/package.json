@@ -26,7 +26,7 @@
     "openapi:generate": "pnpm openapi:export && pnpm openapi:types",
     "openapi:check": "pnpm openapi:generate && git diff --exit-code -- frontend/generated/backend-openapi.json frontend/generated/backend-openapi.ts",
     "backend:test": "cd backend && uv sync --frozen --extra test --extra dev && uv run pytest -v --tb=short",
-    "scripts:test": "node --test scripts/copy-koffi-native.test.cjs && node --experimental-strip-types --test --test-reporter=spec \"frontend/**/*.test.ts\" \"electron/**/*.test.ts\" \"shared/**/*.test.ts\"",
+    "scripts:test": "node --test scripts/copy-koffi-native.test.cjs && node --experimental-strip-types --test --test-reporter=spec \"frontend/**/*.test.ts\" \"electron/**/*.test.ts\" \"shared/**/*.test.ts\" && node --experimental-strip-types --test --experimental-loader ./frontend/views/editor/editor-test-loader.mjs frontend/views/editor/editor-actions.test.mjs",
     "build": "node scripts/run-script.js scripts/local-build",
     "build:skip-python": "node scripts/run-script.js scripts/local-build --skip-python",
     "build:fast": "node scripts/run-script.js scripts/local-build --unpack --skip-python",

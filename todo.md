@@ -2,6 +2,15 @@
 
 Status: `[x]` verified complete; `[·]` in progress or only partly verified; `[ ]` not started. Phase 4's scoped integration gate and Phase 5 final7 Windows installed/macOS/Linux packaged gates passed. Broader release checks remain open.
 
+## Current checkpoint — project controls and functional smoke
+
+- [x] Show New Project from an empty Recent projects list; provide one remove dialog from Recent and Projects with app-only and OS Trash choices.
+- [x] Verify app-only removal preserves files and can be reopened; pass installed OS Trash/failure recovery, manifest/path guards, and active-job blocking.
+- [x] Verify create, open, rename, initial mode, close/reopen, and restart persistence in the final5 installed app.
+- [·] Run the Windows first-party interaction audit across Home, Explore Tools, Connections, Settings, Editor, Workflow, Manager, and export. The final5 scoped installed checks pass; untested upstream controls and optional visual states remain in the gate report.
+- [ ] After the Windows gate passes, run macOS and Linux packaged smokes in GitHub Actions and fix any failures.
+- [·] At each completed gate, refresh the architecture record, handoff, code map, codebase-memory snapshot, and Graft graph. Final5 Windows documents and Graft are refreshed; codebase-memory reindex is pending verification.
+
 ## Phase 1 — Baseline and containment
 
 - [x] Import desktop and workflow source with provenance and licenses.

@@ -80,7 +80,7 @@ try {
   await page.evaluate(folder => window.electronAPI.setSharedStorageRoot({ folder }), shared)
   await page.reload({ waitUntil: 'domcontentloaded' })
   await page.evaluate(() => { window.location.hash = '#/projects' })
-  await page.getByText('New Project', { exact: true }).waitFor({ state: 'visible', timeout: 45000 })
+  await page.getByTestId('new-project-card').waitFor({ state: 'visible', timeout: 45000 })
   await page.screenshot({ path: path.join(home, 'projects.png') })
   const projectId = 'linux-cdp-smoke'
   const manifest = await page.evaluate(({ folder, projectId }) => window.electronAPI.openWorkspaceProject({ folder, projectId, name: 'Linux package smoke', mode: 'workflow' }), { folder: project, projectId })

@@ -7,7 +7,8 @@ import { _electron as electron } from '../apps/workflow-ui/node_modules/@playwri
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const executablePath = process.env.HYPER_STUDIO_SMOKE_EXE || path.join(root, 'apps', 'desktop', 'release', 'win-unpacked', 'Hyper-Studio.exe')
-const shared = path.join(root, '.local-tmp', 'packaged-electron-smoke', 'shared-storage')
+const shared = path.resolve(process.env.HYPER_STUDIO_SMOKE_SHARED || path.join(root, '.local-tmp', 'packaged-electron-smoke', 'shared-storage'))
+if (!shared.startsWith(`${root}${path.sep}`)) throw new Error('Smoke shared storage must remain inside the repository')
 const marker = path.join(shared, 'runtimes', 'workflow', 'install.json')
 if (!fs.existsSync(executablePath) || !fs.existsSync(marker)) {
   throw new Error('Build the packaged app and complete the repository-local managed workflow runtime smoke first')
@@ -77,11 +78,11 @@ try {
   await window.evaluate(folder => window.electronAPI.setSharedStorageRoot({ folder }), shared)
   await window.reload({ waitUntil: 'domcontentloaded' })
   await window.evaluate(() => { window.location.hash = '#/projects' })
-  await window.getByText('New Project', { exact: true }).waitFor({ state: 'visible', timeout: 30000 })
+  await window.getByTestId('new-project-card').waitFor({ state: 'visible', timeout: 30000 })
   await app.evaluate(({ dialog }, folder) => {
     dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [folder] })
   }, projectFolder)
-  await window.getByText('New Project', { exact: true }).click()
+  await window.getByTestId('new-project-card').click()
   await window.getByPlaceholder('Project name').fill('Provider cross-mode smoke')
   await window.getByText('Choose a folder', { exact: true }).click()
   await window.getByText(projectFolder, { exact: true }).waitFor({ state: 'visible', timeout: 10000 })
