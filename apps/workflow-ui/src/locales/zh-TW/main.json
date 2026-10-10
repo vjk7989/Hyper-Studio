@@ -2184,7 +2184,7 @@
     "use": "使用",
     "user": "使用者",
     "versionMismatchWarning": "版本相容性警告",
-    "versionMismatchWarningMessage": "{warning}：{detail} 請參閱 https://docs.comfy.org/installation/update_comfyui#common-update-issues 以取得更新說明。",
+    "versionMismatchWarningMessage": "{warning}：{detail}",
     "videoFailedToLoad": "無法載入影片",
     "videoPreview": "影片預覽 - 使用方向鍵在影片間導航",
     "viewGrid": "網格檢視",
@@ -2830,7 +2830,7 @@
     "importFailedGenericError": "套件匯入失敗。請查看主控台以取得更多詳細資訊。",
     "inWorkflow": "於工作流程中",
     "incompatibleVersion": {
-      "message": "請將 Node Manager 升級至 4.2.1 或更高版本。\n• 桌面版：請更新 Hyper-Studio 桌面應用程式\n• 獨立版：執行 pip install -U comfyui-manager 並重新啟動\n了解更多：https://github.com/Comfy-Org/ComfyUI-Manager",
+      "message": "請將 Node Manager 升級至 4.2.1 或更高版本。\n• 桌面版：請更新 Hyper-Studio 桌面應用程式",
       "title": "需要升級 Node Manager"
     },
     "infoPanelEmpty": "點擊項目以查看資訊",

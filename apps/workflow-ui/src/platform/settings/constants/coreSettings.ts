@@ -976,7 +976,7 @@ export const CORE_SETTINGS: SettingParams[] = [
   },
   {
     id: 'Comfy.InstalledVersion',
-    name: 'The frontend version that was running when the user first installed ComfyUI',
+    name: 'The frontend version that was running when the user first installed Hyper-Studio',
     type: 'hidden',
     defaultValue: null,
     versionAdded: '1.24.0'

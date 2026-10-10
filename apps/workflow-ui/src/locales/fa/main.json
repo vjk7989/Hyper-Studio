@@ -2184,7 +2184,7 @@
     "use": "استفاده",
     "user": "کاربر",
     "versionMismatchWarning": "هشدار ناسازگاری نسخه",
-    "versionMismatchWarningMessage": "{warning}: {detail} برای راهنمای به‌روزرسانی به https://docs.comfy.org/installation/update_comfyui#common-update-issues مراجعه کنید.",
+    "versionMismatchWarningMessage": "{warning}: {detail}",
     "videoFailedToLoad": "بارگذاری ویدیو ناموفق بود",
     "videoPreview": "پیش‌نمایش ویدیو - برای جابجایی بین ویدیوها از کلیدهای جهت‌دار استفاده کنید",
     "viewGrid": "نمای شبکه‌ای",
@@ -2830,7 +2830,7 @@
     "importFailedGenericError": "وارد کردن بسته ناموفق بود. برای جزئیات بیشتر کنسول را بررسی کنید.",
     "inWorkflow": "در workflow",
     "incompatibleVersion": {
-      "message": "لطفاً Node Manager را به نسخه ۴.۲.۱ یا بالاتر ارتقاء دهید.\n• دسکتاپ: برنامه Hyper-Studio Desktop را به‌روزرسانی کنید\n• مستقل: دستور pip install -U comfyui-manager را اجرا کرده و مجدداً راه‌اندازی کنید\nاطلاعات بیشتر: https://github.com/Comfy-Org/ComfyUI-Manager",
+      "message": "لطفاً Node Manager را به نسخه ۴.۲.۱ یا بالاتر ارتقاء دهید.\n• دسکتاپ: برنامه Hyper-Studio Desktop را به‌روزرسانی کنید",
       "title": "ارتقاء Node Manager مورد نیاز است"
     },
     "infoPanelEmpty": "برای مشاهده اطلاعات، یک مورد را انتخاب کنید",

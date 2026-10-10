@@ -1,3 +1,5 @@
+import { isHyperStudioEmbedded } from '@/platform/distribution/hyperStudio'
+
 /** The templates the Getting Started grid offers, in order. */
 export const CURATED_TEMPLATE_IDS = [
   'image_krea2_turbo_t2i',
@@ -27,7 +29,7 @@ export interface TutorialCard {
  * Thumbnails are offset from the Templates tab's order so the two grids don't
  * read as the same four images in the same places.
  */
-export const tutorialCards: readonly TutorialCard[] = [
+const upstreamTutorialCards: readonly TutorialCard[] = [
   {
     id: 'interface-overview',
     titleKey: 'gettingStarted.tutorials.interfaceOverview',
@@ -53,3 +55,6 @@ export const tutorialCards: readonly TutorialCard[] = [
     thumbnailTemplate: 'image_krea2_turbo_t2i'
   }
 ]
+export const tutorialCards: readonly TutorialCard[] = isHyperStudioEmbedded
+  ? []
+  : upstreamTutorialCards

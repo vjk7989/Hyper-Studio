@@ -245,7 +245,7 @@
     "community": "Community",
     "all": "All",
     "versionMismatchWarning": "Version Compatibility Warning",
-    "versionMismatchWarningMessage": "{warning}: {detail} Visit https://docs.comfy.org/installation/update_comfyui#common-update-issues for update instructions.",
+    "versionMismatchWarningMessage": "{warning}: {detail}",
     "frontendOutdated": "Frontend version {frontendVersion} is outdated. Backend requires {requiredVersion} or higher.",
     "frontendNewer": "Frontend version {frontendVersion} may not be compatible with backend version {backendVersion}.",
     "comfyPackageOutdated": "Installed {name} version {installedVersion} is lower than the required version {requiredVersion}.",
@@ -459,7 +459,7 @@
     "legacyMenuNotAvailable": "Legacy manager menu is not available, defaulting to the new manager menu.",
     "incompatibleVersion": {
       "title": "Node Manager upgrade required",
-      "message": "Please upgrade Node Manager to version 4.2.1 or higher.\n• Desktop: Update the Hyper-Studio Desktop app\n• Standalone: Run pip install -U comfyui-manager and restart\nLearn more: https://github.com/Comfy-Org/ComfyUI-Manager"
+      "message": "Please upgrade Node Manager to version 4.2.1 or higher.\n• Desktop: Update the Hyper-Studio Desktop app"
     },
     "legacyManagerUI": "Use Legacy UI",
     "legacyManagerUIDescription": "To use the legacy Manager UI, start Hyper-Studio with --enable-manager-legacy-ui",

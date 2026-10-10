@@ -2184,7 +2184,7 @@
     "use": "사용",
     "user": "사용자",
     "versionMismatchWarning": "버전 호환성 경고",
-    "versionMismatchWarningMessage": "{warning}: {detail} 업데이트 지침은 https://docs.comfy.org/installation/update_comfyui#common-update-issues 를 방문하세요.",
+    "versionMismatchWarningMessage": "{warning}: {detail}",
     "videoFailedToLoad": "비디오를 로드하지 못했습니다.",
     "videoPreview": "비디오 미리보기 - 화살표 키를 사용하여 비디오 간 이동",
     "viewGrid": "그리드 보기",
@@ -2830,7 +2830,7 @@
     "importFailedGenericError": "패키지 가져오기에 실패했습니다. 자세한 내용은 콘솔을 확인하세요.",
     "inWorkflow": "워크플로 내",
     "incompatibleVersion": {
-      "message": "Node Manager를 4.2.1 이상 버전으로 업그레이드해주세요.\n• 데스크톱: Hyper-Studio Desktop 앱을 업데이트하세요\n• 독립 실행형: pip install -U comfyui-manager 명령 실행 후 재시작하세요\n자세히 보기: https://github.com/Comfy-Org/ComfyUI-Manager",
+      "message": "Node Manager를 4.2.1 이상 버전으로 업그레이드해주세요.\n• 데스크톱: Hyper-Studio Desktop 앱을 업데이트하세요",
       "title": "Node Manager 업그레이드 필요"
     },
     "infoPanelEmpty": "정보를 보려면 항목을 클릭하세요",

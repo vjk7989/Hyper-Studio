@@ -2184,7 +2184,7 @@
     "use": "Usar",
     "user": "Usuário",
     "versionMismatchWarning": "Aviso de compatibilidade de versão",
-    "versionMismatchWarningMessage": "{warning}: {detail} Visite https://docs.comfy.org/installation/update_comfyui#common-update-issues para instruções de atualização.",
+    "versionMismatchWarningMessage": "{warning}: {detail}",
     "videoFailedToLoad": "Falha ao carregar vídeo",
     "videoPreview": "Pré-visualização do vídeo - Use as setas para navegar entre os vídeos",
     "viewGrid": "Visualização em grade",
@@ -2830,7 +2830,7 @@
     "importFailedGenericError": "Falha ao importar o pacote. Verifique o console para mais detalhes.",
     "inWorkflow": "No Workflow",
     "incompatibleVersion": {
-      "message": "Por favor, atualize o Node Manager para a versão 4.2.1 ou superior.\n• Desktop: Atualize o aplicativo Hyper-Studio Desktop\n• Standalone: Execute pip install -U comfyui-manager e reinicie\nSaiba mais: https://github.com/Comfy-Org/ComfyUI-Manager",
+      "message": "Por favor, atualize o Node Manager para a versão 4.2.1 ou superior.\n• Desktop: Atualize o aplicativo Hyper-Studio Desktop",
       "title": "Atualização do Node Manager necessária"
     },
     "infoPanelEmpty": "Clique em um item para ver as informações",

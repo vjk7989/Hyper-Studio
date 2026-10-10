@@ -1,24 +1,5 @@
 <template>
   <div class="flex w-full justify-end gap-2">
-    <div v-if="currentStep === 1" class="mr-auto flex items-center gap-2">
-      <i class="icon-[lucide--circle-question-mark] text-muted-foreground" />
-      <Button
-        variant="muted-textonly"
-        size="sm"
-        data-attr="upload-model-step1-help-civitai"
-        @click="showCivitaiHelp = true"
-      >
-        {{ $t('assetBrowser.providerCivitai') }}
-      </Button>
-      <Button
-        variant="muted-textonly"
-        size="sm"
-        data-attr="upload-model-step1-help-huggingface"
-        @click="showHuggingFaceHelp = true"
-      >
-        {{ $t('assetBrowser.providerHuggingFace') }}
-      </Button>
-    </div>
     <Button
       v-if="currentStep === 1"
       variant="muted-textonly"
@@ -109,28 +90,12 @@
         {{ $t('g.close') }}
       </Button>
     </template>
-    <VideoHelpDialog
-      v-model="showCivitaiHelp"
-      video-url="https://media.comfy.org/compressed_768/civitai_howto.webm"
-      :aria-label="$t('assetBrowser.uploadModelHelpVideo')"
-    />
-    <VideoHelpDialog
-      v-model="showHuggingFaceHelp"
-      video-url="https://media.comfy.org/byom/huggingfacehowto.mp4"
-      :aria-label="$t('assetBrowser.uploadModelHelpVideo')"
-    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-
 import Loader from '@/components/loader/Loader.vue'
 import Button from '@/components/ui/button/Button.vue'
-import VideoHelpDialog from '@/platform/assets/components/VideoHelpDialog.vue'
-
-const showCivitaiHelp = ref(false)
-const showHuggingFaceHelp = ref(false)
 
 const { canImportAnother = true } = defineProps<{
   currentStep: number

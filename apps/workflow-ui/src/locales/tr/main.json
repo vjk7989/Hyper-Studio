@@ -2184,7 +2184,7 @@
     "use": "Kullan",
     "user": "Kullanıcı",
     "versionMismatchWarning": "Sürüm Uyumluluk Uyarısı",
-    "versionMismatchWarningMessage": "{warning}: {detail} Güncelleme talimatları için https://docs.comfy.org/installation/update_comfyui#common-update-issues adresini ziyaret edin.",
+    "versionMismatchWarningMessage": "{warning}: {detail}",
     "videoFailedToLoad": "Video yüklenemedi",
     "videoPreview": "Video önizlemesi - Videolar arasında gezinmek için ok tuşlarını kullanın",
     "viewGrid": "Izgara görünümü",
@@ -2830,7 +2830,7 @@
     "importFailedGenericError": "Paket içe aktarılamadı. Daha fazla ayrıntı için konsolu kontrol edin.",
     "inWorkflow": "İş Akışında",
     "incompatibleVersion": {
-      "message": "Lütfen Node Manager'ı 4.2.1 veya daha yüksek bir sürüme yükseltin.\n• Masaüstü: Hyper-Studio Masaüstü uygulamasını güncelleyin\n• Bağımsız: pip install -U comfyui-manager komutunu çalıştırın ve yeniden başlatın\nDaha fazla bilgi: https://github.com/Comfy-Org/ComfyUI-Manager",
+      "message": "Lütfen Node Manager'ı 4.2.1 veya daha yüksek bir sürüme yükseltin.\n• Masaüstü: Hyper-Studio Masaüstü uygulamasını güncelleyin",
       "title": "Node Manager yükseltmesi gerekli"
     },
     "infoPanelEmpty": "Bilgileri görmek için bir öğeye tıklayın",

@@ -38,7 +38,7 @@ function extractUrl(message: string): string | null {
 }
 
 function detectFileType(url: string): PreloadFileType {
-  const pathname = new URL(url, 'https://cloud.comfy.org').pathname
+  const pathname = new URL(url, 'http://localhost').pathname
   const ext = pathname.split('.').pop()?.toLowerCase()
   if (!ext) return 'unknown'
 
@@ -53,7 +53,7 @@ function detectFileType(url: string): PreloadFileType {
 }
 
 function extractChunkName(url: string): string | null {
-  const pathname = new URL(url, 'https://cloud.comfy.org').pathname
+  const pathname = new URL(url, 'http://localhost').pathname
   const filename = pathname.split('/').pop()
   if (!filename) return null
 

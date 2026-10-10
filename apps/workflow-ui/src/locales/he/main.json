@@ -2184,7 +2184,7 @@
     "use": "שימוש",
     "user": "משתמש",
     "versionMismatchWarning": "אזהרת תאימות גרסאות",
-    "versionMismatchWarningMessage": "{warning}: {detail} בקר בכתובת https://docs.comfy.org/installation/update_comfyui#common-update-issues לקבלת הוראות עדכון.",
+    "versionMismatchWarningMessage": "{warning}: {detail}",
     "videoFailedToLoad": "טעינת הסרטון נכשלה",
     "videoPreview": "תצוגה מקדימה של סרטון - השתמש במקשי החיצים לניווט בין הסרטונים",
     "viewGrid": "תצוגת רשת",
@@ -2830,7 +2830,7 @@
     "importFailedGenericError": "ייבוא החבילה נכשל. בדוק את המסוף (Console) לפרטים נוספים.",
     "inWorkflow": "בתהליך העבודה",
     "incompatibleVersion": {
-      "message": "אנא שדרג את Node Manager לגרסה 4.2.1 ומעלה.\n• שולחן עבודה: עדכן את יישום Hyper-Studio Desktop\n• עצמאי (Standalone): הרץ pip install -U comfyui-manager והפעל מחדש\nמידע נוסף: https://github.com/Comfy-Org/ComfyUI-Manager",
+      "message": "אנא שדרג את Node Manager לגרסה 4.2.1 ומעלה.\n• שולחן עבודה: עדכן את יישום Hyper-Studio Desktop",
       "title": "נדרש שדרוג של Node Manager"
     },
     "infoPanelEmpty": "לחץ על פריט כדי לראות את המידע",
