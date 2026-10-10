@@ -14,12 +14,10 @@ import contentStyles from "./SettingsContent.module.scss";
 export function LegacySettingsSection({
   settings,
   onSettingsChange,
-  onOpenLtxApiKeys,
   onOpenFalApiKeys,
 }: {
   settings: AppSettings;
   onSettingsChange: (next: AppSettings) => void;
-  onOpenLtxApiKeys: () => void;
   onOpenFalApiKeys: () => void;
 }) {
   // In force-API mode local generation is unavailable, so the rows that only steer it are
@@ -31,39 +29,6 @@ export function LegacySettingsSection({
     <SettingsStack loose>
       <LegacyProjectAssetsSection />
       {!forceApiGenerations ? <LegacyDefaultBaseModelSection /> : null}
-
-      {!forceApiGenerations ? (
-        <SettingsSubsection
-          showDivider
-          title="Video generation"
-          description="When enabled, legacy video tools prefer the LTX API if a key is configured."
-          descriptionClassName={contentStyles.apiKeysDescriptionLine}
-          descriptionSize="sm"
-        >
-          <SettingToggle
-            rowLayout="preference"
-            title="Generate with LTX API"
-            description="Cloud video generation instead of local GPU inference."
-            enabled={settings.userPrefersLtxApiVideoGenerations}
-            onToggle={() => {
-              if (!settings.hasLtxApiKey) {
-                onOpenLtxApiKeys();
-                return;
-              }
-              onSettingsChange({
-                ...settings,
-                userPrefersLtxApiVideoGenerations:
-                  !settings.userPrefersLtxApiVideoGenerations,
-              });
-            }}
-          />
-          {!settings.hasLtxApiKey && settings.userPrefersLtxApiVideoGenerations ? (
-            <SettingsHint variant="warning">
-              Add an LTX API key on the API Keys tab.
-            </SettingsHint>
-          ) : null}
-        </SettingsSubsection>
-      ) : null}
 
       {!forceApiGenerations ? (
         <SettingsSubsection

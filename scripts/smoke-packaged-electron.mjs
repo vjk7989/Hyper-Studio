@@ -13,7 +13,8 @@ const packagedCustomNodes = path.join(resources, 'workflow-engine', 'custom_node
 if (!fs.existsSync(packagedCustomNodes) || !fs.statSync(packagedCustomNodes).isDirectory()) {
   throw new Error(`Packaged workflow engine is missing its custom_nodes directory: ${packagedCustomNodes}`)
 }
-const home = path.join(root, '.local-tmp', 'packaged-electron-smoke')
+const home = process.env.HYPER_STUDIO_SMOKE_HOME || path.join(root, '.local-tmp', 'packaged-electron-smoke')
+if (!path.resolve(home).startsWith(`${root}${path.sep}`)) throw new Error('Smoke home must remain inside the repository')
 for (const folder of [home, path.join(home, 'appdata'), path.join(home, 'localappdata'), path.join(home, 'temp')]) {
   fs.mkdirSync(folder, { recursive: true })
 }
@@ -32,14 +33,23 @@ try {
   const window = await app.firstWindow({ timeout: 45000 })
   const pageErrors = []
   const badResponses = []
+  const failedRequests = []
+  const upstreamCloudRequests = []
   window.on('console', message => { if (message.type() === 'error') pageErrors.push(message.text().slice(0, 500)) })
   window.on('pageerror', error => pageErrors.push(String(error).slice(0, 500)))
   window.on('response', response => { if (response.status() >= 400) badResponses.push(`${response.status()} ${response.url()}`) })
+  window.on('requestfailed', request => { if (failedRequests.length < 20) failedRequests.push(request.url()) })
+  window.on('request', request => {
+    if (/^https?:\/\/(?:api\.comfy\.org|(?:www\.)?comfy\.org|(?:www\.)?ltx\.studio)(?:\/|$)/i.test(request.url())) {
+      upstreamCloudRequests.push(request.url())
+    }
+  })
   await window.waitForLoadState('domcontentloaded', { timeout: 45000 })
   const title = await window.title()
   if (!title.includes('Hyper-Studio')) throw new Error(`Unexpected window title: ${title}`)
   await window.screenshot({ path: path.join(home, 'first-run.png') })
-  const shared = path.join(home, 'shared-storage')
+  const shared = process.env.HYPER_STUDIO_SMOKE_SHARED || path.join(home, 'shared-storage')
+  if (!path.resolve(shared).startsWith(`${root}${path.sep}`)) throw new Error('Smoke shared storage must remain inside the repository')
   fs.mkdirSync(shared, { recursive: true })
   await window.evaluate(folder => window.electronAPI.setSharedStorageRoot({ folder }), shared)
   await window.reload({ waitUntil: 'domcontentloaded' })
@@ -49,6 +59,14 @@ try {
   } catch {
     await window.screenshot({ path: path.join(home, 'after-storage-error.png') })
     throw new Error(`Packaged app did not reach Projects; URL ${window.url()}; body ${(await window.locator('body').innerText()).slice(0, 2000)}; errors ${JSON.stringify(pageErrors)}`)
+  }
+  try {
+    await window.waitForFunction(() => {
+      const image = document.querySelector('img[alt="Hyper-Studio"]')
+      return image?.complete && image.naturalWidth > 0
+    }, null, { timeout: 10000 })
+  } catch {
+    throw new Error('Packaged Hyper-Studio logo did not load from the app bundle')
   }
   await window.screenshot({ path: path.join(home, 'projects.png') })
   const projectFolder = path.join(home, `workflow-project-${Date.now()}`)
@@ -70,8 +88,10 @@ try {
     await window.screenshot({ path: path.join(home, 'workflow-start-error.png') })
     const status = await window.evaluate(() => window.electronAPI.getWorkflowEngineStatus())
     const frames = await Promise.all(window.frames().map(async frame => ({ url: frame.url(), body: (await frame.locator('body').innerText().catch(() => '')).slice(0, 500) })))
-    throw new Error(`Workflow canvas did not appear; engine status ${JSON.stringify(status)}; frames ${JSON.stringify(frames)}; responses ${JSON.stringify(badResponses)}; errors ${JSON.stringify(pageErrors)}: ${await window.locator('body').innerText()}`)
+    throw new Error(`Workflow canvas did not appear; engine status ${JSON.stringify(status)}; frames ${JSON.stringify(frames)}; responses ${JSON.stringify(badResponses)}; failed requests ${JSON.stringify(failedRequests)}; errors ${JSON.stringify(pageErrors.slice(0, 10))}: ${await window.locator('body').innerText()}`)
   }
+  const accountButtons = window.frameLocator('iframe[title="Hyper-Studio workflow canvas"]').getByRole('button', { name: /sign in|log in|create account/i })
+  if (await accountButtons.count()) throw new Error('Embedded workflow canvas displayed an account prompt')
   const engine = await window.evaluate(() => window.electronAPI.getWorkflowEngineStatus())
   const unrelatedSite = await fetch(engine.url, { headers: { 'Sec-Fetch-Site': 'cross-site', 'Sec-Fetch-Dest': 'iframe' } })
   if (unrelatedSite.status !== 403) throw new Error(`Workflow engine accepted an unrelated cross-site iframe: ${unrelatedSite.status}`)
@@ -200,6 +220,8 @@ try {
   }
   if (!inputOutput) throw new Error('Editor-imported image did not execute as a Workflow input')
   await window.screenshot({ path: path.join(home, 'workflow-after-editor-import.png') })
+  if (upstreamCloudRequests.length) throw new Error(`Unexpected upstream cloud requests: ${upstreamCloudRequests.join(', ')}`)
+  process.stdout.write('No account button or observed renderer request to upstream Comfy/LTX cloud during packaged workflow smoke\n')
   process.stdout.write(`Packaged Electron Workflow canvas, JSON roundtrip, and bidirectional usable media passed: ${title}\n`)
 } finally {
   await app.close()

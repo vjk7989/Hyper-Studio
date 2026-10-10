@@ -25,6 +25,7 @@
 .themeScope {
   position: absolute;
   inset: 0;
+  background-color: var(--semantic-bg-primary);
 }
 
 :global(html[data-platform="darwin"]) .dragRegion {

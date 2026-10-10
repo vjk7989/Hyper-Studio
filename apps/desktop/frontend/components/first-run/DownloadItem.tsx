@@ -20,7 +20,7 @@ interface DownloadItemProps {
 const CP_INFO_BY_ROLE: Record<CheckpointDescriptor['role'], string> = {
   base: 'Core LTX video model. Turns your prompt into video frames.',
   upscaler: 'Doubles video resolution. Also reduces glitches and stray artifacts near the end of longer clips.',
-  text_encoder: 'Reads your prompt so the model can understand it. Recommended — skip only if you will use an LTX API key.',
+  text_encoder: 'Reads your prompt so the local model can understand it. Required for local generation.',
   vae: 'Turns the model’s internal frames into playable video (and audio). Required for this install.',
   image: 'Generates still images from text. Used for image-to-video and image tools.',
   support: 'Supporting model for guided generation (depth, edges, or pose).',
@@ -28,8 +28,8 @@ const CP_INFO_BY_ROLE: Record<CheckpointDescriptor['role'], string> = {
 }
 
 // One line in the first-run "What will be downloaded" list: checkpoint name, an
-// info-tooltip icon, and the size. Items an API key covers get a checkbox instead of being
-// silently dropped, so the download stays available to anyone who wants to run offline.
+// info-tooltip icon, and the size. Optional downloads get a checkbox; local
+// text encoding is required for local generation.
 export function DownloadItem({ item, optIn, showCheckbox = true }: DownloadItemProps) {
   const onDisk = item.downloaded
   const canToggle = showCheckbox && optIn !== undefined && !onDisk

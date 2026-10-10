@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react'
+import { hyperStudioLogo } from '@/lib/brand-assets'
 import styles from './EndpageLockup.module.scss'
 
 export const ENDPAGE_SETTLED_MS = 300
@@ -14,7 +15,7 @@ export function EndpageLockup({ className, style }: EndpageLockupProps) {
   return (
     <div className={`${styles.stage}${className ? ` ${className}` : ''}`} style={style} aria-hidden>
       <div className={styles.brand}>
-        <img src="/assets/hyper-studio-logo.png" alt="" />
+        <img src={hyperStudioLogo} alt="" />
         <span>Hyper-Studio</span>
       </div>
     </div>

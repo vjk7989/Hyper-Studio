@@ -199,11 +199,7 @@
 }
 
 .accountRow {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 0fr);
-  align-items: stretch;
-  column-gap: 0;
-  container-type: inline-size;
+  display: block;
 
   .card {
     display: flex;
@@ -213,81 +209,6 @@
     height: 100%;
   }
 
-  .card + .card {
-    margin-top: 0;
-  }
-}
-
-.accountRowSplit {
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  column-gap: var(--gap-lg);
-}
-
-.accountRowReady {
-  transition:
-    grid-template-columns $duration-slow $easing-standard-expressive,
-    column-gap $duration-slow $easing-standard-expressive;
-}
-
-.apiKeyPane {
-  display: flex;
-  min-width: 0;
-  overflow: hidden;
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-
-  .card {
-    flex: 1 0 auto;
-    box-sizing: border-box;
-    width: calc((100cqi - var(--gap-lg)) / 2);
-    min-width: calc((100cqi - var(--gap-lg)) / 2);
-    transform: translateX(var(--spacing-md));
-  }
-}
-
-.accountRowReady .apiKeyPane {
-  transition:
-    opacity $duration-slow $easing-exit-productive,
-    visibility 0s linear $duration-slow;
-
-  .card {
-    transition: transform $duration-slow $easing-exit-expressive;
-  }
-}
-
-.accountRowSplit .apiKeyPane {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-
-  .card {
-    transform: none;
-  }
-}
-
-.accountRowReady.accountRowSplit .apiKeyPane {
-  transition:
-    opacity $duration-slow $easing-entrance-productive,
-    visibility 0s;
-
-  .card {
-    transition: transform $duration-slow $easing-entrance-expressive;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .accountRowReady,
-  .accountRowReady .apiKeyPane,
-  .accountRowReady.accountRowSplit .apiKeyPane,
-  .accountRowReady .apiKeyPane .card,
-  .accountRowReady.accountRowSplit .apiKeyPane .card {
-    transition: none;
-  }
-
-  .apiKeyPane .card {
-    transform: none;
-  }
 }
 
 .accountRow + .card {

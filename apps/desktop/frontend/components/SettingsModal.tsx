@@ -473,7 +473,6 @@ export function SettingsScreen({
                 <LegacyTextEncodingSection
                   active={active}
                   settings={settings}
-                  onOpenLtxApiKeys={() => ltxApiKey.openAndFocus()}
                 />
               </div>
 
@@ -492,7 +491,6 @@ export function SettingsScreen({
             <LegacySettingsSection
               settings={settings}
               onSettingsChange={onSettingsChange}
-              onOpenLtxApiKeys={() => ltxApiKey.openAndFocus()}
               onOpenFalApiKeys={() => falApiKey.openAndFocus()}
             />
             </SettingsAnchorSection>

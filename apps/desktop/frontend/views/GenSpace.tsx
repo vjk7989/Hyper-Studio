@@ -60,6 +60,7 @@ import {
   genSpaceImageAspectRatio,
 } from '../lib/genspace-image-aspect'
 import { logger } from '../lib/logger'
+import { hyperStudioLogo } from '../lib/brand-assets'
 import { ApiClient, type ApiSuccessOf } from '../lib/api-client'
 import type { GenerationSettings, LoraSelection } from '../components/SettingsPanel'
 import { RetakePanel } from '../components/RetakePanel'
@@ -74,7 +75,6 @@ import { buildIcLoraSelectorOptions, encodeIcLoraSelectorValue, parseIcLoraSelec
 import { SettingsDropdown } from '../components/SettingsDropdown'
 import { IcLoraSettingsControls, type IcLoraControlsProps } from '../components/IcLoraSettingsControls'
 import { IcLoraAdvancedPanel } from '../components/IcLoraAdvancedPanel'
-import { FreeApiKeyBubble } from '../components/FreeApiKeyBubble'
 import { shouldShowGeneratingTile } from '../lib/genspace-gallery'
 import { shouldShowLastFrameChip } from '../lib/genspace-last-frame'
 import {
@@ -368,7 +368,7 @@ function AssetCard({
 }
 
 function HyperStudioMark({ className }: { className?: string }) {
-  return <img className={className} src="/assets/hyper-studio-logo.png" alt="" />
+  return <img className={`${className ?? ''} hyper-studio-mark`} src={hyperStudioLogo} alt="" />
 }
 
 function ZitIcon({ className }: { className?: string }) {
@@ -3455,12 +3455,6 @@ export function GenSpace() {
         style={{ bottom: promptBarHeight + LORA_CHIP_OVERLAY_GAP }}
       >
         <div className="pointer-events-auto">
-          <FreeApiKeyBubble
-            forceApiGenerations={forceApiGenerations}
-            hasLtxApiKey={appSettings.hasLtxApiKey}
-            isGenerating={isGenerating}
-          />
-
           {showIcLoraChipOverlay && selectedIcLora && (
             <SelectedLoraInfo items={[{
               name: variantDisplayName(

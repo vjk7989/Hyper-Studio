@@ -15,8 +15,6 @@ type CheckpointDescriptor = ApiSuccessOf<'describeCheckpoints'>['checkpoints'][n
 interface ModelDownloadsCardProps {
   modelPackItems: CheckpointDescriptor[]
   encoderItem: CheckpointDescriptor | null
-  encoderSelected: boolean
-  onToggleEncoder: () => void
   recommendedItems: CheckpointDescriptor[]
   isRecommendedSelected: (item: CheckpointDescriptor) => boolean
   onToggleRecommended: (item: CheckpointDescriptor) => void
@@ -44,8 +42,6 @@ const LORAS_GROUP_INFO =
 export function ModelDownloadsCard({
   modelPackItems,
   encoderItem,
-  encoderSelected,
-  onToggleEncoder,
   recommendedItems,
   isRecommendedSelected,
   onToggleRecommended,
@@ -116,11 +112,6 @@ export function ModelDownloadsCard({
           {encoderItem && (
             <DownloadItem
               item={encoderItem}
-              optIn={{
-                checked: encoderSelected,
-                onToggle: onToggleEncoder,
-                skippedLabel: 'Use API key',
-              }}
             />
           )}
           {recommendedItems.map((item) => (

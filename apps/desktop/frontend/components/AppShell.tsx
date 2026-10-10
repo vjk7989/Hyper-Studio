@@ -103,7 +103,6 @@ export function AppShell() {
   }
   const {
     settings,
-    saveLtxApiKey,
     saveFalApiKey,
     forceApiGenerations,
     runtimePolicyLoaded,
@@ -177,6 +176,10 @@ export function AppShell() {
     const handler = (e: Event) => {
       const detail = (e as CustomEvent).detail ?? {}
       const requiredKeys = Array.isArray(detail.requiredKeys) ? detail.requiredKeys : ['ltx']
+      if (requiredKeys.includes('ltx')) {
+        openSettings({ tab: 'connections' })
+        return
+      }
       setApiGatewayRequest({
         requiredKeys,
         title: detail.title ?? 'Connect API Keys',
@@ -187,7 +190,7 @@ export function AppShell() {
     }
     window.addEventListener('open-api-gateway', handler)
     return () => window.removeEventListener('open-api-gateway', handler)
-  }, [])
+  }, [openSettings])
 
   const refreshLtxUpgradeRecommendation = useCallback(async () => {
     const result = await ApiClient.getLtxRecommendation()
@@ -270,18 +273,6 @@ export function AppShell() {
 
     const sections: ApiGatewaySection[] = [
       {
-        keyType: 'ltx',
-        title: 'LTX API',
-        description: 'Video generation, prompt enhancement, and cloud text encoding.',
-        required: apiGatewayRequest.requiredKeys.includes('ltx'),
-        isConfigured: settings.hasLtxApiKey,
-        inputLabel: 'LTX API key',
-        placeholder: 'Enter your LTX API key...',
-        onSave: saveLtxApiKey,
-        onGetKey: () => window.electronAPI.openLtxApiKeyPage(),
-        getKeyLabel: 'Get LTX API key',
-      },
-      {
         keyType: 'fal',
         title: 'FAL AI',
         description: 'Required to generate or edit images with Z Image Turbo.',
@@ -303,9 +294,7 @@ export function AppShell() {
   }, [
     apiGatewayRequest,
     saveFalApiKey,
-    saveLtxApiKey,
     settings.hasFalApiKey,
-    settings.hasLtxApiKey,
   ])
 
   const restartingOverlay = isBackendRestarting ? (

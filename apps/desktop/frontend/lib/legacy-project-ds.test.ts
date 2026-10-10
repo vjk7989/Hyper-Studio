@@ -120,7 +120,7 @@ describe('legacy project design-system conversion', () => {
     assert.doesNotMatch(layoutStyles, /--app-font-family:\s*"Inter"/)
 
     const dsFonts = source('ds/styles/fonts.scss')
-    assert.match(dsFonts, /--app-font-family:\s*"Aeonik"/)
+    assert.match(dsFonts, /--app-font-family:\s*"Geist"/)
   })
 
   it('keeps theme-blind colour and truncated opacity utilities out of Gen Space and the project chrome', () => {

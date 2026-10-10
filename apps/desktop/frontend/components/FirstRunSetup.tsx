@@ -4,7 +4,6 @@ import { Button } from '@ds/Button/Button'
 import { Text } from '@ds/Text/Text'
 import { TooltipProvider } from '@ds/Tooltip/Tooltip'
 
-import { useAppSettings } from '@/contexts/AppSettingsContext'
 import { useHfAuth } from '@/hooks/use-hf-auth'
 import { useHfModelAccess } from '@/hooks/use-hf-model-access'
 import { ApiClient, type ApiRequestBodyOf, type ApiSuccessOf } from '@/lib/api-client'
@@ -30,7 +29,6 @@ import { isHomeFeatureEnabled } from '@/lib/home-features'
 import { logger } from '@/lib/logger'
 
 import { HfAccessCard } from './first-run/HfAccessCard'
-import { LtxApiKeyCard } from './first-run/LtxApiKeyCard'
 import { ModelDownloadsCard } from './first-run/ModelDownloadsCard'
 import { SetupInstallingStep } from './first-run/SetupInstallingStep'
 import { SetupLegalDisclaimer } from './first-run/SetupLegalDisclaimer'
@@ -77,12 +75,7 @@ export function LaunchGate({ onComplete }: LaunchGateProps) {
   const [selectedRecommendedCpIds, setSelectedRecommendedCpIds] = useState<ModelCheckpointID[]>([])
   const [loraItems, setLoraItems] = useState<FirstRunLoraItem[]>([])
   const [selectedLoraKeys, setSelectedLoraKeys] = useState<string[]>([])
-  const [downloadTextEncoder, setDownloadTextEncoder] = useState(true)
   const [downloadImageModel, setDownloadImageModel] = useState(true)
-  const [ltxApiKey, setLtxApiKey] = useState('')
-  const [hasSavedLtxApiKey, setHasSavedLtxApiKey] = useState(false)
-  const [apiKeyError, setApiKeyError] = useState<string | null>(null)
-  const [replacingApiKey, setReplacingApiKey] = useState(false)
   const [actionError, setActionError] = useState<string | null>(null)
   const finishTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const completeSetupNow = useCallback(async () => {
@@ -112,31 +105,12 @@ export function LaunchGate({ onComplete }: LaunchGateProps) {
     },
   })
   const liveHfAuth = useHfAuth(currentStep === 'location')
-  const apiKeyCollapsed = hasSavedLtxApiKey && !replacingApiKey
   const encoderItem = useMemo(
     () =>
       downloadItems.find(isFirstRunTextEncoder) ?? optionalItems.find(isFirstRunTextEncoder) ?? null,
     [downloadItems, optionalItems],
   )
   const encoderOnDisk = Boolean(encoderItem?.downloaded)
-  const encoderSelected = encoderOnDisk || downloadTextEncoder
-  const showApiKeyCard = Boolean(encoderItem) && !encoderSelected
-  const [apiKeyMotionReady, setApiKeyMotionReady] = useState(false)
-
-  useEffect(() => {
-    if (currentStep !== 'location') {
-      setApiKeyMotionReady(false)
-      return
-    }
-    let inner = 0
-    const outer = requestAnimationFrame(() => {
-      inner = requestAnimationFrame(() => setApiKeyMotionReady(true))
-    })
-    return () => {
-      cancelAnimationFrame(outer)
-      cancelAnimationFrame(inner)
-    }
-  }, [currentStep])
   const modelPackItems = useMemo(() => downloadItems.filter(isFirstRunModelPackItem), [downloadItems])
   const imageItem = useMemo(() => downloadItems.find(isFirstRunImageModel) ?? null, [downloadItems])
   const imageOnDisk = Boolean(imageItem?.downloaded)
@@ -173,13 +147,12 @@ export function LaunchGate({ onComplete }: LaunchGateProps) {
     () =>
       [
         ...modelPackItems,
-        ...(encoderSelected && encoderItem ? [encoderItem] : []),
+        ...(encoderItem ? [encoderItem] : []),
         ...(imageSelected && imageItem ? [imageItem] : []),
         ...recommendedItems.filter((item) => selectedRecommendedCpIds.includes(item.cp_id)),
       ].filter((item) => !item.downloaded),
     [
       modelPackItems,
-      encoderSelected,
       encoderItem,
       imageSelected,
       imageItem,
@@ -208,7 +181,6 @@ export function LaunchGate({ onComplete }: LaunchGateProps) {
   const hfNeedsLicense = !hfUnsigned && !allAuthorized && !checkError
   const hfComplete = !hfUnsigned && allAuthorized
   const hfShowGate = Boolean(checkError) || hfNeedsLicense
-  const { saveLtxApiKey } = useAppSettings()
   const downloadProgress = queue.progress
   const downloadError = queue.error
   const runningDownloadProgress = downloadProgress?.status === 'downloading' ? downloadProgress : null
@@ -249,7 +221,6 @@ export function LaunchGate({ onComplete }: LaunchGateProps) {
     }
 
     setInstallPath(settingsResult.data.modelsDir ?? '')
-    setHasSavedLtxApiKey(Boolean(settingsResult.data.hasLtxApiKey))
     const nextLoraItems = [
       ...(loraResult.ok
         ? loraResult.data.loras.map((entry) => firstRunLoraFromCatalog('lora', entry.lora, entry.downloaded))
@@ -334,40 +305,8 @@ export function LaunchGate({ onComplete }: LaunchGateProps) {
     }
   }, [installPath])
 
-  // LTX is stored as typed, with no provider check. A bad key fails on the first
-  // generation, which opens Settings on this field. Presence gating stays
-  // (skipping the local text model without any key blocks Install).
-  // Returns false only when the user has to fix something.
-  const persistApiKeyIfNeeded = async (requireKey: boolean): Promise<boolean> => {
-    if (!ltxApiKey) {
-      if (requireKey && !hasSavedLtxApiKey) {
-        setApiKeyError('Enter an API key.')
-        return false
-      }
-      return true
-    }
-    setApiKeyError(null)
-    try {
-      await saveLtxApiKey(ltxApiKey)
-      setHasSavedLtxApiKey(true)
-      setReplacingApiKey(false)
-      setLtxApiKey('')
-      return true
-    } catch (e) {
-      logger.error(`Failed to save API key: ${e instanceof Error ? e.message : String(e)}`)
-      setApiKeyError(
-        e instanceof Error && e.message
-          ? e.message
-          : 'Couldn’t save this key. Please try again.',
-      )
-      return false
-    }
-  }
-
   // Start installation
   const startInstallation = async () => {
-    const requireKey = !encoderSelected
-    if (!(await persistApiKeyIfNeeded(requireKey))) return
     await window.electronAPI.notifyInstallStarted().catch(() => {})
     setCurrentStep('installing')
     setInstallFinished(false)
@@ -386,9 +325,8 @@ export function LaunchGate({ onComplete }: LaunchGateProps) {
       const nextImgGenRecommendation = imgGenResult.data
       const encoderCpId = encoderItem?.cp_id
       const imageCpId = imageItem?.cp_id
-      const extraCpIds = encoderSelected && encoderCpId && !encoderOnDisk ? [encoderCpId] : []
+      const extraCpIds = encoderCpId && !encoderOnDisk ? [encoderCpId] : []
       const excludedCpIds = [
-        ...(!encoderSelected && encoderCpId ? [encoderCpId] : []),
         ...(!imageSelected && imageCpId ? [imageCpId] : []),
       ]
 
@@ -441,8 +379,7 @@ export function LaunchGate({ onComplete }: LaunchGateProps) {
   // Check if next button should be disabled
   const isNextDisabled = () => {
     if (currentStep === 'location') {
-      const apiKeyMissing = showApiKeyCard && !hasSavedLtxApiKey && ltxApiKey.length === 0
-      return (installCpIds.length > 0 && (!allAuthorized || checkingAccess)) || apiKeyMissing
+      return installCpIds.length > 0 && (!allAuthorized || checkingAccess)
     }
     return false
   }
@@ -461,9 +398,7 @@ export function LaunchGate({ onComplete }: LaunchGateProps) {
                   Setup
                 </Text>
 
-                <div
-                  className={`${styles.accountRow} ${showApiKeyCard ? styles.accountRowSplit : ''} ${apiKeyMotionReady ? styles.accountRowReady : ''}`}
-                >
+                <div className={styles.accountRow}>
                   <HfAccessCard
                     complete={hfComplete}
                     showGate={hfShowGate}
@@ -478,33 +413,11 @@ export function LaunchGate({ onComplete }: LaunchGateProps) {
                     onRetryCheck={recheckAccess}
                   />
 
-                  {encoderItem && (
-                    <div
-                      className={styles.apiKeyPane}
-                      aria-hidden={!showApiKeyCard}
-                      // `inert` is missing from React 18's types, so spread it to dodge excess-prop checking.
-                      {...(!showApiKeyCard ? { inert: '' } : {})}
-                    >
-                      <LtxApiKeyCard
-                        collapsed={apiKeyCollapsed}
-                        hasSavedKey={hasSavedLtxApiKey}
-                        apiKey={ltxApiKey}
-                        apiKeyError={apiKeyError}
-                        onApiKeyChange={(value) => {
-                          setLtxApiKey(value)
-                          setApiKeyError(null)
-                        }}
-                        onChangeKey={() => setReplacingApiKey(true)}
-                      />
-                    </div>
-                  )}
                 </div>
 
                 <ModelDownloadsCard
                   modelPackItems={modelPackItems}
                   encoderItem={encoderItem}
-                  encoderSelected={encoderSelected}
-                  onToggleEncoder={() => setDownloadTextEncoder((value) => !value)}
                   recommendedItems={recommendedItems}
                   isRecommendedSelected={isSelectedRecommended}
                   onToggleRecommended={toggleRecommended}
