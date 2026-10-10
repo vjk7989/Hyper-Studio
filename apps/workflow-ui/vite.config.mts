@@ -36,8 +36,17 @@ const IS_HYPER_STUDIO_EMBEDDED =
 const EMBEDDED_ACCOUNT_PLACEHOLDER = resolve(
   'src/platform/distribution/EmbeddedAccountPlaceholder.vue'
 )
+const EMBEDDED_ACCOUNT_IDENTITY = resolve(
+  'src/platform/distribution/embeddedAccountIdentity.ts'
+)
+const EMBEDDED_FIREBASE_APP = resolve(
+  'src/platform/distribution/embeddedFirebaseApp.ts'
+)
+const EMBEDDED_FIREBASE_AUTH = resolve(
+  'src/platform/distribution/embeddedFirebaseAuth.ts'
+)
 const FORBIDDEN_EMBEDDED_ACCOUNT_ASSET =
-  /(?:onboardingCloudRoutes|CloudLoginView|CloudSignupView|OAuth(?:Consent|Layout)View|CloudSubscriptionRedirectView|UserSelectView|ApiNodesSignInContent|SignInContent|UserPanel|CreditsPanel|SubscriptionRequiredDialogContent|CancelSubscriptionDialogContent|SubscribeToRun|CloudRunButtonWrapper|CloudNotificationContent|cloudFeedbackTopbarButton|CurrentUserPopoverWorkspace|WorkspaceSwitcherPopover|(?:Create|Delete|Edit|Leave|TeamWorkspaces|SetMemberCreditLimit|InviteMember|InviteMemberUpsell|RevokeInvite|RemoveMember|ChangeMemberRole|DowngradeRemoveMembers)DialogContent)(?:[-.])/i
+  /(?:onboardingCloudRoutes|CloudLoginView|CloudSignupView|OAuth(?:Consent|Layout)View|CloudSubscriptionRedirectView|UserSelectView|ApiNodesSignInContent|SignInContent|UserPanel|CreditsPanel|SubscriptionRequiredDialogContent|CancelSubscriptionDialogContent|SubscribeToRun|CloudRunButtonWrapper|CloudNotificationContent|cloudFeedbackTopbarButton|CurrentUserPopoverWorkspace|WorkspaceSwitcherPopover|vendor-firebase|firebaseIdentity|(?:Create|Delete|Edit|Leave|TeamWorkspaces|SetMemberCreditLimit|InviteMember|InviteMemberUpsell|RevokeInvite|RemoveMember|ChangeMemberRole|DowngradeRemoveMembers)DialogContent)(?:[-.])/i
 const TEST_SYSTEM_TIME = Date.parse('2024-06-15T12:00:00Z')
 const BROWSER_TESTS_DIR = resolve('browser_tests')
 
@@ -481,6 +490,11 @@ export default defineConfig({
       enforce: 'pre',
       resolveId(source) {
         if (!IS_HYPER_STUDIO_EMBEDDED) return null
+        if (source === '@/platform/auth/firebaseIdentity') {
+          return EMBEDDED_ACCOUNT_IDENTITY
+        }
+        if (source === 'firebase/app') return EMBEDDED_FIREBASE_APP
+        if (source === 'firebase/auth') return EMBEDDED_FIREBASE_AUTH
         if (
           source ===
             '@/platform/cloud/subscription/components/SubscribeToRun.vue' ||
@@ -502,9 +516,27 @@ export default defineConfig({
         const forbidden = Object.keys(bundle).filter((name) =>
           FORBIDDEN_EMBEDDED_ACCOUNT_ASSET.test(name)
         )
+        const forbiddenModules = Object.values(bundle)
+          .filter((item) => item.type === 'chunk')
+          .flatMap((chunk) => Object.keys(chunk.modules))
+          .filter((id) => {
+            const path = id.replaceAll('\\', '/')
+            return (
+              /\/node_modules\/(?:\.pnpm\/)?(?:@firebase\+|firebase@|@firebase\/|firebase\/)/.test(
+                path
+              ) ||
+              path.endsWith('/packages/account-core/src/firebase/index.ts') ||
+              path.endsWith('/src/platform/auth/firebaseIdentity.ts')
+            )
+          })
         if (forbidden.length > 0) {
           this.error(
             `Embedded build contains account UI assets: ${forbidden.join(', ')}`
+          )
+        }
+        if (forbiddenModules.length > 0) {
+          this.error(
+            `Embedded build contains Firebase account SDK modules: ${[...new Set(forbiddenModules)].join(', ')}`
           )
         }
       }
@@ -910,6 +942,13 @@ export default defineConfig({
 
   resolve: {
     alias: {
+      ...(IS_HYPER_STUDIO_EMBEDDED
+        ? {
+            '@/platform/auth/firebaseIdentity': EMBEDDED_ACCOUNT_IDENTITY,
+            'firebase/app': EMBEDDED_FIREBASE_APP,
+            'firebase/auth': EMBEDDED_FIREBASE_AUTH
+          }
+        : {}),
       '@/base/credits/comfyCredits':
         '/packages/shared-frontend-utils/src/creditsUtil.ts',
       '@/utils/formatUtil': '/packages/shared-frontend-utils/src/formatUtil.ts',
