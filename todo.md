@@ -1,6 +1,6 @@
 # Hyper-Studio phase to-do list
 
-Status: `[x]` verified complete; `[·]` in progress or only partly verified; `[ ]` not started. Phase 4's scoped integration gate and a prior Phase 5 installed Windows checkpoint passed. Four later source commits require new Windows and macOS/Linux package gates.
+Status: `[x]` verified complete; `[·]` in progress or only partly verified; `[ ]` not started. Phase 4's scoped integration gate and the Phase 5 latest-bundle Windows installed/macOS/Linux packaged gates passed. Broader release checks remain open.
 
 ## Phase 1 — Baseline and containment
 
@@ -45,9 +45,13 @@ Status: `[x]` verified complete; `[·]` in progress or only partly verified; `[ 
 - [·] Scan shipped strings and visual assets; inspect light/dark, loading, error, and empty states. The 178 unallowlisted string candidates need contextual review.
 - [x] Build, freshly install, and smoke the prior Windows NSIS under repository-local paths; verify media, Workflow Settings branding/account/pricing/contrast, three workflow compatibility variants, reviewed queue interception, and removed cloud node ID 91001.
 - [x] Run the prior Windows read-only brand inventory with zero legacy visual filenames in tracked source and three built trees; record installer hash, size, and `NotSigned` status.
-- [·] Validate later PSD/error-report branding and embedded account UI/Firebase SDK exclusions in a newly built and installed Windows package; generic auth compatibility chunks remain for review.
-- [·] Complete release packaging checks: prior Phase 5 Windows installed checkpoint passed; new Windows build and macOS/Linux run 38067417438 are pending. Platform installer installation/uninstall, full rebrand review, completed third-party install, and live provider acceptance remain.
-- [·] Update architecture record, handoff, code map, and Graft graph (last build: 7,066 files; 64,425 nodes; 158,969 edges); codebase-memory fast reindex crashed twice and release checkpoint remains open.
+- [x] Build and freshly install the final4 Windows NSIS; pass cold-start media/Settings smoke, three compatibility variants, reviewed queue interception, and removed cloud node ID 91001 on the latest embedded bundle.
+- [x] Verify the final4 Windows installer size/hash/unsigned status and read-only brand audit with zero legacy visual filenames in three built trees.
+- [x] Pass macOS arm64 and Linux x64 Phase 5 package smoke and brand-audit jobs in GitHub Actions run 38067616426.
+- [·] Review generic auth compatibility chunks, 178 source string candidates, light/dark and optional visual states, and individual PSD/error-report interactions.
+- [·] Complete release packaging checks: scoped Windows installed and macOS/Linux packaged gates passed; macOS/Linux installer installation/uninstall, full rebrand review, completed third-party install, and live provider acceptance remain.
+- [x] Update architecture record, handoff, code map, and Graft graph (7,071 files; 64,436 nodes; 158,982 edges).
+- [·] Verify the separate codebase-memory snapshot after two fast-reindex worker crashes and finish the broader release checkpoint.
 
 ## Managed OpenCode V2 worker
 
