@@ -70,9 +70,9 @@ def test_lock_held_by_another_comfyui(db_path, caplog):
         holder.release()
 
     # Launchers match "already using this database"; keep that phrase.
-    assert f"Another ComfyUI is already using this database: '{db_path}'." in error
-    assert "Close the other ComfyUI" in error
-    assert "Or give this ComfyUI its own database" not in error  # it already has --database-url
+    assert f"Another Hyper-Studio process is already using this database: '{db_path}'." in error
+    assert "Close the other Hyper-Studio process" in error
+    assert "Or give this Hyper-Studio process its own database" not in error  # it already has --database-url
 
 
 def test_database_locked_by_another_program(db_path, caplog):
@@ -114,9 +114,9 @@ def test_database_from_a_newer_comfyui(db_path, caplog):
 
     error = _startup_error(caplog, kind="newer_revision")
 
-    assert f"The asset database '{db_path}' was last used by a newer version of ComfyUI" in error
+    assert f"The asset database '{db_path}' was last used by a newer version of Hyper-Studio" in error
     assert "0099_from_a_newer_release" in error
-    assert "Update ComfyUI" in error
+    assert "Update Hyper-Studio" in error
 
 
 def test_failed_upgrade(db_path, caplog):
@@ -139,7 +139,7 @@ def test_folder_not_writable(tmp_path, db_path, caplog):
     finally:
         os.chmod(tmp_path, 0o755)
 
-    assert f"ComfyUI can't create, open or write the asset database '{db_path}' ([Errno 13] Permission denied" in error
+    assert f"Hyper-Studio can't create, open or write the asset database '{db_path}' ([Errno 13] Permission denied" in error
     assert "Make sure its folder is a writable directory" in error
 
 
@@ -148,7 +148,7 @@ def test_database_path_is_a_directory(db_path, caplog):
 
     error = _startup_error(caplog, kind="not_writable")
 
-    assert f"ComfyUI can't create, open or write the asset database '{db_path}'" in error
+    assert f"Hyper-Studio can't create, open or write the asset database '{db_path}'" in error
     assert "the database path is a writable file" in error
     assert "no other program has it open" in error  # SQLite says the same for a file another program holds
     assert "delete it" not in error
@@ -182,7 +182,7 @@ def test_read_only_database_file_that_needs_an_upgrade(db_path, caplog):
 
     error = _startup_error(caplog, kind="not_writable")
 
-    assert f"ComfyUI can't create, open or write the asset database '{db_path}' (attempt to write a readonly database)" in error
+    assert f"Hyper-Studio can't create, open or write the asset database '{db_path}' (attempt to write a readonly database)" in error
     assert "delete it" not in error
 
 
@@ -220,7 +220,7 @@ def test_database_url_that_is_not_sqlite_file_url(monkeypatch, db_path, caplog, 
 
     error = _startup_error(caplog, kind="unsupported_url", level=logging.DEBUG)
 
-    assert "--database-url must start with sqlite:///, like sqlite:///path/to/comfyui.db" in error
+    assert "--database-url must start with sqlite:///, like sqlite:///path/to/hyper-studio.db" in error
     assert "or be left out to use the default database" in error
     assert url not in error
     assert "secret" not in caplog.text
@@ -239,7 +239,7 @@ def test_default_database_in_use_suggests_its_own_database(tmp_path, monkeypatch
     finally:
         holder.release()
 
-    assert "Or give this ComfyUI its own database: --database-url sqlite:///path/to/another.db" in error
+    assert "Or give this Hyper-Studio process its own database: --database-url sqlite:///path/to/another.db" in error
 
 
 def test_no_second_database_suggested_for_a_broken_one(tmp_path, monkeypatch, db_path, caplog):

@@ -11,8 +11,8 @@ from pathlib import Path
 import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-LOCK_HELD = "Another ComfyUI is already using this database"
-IN_USE = "Another ComfyUI is already using this install's asset database"
+LOCK_HELD = "Another Hyper-Studio process is already using this database"
+IN_USE = "Another Hyper-Studio process is already using this install's asset database"
 
 HOLD_SCRIPT = (
     "import sys; "

@@ -125,9 +125,9 @@ def test_assets_off_warns_and_continues_when_another_process_holds_the_lock(
     assert asset_manager.started
     assert len(startup_warnings) == 1
     warning = startup_warnings[0]
-    assert "Another ComfyUI is already using this install's asset database" in warning
+    assert "Another Hyper-Studio process is already using this install's asset database" in warning
     assert db_path in warning
-    assert "This ComfyUI was started with --disable-assets, so it doesn't use that database and will start anyway" in warning
+    assert "This Hyper-Studio process was started with --disable-assets, so it doesn't use that database and will start anyway" in warning
     assert "--database-url" not in warning
 
 

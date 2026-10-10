@@ -80,7 +80,7 @@ def test_held_lock_blocks_before_any_migration_work(stale_db, monkeypatch):
     holder = FileLock(stale_db + ".lock")
     holder.acquire(timeout=0)
     try:
-        with pytest.raises(RuntimeError, match="Another ComfyUI process may already be using it"):
+        with pytest.raises(RuntimeError, match="Another Hyper-Studio process may already be using it"):
             db_module._init_file_db(db_module.args.database_url)
 
         assert not os.path.exists(stale_db + ".bkp")

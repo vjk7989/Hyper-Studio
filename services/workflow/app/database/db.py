@@ -190,7 +190,7 @@ def _acquire_file_lock(db_path):
         except Timeout:
             raise RuntimeError(
                 f"Could not acquire lock on database '{db_path}'. "
-                "Another ComfyUI process may already be using it. "
+                "Another Hyper-Studio process may already be using it. "
                 "Use --database-url to specify a separate database file."
             )
 

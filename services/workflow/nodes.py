@@ -517,7 +517,7 @@ class SaveLatent:
     def INPUT_TYPES(s):
         return { "required": {
             "samples": ("LATENT",),
-            "filename_prefix": ("STRING", {"default": "latents/ComfyUI"})},
+            "filename_prefix": ("STRING", {"default": "latents/Hyper-Studio"})},
             "hidden": {"prompt": "PROMPT", "extra_pnginfo": "EXTRA_PNGINFO"},
         }
     RETURN_TYPES = ("LATENT",)
@@ -528,7 +528,7 @@ class SaveLatent:
 
     CATEGORY = "model/latent"
 
-    def save(self, samples, filename_prefix="ComfyUI", prompt=None, extra_pnginfo=None):
+    def save(self, samples, filename_prefix="Hyper-Studio", prompt=None, extra_pnginfo=None):
         full_output_folder, filename, counter, subfolder, filename_prefix = folder_paths.get_save_image_path(filename_prefix, self.output_dir)
 
         # support save metadata for latent sharing
@@ -1679,7 +1679,7 @@ class SaveImage:
             "required": {
                 "images": ("IMAGE", {"tooltip": "The images to save."}),
                 "filename_prefix": ("STRING", {
-                    "default": "ComfyUI",
+                    "default": "Hyper-Studio",
                     "tooltip": "The prefix for the file to save. This may include formatting information such as %date:yyyy-MM-dd% or %Empty Latent Image.width% to include values from nodes."
                 })
             },
@@ -1696,10 +1696,10 @@ class SaveImage:
 
     CATEGORY = "image"
     ESSENTIALS_CATEGORY = "Basics"
-    DESCRIPTION = "Saves the input images to your ComfyUI output directory."
+    DESCRIPTION = "Saves the input images to your Hyper-Studio output directory."
     SEARCH_ALIASES = ["save", "save image", "export image", "output image", "write image", "download"]
 
-    def save_images(self, images, filename_prefix="ComfyUI", prompt=None, extra_pnginfo=None):
+    def save_images(self, images, filename_prefix="Hyper-Studio", prompt=None, extra_pnginfo=None):
         filename_prefix += self.prefix_append
         full_output_folder, filename, counter, subfolder, filename_prefix = folder_paths.get_save_image_path(filename_prefix, self.output_dir, images[0].shape[1], images[0].shape[0])
         results = list()
@@ -1735,7 +1735,7 @@ class PreviewImage(SaveImage):
         self.compress_level = 1
 
     SEARCH_ALIASES = ["preview", "preview image", "show image", "view image", "display image", "image viewer"]
-    DESCRIPTION = "Preview the images without saving them to the ComfyUI output directory."
+    DESCRIPTION = "Preview the images without saving them to the Hyper-Studio output directory."
 
     @classmethod
     def INPUT_TYPES(s):
@@ -2613,9 +2613,9 @@ async def init_extra_nodes(init_custom_nodes=True, init_api_nodes=True):
         logging.warning("WARNING: some comfy_api_nodes/ nodes did not import correctly. This may be because they are missing some dependencies.\n")
         for node in import_failed_api:
             logging.warning("IMPORT FAILED: {}".format(node))
-        logging.warning("\nThis issue might be caused by new missing dependencies added the last time you updated ComfyUI.")
+        logging.warning("\nThis issue might be caused by dependencies missing from the current Hyper-Studio installation.")
         if args.windows_standalone_build:
-            logging.warning("Please run the update script: update/update_comfyui.bat")
+            logging.warning("Please update or reinstall Hyper-Studio to restore its workflow dependencies.")
         else:
             logging.warning("Please do a: pip install -r requirements.txt")
         logging.warning("")
@@ -2624,9 +2624,9 @@ async def init_extra_nodes(init_custom_nodes=True, init_api_nodes=True):
         logging.warning("WARNING: some comfy_extras/ nodes did not import correctly. This may be because they are missing some dependencies.\n")
         for node in import_failed:
             logging.warning("IMPORT FAILED: {}".format(node))
-        logging.warning("\nThis issue might be caused by new missing dependencies added the last time you updated ComfyUI.")
+        logging.warning("\nThis issue might be caused by dependencies missing from the current Hyper-Studio installation.")
         if args.windows_standalone_build:
-            logging.warning("Please run the update script: update/update_comfyui.bat")
+            logging.warning("Please update or reinstall Hyper-Studio to restore its workflow dependencies.")
         else:
             logging.warning("Please do a: pip install -r requirements.txt")
         logging.warning("")

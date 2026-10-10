@@ -53,13 +53,13 @@ if __name__ == "__main__":
         and os.environ.get("CUDA_VISIBLE_DEVICES") is None
     ):
         os.environ["CUDA_VISIBLE_DEVICES"] = "0"
-        logging.warning("On windows we are currently forcing single GPU mode in ComfyUI due to a Nvidia related issue, if you want to disable this use: --cuda-device all")
+        logging.warning("On Windows, Hyper-Studio uses one GPU by default due to an NVIDIA issue. To use all GPUs, pass --cuda-device all.")
 
     if args.disable_api_nodes:
         logging.warning("--disable-api-nodes is deprecated and will be removed in a future version. It currently behaves like --offline. Use --offline to keep the frontend offline, or --disable-partner-nodes to only disable partner nodes.")
 
     if args.enable_assets:
-        logging.warning("--enable-assets is deprecated and does nothing: the assets system is on unless ComfyUI is started with --disable-assets.")
+        logging.warning("--enable-assets is deprecated and does nothing: assets are enabled unless Hyper-Studio starts with --disable-assets.")
 
 faulthandler.enable(file=sys.stderr, all_threads=args.debug_hang)
 if __name__ == "__main__" and args.debug_hang:
@@ -327,7 +327,7 @@ def cuda_malloc_warning():
             if b in device_name:
                 cuda_malloc_warning = True
         if cuda_malloc_warning:
-            logging.warning("\nWARNING: this card most likely does not support cuda-malloc, if you get \"CUDA error\" please run ComfyUI with: --disable-cuda-malloc\n")
+            logging.warning("\nWARNING: this card most likely does not support cuda-malloc. If you get a CUDA error, start Hyper-Studio with --disable-cuda-malloc.\n")
 
 
 def prompt_worker(q, server_instance, asset_manager):
@@ -501,7 +501,7 @@ def setup_database(asset_manager):
         stop_startup(failure, message)
 
 
-WITHOUT_ASSETS = "Or start ComfyUI without the assets system: --disable-assets"
+WITHOUT_ASSETS = "Or start Hyper-Studio without the assets system: --disable-assets"
 
 
 def stop_startup(kind, message):
@@ -513,45 +513,45 @@ def stop_startup(kind, message):
 def database_failure_message(error, db_url):
     """The kind of failure that stopped the asset database from opening, and how to fix it."""
     if not (db_url.startswith("sqlite:///") or db_url == "sqlite://"):
-        return "unsupported_url", ("--database-url must start with sqlite:///, like sqlite:///path/to/comfyui.db, "
+        return "unsupported_url", ("--database-url must start with sqlite:///, like sqlite:///path/to/hyper-studio.db, "
                                    f"or be left out to use the default database.\n{WITHOUT_ASSETS}")
     location = get_db_path() if db_url.startswith("sqlite:///") else db_url
     kind = error_kind(error)
     detail = getattr(error, "orig", None) or error
     if "Could not acquire lock on database" in str(error):
         failure = "in_use"
-        what = f"Another ComfyUI is already using this database: '{location}'."
-        fix = "Close the other ComfyUI and start this one again."
+        what = f"Another Hyper-Studio process is already using this database: '{location}'."
+        fix = "Close the other Hyper-Studio process and start this one again."
     elif kind in ("database_locked", "file_locked"):
         failure = "locked"
         what = f"The asset database '{location}' is locked by another program ({detail})."
-        fix = "Close any program that has it open, such as another ComfyUI or a database viewer, and start again."
+        fix = "Close any program that has it open, such as another Hyper-Studio process or a database viewer, and start again."
     elif "Can't locate revision" in str(error):
         failure = "newer_revision"
-        what = f"The asset database '{location}' was last used by a newer version of ComfyUI ({detail})."
-        fix = "Update ComfyUI, or move that file aside and start again to create a new database."
+        what = f"The asset database '{location}' was last used by a newer version of Hyper-Studio ({detail})."
+        fix = "Update Hyper-Studio, or move that file aside and start again to create a new database."
     elif isinstance(error, (FileExistsError, NotADirectoryError)):
         failure = "path_blocked"
         what = f"A file is in the way of the folder for the asset database '{location}' ({detail})."
         fix = "Move that file, or choose another folder."
     elif kind in ("read_only", "unable_to_open") or isinstance(error, OSError):
         failure = "not_writable"
-        what = f"ComfyUI can't create, open or write the asset database '{location}' ({detail})."
+        what = f"Hyper-Studio can't create, open or write the asset database '{location}' ({detail})."
         fix = ("Make sure its folder is a writable directory, the database path is a writable file (or doesn't exist yet), "
                "and no other program has it open.")
     elif kind == "database_corrupt":
         failure = "corrupt"
         what = f"The asset database '{location}' is corrupt ({detail})."
-        fix = ("Move that file aside, or delete it, and start again: ComfyUI creates a new database "
+        fix = ("Move that file aside, or delete it, and start again: Hyper-Studio creates a new database "
                "and rebuilds the asset catalog by rescanning your files.")
     else:
         failure = "other"
         what = f"Could not open or upgrade the asset database '{location}': {detail}"
-        fix = ("If the database is damaged, move that file aside and start again: ComfyUI creates a new "
+        fix = ("If the database is damaged, move that file aside and start again: Hyper-Studio creates a new "
                "database and rebuilds the asset catalog by rescanning your files. Run with --verbose DEBUG for the full error.")
     lines = [what, fix]
     if failure in ("in_use", "locked") and args.database_url is None:
-        lines.append("Or give this ComfyUI its own database: --database-url sqlite:///path/to/another.db")
+        lines.append("Or give this Hyper-Studio process its own database: --database-url sqlite:///path/to/another.db")
     return failure, "\n".join(lines + [WITHOUT_ASSETS])
 
 
@@ -564,9 +564,9 @@ def warn_if_database_in_use():
 ________________________________________________________________________
 WARNING WARNING WARNING WARNING WARNING
 
-Another ComfyUI is already using this install's asset database:
+Another Hyper-Studio process is already using this install's asset database:
   {db_path}
-This ComfyUI was started with --disable-assets, so it doesn't use that database and will start anyway.
+This Hyper-Studio process was started with --disable-assets, so it doesn't use that database and will start anyway.
 ________________________________________________________________________
 """.strip()
     )
@@ -647,7 +647,7 @@ def start_comfyui(asyncio_loop=None):
 if __name__ == "__main__":
     # Running directly, just start ComfyUI.
     logging.info("Python version: {}".format(sys.version))
-    logging.info("ComfyUI version: {}".format(comfyui_version.__version__))
+    logging.info("Workflow engine version: {}".format(comfyui_version.__version__))
     for package in ("comfy-aimdo", "comfy-kitchen"):
         try:
             logging.info("{} version: {}".format(package, importlib.metadata.version(package)))
@@ -664,8 +664,8 @@ if __name__ == "__main__":
             "Dynamic vram disabled with argument. If you have any issues with "
             "dynamic vram enabled please give us a detailed reports as this "
             "argument will be removed soon. If you use gguf we recommend keeping "
-            "dynamic vram enabled and using native ComfyUI model formats instead. "
-            "ComfyUI native formats like fp8, int8 and w4a8 will be faster even if they are larger than your memory."
+            "dynamic vram enabled and using native workflow model formats instead. "
+            "Native formats like fp8, int8 and w4a8 will be faster even if they are larger than your memory."
         )
     event_loop, prompt_server, start_all_func = start_comfyui()
     try:
