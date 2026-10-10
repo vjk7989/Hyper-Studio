@@ -24,6 +24,7 @@ const diagnosticLines = [
   `display=${process.env.DISPLAY || '(unset)'}`,
   `core-pattern=${fs.readFileSync('/proc/sys/kernel/core_pattern', 'utf8').trim()}`,
   `core-pipe-limit=${fs.readFileSync('/proc/sys/kernel/core_pipe_limit', 'utf8').trim()}`,
+  `core-suppression=${process.env.HYPER_STUDIO_DIAGNOSTIC_PRELOAD || '(none)'}`,
   `diagnostic-tools=${['strace', 'gdb', 'lldb', 'coredumpctl', 'journalctl'].map(name => `${name}:${command('which', [name])}`).join(' | ')}`,
   `x-socket=${fs.existsSync(`/tmp/.X11-unix/X${(process.env.DISPLAY || '').match(/^:(\d+)/)?.[1] || ''}`)}`,
   `x-authority-file-present=${Boolean(process.env.XAUTHORITY && fs.existsSync(process.env.XAUTHORITY))}`,
@@ -100,6 +101,7 @@ const port = await new Promise((resolve, reject) => {
 })
 const env = {
   ...process.env,
+  ...(process.env.HYPER_STUDIO_DIAGNOSTIC_PRELOAD ? { LD_PRELOAD: process.env.HYPER_STUDIO_DIAGNOSTIC_PRELOAD } : {}),
   HOME: home,
   USERPROFILE: home,
   TMPDIR: path.join(home, 'temp'), TEMP: path.join(home, 'temp'), TMP: path.join(home, 'temp'),
@@ -125,6 +127,49 @@ async function probeVersion(binary, label) {
   if (result.startsWith('timeout')) { probe.kill('SIGTERM'); probe.unref() }
   fs.closeSync(fd)
   diagnosticLines.push(`${label}-version-probe=${result} output=${fs.readFileSync(output, 'utf8').slice(0, 500).replace(/\s+/g, ' ')}`)
+  fs.writeFileSync(diagnosticFile, diagnosticLines.join('\n') + '\n')
+}
+function findCachedElectronZip() {
+  const cache = path.join(root, '.local-cache/electron')
+  if (!fs.existsSync(cache)) return null
+  const entry = fs.readdirSync(cache, { recursive: true }).find(name => String(name).endsWith('electron-v41.0.2-linux-x64.zip'))
+  return entry ? path.join(cache, String(entry)) : null
+}
+async function probeRawElectron() {
+  const zip = findCachedElectronZip()
+  if (!zip) { diagnosticLines.push('raw-electron-version-probe=cache zip missing'); return }
+  const destination = path.join(home, 'raw-electron')
+  fs.mkdirSync(destination, { recursive: true })
+  try {
+    execFileSync('unzip', ['-q', zip, 'electron', '-d', destination], { timeout: 45000, stdio: 'ignore' })
+    const raw = path.join(destination, 'electron')
+    fs.chmodSync(raw, 0o755)
+    diagnosticLines.push(`electron-binary-hashes=${command('sha256sum', [executable, raw]).replace(/\n/g, ' | ')}`)
+    await probeVersion(raw, 'raw-electron')
+  } catch (error) { diagnosticLines.push(`raw-electron-extract=failed: ${error instanceof Error ? error.message : String(error)}`) }
+  fs.writeFileSync(diagnosticFile, diagnosticLines.join('\n') + '\n')
+}
+async function probeStrace() {
+  if (!fs.existsSync('/usr/bin/strace')) return
+  const output = path.join(home, 'strace-version-stdout.log')
+  const fd = fs.openSync(output, 'w')
+  const traceEnv = { ...env }
+  delete traceEnv.LD_PRELOAD
+  const args = ['-ff', '-tt', '-s', '80', '-e', 'trace=%process,%signal', '-o', path.join(home, 'strace-version')]
+  if (env.LD_PRELOAD) args.push('-E', `LD_PRELOAD=${env.LD_PRELOAD}`)
+  args.push(executable, '--version', '--no-sandbox')
+  const tracer = spawn('/usr/bin/strace', args, { cwd: root, env: traceEnv, detached: true, stdio: ['ignore', fd, fd] })
+  const result = await new Promise(resolve => {
+    const timer = setTimeout(() => resolve('timeout after 8s'), 8000)
+    tracer.once('exit', (code, signal) => { clearTimeout(timer); resolve(`exit=${code} signal=${signal}`) })
+    tracer.once('error', error => { clearTimeout(timer); resolve(`error=${error.message}`) })
+  })
+  if (result.startsWith('timeout')) {
+    try { process.kill(-tracer.pid, 'SIGTERM') } catch { /* process exited */ }
+    tracer.unref()
+  }
+  fs.closeSync(fd)
+  diagnosticLines.push(`strace-version-probe=${result} output=${fs.readFileSync(output, 'utf8').slice(0, 500).replace(/\s+/g, ' ')}`)
   fs.writeFileSync(diagnosticFile, diagnosticLines.join('\n') + '\n')
 }
 const child = spawn(executable, [`--remote-debugging-port=${port}`, '--no-sandbox', '--no-zygote', '--disable-gpu', '--disable-dev-shm-usage'], { cwd: root, env, stdio: ['ignore', stdoutFd, stderrFd] })
@@ -206,6 +251,8 @@ try {
   if (stage === 'launch') {
     await probeVersion(executable, 'packaged')
     await probeVersion(path.join(root, 'apps/desktop/node_modules/electron/dist/electron'), 'base-electron')
+    await probeRawElectron()
+    await probeStrace()
     const journal = command('journalctl', ['-k', '--since', '-3 min', '--no-pager', '-n', '80'])
     diagnosticLines.push(`kernel-crash-lines=${journal.split('\n').filter(line => /hyper-studio|electron|segfault|trap|coredump|journalctl failed/i.test(line)).slice(-20).join(' | ') || '(none)'}`)
     fs.writeFileSync(diagnosticFile, diagnosticLines.join('\n') + '\n')
