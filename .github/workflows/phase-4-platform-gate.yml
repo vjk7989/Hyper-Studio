@@ -57,6 +57,16 @@ jobs:
             echo 'Embedded workflow bridge is missing from the canvas build' >&2
             exit 1
           fi
+      - name: Test embedded workflow account isolation
+        shell: bash
+        run: |
+          cd apps/workflow-ui
+          node node_modules/vitest/vitest.mjs run \
+            src/platform/cloud/onboarding/embeddedAccountIsolation.test.ts \
+            src/components/actionbar/ComfyRunButton/LocalRunButtonWrapper.test.ts \
+            src/services/dialogService.subscriptionRequired.test.ts \
+            src/stores/userStore.test.ts \
+            src/composables/useTemplateFiltering.test.ts
       - name: Build and test desktop shell
         shell: bash
         run: |
@@ -83,6 +93,15 @@ jobs:
           node .tools/pnpm10/node_modules/pnpm/bin/pnpm.cjs --dir apps/desktop exec electron-builder --linux --x64 --dir --publish never
           export HYPER_STUDIO_SMOKE_EXE="$GITHUB_WORKSPACE/apps/desktop/release/linux-unpacked/hyper-studio"
           xvfb-run -a node scripts/smoke-packaged-linux-cdp.mjs
+      - name: Audit packaged brand assets
+        shell: bash
+        run: |
+          node scripts/audit-branding.mjs
+          node -e 'const a=require("./.local-cache/brand-audit/audit.json"); if (a.summary.builtResidualVisualNames || a.built.filter(x => x.present).length < 3) process.exit(1)'
+          if grep -R -F -q 'M170.474 8.75283' apps/workflow-ui/dist/assets; then
+            echo 'Old Comfy wordmark remains in workflow bundle' >&2
+            exit 1
+          fi
       - name: Preserve packaged smoke diagnostics
         if: failure()
         uses: actions/upload-artifact@v4

@@ -16,6 +16,10 @@ const builtRoots = [
   'apps/workflow-ui/dist',
   'apps/desktop/release/win-unpacked/resources/workflow-frontend',
   'apps/desktop/release/win-unpacked/resources/dist-remote',
+  'apps/desktop/release/mac-arm64/Hyper-Studio.app/Contents/Resources/workflow-frontend',
+  'apps/desktop/release/mac-arm64/Hyper-Studio.app/Contents/Resources/dist-remote',
+  'apps/desktop/release/linux-unpacked/resources/workflow-frontend',
+  'apps/desktop/release/linux-unpacked/resources/dist-remote',
 ]
 const textExt = new Set(['.ts', '.tsx', '.js', '.mjs', '.vue', '.json', '.css', '.scss', '.html', '.svg', '.py', '.yml', '.yaml', '.txt'])
 const visualExt = new Set(['.svg', '.png', '.jpg', '.jpeg', '.webp', '.gif', '.ico', '.icns', '.mp4', '.webm', '.mov'])
