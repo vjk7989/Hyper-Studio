@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import net from 'node:net'
 import path from 'node:path'
-import { spawn } from 'node:child_process'
+import { execFileSync, spawn } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { chromium } from '../apps/workflow-ui/node_modules/@playwright/test/index.mjs'
 
@@ -14,6 +14,38 @@ for (const folder of [home, path.join(home, 'temp'), path.join(home, 'user-data'
 const log = (name) => fs.createWriteStream(path.join(home, name), { flags: 'w' })
 const stdout = log('electron-stdout.log')
 const stderr = log('electron-stderr.log')
+const diagnosticFile = path.join(home, 'startup-diagnostics.log')
+function command(program, args) {
+  try { return execFileSync(program, args, { encoding: 'utf8', timeout: 3000, maxBuffer: 256 * 1024 }).trim() }
+  catch (error) { return `${program} failed: ${error instanceof Error ? error.message.split('\n')[0] : String(error)}` }
+}
+const diagnosticLines = [
+  `display=${process.env.DISPLAY || '(unset)'}`,
+  `x-display=${command('xdpyinfo', ['-display', process.env.DISPLAY || '']) .split('\n').slice(0, 6).join(' | ')}`,
+  `binary=${executable}`,
+  `binary-mode=${fs.statSync(executable).mode.toString(8)}`,
+  `missing-libraries=${command('ldd', [executable]).split('\n').filter(line => line.includes('not found')).join(' | ') || '(none)'}`,
+]
+function snapshot(label, pid) {
+  const lines = [`stage=${label} time=${new Date().toISOString()} pid=${pid} exited=${JSON.stringify(exit)}`]
+  lines.push(`process=${command('ps', ['-o', 'pid,ppid,stat,wchan:32,etime,comm,args', '-p', String(pid)])}`)
+  lines.push(`children=${command('ps', ['--ppid', String(pid), '-o', 'pid,ppid,stat,wchan:32,etime,comm,args'])}`)
+  for (const name of ['status', 'wchan']) {
+    try {
+      const content = fs.readFileSync(`/proc/${pid}/${name}`, 'utf8')
+      lines.push(`${name}=${name === 'status' ? content.split('\n').filter(line => /^(Name|State|Threads|VmRSS|Sig)/.test(line)).join(' | ') : content.trim()}`)
+    } catch { lines.push(`${name}=(unavailable)`) }
+  }
+  try {
+    const threads = fs.readdirSync(`/proc/${pid}/task`).slice(0, 24)
+    lines.push(`thread-wchan=${threads.map(tid => {
+      try { return `${tid}:${fs.readFileSync(`/proc/${pid}/task/${tid}/wchan`, 'utf8').trim()}` }
+      catch { return `${tid}:unavailable` }
+    }).join(' ')}`)
+  } catch { lines.push('thread-wchan=(unavailable)') }
+  diagnosticLines.push(...lines)
+  fs.writeFileSync(diagnosticFile, diagnosticLines.join('\n') + '\n')
+}
 const port = await new Promise((resolve, reject) => {
   const server = net.createServer()
   server.once('error', reject)
@@ -38,6 +70,8 @@ child.stderr.pipe(stderr)
 let exit = null
 child.once('exit', (code, signal) => { exit = { code, signal } })
 child.once('error', error => { exit = { error: String(error) } })
+const snapshotTimer = setTimeout(() => snapshot('after-10s', child.pid), 10000)
+snapshotTimer.unref()
 let browser
 let page
 let stage = 'launch'
@@ -52,7 +86,10 @@ try {
     } catch { /* Chromium starts after the main process. */ }
     if (!version) await new Promise(resolve => setTimeout(resolve, 250))
   }
-  if (!version?.webSocketDebuggerUrl) throw new Error(`CDP endpoint did not start; exit=${JSON.stringify(exit)}`)
+  if (!version?.webSocketDebuggerUrl) {
+    snapshot('cdp-timeout', child.pid)
+    throw new Error(`CDP endpoint did not start; exit=${JSON.stringify(exit)}`)
+  }
   stage = 'window'
   browser = await chromium.connectOverCDP(endpoint, { timeout: 30000 })
   const context = browser.contexts()[0]
@@ -111,6 +148,7 @@ try {
   if (tail) console.error(`Electron stderr tail: ${tail}`)
   throw error
 } finally {
+  clearTimeout(snapshotTimer)
   if (browser) await browser.close().catch(() => {})
   if (!child.killed && exit === null) child.kill('SIGTERM')
   await new Promise(resolve => setTimeout(resolve, 500))
