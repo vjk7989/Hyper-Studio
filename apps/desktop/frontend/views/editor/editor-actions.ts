@@ -650,7 +650,14 @@ export function switchActiveTimeline(state: EditorState, timelineId: string | nu
 }
 
 export function createTimeline(state: EditorState, name?: string): EditorState {
-  const timeline = createDefaultTimeline(name)
+  let timelineName = name
+  if (timelineName === undefined) {
+    const usedNames = new Set(state.editorModel.timelines.map(timeline => timeline.name))
+    let number = 1
+    while (usedNames.has(`Timeline ${number}`)) number += 1
+    timelineName = `Timeline ${number}`
+  }
+  const timeline = createDefaultTimeline(timelineName)
   return {
     ...updateEditorModel(state, editorModel => ({
       ...editorModel,
