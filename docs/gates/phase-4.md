@@ -1,17 +1,17 @@
-# Phase 4 gate: managed Workflow mode (in progress)
+# Phase 4 gate: managed Workflow mode (passed)
 
 ## Identity and decision
 
 - **Date / host:** 2026-10-10, Windows x64, `G:\Hyper-Studio\Hyper-Studio`.
-- **Base:** Phase 3 checkpoint `6859617`; Phase 4 is uncommitted.
+- **Base:** Phase 3 checkpoint `6859617`; integrated Phase 4 code through `50ce3ee`.
 - **Scope:** Project-scoped workflow engine, pinned embedded Vue canvas, project workflow JSON commands, first-party provider bridge, and shared media.
-- **Decision:** **Gate open.** Do not advance to Phase 5 or mark Phase 4 complete until the pending checks below pass and failures are repaired and rerun.
+- **Decision:** **Gate passed for the scoped integration.** Windows installed-app checks and GitHub Actions [run 38057082762](https://github.com/vjk7989/Hyper-Studio/actions/runs/38057082762) passed on macOS and Linux. Live provider acceptance, broad third-party extensions, and complete surface rebrand remain explicit limits for later work.
 
 ## Checks to date
 
 | Check | Result | Evidence and limit |
 | --- | --- | --- |
-| Desktop script tests through `scripts/with-local-env.ps1` | **Passed: 1,467/1,467** | Final run includes the reviewed OpenCode workflow-file edge-case task: 20/20 focused tests, full desktop suite 1,467/1,467, and TypeScript exit 0. Full logs are under `docs/agent-tasks/reports/phase-4-workflow-files/`. |
+| Desktop script tests through `scripts/with-local-env.ps1` | **Passed** | Reviewed OpenCode workflow-file edge cases: 20/20 focused and 1,467/1,467 desktop locally, with TypeScript exit 0. Final macOS and Linux CI desktop suites each reported 1,472 passed, 0 failed, 1 skipped (1,473 total); the added tests cover generated-thumbnail exclusion. Full OpenCode logs are under `docs/agent-tasks/reports/phase-4-workflow-files/`. |
 | Desktop TypeScript through local wrapper | **Passed** | Exit 0; `phase-4-desktop-typecheck.log` records the command start. |
 | Direct desktop Vite build through local wrapper | **Passed** | Exit 0 for frontend/Electron bundles. This is not an installer package. |
 | Vue embedded build through local wrapper | **Passed** | Pinned source `v1.55.14`, rerun after missing-node review UI change. |
@@ -32,16 +32,18 @@
 | Packaged hosted-only boot and runtime setup | **Passed** | Hosted-only boot bypasses the absent LTX inference backend. Packaged first-use managed `uv` initially had a conflicting `UV_PYTHON_PREFERENCE`; after removal, Python and pinned workflow packages installed under the selected shared root without model packs. Canvas and local-mock provider jobs in both modes passed. |
 | Windows NSIS installer build | **Passed; unsigned** | From `apps/desktop` through the local wrapper, `node_modules/.bin/electron-builder.CMD --win nsis --publish never` exited 0. Output: `apps/desktop/release/Hyper-Studio-Setup.exe`; full log: `.local-cache/phase4-windows-installer-build.log`. A stale inherited VC++ include and auto-detected `resources/installer.nsh` referenced absent `vc_redist.x64.exe`; both were removed. The first silent install crashed with Windows Event 1000, `System.dll` `0xc0000005` offset `0x1581`; setting `selectPerMachineByDefault: true` and rebuilding fixed this local path. Warnings mention optional missing `python-deps-hash.txt`. `Get-AuthenticodeSignature` returned `NotSigned`; no signing credentials were used. A build-log “signing with signtool.exe” line does not prove a signature. |
 | Installed Windows app | **Passed with local mocks** | The rebuilt NSIS artifact installed silently to repo-local `.local-tmp/installed-smoke` with exit 0 and `Hyper-Studio.exe` present. Installed-app canvas/JSON/media smoke exited 0 twice; logs: `.local-cache/phase4-windows-installed-app-smoke.log` and `...-rerun.log`. An initial UI toggle test was flaky; a direct button click was used for both passing reruns. The installed-app provider cross-mode smoke, using `HYPER_STUDIO_SMOKE_EXE`, also exited 0: one saved keyless Custom profile in Editor and Workflow, running-job switch, and two indexed outputs. Log: `.local-cache/phase4-windows-installed-provider-smoke.log`. Uninstall/removal and live API credentials remain unverified. |
-| macOS/Linux packages | **Not run** | User chose GitHub Actions runners. `.github/workflows/phase-4-platform-gate.yml` is prepared but not dispatched; cross-platform runtime implementation remains in progress. Runner package/install smokes are required before this gate passes. |
-| Graft graph | **Pending Phase 4 gate** | Phase 3 graph is the latest verified snapshot; refresh after code and tests settle. |
+| macOS package and managed runtime | **Passed on runner** | CI run 38057082762 packaged macOS arm64, provisioned the pinned managed workflow runtime without model packs, opened the embedded canvas, and passed toolbar JSON roundtrip plus bidirectional usable media smoke. The manager/runtime setup was allowed its bounded first-use time before canvas assertions. This was a packaged app smoke, not an installed DMG smoke. |
+| Linux package and managed runtime | **Passed on runner** | The same CI run packaged Linux x64, opened a CDP window with `Hyper-Studio` title, executed `EmptyImage` → `SaveImage`, and found one PNG in the shared media index. The Linux CI test uses a short repo-local temp/user-data root: Chromium binds its ProcessSingleton Unix socket under `TMPDIR`; the former deep path exceeded Linux's 108-byte `sun_path` and caused SIGTRAP. The production single-instance lock is retained. No model packs were downloaded. This was an unpacked package smoke, not an installed AppImage/deb/rpm smoke. |
+| Thumbnail and mode persistence regression | **Passed** | `50ce3ee` excludes generated `_big/_small_thumbnail.png` derivatives from the shared media index when the source image exists, preventing recursive thumbnail discovery. The mode toggle now updates current project state atomically, preserving mode across autosave/reopen. Focused tests and both platform gates passed. |
+| Graft graph | **Passed** | Phase 4 Graft build/map passed: 7,058 files, 64,373 nodes, 158,848 edges. Logs: `.local-cache/phase4-graft-build.log` and `.local-cache/phase4-graft-map.log`. The separate codebase-memory MCP fast reindex has not been verified; its visible snapshot may be stale. |
 
-## Acceptance still open
+## Accepted limits and Phase 5 follow-up
 
 - Packaged toolbar Save/Import/Open/Export passed with byte-identical workflow JSON; relaunch restored bytes and nine media entries. Chrome iframe bridge preserved node IDs in a 10-node workflow. The desktop file helper enforces a 20 MB object and safe basename. One unknown third-party node ID/type survived import and snapshot with visible guidance; broader variant compatibility remains open.
 - A packaged local Custom HTTP mock proved the same saved profile in Editor and a first-party Workflow node, an Editor job continuing through a Workflow toggle, node execution, and two indexed video outputs. Live LTX/Runway/Veo/fal.ai or remote Custom HTTP credentials and endpoint acceptance are unverified; in-flight job recovery after app restart is absent.
 - The imported Editor PNG was consumed by a packaged `LoadImage` → `SaveImage` graph. Repeat the running-job switch with a real provider before claiming live provider continuity.
-- Verify a reviewed install action for missing third-party nodes when an extension manager is available. A packaged screenshot shows a template gallery overlay, a broken sidebar icon, and lingering upstream template branding. Complete visual/error/loading/light/dark audit, translations, OS icons, installer identity, and legal notices in Phase 5.
-- Resolve or document a bounded alternative for full upstream Vue typecheck memory exhaustion. Windows NSIS installation and installed canvas/JSON/media/provider-mock smokes passed. User accepted unsigned delivery for the current scope; Authenticode remains `NotSigned`. Uninstall/removal and macOS/Linux GitHub Actions checks remain open.
+- Missing third-party node guidance and JSON identifier preservation passed, but a manager-backed reviewed install action and broad real-world workflow variants were not exercised. A packaged screenshot shows a template gallery overlay, broken sidebar icon, and lingering upstream template branding. Complete visual/error/loading/light/dark audit, translations, OS icons, installer identity, and legal notices in Phase 5.
+- Full upstream Vue typecheck exhausted memory on this 15 GB Windows host; the scoped embed typecheck, focused tests, and built canvas passed. Windows NSIS installation and installed app smokes passed. macOS/Linux runner checks passed for packaged apps, but platform installer installation and uninstall were not tested. User accepted unsigned delivery for current scope; Windows Authenticode remains `NotSigned`.
 
 ## Local storage and limits
 

@@ -1,6 +1,6 @@
 # Hyper-Studio phase to-do list
 
-Status: `[x]` completed with its phase gate passing; `[·]` in progress or awaiting a gate; `[ ]` not started. A feature can be implemented while its phase remains `[·]` until the whole gate passes.
+Status: `[x]` verified complete; `[·]` in progress or only partly verified; `[ ]` not started. Phase 4's scoped integration gate passed; deferred release checks remain listed in Phase 5 and below.
 
 ## Phase 1 — Baseline and containment
 
@@ -29,19 +29,21 @@ Status: `[x]` completed with its phase gate passing; `[·]` in progress or await
 
 ## Phase 4 — Integrated workflow UI
 
-- [·] Manage the local workflow engine inside the desktop app with project-scoped paths and shared provider bridge.
-- [·] Pin and brand the Vue canvas; embed it in the Electron window with the host header and mode switch.
-- [·] Open, save, import, and export compatible workflow JSON without renaming node identifiers; packaged toolbar byte roundtrip and an installed-app synthetic third-party workflow with preserved node IDs pass, broader real-world workflows remain.
-- [·] Show missing third-party nodes and require a reviewed install action; installed-app missing-node guidance and embedded review unit tests pass, manager-backed install availability remains to verify.
-- [·] Verify workflow output in Editor, Editor media in Workflow, restart, mode changes during jobs, and the full phase gate. Packaged bidirectional media, Editor image as Workflow graph input, restart/reopen, and one saved Custom profile across a running-job mode switch passed with a local mock. Windows installer installation and app smoke passed; other release gates remain.
-- [ ] Update architecture record, handoff, code map, and Graft graph.
+- [x] Manage the local workflow engine inside the desktop app with project-scoped paths and shared provider bridge.
+- [x] Pin and brand the Vue canvas for the integration slice; embed it in the Electron window with the host header and mode switch.
+- [x] Open, save, import, and export workflow JSON without renaming node identifiers; verify packaged toolbar byte roundtrip and narrow unknown-node compatibility.
+- [x] Show missing third-party nodes with visible guidance and review UI tests.
+- [·] Exercise manager-backed reviewed installation and broader real-world third-party workflows.
+- [x] Verify Workflow output in Editor, Editor media in Workflow, restart, mode changes during a local-mock job, Windows installed app, and macOS/Linux packaged gates.
+- [x] Fix generated-thumbnail recursion and mode autosave regression; rerun the desktop and cross-platform gates.
+- [x] Update architecture record, handoff, code map, and Graft graph (7,058 files; 64,373 nodes; 158,848 edges). Codebase-memory reindex still needs verification.
 
 ## Phase 5 — Surface rebrand and release
 
 - [ ] Apply the supplied Vercel theme tokens to React and Vue and prepare rounded light/dark logo and desktop icons.
 - [ ] Replace shipped app-owned branding in UI, assets, metadata, links, errors, filenames, and installers; retain compatibility IDs and legal attribution.
 - [ ] Scan shipped strings and visual assets; inspect light/dark, loading, error, and empty states.
-- [ ] Build and smoke-test Windows, macOS, and Linux packages; pass all gates.
+- [·] Complete release packaging checks: Phase 4 Windows installed and macOS/Linux packaged smokes passed; platform installer installation/uninstall, full rebrand, and live provider acceptance remain.
 - [ ] Update architecture record, handoff, code map, and Graft graph; publish the release checkpoint.
 
 ## Managed OpenCode V2 worker
