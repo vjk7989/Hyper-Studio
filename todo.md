@@ -13,8 +13,8 @@ The numbered steps below are sequential gates. A subtask stays `[·]` after impl
 - [x] 5.1.3 Keep Editor and Workflow mounted for the active project, suspend hidden playback and shortcuts, and dispose both on project change.
 - [x] 5.1.4 Prestart the installed Workflow runtime and canvas after project open during idle time; never implicitly download a runtime or models.
 - [x] 5.1.5 Replace the blocking PyTorch probe with an asynchronous, per-runtime cached check.
-- [·] 5.1.6 Pass unsaved-work, Undo, running-job, focus, project-isolation, and ten-toggle p95 ≤ 1 second checks on the same installed Windows runner; fix and rerun failures. Unsaved Workflow IDs, engine close, p95, and existing Editor Undo/job checks passed; explicit across-toggle Editor Undo, focus, and mid-engine project B checks remain.
-- [·] 5.1.7 Refresh architecture record, handoff, code map, Graft graph, and codebase-memory status after the gate passes.
+- [x] 5.1.6 Pass unsaved-work, Undo, running-job, focus, project-isolation, and ten-toggle p95 ≤ 1 second checks on the same installed Windows runner; fix and rerun failures. Run 38121218674 passed Editor Undo/focus after toggle, unsaved Workflow IDs, project B isolation, existing mock job checks, and warm p95 80 ms.
+- [x] 5.1.7 Refresh architecture record, handoff, code map, Graft graph, and codebase-memory status after the gate passes. Graft is current; codebase-memory reports indexed but has stale symbols and no portable artifact, as recorded in handoff.
 
 ### 5.2 Skippable first-run connection choice — Windows gate
 

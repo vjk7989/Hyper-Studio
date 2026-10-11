@@ -2,7 +2,7 @@
 
 ## Phase 5.1 mode-switch and startup path
 
-Windows installed [run 38120631024](https://github.com/vjk7989/Hyper-Studio/actions/runs/38120631024) passed the retained-surface and timing slice with warm ten-toggle p95 **66 ms**. The next rerun adds Editor Undo/focus and second-project isolation assertions. Graft refreshed at **7,088 files, 64,520 nodes, 161,206 edges**; codebase-memory still misses the new prewarm symbol despite reporting `indexed`.
+Windows installed [run 38120631024](https://github.com/vjk7989/Hyper-Studio/actions/runs/38120631024) passed the retained-surface slice with warm ten-toggle p95 **66 ms**; [final run 38121218674](https://github.com/vjk7989/Hyper-Studio/actions/runs/38121218674) passed Editor Undo/focus and second-project isolation with p95 **80 ms**. Graft refreshed at **7,088 files, 64,520 nodes, 161,206 edges**; codebase-memory still misses the new prewarm symbol despite reporting `indexed`.
 
 | Need to change | Exact entry point | Boundary and check |
 | --- | --- | --- |
