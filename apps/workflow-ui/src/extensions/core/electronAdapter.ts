@@ -12,7 +12,9 @@ import { isDesktop } from '@/platform/distribution/types'
 import { electronAPI as getElectronAPI } from '@/utils/envUtil'
 
 void (async () => {
-  if (!isDesktop) return
+  // The managed engine serves this build inside the host's iframe. It has no
+  // Vue desktop preload; the host owns window controls, updates, and settings.
+  if (!isDesktop || import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true') return
 
   const electronAPI = getElectronAPI()
   const desktopAppVersion = await electronAPI.getElectronVersion()
