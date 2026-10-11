@@ -293,9 +293,12 @@ try {
   const subtitleCount = gestureTracks.filter(track => track.type === 'subtitle').length
   const videoTracks = gestureTracks.filter(track => track.type !== 'subtitle' && track.kind !== 'audio')
   assert.ok(videoTracks.length > 0, 'gesture timeline has no video track')
-  const targetTrack = videoTracks.at(-1) // Video rows display in reverse order after subtitle rows.
-  assert.ok(!targetTrack.locked, `target video track ${targetTrack.name} is locked`)
-  const dropTrack = page.locator('[data-track-bg="true"]').nth(subtitleCount)
+  const targetTrack = videoTracks.find(track => track.kind === 'video' && !track.locked && track.sourcePatched !== false)
+  assert.ok(targetTrack, 'gesture timeline has no unlocked source-patched video track')
+  assert.equal(targetTrack.kind, 'video')
+  assert.notEqual(targetTrack.sourcePatched, false)
+  const displayIndex = subtitleCount + videoTracks.length - 1 - videoTracks.indexOf(targetTrack)
+  const dropTrack = page.locator('[data-track-bg="true"]').nth(displayIndex)
   assert.equal(await page.locator('[data-track-bg="true"]').count(), gestureTracks.length)
   await dropTrack.scrollIntoViewIfNeeded()
   const dropTrackBox = await dropTrack.boundingBox()
@@ -323,7 +326,7 @@ try {
     timeout: 15000,
   })
   fs.writeFileSync(path.join(home, 'drag-evidence.json'), JSON.stringify({
-    targetTrack: { name: targetTrack.name, kind: targetTrack.kind, type: targetTrack.type, displayIndex: subtitleCount },
+    targetTrack: { name: targetTrack.name, kind: targetTrack.kind, type: targetTrack.type, sourcePatched: targetTrack.sourcePatched, displayIndex },
     assetCardBox,
     dropTrackBox,
     events: await page.evaluate(() => window.__editorDragEvents),
