@@ -84,7 +84,9 @@ try {
   process.stdout.write('PASS: slash opens Explore search only outside dialogs and remains text inside its input\n')
 
   await searchInput.press('Escape')
-  await searchInput.press('Escape')
+  // Dialog libraries may close on the first Escape even when the input clears
+  // its query. If it remains open, a second Escape closes the empty search.
+  if (await search.isVisible()) await page.keyboard.press('Escape')
   await search.waitFor({ state: 'hidden' })
   await page.evaluate(() => {
     window.__settingsScrollBehaviors = []

@@ -33,6 +33,9 @@ The numbered steps below are sequential gates. A subtask stays `[·]` after impl
 
 - [ ] 5.4.1 Record each reachable first-party control, expected result, fixture, test, evidence, and defect status.
 - [ ] 5.4.2 Exercise Editor timeline actions and export with disposable media, plus Workflow wiring, run/cancel, JSON IDs, Manager review, shared media, and appearance.
+  - [ ] 5.4.2a Exercise real Editor clip drag, blade/trim, tool shortcuts, and a short rendered local video with cancel/failure handling.
+  - [ ] 5.4.2b Exercise Workflow mouse port wiring, node edit/Undo, active queue cancel, and JSON roundtrip with stable node IDs.
+  - [ ] 5.4.2c Exercise Manager review/update/uninstall with a local fixture, cross-mode media after restart, and light/dark persistence.
 - [ ] 5.4.3 Use mocked providers and the local engine where live services are unnecessary; fix each failed control and rerun its group before proceeding.
 - [ ] 5.4.4 Pass relevant upstream suites and fresh installed Windows interaction checks; refresh phase records and graphs.
 
