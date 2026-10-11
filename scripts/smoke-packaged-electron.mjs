@@ -200,8 +200,15 @@ try {
     const persisted = await window.evaluate(projectId => window.electronAPI.readWorkspaceProjectData({ projectId }), engine.projectId)
     throw new Error(`Workflow mode did not persist after Editor import: ${error instanceof Error ? error.message : String(error)}; stored mode=${persisted?.workspaceMode}; toggle=${await workflowToggle.getAttribute('aria-pressed')}`)
   }
-  await sharedFiles.click()
-  await window.getByText('editor-import.png', { exact: true }).waitFor({ state: 'visible', timeout: 20000 })
+  // The Workflow surface now remains mounted across mode changes, so its
+  // Shared files panel may already be open when we return from Editor.
+  if (await sharedFiles.getAttribute('aria-expanded') !== 'true') await sharedFiles.click()
+  try {
+    await window.getByText('editor-import.png', { exact: true }).waitFor({ state: 'visible', timeout: 20000 })
+  } catch (error) {
+    await window.screenshot({ path: path.join(home, 'shared-media-return-error.png') })
+    throw error
+  }
   const inputPrompt = {
     '1': { class_type: 'LoadImage', inputs: { image: 'editor-import.png' } },
     '2': { class_type: 'SaveImage', inputs: { images: ['1', 0], filename_prefix: 'hyper-studio-editor-input' } },
