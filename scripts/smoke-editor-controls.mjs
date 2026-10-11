@@ -84,7 +84,7 @@ const launch = async () => {
 try {
   await launch()
   await page.evaluate(folder => window.electronAPI.setSharedStorageRoot({ folder }), path.join(home, 'shared'))
-  await page.evaluate(() => window.electronAPI.setConnectionOnboardingSkipped({ skipped: true }))
+  await page.evaluate(() => window.electronAPI.setConnectionOnboardingSkipped?.({ skipped: true }))
   await page.reload({ waitUntil: 'domcontentloaded' })
   await page.evaluate(() => { location.hash = '#/projects' })
   await page.getByTestId('new-project-card').waitFor({ state: 'visible', timeout: 30000 })
@@ -275,6 +275,83 @@ try {
   }
   assert.ok(activeTimeline()?.clips.length >= 1, 'imported FCPXML timeline has no media clip')
   record('Import exported FCPXML timeline', 'new timeline contains the exported media clip')
+
+  // Keep the gesture checks on a fresh timeline so each persisted change has one cause.
+  await menu('File', 'New Timeline')
+  await waitUntil(() => activeTimeline()?.clips.length === 0, 'empty gesture timeline')
+  const gestureTimelineId = activeTimeline().id
+  const assetCard = page.locator(`[data-asset-card][data-asset-id="${imageAsset.id}"]`)
+  await assetCard.dragTo(page.locator('[data-track-bg="true"]').first(), {
+    targetPosition: { x: 120, y: 20 },
+    timeout: 15000,
+  })
+  await waitUntil(() => activeTimeline()?.clips.some(clip => clip.assetId === imageAsset.id), 'dragged image clip', 20000)
+  assert.equal(activeTimeline()?.id, gestureTimelineId)
+  let gestureClip = activeTimeline().clips.find(clip => clip.assetId === imageAsset.id)
+  record('Drag imported asset onto video track', `clip ${gestureClip.id} at ${gestureClip.startTime.toFixed(2)}s`)
+
+  const clipLocator = () => page.locator(`[data-clip-id="${gestureClip.id}"]`)
+  await menu('Tools', 'Selection Tool')
+  const initialStart = gestureClip.startTime
+  const firstBox = await clipLocator().boundingBox()
+  assert.ok(firstBox, 'dragged clip is not visible')
+  await page.mouse.move(firstBox.x + Math.min(firstBox.width / 2, 45), firstBox.y + firstBox.height / 2)
+  await page.mouse.down()
+  await page.mouse.move(firstBox.x + Math.min(firstBox.width / 2, 45) + 120, firstBox.y + firstBox.height / 2, { steps: 8 })
+  await page.mouse.up()
+  await waitUntil(() => activeTimeline()?.clips.find(clip => clip.id === gestureClip.id)?.startTime > initialStart + 0.2, 'moved image clip')
+  gestureClip = activeTimeline().clips.find(clip => clip.id === gestureClip.id)
+  record('Move timeline clip with Selection Tool', `${initialStart.toFixed(2)}s → ${gestureClip.startTime.toFixed(2)}s`)
+
+  await menu('Tools', 'Blade Tool')
+  assert.match(await page.locator('button').filter({ hasText: 'Blade Tool' }).first().getAttribute('class'), /bg-brand/)
+  const bladeBox = await clipLocator().boundingBox()
+  assert.ok(bladeBox && bladeBox.width > 35, 'clip is too narrow for a blade split')
+  await page.mouse.click(bladeBox.x + bladeBox.width / 2, bladeBox.y + bladeBox.height / 2)
+  await waitUntil(() => activeTimeline()?.clips.length === 2, 'blade split into two clips')
+  const splitClips = [...activeTimeline().clips].sort((a, b) => a.startTime - b.startTime)
+  assert.ok(splitClips.every(clip => clip.assetId === imageAsset.id))
+  assert.ok(Math.abs(splitClips[0].startTime + splitClips[0].duration - splitClips[1].startTime) < 0.1)
+  record('Blade splits dragged clip', `${splitClips[0].duration.toFixed(2)}s + ${splitClips[1].duration.toFixed(2)}s`)
+
+  await page.keyboard.press('v')
+  assert.match(await page.locator('button').filter({ hasText: 'Selection Tool' }).first().getAttribute('class'), /bg-brand/)
+  const trimClip = splitClips[1]
+  const durationBeforeTrim = trimClip.duration
+  const trimBox = await page.locator(`[data-clip-id="${trimClip.id}"]`).boundingBox()
+  assert.ok(trimBox && trimBox.width > 30, 'split clip is too narrow to trim')
+  await page.mouse.move(trimBox.x + trimBox.width - 5, trimBox.y + trimBox.height / 2)
+  await page.mouse.down()
+  await page.mouse.move(trimBox.x + trimBox.width - 35, trimBox.y + trimBox.height / 2, { steps: 8 })
+  await page.mouse.up()
+  await waitUntil(() => activeTimeline()?.clips.find(clip => clip.id === trimClip.id)?.duration < durationBeforeTrim - 0.1, 'shortened clip edge')
+  record('Selection shortcut and right-edge trim', `${durationBeforeTrim.toFixed(2)}s → ${activeTimeline().clips.find(clip => clip.id === trimClip.id).duration.toFixed(2)}s`)
+  await menu('Edit', 'Undo')
+  await waitUntil(() => Math.abs(activeTimeline()?.clips.find(clip => clip.id === trimClip.id)?.duration - durationBeforeTrim) < 0.1, 'Undo trim')
+  await menu('Edit', 'Redo')
+  await waitUntil(() => activeTimeline()?.clips.find(clip => clip.id === trimClip.id)?.duration < durationBeforeTrim - 0.1, 'Redo trim')
+  record('Trim Undo and Redo', 'edge returns to original duration, then shortened duration')
+
+  const renderPath = path.join(home, 'editor-local-render.mp4')
+  await app.evaluate(({ dialog }) => { dialog.showSaveDialog = async () => ({ canceled: true }) })
+  await page.getByRole('button', { name: 'Export', exact: true }).last().click()
+  await page.getByRole('button', { name: 'Export Video' }).click()
+  await page.getByRole('button', { name: 'Export Video' }).waitFor({ state: 'visible', timeout: 15000 })
+  await page.waitForTimeout(250)
+  assert.equal(await page.getByText('Export failed', { exact: true }).count(), 0)
+  record('Cancel video save dialog', 'export returns to settings without output')
+
+  await app.evaluate(({ dialog }, filePath) => {
+    dialog.showSaveDialog = async () => ({ canceled: false, filePath })
+  }, renderPath)
+  await page.locator('div.fixed.inset-0.z-50 select').first().selectOption('1280x720')
+  await page.getByRole('button', { name: 'Export Video' }).click()
+  await page.getByText('Export complete', { exact: true }).waitFor({ state: 'visible', timeout: 120000 })
+  await waitUntil(() => fs.existsSync(renderPath) && fs.statSync(renderPath).size > 1024, 'rendered MP4 file', 10000)
+  const mp4 = fs.readFileSync(renderPath)
+  assert.equal(mp4.toString('ascii', 4, 8), 'ftyp', 'rendered file is missing MP4 ftyp atom')
+  assert.ok(mp4.includes(Buffer.from('moov')), 'rendered file is missing MP4 moov atom')
+  record('Render local H.264 video', `${path.basename(renderPath)}; ${mp4.length} bytes; ftyp and moov atoms`)
 } catch (error) {
   results.push({ name: 'smoke', status: 'FAIL', detail: String(error) })
   fs.writeFileSync(path.join(home, 'results.json'), JSON.stringify(results, null, 2))
