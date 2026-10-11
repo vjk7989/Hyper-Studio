@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   package-and-smoke:
+    if: github.event_name == 'workflow_dispatch'
     strategy:
       fail-fast: false
       matrix:
@@ -228,6 +229,8 @@ jobs:
           & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/smoke-first-party-controls.mjs')
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/smoke-editor-controls.mjs')
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/smoke-mode-switch-timing.mjs')
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/audit-branding.mjs')
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

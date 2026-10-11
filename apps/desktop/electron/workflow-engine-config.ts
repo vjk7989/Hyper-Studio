@@ -1,6 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { spawnSync } from 'node:child_process'
+import { spawn, type ChildProcess, type SpawnOptions } from 'node:child_process'
 import { resolveProjectPath } from './project-workspace.ts'
 
 export type WorkflowLaunchPaths = {
@@ -58,9 +58,70 @@ export function workflowArguments(paths: WorkflowLaunchPaths, frontendRoot: stri
   ]
 }
 
-export function workflowCpuOnly(python: string, env: NodeJS.ProcessEnv): boolean {
-  const script = "import torch; print('accelerated' if torch.cuda.is_available() or (hasattr(torch.backends, 'mps') and torch.backends.mps.is_available()) else 'cpu')"
-  const result = spawnSync(python, ['-c', script], { env, encoding: 'utf8', timeout: 30000, windowsHide: true })
-  if (result.status !== 0) throw new Error('Workflow Python runtime cannot import PyTorch')
-  return result.stdout.trim() === 'cpu'
+type ProbeSpawn = (file: string, args: string[], options: SpawnOptions) => ChildProcess
+
+function runtimeProbeKey(python: string): string {
+  const realPath = fs.realpathSync(python)
+  const interpreter = fs.statSync(realPath)
+  // The managed runtime installer rewrites this marker after changing packages.
+  // Include its contents so reinstalling PyTorch invalidates the process cache.
+  const marker = path.resolve(python, '..', '..', '..', 'install.json')
+  const installation = fs.existsSync(marker) ? fs.readFileSync(marker, 'utf8') : ''
+  return `${realPath}:${interpreter.size}:${interpreter.mtimeMs}:${installation}`
 }
+
+export function createWorkflowCpuProbe(spawnProcess: ProbeSpawn = spawn) {
+  const results = new Map<string, boolean>()
+  return async (python: string, env: NodeJS.ProcessEnv, signal: AbortSignal): Promise<boolean> => {
+    let key: string
+    try { key = runtimeProbeKey(python) }
+    catch { throw new Error('Workflow Python runtime cannot import PyTorch') }
+    if (results.has(key)) return results.get(key) as boolean
+    if (signal.aborted) throw new Error('Workflow Python probe cancelled')
+
+    const cpuOnly = await new Promise<boolean>((resolve, reject) => {
+      const failure = () => new Error('Workflow Python runtime cannot import PyTorch')
+      let output = ''
+      let settled = false
+      let timer: ReturnType<typeof setTimeout> | undefined
+      let process: ChildProcess
+      const finish = (error?: Error, value?: boolean) => {
+        if (settled) return
+        settled = true
+        if (timer) clearTimeout(timer)
+        signal.removeEventListener('abort', onAbort)
+        if (error) reject(error)
+        else resolve(value as boolean)
+      }
+      const onAbort = () => {
+        process.kill()
+        finish(new Error('Workflow Python probe cancelled'))
+      }
+      try {
+        process = spawnProcess(python, ['-c', "import torch; print('accelerated' if torch.cuda.is_available() or (hasattr(torch.backends, 'mps') and torch.backends.mps.is_available()) else 'cpu')"], {
+          env, windowsHide: true, stdio: ['ignore', 'pipe', 'ignore'],
+        })
+      } catch {
+        finish(failure())
+        return
+      }
+      process.stdout?.on('data', (chunk: Buffer) => { output = (output + chunk.toString('utf8')).slice(-128) })
+      process.once('error', () => finish(failure()))
+      process.once('close', code => {
+        const result = output.trim()
+        if (code !== 0 || (result !== 'cpu' && result !== 'accelerated')) finish(failure())
+        else finish(undefined, result === 'cpu')
+      })
+      signal.addEventListener('abort', onAbort, { once: true })
+      if (signal.aborted) { onAbort(); return }
+      timer = setTimeout(() => {
+        process.kill()
+        finish(failure())
+      }, 30000)
+    })
+    results.set(key, cpuOnly)
+    return cpuOnly
+  }
+}
+
+export const workflowCpuOnly = createWorkflowCpuProbe()

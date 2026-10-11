@@ -27,6 +27,37 @@ describe('Hyper-Studio embed bridge boundaries', () => {
     expect(isSafeWorkflowName('scene.png')).toBe(false)
   })
 
+  it('acknowledges only a trusted host after canvas tabs are restored', async () => {
+    const postMessage = vi.fn()
+    const parent = { postMessage } as unknown as Window
+    const previous = Object.getOwnPropertyDescriptor(window, 'parent')
+    Object.defineProperty(window, 'parent', { configurable: true, value: parent })
+    try {
+      installHyperStudioEmbedBridge()
+      window.dispatchEvent(new MessageEvent('message', {
+        source: parent, origin: 'null',
+        data: { type: 'hyper-studio:canvas-ready-request', requestId: 'current-load' },
+      }))
+      await Promise.resolve()
+      expect(postMessage).not.toHaveBeenCalledWith(
+        { type: 'hyper-studio:canvas-ready', requestId: 'current-load' }, '*'
+      )
+      window.dispatchEvent(new MessageEvent('message', {
+        source: parent, origin: 'https://example.com',
+        data: { type: 'hyper-studio:canvas-ready-request', requestId: 'untrusted' },
+      }))
+      markHyperStudioCanvasReady()
+      await vi.waitFor(() => expect(postMessage).toHaveBeenCalledWith(
+        { type: 'hyper-studio:canvas-ready', requestId: 'current-load' }, '*'
+      ))
+      expect(postMessage).not.toHaveBeenCalledWith(
+        { type: 'hyper-studio:canvas-ready', requestId: 'untrusted' }, expect.anything()
+      )
+    } finally {
+      if (previous) Object.defineProperty(window, 'parent', previous)
+    }
+  })
+
   it('waits for startup tab restoration before opening a host workflow', async () => {
     openWorkflowAction.mockClear()
     const parent = { postMessage: vi.fn() } as unknown as Window
@@ -97,6 +128,44 @@ describe('Hyper-Studio embed bridge boundaries', () => {
       }))
       await vi.waitFor(() => expect(openManager).toHaveBeenCalledWith({ initialTab: 'all' }))
     } finally {
+      if (previous) Object.defineProperty(window, 'parent', previous)
+    }
+  })
+
+  it('suspends hidden previews and shortcuts without touching workflow execution', () => {
+    const parent = { postMessage: vi.fn() } as unknown as Window
+    const previous = Object.getOwnPropertyDescriptor(window, 'parent')
+    Object.defineProperty(window, 'parent', { configurable: true, value: parent })
+    const media = document.createElement('video')
+    const pause = vi.spyOn(media, 'pause').mockImplementation(() => {})
+    document.body.appendChild(media)
+    const keydown = vi.fn()
+    window.addEventListener('keydown', keydown)
+    try {
+      installHyperStudioEmbedBridge()
+      window.dispatchEvent(new MessageEvent('message', {
+        source: parent, origin: 'https://example.com', data: { type: 'hyper-studio:suspend' },
+      }))
+      expect(pause).not.toHaveBeenCalled()
+      window.dispatchEvent(new MessageEvent('message', {
+        source: parent, origin: 'null', data: { type: 'hyper-studio:suspend' },
+      }))
+      expect(pause).toHaveBeenCalled()
+      keydown.mockClear()
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Delete', bubbles: true }))
+      expect(keydown).not.toHaveBeenCalled()
+      pause.mockClear()
+      media.dispatchEvent(new Event('play'))
+      expect(pause).toHaveBeenCalled()
+
+      window.dispatchEvent(new MessageEvent('message', {
+        source: parent, origin: 'null', data: { type: 'hyper-studio:resume' },
+      }))
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Delete', bubbles: true }))
+      expect(keydown).toHaveBeenCalledTimes(1)
+    } finally {
+      window.removeEventListener('keydown', keydown)
+      media.remove()
       if (previous) Object.defineProperty(window, 'parent', previous)
     }
   })

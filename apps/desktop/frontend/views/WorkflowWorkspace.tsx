@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Blocks, Film, FolderOpen, RefreshCw, Workflow } from 'lucide-react'
 import type { Project } from '../types/project-model'
 import type { WorkspaceMediaEntry } from '../../shared/electron-api-schema'
@@ -8,14 +8,15 @@ import styles from './Project.module.scss'
 
 type EngineView = { state: 'stopped' | 'starting' | 'running' | 'failed'; url?: string; error?: string }
 
-export function WorkflowWorkspace({ project, media, onSwitchToEditor }: { project: Project; media: WorkspaceMediaEntry[]; onSwitchToEditor: () => void }) {
+export function WorkflowWorkspace({ project, media, active, onSwitchToEditor }: { project: Project; media: WorkspaceMediaEntry[]; active: boolean; onSwitchToEditor: () => void }) {
   const [engine, setEngine] = useState<EngineView>({ state: 'starting' })
   const [showMedia, setShowMedia] = useState(false)
-  const [frameReady, setFrameReady] = useState(false)
+  const [readyFrame, setReadyFrame] = useState<{ projectId: string; url: string; requestId: string } | null>(null)
   const [workflowNames, setWorkflowNames] = useState<string[]>([])
   const [workflowName, setWorkflowName] = useState('workflow.json')
   const [fileError, setFileError] = useState<string | null>(null)
   const frame = useRef<HTMLIFrameElement>(null)
+  const readinessRequest = useRef<string | null>(null)
   const start = useCallback(async () => {
     setEngine({ state: 'starting' })
     try { setEngine(await window.electronAPI.startWorkflowEngine({ projectId: project.id })) }
@@ -37,17 +38,40 @@ export function WorkflowWorkspace({ project, media, onSwitchToEditor }: { projec
   }, [project.id])
 
   const url = trustedWorkflowCanvasUrl(engine)
-  useEffect(() => { setFrameReady(false) }, [url])
-  useEffect(() => {
+  const frameReady = !!url && readyFrame?.projectId === project.id && readyFrame.url === url && readyFrame.requestId === readinessRequest.current
+  const requestCanvasReady = useCallback(() => {
+    const target = frame.current?.contentWindow
+    if (!url || !target) return
+    const requestId = crypto.randomUUID()
+    readinessRequest.current = requestId
+    setReadyFrame(null)
+    target.postMessage({ type: 'hyper-studio:canvas-ready-request', requestId }, new URL(url).origin)
+  }, [url])
+  useLayoutEffect(() => {
+    readinessRequest.current = null
+    setReadyFrame(null)
     if (!url) return
     const origin = new URL(url).origin
     const onMessage = (event: MessageEvent) => {
-      if (event.source !== frame.current?.contentWindow || event.origin !== origin || event.data?.type !== 'hyper-studio:workflow-error') return
-      setFileError(String(event.data.error || 'Could not open workflow'))
+      if (event.source !== frame.current?.contentWindow || event.origin !== origin) return
+      if (event.data?.type === 'hyper-studio:canvas-initialized') {
+        requestCanvasReady()
+      } else if (event.data?.type === 'hyper-studio:canvas-ready' && event.data.requestId === readinessRequest.current) {
+        setReadyFrame({ projectId: project.id, url, requestId: event.data.requestId })
+      } else if (event.data?.type === 'hyper-studio:canvas-unloading') {
+        readinessRequest.current = null
+        setReadyFrame(null)
+      } else if (event.data?.type === 'hyper-studio:workflow-error') {
+        setFileError(String(event.data.error || 'Could not open workflow'))
+      }
     }
     window.addEventListener('message', onMessage)
     return () => window.removeEventListener('message', onMessage)
-  }, [url])
+  }, [project.id, requestCanvasReady, url])
+  useEffect(() => {
+    if (!url || !frameReady || !frame.current?.contentWindow) return
+    frame.current.contentWindow.postMessage({ type: active ? 'hyper-studio:resume' : 'hyper-studio:suspend' }, new URL(url).origin)
+  }, [active, frameReady, url])
   const refreshWorkflows = useCallback(async () => {
     setWorkflowNames(await window.electronAPI.listProjectWorkflows({ projectId: project.id }))
   }, [project.id])
@@ -142,7 +166,7 @@ export function WorkflowWorkspace({ project, media, onSwitchToEditor }: { projec
           </div>)}
         </aside>}
         {url ? (
-          <iframe ref={frame} className={styles.workflowFrame} src={url} onLoad={() => setFrameReady(true)} title="Hyper-Studio workflow canvas" referrerPolicy="no-referrer" />
+          <iframe key={`${project.id}:${url}`} ref={frame} className={styles.workflowFrame} src={url} onLoad={requestCanvasReady} title="Hyper-Studio workflow canvas" referrerPolicy="no-referrer" />
         ) : (
           <div className={styles.workflowStatus} role={engine.state === 'failed' ? 'alert' : 'status'}>
             <Workflow size={30} aria-hidden="true" />

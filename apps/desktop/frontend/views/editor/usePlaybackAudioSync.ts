@@ -13,6 +13,7 @@ import {
 import { useEditorGetState, useEditorStore } from './editor-store'
 
 interface UsePlaybackAudioSyncParams {
+  active: boolean
   playbackTimeRef: React.MutableRefObject<number>
 }
 
@@ -53,7 +54,7 @@ function getClipStartTargetTime(clip: TimelineClip, mediaDuration: number): numb
 }
 
 export function usePlaybackAudioSync(params: UsePlaybackAudioSyncParams) {
-  const { playbackTimeRef } = params
+  const { active, playbackTimeRef } = params
   const isPlaying = useEditorStore(selectIsPlaying)
   const currentTime = useEditorStore(selectCurrentTime)
   const assets = useEditorStore(selectAssets)
@@ -62,9 +63,11 @@ export function usePlaybackAudioSync(params: UsePlaybackAudioSyncParams) {
   const getEditorState = useEditorGetState()
 
   const audioElementsRef = useRef<Map<string, AudioEl>>(new Map())
+  const activeRef = useRef(active)
+  activeRef.current = active
 
   useEffect(() => {
-    if (!isPlaying) return
+    if (!active || !isPlaying) return
 
     let lastTimestamp: number | null = null
     let animFrameId = 0
@@ -213,7 +216,7 @@ export function usePlaybackAudioSync(params: UsePlaybackAudioSyncParams) {
             const freshTime = playbackTimeRef.current
             const activeNow = freshTime >= clip.startTime && freshTime < clip.startTime + clip.duration
             const shouldPreload = clipOverlapsWindow(clip, freshTime, 0, PLAYING_PRELOAD_LOOKAHEAD_SECONDS)
-            if (!selectIsPlaying(getEditorState()) || !activeNow) {
+            if (!activeRef.current || !selectIsPlaying(getEditorState()) || !activeNow) {
               if (shouldPreload) {
                 const preloadTarget = getClipStartTargetTime(clip, el!.duration || clip.duration)
                 el!.currentTime = preloadTarget
@@ -249,15 +252,16 @@ export function usePlaybackAudioSync(params: UsePlaybackAudioSyncParams) {
         el.__audioPlaying = false
       }
     }
-  }, [getEditorState, isPlaying, playbackTimeRef])
+  }, [active, getEditorState, isPlaying, playbackTimeRef])
 
   useEffect(() => {
-    if (isPlaying) return
+    if (active && isPlaying) return
 
     for (const [, el] of audioElementsRef.current) {
       if (!el.paused) el.pause()
       el.__audioPlaying = false
     }
+    if (!active) return
 
     const retainedAudioClips = clips.filter(clip => {
       if (!isAudioSourceClip(clip)) return false
@@ -330,7 +334,7 @@ export function usePlaybackAudioSync(params: UsePlaybackAudioSyncParams) {
         el.currentTime = targetTime
       }
     }
-  }, [assets, clips, currentTime, isPlaying, tracks])
+  }, [active, assets, clips, currentTime, isPlaying, tracks])
 
   useEffect(() => {
     return () => {

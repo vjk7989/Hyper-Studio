@@ -12,11 +12,13 @@ import { useEditorActions, useEditorStore } from './editor-store'
 const STATE_UPDATE_INTERVAL_MS = 250
 
 export interface UsePlaybackEngineParams {
+  active: boolean
   playbackTimeRef: React.MutableRefObject<number>
 }
 
 export function usePlaybackEngine(params: UsePlaybackEngineParams) {
   const {
+    active,
     playbackTimeRef,
   } = params
   const { setCurrentTime, setPlayingInOut, stopShuttle } = useEditorActions()
@@ -41,7 +43,7 @@ export function usePlaybackEngine(params: UsePlaybackEngineParams) {
   }, [isPlaying, playbackTimeRef, setCurrentTime])
 
   useEffect(() => {
-    if (!isPlaying) return
+    if (!active || !isPlaying) return
 
     const effectiveSpeed = shuttleSpeed !== 0 ? shuttleSpeed : 1
     let lastTimestamp: number | null = null
@@ -99,6 +101,7 @@ export function usePlaybackEngine(params: UsePlaybackEngineParams) {
       setCurrentTime(playbackTimeRef.current)
     }
   }, [
+    active,
     isPlaying,
     shuttleSpeed,
     playingInOut,

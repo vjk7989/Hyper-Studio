@@ -10,6 +10,9 @@ const canvasReady = new Promise<void>((resolve) => {
 /** Host workflow opens must wait until startup has restored its own tabs. */
 export function markHyperStudioCanvasReady(): void {
   markCanvasReady()
+  if (window.parent !== window) {
+    window.parent.postMessage({ type: 'hyper-studio:canvas-initialized' }, '*')
+  }
 }
 
 export function isTrustedHyperStudioHost(origin: string): boolean {
@@ -44,11 +47,41 @@ function isWorkflow(value: unknown): value is ComfyWorkflowJSON {
 /** The desktop shell owns files; the embedded canvas only receives workflow data. */
 export function installHyperStudioEmbedBridge(): void {
   if (window.parent === window) return
+  let suspended = false
+
+  window.addEventListener('keydown', (event) => {
+    if (suspended) event.stopImmediatePropagation()
+  }, true)
+  document.addEventListener('play', (event) => {
+    if (suspended && event.target instanceof HTMLMediaElement) event.target.pause()
+  }, true)
+
+  window.addEventListener('pagehide', () => {
+    window.parent.postMessage({ type: 'hyper-studio:canvas-unloading' }, '*')
+  })
 
   window.addEventListener('message', (event: MessageEvent) => {
     if (event.source !== window.parent || !isTrustedHyperStudioHost(event.origin)) return
     const data = event.data as Record<string, unknown> | null
     if (!data || typeof data !== 'object') return
+
+    if (data.type === 'hyper-studio:suspend') {
+      suspended = true
+      document.querySelectorAll<HTMLMediaElement>('audio, video').forEach(media => media.pause())
+      return
+    }
+    if (data.type === 'hyper-studio:resume') {
+      suspended = false
+      return
+    }
+
+    if (data.type === 'hyper-studio:canvas-ready-request' && typeof data.requestId === 'string' && data.requestId.length > 0 && data.requestId.length <= 100) {
+      void canvasReady.then(() => window.parent.postMessage(
+        { type: 'hyper-studio:canvas-ready', requestId: data.requestId },
+        event.origin === 'null' || event.origin === 'file://' ? '*' : event.origin
+      ))
+      return
+    }
 
     if (data.type === 'hyper-studio:open-manager') {
       void import('@/workbench/extensions/manager/composables/useManagerState')
@@ -91,6 +124,7 @@ export function installHyperStudioEmbedBridge(): void {
         )
       void import('@/scripts/app')
         .then(async ({ app }) => {
+          await canvasReady
           const { workflow } = await app.graphToPrompt()
           if (!isWorkflow(workflow)) throw new Error('The active workflow is invalid or exceeds 20 MB')
           reply({ workflow })

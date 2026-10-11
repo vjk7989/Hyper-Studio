@@ -80,6 +80,7 @@ import { GenerationErrorDialog } from '../components/GenerationErrorDialog'
 import { SubtitleTrackStyleEditor } from './editor/SubtitleTrackStyleEditor'
 
 interface VideoEditorProps {
+  active: boolean
   currentProject: Project
   saveProject: (project: Project) => void
   pendingRetakeUpdate: PendingRetakeUpdate | null
@@ -87,6 +88,7 @@ interface VideoEditorProps {
 }
 
 interface VideoEditorWithStoreProps {
+  active: boolean
   currentProject: Project
   saveProject: (project: Project) => void
 }
@@ -108,6 +110,7 @@ export function VideoEditor(props: VideoEditorProps) {
   return (
     <EditorStoreProvider store={editorStore}>
       <VideoEditorWithStore
+        active={props.active}
         currentProject={props.currentProject}
         saveProject={props.saveProject}
       />
@@ -116,6 +119,7 @@ export function VideoEditor(props: VideoEditorProps) {
 }
 
 function VideoEditorWithStore({
+  active,
   currentProject,
   saveProject,
 }: VideoEditorWithStoreProps) {
@@ -200,6 +204,7 @@ function VideoEditorWithStore({
   const bladeShiftHeldRef = useRef(false)
   const [bladeShiftHeld, setBladeShiftHeld] = useState(false)
   useEffect(() => {
+    if (!active) { setBladeShiftHeld(false); return }
     const onKey = (e: KeyboardEvent) => {
       const held = e.shiftKey
       bladeShiftHeldRef.current = held
@@ -208,7 +213,7 @@ function VideoEditorWithStore({
     window.addEventListener('keydown', onKey)
     window.addEventListener('keyup', onKey)
     return () => { window.removeEventListener('keydown', onKey); window.removeEventListener('keyup', onKey) }
-  }, [])
+  }, [active])
   // EFFECTS HIDDEN: const [effectsSearchQuery, setEffectsSearchQuery] = useState('')
 
   // In/Out points
@@ -358,6 +363,14 @@ function VideoEditorWithStore({
   const pauseSourceMonitor = useCallback(() => {
     sourceMonitorActionsRef.current?.pause()
   }, [])
+
+  useLayoutEffect(() => {
+    if (active) return
+    actions.pause()
+    actions.stopShuttle()
+    pauseSourceMonitor()
+    setDraggingMarker(null)
+  }, [active, actions, pauseSourceMonitor])
 
   const handleActivateSourceFocus = useCallback(() => {
     actions.setActiveFocusArea('source')
@@ -517,6 +530,7 @@ function VideoEditorWithStore({
   sourcePauseRef.current = () => sourceMonitorActionsRef.current?.pause()
   
   useEditorKeyboard({
+    active,
     refs: {
       kbLayoutRef,
       isKbEditorOpenRef,
@@ -542,10 +556,12 @@ function VideoEditorWithStore({
   
   // Playback engine (extracted hook)
   usePlaybackEngine({
+    active,
     playbackTimeRef,
   })
 
   usePlaybackAudioSync({
+    active,
     playbackTimeRef,
   })
 

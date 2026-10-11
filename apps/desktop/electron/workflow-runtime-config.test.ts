@@ -1,7 +1,12 @@
 import assert from 'node:assert/strict'
+import crypto from 'node:crypto'
+import fs from 'node:fs'
 import path from 'node:path'
-import { describe, it } from 'node:test'
-import { workflowRuntimeNames, workflowRuntimePaths, workflowRuntimeTarget } from './workflow-runtime-config.ts'
+import { afterEach, describe, it } from 'node:test'
+import { verifiedWorkflowRuntime, workflowRuntimeNames, workflowRuntimePaths, workflowRuntimeTarget } from './workflow-runtime-config.ts'
+
+const fixtures: string[] = []
+afterEach(() => { for (const folder of fixtures.splice(0)) fs.rmSync(folder, { recursive: true, force: true }) })
 
 describe('managed workflow runtime platforms', () => {
   it('accepts only packaged platform and architecture pairs', () => {
@@ -31,5 +36,29 @@ describe('managed workflow runtime platforms', () => {
     assert.deepEqual(workflowRuntimeNames('windows-x64'), { lock: 'workflow-requirements-win.lock', uv: 'uv.exe', cpuTorch: false })
     assert.deepEqual(workflowRuntimeNames('macos-arm64'), { lock: 'workflow-requirements-mac-arm64.lock', uv: 'uv', cpuTorch: false })
     assert.deepEqual(workflowRuntimeNames('linux-x64'), { lock: 'workflow-requirements-linux-x64.lock', uv: 'uv', cpuTorch: true })
+  })
+})
+
+describe('installed workflow runtime inspection', () => {
+  it('accepts only an interpreter with a marker matching the current lock', () => {
+    const base = path.resolve('.local-tmp', 'workflow-runtime-config-tests')
+    fs.mkdirSync(base, { recursive: true })
+    const shared = fs.mkdtempSync(path.join(base, 'case-'))
+    fixtures.push(shared)
+    const paths = workflowRuntimePaths(shared, 'windows-x64')
+    const lock = path.join(shared, 'workflow.lock')
+    fs.mkdirSync(path.dirname(paths.python), { recursive: true })
+    fs.writeFileSync(lock, 'pinned packages')
+    fs.writeFileSync(paths.python, '')
+    assert.equal(verifiedWorkflowRuntime(paths, lock), null)
+    fs.writeFileSync(paths.marker, '{broken')
+    assert.equal(verifiedWorkflowRuntime(paths, lock), null)
+    const lockSha256 = crypto.createHash('sha256').update(fs.readFileSync(lock)).digest('hex')
+    fs.writeFileSync(paths.marker, JSON.stringify({ lockSha256 }))
+    assert.equal(verifiedWorkflowRuntime(paths, lock), paths.python)
+    fs.writeFileSync(lock, 'changed packages')
+    assert.equal(verifiedWorkflowRuntime(paths, lock), null)
+    fs.rmSync(paths.python)
+    assert.equal(verifiedWorkflowRuntime(paths, lock), null)
   })
 })

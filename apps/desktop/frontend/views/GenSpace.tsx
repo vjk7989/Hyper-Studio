@@ -152,6 +152,7 @@ function AssetCard({
   useEffect(() => {
     if (asset.type !== 'video') return
     if (!isHovered) {
+      hoverVideoRef.current?.pause()
       setCurrentTime(0)
       return
     }
@@ -1351,7 +1352,7 @@ const DEFAULT_VIDEO_SETTINGS = {
   imageEditStrength: 0.6,
 }
 
-export function GenSpace() {
+export function GenSpace({ active = true }: { active?: boolean }) {
   const {
     activeProject,
     addAsset,
@@ -1613,6 +1614,12 @@ export function GenSpace() {
 
   // Plain-LoRA library: catalog browse/download + on-disk merge + "use" → selectedLoras.
   const loraLibrary = useLoraLibrary(isLocalMode, localLoras, selectedLoras, setSelectedLoras, refreshInstalledModels)
+  useEffect(() => {
+    if (active) return
+    setSelectedAsset(null)
+    setLibraryModalOpen(false)
+    loraLibrary.setModalOpen(false)
+  }, [active, loraLibrary.setModalOpen, setLibraryModalOpen])
   // installed path -> catalog display name (from the catalog↔on-disk merge), so the inline
   // LoRA picker shows a downloaded catalog LoRA's proper name instead of its raw filename.
   const loraDisplayNames = useMemo(() => {

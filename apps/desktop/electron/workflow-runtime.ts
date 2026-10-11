@@ -3,7 +3,7 @@ import path from 'node:path'
 import crypto from 'node:crypto'
 import { spawn } from 'node:child_process'
 import { app } from 'electron'
-import { workflowRuntimeNames, workflowRuntimePaths, workflowRuntimeTarget } from './workflow-runtime-config'
+import { verifiedWorkflowRuntime, workflowRuntimeNames, workflowRuntimePaths, workflowRuntimeTarget } from './workflow-runtime-config'
 
 export { workflowRuntimePaths } from './workflow-runtime-config'
 
@@ -11,6 +11,15 @@ function resource(name: string): string {
   return app.isPackaged
     ? path.join(process.resourcesPath, name)
     : path.resolve(__dirname, `../resources/${name}`)
+}
+
+/** Inspect an existing managed runtime without creating files or invoking uv. */
+export function installedWorkflowRuntime(sharedRoot: string): string | null {
+  const target = workflowRuntimeTarget()
+  const names = workflowRuntimeNames(target)
+  const paths = workflowRuntimePaths(sharedRoot, target)
+  const lock = resource(names.lock)
+  return verifiedWorkflowRuntime(paths, lock)
 }
 
 async function run(file: string, args: string[], env: NodeJS.ProcessEnv, log: string, signal: AbortSignal): Promise<string> {
@@ -37,11 +46,8 @@ export async function ensureWorkflowRuntime(sharedRoot: string, signal: AbortSig
   const uv = app.isPackaged ? path.join(process.resourcesPath, 'tools', names.uv)
     : path.resolve(__dirname, '../../../.tools/workflow', target === 'windows-x64' ? names.uv : `${target}/${names.uv}`)
   if (!fs.existsSync(uv) || !fs.existsSync(lock)) throw new Error('Workflow runtime installer is missing from the application')
+  if (verifiedWorkflowRuntime(paths, lock)) return paths.python
   const hash = crypto.createHash('sha256').update(fs.readFileSync(lock)).digest('hex')
-  try {
-    const marker = JSON.parse(fs.readFileSync(paths.marker, 'utf8')) as { lockSha256?: string }
-    if (marker.lockSha256 === hash && fs.existsSync(paths.python)) return paths.python
-  } catch { /* A missing or invalid marker triggers a safe retry. */ }
   for (const dir of [paths.root, paths.managedPython, paths.cache, paths.temp, path.dirname(paths.log)]) {
     fs.mkdirSync(dir, { recursive: true })
   }

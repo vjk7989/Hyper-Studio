@@ -2,6 +2,47 @@
 
 Status: `[x]` verified complete; `[·]` in progress or only partly verified; `[ ]` not started. Phase 4's scoped integration gate and Phase 5 final7 Windows installed/macOS/Linux packaged gates passed. The later project-controls Windows refresh passes its focused checks; its macOS/Linux rerun and broader release checks remain open.
 
+## Phase 5 continuation — experience and functional gates
+
+The numbered steps below are sequential gates. A subtask stays `[·]` after implementation until its focused tests and installed-app check pass; only then is it `[x]`. Prior scoped platform gates do not close these broader checks.
+
+### 5.1 Fast, stable mode switching — Windows gate
+
+- [·] 5.1.1 Measure cold launch, first Workflow entry, and ten warm Editor↔Workflow switches on one Windows runner; retain raw timing logs and report p95.
+- [·] 5.1.2 Add a trusted Vue canvas-ready handshake; gate Workflow Open, Save, and Extensions until the canvas restores its tabs.
+- [·] 5.1.3 Keep Editor and Workflow mounted for the active project, suspend hidden playback and shortcuts, and dispose both on project change.
+- [·] 5.1.4 Prestart the installed Workflow runtime and canvas after project open during idle time; never implicitly download a runtime or models.
+- [·] 5.1.5 Replace the blocking PyTorch probe with an asynchronous, per-runtime cached check.
+- [ ] 5.1.6 Pass unsaved-work, Undo, running-job, focus, project-isolation, and ten-toggle p95 ≤ 1 second checks on the same installed Windows runner; fix and rerun failures.
+- [ ] 5.1.7 Refresh architecture record, handoff, code map, Graft graph, and codebase-memory status after the gate passes.
+
+### 5.2 Skippable first-run connection choice — Windows gate
+
+- [ ] 5.2.1 After shared-storage setup, offer Connect a video API, Explore without a connection, and optional local-model setup once when no profile exists.
+- [ ] 5.2.2 Reuse Connections and its secure profile store; persist Explore, bypass the choice for existing profiles, and keep basic editing available without a key.
+- [ ] 5.2.3 Consolidate duplicate shared-storage picker; handle locked vault, picker cancel, validation error, restart, keyboard focus, and reduced motion.
+- [ ] 5.2.4 Pass focused tests and a fresh installed Windows onboarding smoke; refresh architecture record, handoff, code map, Graft graph, and codebase-memory status.
+
+### 5.3 Shared shell polish — Windows gate
+
+- [ ] 5.3.1 Review Projects, Recent, Home, Explore Tools, Connections, and Settings labels, empty/busy/error states, focus return, and keyboard operation.
+- [ ] 5.3.2 Fix proven defects without changing safe project removal rules or the Vercel-derived theme.
+- [ ] 5.3.3 Pass focused and installed interaction checks; refresh phase records and graphs.
+
+### 5.4 Reachable-control inventory — Windows gate
+
+- [ ] 5.4.1 Record each reachable first-party control, expected result, fixture, test, evidence, and defect status.
+- [ ] 5.4.2 Exercise Editor timeline actions and export with disposable media, plus Workflow wiring, run/cancel, JSON IDs, Manager review, shared media, and appearance.
+- [ ] 5.4.3 Use mocked providers and the local engine where live services are unnecessary; fix each failed control and rerun its group before proceeding.
+- [ ] 5.4.4 Pass relevant upstream suites and fresh installed Windows interaction checks; refresh phase records and graphs.
+
+### 5.5 Brand and platform release gate
+
+- [ ] 5.5.1 Inspect remaining light/dark, loading, empty, and error states plus inherited cloud/account paths; fix residual app-owned branding.
+- [ ] 5.5.2 Pass full relevant unit suites, typechecks, builds, brand scan, unsigned Windows NSIS installation and smoke.
+- [ ] 5.5.3 After Windows passes, pass macOS and Linux packaged smokes in GitHub Actions; fix and rerun affected jobs.
+- [ ] 5.5.4 Refresh architecture record, handoff, code map, Graft graph, and codebase-memory status; record live provider/model/external-pack limits without claiming verification.
+
 ## Current checkpoint — project controls and functional smoke
 
 - [x] Expose Extensions from embedded Workflow and route its search through the managed local catalog. Focused tests and Windows installed/macOS/Linux packaged gate passed in run 38100244801; the installed Manager dialog found an Impact pack without a public registry/Algolia request.

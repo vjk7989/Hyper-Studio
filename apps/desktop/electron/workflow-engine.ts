@@ -7,7 +7,7 @@ import { app } from 'electron'
 import { getSharedStorageRoot, registeredProjectFolder } from './project-registry'
 import { startProviderJobBridge } from './provider-jobs/bridge'
 import { prepareWorkflowPaths, workflowArguments, workflowCpuOnly } from './workflow-engine-config'
-import { ensureWorkflowRuntime } from './workflow-runtime'
+import { ensureWorkflowRuntime, installedWorkflowRuntime } from './workflow-runtime'
 
 export type WorkflowEngineStatus = {
   state: 'stopped' | 'starting' | 'running' | 'failed'
@@ -118,9 +118,26 @@ export async function stopWorkflowEngine(): Promise<WorkflowEngineStatus> {
   return getWorkflowEngineStatus()
 }
 
-export async function startWorkflowEngine(projectId: string): Promise<WorkflowEngineStatus> {
+/** A stale renderer must never stop the engine after another project becomes active. */
+export async function stopWorkflowEngineForProject(projectId: string): Promise<WorkflowEngineStatus> {
+  if (status.projectId !== projectId) return getWorkflowEngineStatus()
+  return stopWorkflowEngine()
+}
+
+export async function prewarmWorkflowEngine(projectId: string): Promise<WorkflowEngineStatus> {
+  const shared = getSharedStorageRoot()
+  if (!shared || !installedWorkflowRuntime(shared)) return { state: 'stopped' }
+  if (startPromise || status.state === 'running') return getWorkflowEngineStatus()
+  return startWorkflowEngine(projectId, true)
+}
+
+export async function startWorkflowEngine(projectId: string, installedOnly = false): Promise<WorkflowEngineStatus> {
   if (startPromise) await startPromise
   if (status.state === 'running' && status.projectId === projectId) return getWorkflowEngineStatus()
+  if (installedOnly) {
+    const shared = getSharedStorageRoot()
+    if (!shared || !installedWorkflowRuntime(shared) || status.state === 'running') return getWorkflowEngineStatus()
+  }
   startPromise = (async () => {
     await stopWorkflowEngine()
     const startedAtRevision = revision
@@ -134,8 +151,12 @@ export async function startWorkflowEngine(projectId: string): Promise<WorkflowEn
       const frontend = workflowFrontend()
       // Packaged builds always validate the installation marker and pinned lock.
       // A partial first-run install can leave python.exe behind.
-      let python = app.isPackaged ? null : workflowPython(shared)
+      let python = installedOnly ? installedWorkflowRuntime(shared) : app.isPackaged ? null : workflowPython(shared)
       if (!python) {
+        if (installedOnly) {
+          status = { state: 'stopped' }
+          return getWorkflowEngineStatus()
+        }
         const controller = new AbortController()
         setupController = controller
         try { python = await ensureWorkflowRuntime(shared, controller.signal) }
@@ -167,7 +188,12 @@ export async function startWorkflowEngine(projectId: string): Promise<WorkflowEn
           TORCH_HOME: path.join(shared, 'caches', 'torch'),
           PYTHONPYCACHEPREFIX: path.join(paths.cache, 'pycache'),
         }
-      const cpuOnly = workflowCpuOnly(python, env)
+      const probeController = new AbortController()
+      setupController = probeController
+      let cpuOnly: boolean
+      try { cpuOnly = await workflowCpuOnly(python, env, probeController.signal) }
+      finally { if (setupController === probeController) setupController = null }
+      if (revision !== startedAtRevision) return getWorkflowEngineStatus()
       const trace = workflowStartupTrace(shared, [bridge.token, embedToken])
       const engine = spawn(python, [path.join(source, 'main.py'), ...workflowArguments(paths, frontend, port), ...(cpuOnly ? ['--cpu'] : [])], {
         cwd: source, windowsHide: true, stdio: trace ? ['ignore', 'pipe', 'pipe'] : ['ignore', 'ignore', 'ignore'], env,

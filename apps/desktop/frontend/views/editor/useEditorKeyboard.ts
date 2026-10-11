@@ -45,14 +45,17 @@ interface KeyboardContext {
 }
 
 export interface UseEditorKeyboardParams {
+  active: boolean
   refs: KeyboardRefs
   context: KeyboardContext
 }
 
 export function useEditorKeyboard(params: UseEditorKeyboardParams) {
-  const { refs, context } = params
+  const { active, refs, context } = params
   const actions = useEditorActions()
   const kHeldRef = useRef(false)
+  const activeRef = useRef(active)
+  activeRef.current = active
   const contextRef = useRef(context)
   const actionsRef = useRef(actions)
   contextRef.current = context
@@ -60,6 +63,7 @@ export function useEditorKeyboard(params: UseEditorKeyboardParams) {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (!activeRef.current) return
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return
       if (refs.isKbEditorOpenRef.current) return
 
@@ -325,6 +329,7 @@ export function useEditorKeyboard(params: UseEditorKeyboardParams) {
     }
 
     const handleKeyUp = (e: KeyboardEvent) => {
+      if (!activeRef.current) { kHeldRef.current = false; return }
       if (e.key.toLowerCase() === 'k') {
         kHeldRef.current = false
       }

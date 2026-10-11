@@ -1,3 +1,5 @@
+import crypto from 'node:crypto'
+import fs from 'node:fs'
 import path from 'node:path'
 
 export type WorkflowRuntimeTarget = 'windows-x64' | 'macos-arm64' | 'linux-x64'
@@ -32,4 +34,13 @@ export function workflowRuntimePaths(sharedRoot: string, target = workflowRuntim
     temp: path.join(sharedRoot, 'caches', 'workflow', target, 'tmp'),
     log: path.join(sharedRoot, 'caches', 'workflow', target, 'install.log'),
   }
+}
+
+export function verifiedWorkflowRuntime(paths: ReturnType<typeof workflowRuntimePaths>, lock: string): string | null {
+  try {
+    if (!fs.existsSync(lock) || !fs.existsSync(paths.python)) return null
+    const hash = crypto.createHash('sha256').update(fs.readFileSync(lock)).digest('hex')
+    const marker = JSON.parse(fs.readFileSync(paths.marker, 'utf8')) as { lockSha256?: string }
+    return marker.lockSha256 === hash ? paths.python : null
+  } catch { return null }
 }

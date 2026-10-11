@@ -48,6 +48,9 @@ export function Project() {
   })
   const [assetMetadataMigrationProgress, setAssetMetadataMigrationProgress] = useState({ running: false, total: 0, completed: 0 })
   const [showProviderJobComposer, setShowProviderJobComposer] = useState(false)
+  const editorSurfaceRef = useRef<HTMLDivElement>(null)
+  const prewarmedProjectRef = useRef<string | null>(null)
+  const [mountedModes, setMountedModes] = useState<{ projectId: string; editor: boolean; workflow: boolean } | null>(null)
   const workspaceMode = activeProject?.workspaceMode ?? 'editor'
   const setWorkspaceMode = useCallback((mode: 'editor' | 'workflow') => {
     if (!activeProject) return
@@ -76,6 +79,52 @@ export function Project() {
   }, [clearActiveProject])
   const [upgradePassProjectId, setUpgradePassProjectId] = useState<string | null>(null)
   const activeProjectId = activeProject?.id ?? null
+  useEffect(() => {
+    if (!activeProjectId) return
+    return () => {
+      void window.electronAPI.stopWorkflowEngineForProject({ projectId: activeProjectId }).catch(() => undefined)
+    }
+  }, [activeProjectId])
+  const editorMounted = workspaceMode === 'editor' || (mountedModes?.projectId === activeProjectId && mountedModes.editor)
+  const workflowMounted = workspaceMode === 'workflow' || (mountedModes?.projectId === activeProjectId && mountedModes.workflow)
+  useEffect(() => {
+    if (workspaceMode === 'editor') return
+    editorSurfaceRef.current?.querySelectorAll('video, audio').forEach(media => {
+      if (media instanceof HTMLMediaElement) media.pause()
+    })
+  }, [workspaceMode])
+  useEffect(() => {
+    if (!activeProjectId || activeProjectId !== projectId) return
+    setMountedModes(previous => ({
+      projectId: activeProjectId,
+      editor: workspaceMode === 'editor' || (previous?.projectId === activeProjectId && previous.editor),
+      workflow: workspaceMode === 'workflow' || (previous?.projectId === activeProjectId && previous.workflow),
+    }))
+  }, [activeProjectId, projectId, workspaceMode])
+  useEffect(() => {
+    if (!activeProjectId || activeProjectId !== projectId || workspaceMode !== 'editor' || prewarmedProjectRef.current === activeProjectId) return
+    let cancelled = false
+    const prewarm = () => {
+      prewarmedProjectRef.current = activeProjectId
+      void window.electronAPI.prewarmWorkflowEngine({ projectId: activeProjectId })
+        .then(status => {
+          if (cancelled || status.state !== 'running' || status.projectId !== activeProjectId) return
+          setMountedModes(previous => ({
+            projectId: activeProjectId,
+            editor: previous?.projectId === activeProjectId && previous.editor,
+            workflow: true,
+          }))
+        })
+        .catch(() => undefined)
+    }
+    const idleCallback = window.requestIdleCallback?.bind(window)
+    if (idleCallback) {
+      const idleId = idleCallback(prewarm, { timeout: 1500 })
+      return () => { cancelled = true; window.cancelIdleCallback(idleId) }
+    }
+    const timeoutId = setTimeout(prewarm, 750)
+    return () => { cancelled = true; clearTimeout(timeoutId) }
+  }, [activeProjectId, projectId, workspaceMode])
   const activeProjectAssets = activeProject?.assets ?? null
   const migrationKey = activeProjectAssets
     ? visualAssetMetadataMigrationKey(activeProjectAssets)
@@ -229,19 +278,19 @@ export function Project() {
 
       <div className={styles.main}>
         {workspaceSaveError && <div role="alert" className={styles.deprecation}>Project changes could not be saved: {workspaceSaveError}</div>}
-        {workspaceMode === 'workflow' ? (
-          <WorkflowWorkspace project={activeProject} media={workspaceMedia} onSwitchToEditor={() => setWorkspaceMode('editor')} />
-        ) : currentTab === 'gen-space' ? (
-          <GenSpace />
-        ) : (
-          <VideoEditor
+        {editorMounted && <div ref={editorSurfaceRef} key={`${activeProject.id}:editor`} hidden={workspaceMode !== 'editor'} aria-hidden={workspaceMode !== 'editor'} style={{ height: '100%' }}>
+          {currentTab === 'gen-space' ? <GenSpace active={workspaceMode === 'editor'} /> : <VideoEditor
             key={activeProject.id}
+            active={workspaceMode === 'editor'}
             currentProject={activeProject}
             saveProject={handleSaveActiveProject}
             pendingRetakeUpdate={pendingRetakeUpdate}
             pendingIcLoraUpdate={pendingIcLoraUpdate}
-          />
-        )}
+          />}
+        </div>}
+        {workflowMounted && <div key={`${activeProject.id}:workflow`} hidden={workspaceMode !== 'workflow'} aria-hidden={workspaceMode !== 'workflow'} style={{ height: '100%' }}>
+          <WorkflowWorkspace project={activeProject} media={workspaceMedia} active={workspaceMode === 'workflow'} onSwitchToEditor={() => setWorkspaceMode('editor')} />
+        </div>}
       </div>
     </div>
   )
