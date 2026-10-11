@@ -225,7 +225,7 @@ export function ExportModal({ projectName }: ExportModalProps) {
   const [exportError, setExportError] = useState<string | null>(null)
   const [exportPath, setExportPath] = useState<string | null>(null)
   const [exportFrameInfo, setExportFrameInfo] = useState('')
-  const abortRef = useRef(false)
+  const exportRunRef = useRef(0)
 
   // Export settings
   const [settings, setSettings] = useState<ExportSettings>({
@@ -238,8 +238,12 @@ export function ExportModal({ projectName }: ExportModalProps) {
   const [burnSubtitles, setBurnSubtitles] = useState(true)
 
   const closeModal = useCallback(() => {
+    exportRunRef.current += 1
+    if (exportStatus === 'exporting' && exportType === 'video') {
+      void window.electronAPI?.exportCancel({ sessionId: 'current' }).catch(() => {})
+    }
     closeExportModal()
-  }, [closeExportModal])
+  }, [closeExportModal, exportStatus, exportType])
 
   const hasSubtitles = subtitleData.length > 0
 
@@ -251,7 +255,7 @@ export function ExportModal({ projectName }: ExportModalProps) {
     setExportError(null)
     setExportPath(null)
     setExportFrameInfo('')
-    abortRef.current = false
+    exportRunRef.current += 1
   }, [isOpen])
 
   // Update quality default when codec changes
@@ -264,6 +268,7 @@ export function ExportModal({ projectName }: ExportModalProps) {
 
   const handleExportPackage = useCallback(async () => {
     if (!timeline) return
+    const runId = ++exportRunRef.current
     setExportType('package')
     setExportStatus('exporting')
     setExportProgress(0)
@@ -279,6 +284,8 @@ export function ExportModal({ projectName }: ExportModalProps) {
         ],
       })
 
+      if (runId !== exportRunRef.current) return
+
       if (!filePath) {
         setExportStatus('idle')
         return
@@ -287,6 +294,7 @@ export function ExportModal({ projectName }: ExportModalProps) {
       setExportProgress(50)
       const xml = generateFCPXML(clips, tracks, projectName, timeline.name)
       const result = await window.electronAPI?.saveFile({ filePath, data: xml })
+      if (runId !== exportRunRef.current) return
       if (result?.success) {
         setExportProgress(100)
         setExportPath(filePath)
@@ -295,6 +303,7 @@ export function ExportModal({ projectName }: ExportModalProps) {
         throw new Error(result && !result.success ? result.error : 'Failed to save file')
       }
     } catch (err) {
+      if (runId !== exportRunRef.current) return
       setExportError(String(err))
       setExportStatus('error')
     }
@@ -302,12 +311,12 @@ export function ExportModal({ projectName }: ExportModalProps) {
 
   const handleExportVideo = useCallback(async () => {
     if (!timeline || clips.length === 0) return
+    const runId = ++exportRunRef.current
     setExportType('video')
     setExportStatus('exporting')
     setExportProgress(0)
     setExportError(null)
     setExportFrameInfo('Preparing...')
-    abortRef.current = false
 
     try {
       const codecInfo = CODEC_INFO[settings.codec]
@@ -320,6 +329,8 @@ export function ExportModal({ projectName }: ExportModalProps) {
           { name: 'All Files', extensions: ['*'] },
         ],
       })
+
+      if (runId !== exportRunRef.current) return
 
       if (!filePath) {
         setExportStatus('idle')
@@ -341,6 +352,8 @@ export function ExportModal({ projectName }: ExportModalProps) {
         subtitles: burnSubtitles && subtitleData.length > 0 ? subtitleData : undefined,
       })
 
+      if (runId !== exportRunRef.current) return
+
       if (result && !result.success) {
         throw new Error(result.error)
       }
@@ -350,14 +363,15 @@ export function ExportModal({ projectName }: ExportModalProps) {
       setExportFrameInfo('Export complete')
       setExportStatus('done')
     } catch (err) {
+      if (runId !== exportRunRef.current) return
       setExportError(String(err))
       setExportStatus('error')
     }
   }, [burnSubtitles, exportClips, letterbox, projectName, settings, subtitleData, timeline])
 
   const handleCancel = useCallback(async () => {
-    abortRef.current = true
-    window.electronAPI?.exportCancel({ sessionId: 'current' }).catch(() => {})
+    exportRunRef.current += 1
+    void window.electronAPI?.exportCancel({ sessionId: 'current' }).catch(() => {})
     setExportStatus('idle')
   }, [])
 
