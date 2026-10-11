@@ -255,6 +255,7 @@ jobs:
           $audit = Get-Content '.local-cache/brand-audit/audit.json' -Raw | ConvertFrom-Json
           if ($audit.summary.builtResidualVisualNames -ne 0 -or @($audit.built | Where-Object present).Count -lt 3) { throw 'Packaged brand audit failed' }
       - name: Upload unsigned Windows installer
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: hyper-studio-windows-unsigned
@@ -275,6 +276,7 @@ jobs:
             .local-tmp/packaged-electron-smoke/electron.log
             .local-tmp/packaged-electron-smoke/shared-storage/caches/workflow/*/install.log
             .local-tmp/editor-controls-*/failure.png
+            .local-tmp/editor-controls-*/drag-evidence.json
             .local-tmp/workflow-control-smoke-*/workflow-open-failed.png
             .local-tmp/workflow-control-smoke-*/electron.log
             .local-tmp/manager-install-smoke-*/project-create-failed.png
