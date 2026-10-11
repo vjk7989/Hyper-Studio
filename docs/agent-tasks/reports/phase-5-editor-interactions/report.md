@@ -1,5 +1,13 @@
 # Phase 5.4a Editor interaction gate report
 
+## Follow-up: track routing and selection commands
+
+`scripts/smoke-editor-track-commands.mjs` is a separate installed-app smoke with an isolated repository-local profile, project, PNG, and one-second WAV. It tests eight behavior-based steps: create Editor project; import both assets; unpatch V1 and verify an image drop produces no clip, then repatch; lock V1 and verify the drop produces no clip, then unlock and verify a clip is placed on V1; place WAV on A1; select the image clip and use **Clip → Duplicate Clip**, **Flip Horizontal**, and **Mute Clip**, checking persisted clip fields after each command. A capture-phase drop listener requires an actual asset drop on the track and writes `drag-evidence.json` to the run directory, so rejected drops cannot pass solely because no drag occurred.
+
+Local packaged sanity command: set `HYPER_STUDIO_EDITOR_SMOKE_EXE` to `.local-tmp/installed-project-controls-final7/Hyper-Studio.exe`, then run `./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/smoke-editor-track-commands.mjs')`. Result: **8 pass, 0 fail**; full log `.local-tmp/editor-track-commands-local.log`, results `.local-tmp/editor-track-commands-1791739968674/results.json`. This final7 binary predates current source, so a fresh Windows installed run is still required. `node --check scripts/smoke-editor-track-commands.mjs` and `git diff --check` pass.
+
+Still untested by this new smoke: audible playback, track mute/solo/output, audio source patch gating, clip Cut/Copy/Paste/Delete, speed/reverse, and multitrack link behavior. It does not render or invoke any model.
+
 ## Current result
 
 - **Installed checks against current source:** Windows Actions run `38128889578` passed 20 Editor assertions, then timed out waiting for the dragged image clip because the first `[data-track-bg]` is a subtitle row. Run `38129399057` reached the same drag wait after targeting the first displayed video row: this row is source unpatched, so dropping an image creates no clip. The updated smoke selects an unlocked, source-patched video track from persisted metadata, maps it to reversed video display order, and records `drag-evidence.json` with target patch state, geometry, and drag events. This correction has not yet run in Actions.
