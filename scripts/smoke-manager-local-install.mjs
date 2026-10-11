@@ -34,7 +34,11 @@ const gitEnv = {
   GIT_CONFIG_KEY_1: 'http.proxy',
   GIT_CONFIG_VALUE_1: 'http://127.0.0.1:9',
   GIT_TERMINAL_PROMPT: '0',
-  CM_USE_PYGIT2: '0'
+  CM_USE_PYGIT2: '0',
+  HTTP_PROXY: 'http://127.0.0.1:9', HTTPS_PROXY: 'http://127.0.0.1:9',
+  ALL_PROXY: 'http://127.0.0.1:9', NO_PROXY: '127.0.0.1,localhost,::1',
+  http_proxy: 'http://127.0.0.1:9', https_proxy: 'http://127.0.0.1:9',
+  all_proxy: 'http://127.0.0.1:9', no_proxy: '127.0.0.1,localhost,::1'
 }
 if (!git(['ls-remote', reviewedUrl, 'HEAD'], { ...process.env, ...gitEnv }).startsWith(fixtureCommit)) {
   throw new Error('Exact reviewed URL did not resolve to the repository-local fixture')
@@ -53,6 +57,13 @@ const appEnv = {
 const app = await electron.launch({ executablePath, cwd: root, env: appEnv, args: ['--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage'], timeout: 120000 })
 try {
   const window = await app.firstWindow({ timeout: 45000 })
+  const blockedRequests = []
+  await window.route(/^https?:\/\//, route => {
+    const target = new URL(route.request().url())
+    if (['localhost', '127.0.0.1', '[::1]'].includes(target.hostname)) return route.continue()
+    blockedRequests.push(target.origin)
+    return route.abort()
+  })
   await window.waitForLoadState('domcontentloaded', { timeout: 45000 })
   await window.evaluate(folder => window.electronAPI.setSharedStorageRoot({ folder }), shared)
   await window.evaluate(() => window.electronAPI.setConnectionOnboardingSkipped({ skipped: true }))
@@ -162,16 +173,21 @@ try {
   // The live history can be cleared as soon as a batch is finalized. Its
   // project-owned batch file is the durable completion record.
   const batchHistory = path.join(projectFolder, '.hyper-studio', 'workflow', 'user', '__manager', 'batch_history')
-  let completed = null
-  for (let attempt = 0; attempt < 240; attempt++) {
-    for (const file of fs.readdirSync(batchHistory).filter(name => name.endsWith('.json'))) {
-      const batch = JSON.parse(fs.readFileSync(path.join(batchHistory, file), 'utf8'))
-      const operation = batch.operations?.find(item => item.operation_id === task.ui_id)
-      if (operation) completed = { batch, operation }
+  const waitForBatch = async uiId => {
+    for (let attempt = 0; attempt < 240; attempt++) {
+      if (fs.existsSync(batchHistory)) {
+        for (const file of fs.readdirSync(batchHistory).filter(name => name.endsWith('.json'))) {
+          let batch
+          try { batch = JSON.parse(fs.readFileSync(path.join(batchHistory, file), 'utf8')) } catch { continue }
+          const operation = batch.operations?.find(item => item.operation_id === uiId)
+          if (operation) return { batch, operation }
+        }
+      }
+      await window.waitForTimeout(500)
     }
-    if (completed) break
-    await window.waitForTimeout(500)
+    throw new Error(`Manager task ${uiId} did not complete within two minutes`)
   }
+  const completed = await waitForBatch(task.ui_id)
   if (completed?.operation?.result !== 'success' || completed.batch.failed_operations !== 0) {
     throw new Error(`Manager install did not succeed: ${JSON.stringify(completed)}`)
   }
@@ -222,6 +238,56 @@ try {
   }
   await window.screenshot({ path: path.join(home, 'installed-node-after-restart.png') })
   process.stdout.write('PASS: managed engine restart registered ImpactInt and canvas retained imported node ID 90909\n')
+
+  // The installed nightly pack exposes Try Update. Advance the local origin
+  // after installation so the update has a real commit to fetch offline.
+  fs.appendFileSync(path.join(fixtureSource, '__init__.py'), '\n# Updated by local Manager smoke fixture.\n')
+  git(['-C', fixtureSource, 'add', '__init__.py'])
+  git(['-C', fixtureSource, '-c', 'user.name=Hyper-Studio Smoke', '-c', 'user.email=smoke@localhost', 'commit', '-qm', 'Local fixture update'])
+  const updateCommit = git(['-C', fixtureSource, 'rev-parse', 'HEAD'])
+  if (updateCommit === fixtureCommit) throw new Error('Local update fixture did not advance')
+
+  await window.getByRole('button', { name: 'Extensions', exact: true }).click()
+  const manager = canvas.locator('.manager-dialog')
+  await manager.waitFor({ state: 'visible', timeout: 10000 })
+  await manager.locator('input').first().fill('Impact')
+  const packCard = manager.getByText('ComfyUI Impact Pack', { exact: true }).first()
+  await packCard.waitFor({ state: 'visible', timeout: 15000 })
+  await packCard.click()
+  const updateButton = manager.getByRole('button', { name: 'Try Update', exact: true })
+  await updateButton.waitFor({ state: 'visible', timeout: 15000 })
+  const submittedTasks = []
+  window.on('request', request => {
+    if (/\/v2\/manager\/queue\/task(?:\?|$)/.test(request.url())) submittedTasks.push(JSON.parse(request.postData() || '{}'))
+  })
+  await updateButton.click()
+  for (let attempt = 0; attempt < 40 && submittedTasks.length < 1; attempt++) await window.waitForTimeout(250)
+  const updateTask = submittedTasks[0]
+  if (submittedTasks.length !== 1 || updateTask?.kind !== 'update' || updateTask.params?.node_name !== packId || updateTask.params?.node_ver !== 'nightly') {
+    throw new Error(`Manager update task mismatch: ${JSON.stringify(submittedTasks)}`)
+  }
+  const updated = await waitForBatch(updateTask.ui_id)
+  if (updated.operation.result !== 'success' || updated.batch.failed_operations !== 0) {
+    throw new Error(`Manager update failed: ${JSON.stringify(updated)}`)
+  }
+  if (git(['-C', installedPath, 'rev-parse', 'HEAD']) !== updateCommit) throw new Error('Installed node did not advance to the local update commit')
+  process.stdout.write('PASS: Manager updated the installed pack to the next local fixture commit\n')
+
+  const uninstallButton = manager.getByRole('button', { name: 'Uninstall', exact: true })
+  await uninstallButton.waitFor({ state: 'visible', timeout: 15000 })
+  await uninstallButton.click()
+  for (let attempt = 0; attempt < 40 && submittedTasks.length < 2; attempt++) await window.waitForTimeout(250)
+  const uninstallTask = submittedTasks[1]
+  if (submittedTasks.length !== 2 || uninstallTask?.kind !== 'uninstall' || uninstallTask.params?.node_name !== packId || uninstallTask.params?.is_unknown !== false) {
+    throw new Error(`Manager uninstall task mismatch: ${JSON.stringify(submittedTasks)}`)
+  }
+  const uninstalled = await waitForBatch(uninstallTask.ui_id)
+  if (uninstalled.operation.result !== 'success' || uninstalled.batch.failed_operations !== 0 || fs.existsSync(installedPath)) {
+    throw new Error(`Manager uninstall failed or left the fixture installed: ${JSON.stringify(uninstalled)}`)
+  }
+  process.stdout.write('PASS: Manager uninstalled the fixture from shared storage\n')
+  if (blockedRequests.length) throw new Error(`Renderer attempted external requests: ${blockedRequests.join(', ')}`)
+  process.stdout.write('PASS: Manager smoke made no external renderer request\n')
 } finally {
   await app.close()
 }
