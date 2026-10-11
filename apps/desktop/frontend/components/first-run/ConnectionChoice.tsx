@@ -58,6 +58,18 @@ export function ConnectionChoice() {
     if (state === 'connecting') dialogRef.current?.querySelector<HTMLInputElement>('input')?.focus()
   }, [state])
 
+  useEffect(() => {
+    if (state === 'loading' || state === 'hidden') return
+    const keepFocusInDialog = (event: FocusEvent) => {
+      const dialog = dialogRef.current
+      if (!dialog || dialog.contains(event.target as Node)) return
+      const first = dialog.querySelector<HTMLElement>('button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled)')
+      first?.focus()
+    }
+    document.addEventListener('focusin', keepFocusInDialog)
+    return () => document.removeEventListener('focusin', keepFocusInDialog)
+  }, [state])
+
   const explore = useCallback(async () => {
     if (busy) return
     setBusy(true)

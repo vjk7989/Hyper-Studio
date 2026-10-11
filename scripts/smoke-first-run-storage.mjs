@@ -86,6 +86,9 @@ try {
   await connectionChoice.waitFor({ state: 'visible', timeout: 45000 })
   await connectionChoice.getByRole('button', { name: 'Set up optional local models in Settings' }).waitFor({ state: 'visible' })
   await page.waitForFunction(() => document.activeElement?.textContent?.includes('Connect a video API'))
+  assert.equal(await connectionChoice.evaluate(node => getComputedStyle(node).transitionDuration), '0s')
+  await page.evaluate(() => document.querySelector('[data-testid="sidebar-new-project"]')?.focus())
+  assert.equal(await page.evaluate(() => document.activeElement?.closest('[role="dialog"]')?.getAttribute('aria-labelledby')), 'connection-choice-title')
   await connectionChoice.getByRole('button', { name: /Connect a video API/ }).click()
   await page.getByRole('dialog', { name: 'Add a video connection' }).waitFor({ state: 'visible' })
   await page.keyboard.press('Escape')
@@ -97,6 +100,26 @@ try {
   await page.getByTestId('sidebar-new-project').waitFor({ state: 'visible', timeout: 45000 })
   assert.equal(await page.getByRole('dialog', { name: /Make something with Hyper-Studio|Add a video connection/ }).count(), 0)
   process.stdout.write('PASS: zero-profile connection choice supports Back, Explore, and persisted skip after restart\n')
+
+  await page.evaluate(() => window.electronAPI.setConnectionOnboardingSkipped({ skipped: false }))
+  await app.evaluate(({ ipcMain }) => {
+    ipcMain.removeHandler('listProviderProfiles')
+    ipcMain.handle('listProviderProfiles', () => { throw new Error('Vault locked fixture') })
+  })
+  await page.reload({ waitUntil: 'domcontentloaded' })
+  const failedChoice = page.getByRole('dialog', { name: 'Make something with Hyper-Studio' })
+  await failedChoice.getByRole('alert').getByText(/Vault locked fixture/).waitFor({ state: 'visible', timeout: 45000 })
+  await page.keyboard.press('Escape')
+  assert.equal(await page.evaluate(() => window.electronAPI.getConnectionOnboardingSkipped()), false)
+  await app.evaluate(({ ipcMain }) => {
+    ipcMain.removeHandler('listProviderProfiles')
+    ipcMain.handle('listProviderProfiles', () => [])
+  })
+  await failedChoice.getByRole('button', { name: 'Retry connection check' }).click()
+  await failedChoice.getByRole('button', { name: /Connect a video API/ }).waitFor({ state: 'visible' })
+  await failedChoice.getByRole('button', { name: /Explore without a connection/ }).click()
+  assert.equal(await page.evaluate(() => window.electronAPI.getConnectionOnboardingSkipped()), true)
+  process.stdout.write('PASS: locked-vault error, Escape, Retry, modal focus, and reduced motion\n')
 } catch (error) {
   if (page) await page.screenshot({ path: path.join(home, 'failure.png') }).catch(() => undefined)
   throw error
