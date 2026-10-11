@@ -8,13 +8,13 @@ The numbered steps below are sequential gates. A subtask stays `[·]` after impl
 
 ### 5.1 Fast, stable mode switching — Windows gate
 
-- [·] 5.1.1 Measure cold launch, first Workflow entry, and ten warm Editor↔Workflow switches on one Windows runner; retain raw timing logs and report p95.
-- [·] 5.1.2 Add a trusted Vue canvas-ready handshake; gate Workflow Open, Save, and Extensions until the canvas restores its tabs.
-- [·] 5.1.3 Keep Editor and Workflow mounted for the active project, suspend hidden playback and shortcuts, and dispose both on project change.
-- [·] 5.1.4 Prestart the installed Workflow runtime and canvas after project open during idle time; never implicitly download a runtime or models.
-- [·] 5.1.5 Replace the blocking PyTorch probe with an asynchronous, per-runtime cached check.
-- [ ] 5.1.6 Pass unsaved-work, Undo, running-job, focus, project-isolation, and ten-toggle p95 ≤ 1 second checks on the same installed Windows runner; fix and rerun failures.
-- [ ] 5.1.7 Refresh architecture record, handoff, code map, Graft graph, and codebase-memory status after the gate passes.
+- [x] 5.1.1 Measure cold launch, first Workflow entry, and ten warm Editor↔Workflow switches on one Windows runner; retain raw timing logs and report p95. Installed run 38120631024: warm p95 66 ms.
+- [x] 5.1.2 Add a trusted Vue canvas-ready handshake; gate Workflow Open, Save, and Extensions until the canvas restores its tabs.
+- [x] 5.1.3 Keep Editor and Workflow mounted for the active project, suspend hidden playback and shortcuts, and dispose both on project change.
+- [x] 5.1.4 Prestart the installed Workflow runtime and canvas after project open during idle time; never implicitly download a runtime or models.
+- [x] 5.1.5 Replace the blocking PyTorch probe with an asynchronous, per-runtime cached check.
+- [·] 5.1.6 Pass unsaved-work, Undo, running-job, focus, project-isolation, and ten-toggle p95 ≤ 1 second checks on the same installed Windows runner; fix and rerun failures. Unsaved Workflow IDs, engine close, p95, and existing Editor Undo/job checks passed; explicit across-toggle Editor Undo, focus, and mid-engine project B checks remain.
+- [·] 5.1.7 Refresh architecture record, handoff, code map, Graft graph, and codebase-memory status after the gate passes.
 
 ### 5.2 Skippable first-run connection choice — Windows gate
 

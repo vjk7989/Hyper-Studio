@@ -174,6 +174,17 @@ try {
   await activeCard.getByText('1 clip', { exact: true }).waitFor({ state: 'visible' })
   record('Undo remains available after autosave', 'clip count 1 → 0 → 1 after persisted overlay')
 
+  await page.locator('button[title^="Workflow mode"]').click()
+  await page.getByRole('button', { name: /Shared files \(\d+\)/ }).waitFor({ state: 'visible', timeout: 30000 })
+  await page.locator('button[title^="Editor mode"]').click()
+  await activeCard.getByText('1 clip', { exact: true }).waitFor({ state: 'visible' })
+  await menu('Edit', 'Undo')
+  await activeCard.getByText('0 clips', { exact: true }).waitFor({ state: 'visible' })
+  await menu('Edit', 'Redo')
+  await activeCard.getByText('1 clip', { exact: true }).waitFor({ state: 'visible' })
+  assert.equal(await page.locator('button[title^="Editor mode"]').getAttribute('aria-pressed'), 'true')
+  record('Editor Undo and focus after Workflow toggle', 'Undo history survives both mode changes')
+
   const zoom = page.locator('input[type=range][title^="Zoom:"]')
   const zoomBefore = Number(await zoom.inputValue())
   await menu('View', 'Zoom In')

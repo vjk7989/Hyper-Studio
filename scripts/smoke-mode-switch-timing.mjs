@@ -67,6 +67,7 @@ try {
   await workflow.click()
   await workflowReady()
   timings.firstWorkflowMs = Math.round(performance.now() - firstAt)
+  const firstProjectId = (await window.evaluate(() => window.electronAPI.getWorkflowEngineStatus())).projectId
 
   const snapshot = async () => window.evaluate(async () => {
     const frame = document.querySelector('iframe[title="Hyper-Studio workflow canvas"]')
@@ -110,6 +111,21 @@ try {
   await window.evaluate(() => { window.location.hash = '#/projects' })
   await window.waitForFunction(async () => (await window.electronAPI.getWorkflowEngineStatus()).state === 'stopped', null, { timeout: 10000 })
   timings.engineStoppedAfterProjectClose = true
+  await window.getByTestId('new-project-card').waitFor({ state: 'visible' })
+  const secondFolder = path.join(home, 'isolated-project')
+  fs.mkdirSync(secondFolder, { recursive: true })
+  await app.evaluate(({ dialog }, folder) => { dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [folder] }) }, secondFolder)
+  await window.getByTestId('new-project-card').click()
+  await window.getByPlaceholder('Project name').fill('Isolated workflow')
+  await window.getByText('Workflow mode', { exact: true }).click()
+  await window.getByText('Choose a folder', { exact: true }).click()
+  await window.getByPlaceholder('Project name').press('Enter')
+  await window.waitForFunction(async previousId => {
+    const status = await window.electronAPI.getWorkflowEngineStatus()
+    return status.state === 'running' && status.projectId !== previousId
+  }, firstProjectId, { timeout: 120000 })
+  await window.getByRole('button', { name: 'Shared files (0)' }).waitFor({ state: 'visible', timeout: 30000 })
+  timings.secondProjectIsolated = true
   const sorted = [...timings.warmSwitchMs].sort((a, b) => a - b)
   timings.warmP95Ms = sorted[Math.ceil(sorted.length * 0.95) - 1]
   timings.passesWarmTarget = timings.warmP95Ms <= 1000

@@ -50,5 +50,17 @@ $env:OPENCODE_DISABLE_AUTOUPDATE = '1'
 $env:npm_config_cache = Join-Path $paths.cache 'npm'
 
 Set-Location -LiteralPath $repoRoot
-& $exe @OpenCodeArguments
-exit $LASTEXITCODE
+$exitCode = 1
+try {
+    & $exe @OpenCodeArguments
+    $exitCode = $LASTEXITCODE
+} finally {
+    # V2 may keep a local service after a bounded run. Close only this copy so
+    # an earlier task cannot continue writing after Codex reviews its report.
+    if ($OpenCodeArguments.Count -gt 0 -and $OpenCodeArguments[0] -eq 'run') {
+        Get-CimInstance Win32_Process -Filter "Name = 'opencode.exe'" -ErrorAction SilentlyContinue |
+            Where-Object { $_.ExecutablePath -eq $exe -and $_.CommandLine -match '\bserve\s+--service\b' } |
+            ForEach-Object { Stop-Process -Id $_.ProcessId -ErrorAction SilentlyContinue }
+    }
+}
+exit $exitCode

@@ -102,7 +102,16 @@ This record separates accepted product decisions from verified implementation. P
 - **Reason:** A renderer-only delete would leave private folder registries behind or lose a project after a failed Trash operation. Explicit choices and a full-path confirmation reduce accidental loss.
 - **Evidence:** Final5 installed lifecycle smoke passed create/rename/reopen, app-only remove/restore, simulated Trash failure with record preservation, real OS Trash of a disposable folder, and restart persistence. A held loopback provider job blocked both removal choices without losing files. Focused main-process tests cover the guards. The final5 unsigned installer passed project, Editor, Workflow, provider, Manager, and package smokes with local fixtures. The embedded Workflow conflict scan now avoids an idle upstream Registry bulk lookup after a local pack install while retaining local import-failure analysis (focused Vue 12/12). macOS and Linux packaged smoke and brand audit passed in run 38093974210. See `docs/gates/project-controls-windows.md` for exact limits; broader Editor/Workflow feature and installer installation/uninstall gates remain open.
 
+## ADR 0011: Keep one project's surfaces live and prewarm only installed Workflow runtimes
+
+- **Status:** Windows installed performance slice passed in [run 38120631024](https://github.com/vjk7989/Hyper-Studio/actions/runs/38120631024); final state/isolation checks are pending a follow-up Windows rerun.
+- **Decision:** Mount the Editor and Workflow canvas once per active project and hide the inactive surface. Pause its media, transport, and keyboard handling without discarding in-memory Undo or unsaved graph state. Dispose the surfaces and stop only that project's managed engine when the project closes or changes. During Editor idle time, start Workflow and mount its hidden canvas only when the existing managed runtime's interpreter, installation marker, and pinned lock agree; never install a runtime or models as a side effect of prewarm.
+- **Readiness:** The host enables Workflow Open, Save, and Extensions only after a trusted, nonce-matched Vue ready acknowledgement following tab restoration. The iframe load event alone is insufficient. A hidden canvas receives suspend/resume messages, which pause preview media and shortcut capture but leave jobs alone.
+- **Startup:** Probe PyTorch acceleration asynchronously, with cancellation and a cache keyed by the interpreter and installation marker. A failed or stale probe cannot spawn the engine after project shutdown.
+- **Evidence:** Desktop 1,486/1,486, extra editor 2/2 and native 6/6, Vue bridge 7/7, engine/runtime 8/8, desktop and scoped Vue typechecks passed locally. The installed Windows run measured warm ten-toggle p95 66 ms, preserved unsaved Workflow node IDs, and stopped the engine on project close. The older installed baseline was p95 1,188 ms on a different machine. Editor Undo/focus across toggles and second-project isolation are in the next installed rerun. See `docs/gates/phase-5-experience-switch-gate.md`.
+
 ## Imported source provenance and licenses
+
 
 | Component | Imported path | Identity visible in source | License in imported tree | Provenance limit |
 | --- | --- | --- | --- | --- |

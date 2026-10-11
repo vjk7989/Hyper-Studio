@@ -1,5 +1,18 @@
 # Codebase map
 
+## Phase 5.1 mode-switch and startup path
+
+Windows installed [run 38120631024](https://github.com/vjk7989/Hyper-Studio/actions/runs/38120631024) passed the retained-surface and timing slice with warm ten-toggle p95 **66 ms**. The next rerun adds Editor Undo/focus and second-project isolation assertions. Graft refreshed at **7,088 files, 64,520 nodes, 161,206 edges**; codebase-memory still misses the new prewarm symbol despite reporting `indexed`.
+
+| Need to change | Exact entry point | Boundary and check |
+| --- | --- | --- |
+| Mode retention, idle prewarm, project disposal | `apps/desktop/frontend/views/Project.tsx` | One Editor and Workflow surface per active project, hidden-mode media pause, idle prewarm after installed-only engine response, scoped stop on project close; installed timing/isolation smoke. |
+| Editor hidden shortcuts and playback | `apps/desktop/frontend/views/VideoEditor.tsx`, `GenSpace.tsx`, `views/editor/{useEditorKeyboard,usePlaybackEngine,usePlaybackAudioSync}.ts` | `active` guards suspend hidden transport, audio, keyboard, and previews without dropping Undo state; `scripts/smoke-editor-controls.mjs` checks across-toggle Undo on next run. |
+| Vue readiness and hidden canvas | `apps/desktop/frontend/views/WorkflowWorkspace.tsx`, `apps/workflow-ui/src/platform/distribution/hyperStudioEmbedBridge.ts` | Nonce-matched parent/origin message after tab restore; Open/Save/Extensions disabled until ready. Suspend pauses media and shortcut capture but leaves jobs running; Vue bridge tests 7/7. |
+| Installed-only engine startup | `apps/desktop/electron/{workflow-engine,workflow-engine-config,workflow-runtime,workflow-runtime-config}.ts`, `electron/ipc/workflow-engine-handlers.ts`, `shared/electron-api-schema.ts` | Marker+lock guard prevents implicit runtime downloads; async cached/cancellable PyTorch probe; stop is project-scoped. Focused engine/runtime tests 8/8. |
+| Performance and regression evidence | `scripts/smoke-mode-switch-timing.mjs`, `scripts/smoke-packaged-electron.mjs`, `.github/workflows/phase-4-platform-gate.yml`, `docs/gates/phase-5-experience-switch-gate.md` | Windows push job installs unsigned NSIS and measures ten toggles; macOS/Linux jobs run only by manual dispatch after Windows. Old Shared files smoke was fixed to preserve panel state. |
+
+
 ## Local Extensions Manager checkpoint
 
 Source `d29dd71` passed [run 38100244801](https://github.com/vjk7989/Hyper-Studio/actions/runs/38100244801) on Windows installed, macOS packaged, and Linux packaged. Graft build/map: 7,087 files, 64,502 nodes, 161,151 edges. Codebase-memory fast index refreshed its live graph (655,150 nodes, 976,907 edges) and finds the new search symbol, but reported no compressed repository artifact.
