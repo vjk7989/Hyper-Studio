@@ -1,5 +1,7 @@
 import { useAlgoliaSearchProvider } from '@/services/providers/algoliaSearchProvider'
 import { useComfyRegistrySearchProvider } from '@/services/providers/registrySearchProvider'
+import { useHyperStudioLocalSearchProvider } from '@/services/providers/hyperStudioLocalSearchProvider'
+import { isHyperStudioEmbedded } from '@/platform/distribution/hyperStudio'
 import type { SearchNodePacksParams } from '@/types/algoliaTypes'
 import type {
   NodePackSearchProvider,
@@ -30,6 +32,7 @@ const CIRCUIT_BREAKER_TIMEOUT = 60000 // 1 minute before retry
  * - Automatic failover: Cascades through providers on failure
  */
 export const useRegistrySearchGateway = (): NodePackSearchProvider => {
+  if (isHyperStudioEmbedded) return useHyperStudioLocalSearchProvider()
   const providers: ProviderState[] = []
   let activeProviderIndex = 0
 

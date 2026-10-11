@@ -408,7 +408,17 @@ class PromptServer():
         async def get_hyper_studio_node_packs(request):
             if not os.environ.get("HYPER_STUDIO_PROJECT_ID"):
                 return web.Response(status=404)
-            from hyper_studio_pack_catalog import local_node_packs
+            from hyper_studio_pack_catalog import local_node_packs, search_local_node_packs
+            if "search" in request.query:
+                try:
+                    page = int(request.query.get("page", "0"))
+                    limit = int(request.query.get("limit", "20"))
+                except ValueError:
+                    return web.Response(status=400)
+                return web.json_response(search_local_node_packs(
+                    request.query.get("search", ""), page, limit,
+                    request.query.get("mode", "packs"),
+                ))
             return web.json_response(local_node_packs(request.query.getall("id", [])))
 
         @routes.get("/embeddings")

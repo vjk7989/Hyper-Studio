@@ -233,6 +233,14 @@ try {
   await canvas.getByTestId('node-library-tab-button').click()
   fs.writeFileSync(path.join(home, 'workflow-node-library.txt'), (await canvas.locator('body').innerText()).slice(0, 10000))
   record('Workflow Node Library button', 'PASS')
+  const localCatalog = await canvas.locator('body').evaluate(async () => {
+    const response = await fetch('/hyper-studio/node-packs?search=Impact&page=0&limit=5&mode=packs')
+    return { status: response.status, body: response.ok ? await response.json() : null }
+  })
+  if (localCatalog.status !== 200 || !Object.keys(localCatalog.body?.node_packs ?? {}).some(id => id.includes('impact'))) {
+    throw new Error(`Embedded Manager local catalog failed: ${JSON.stringify(localCatalog).slice(0, 500)}`)
+  }
+  record('Workflow Manager searches bundled local catalog', 'PASS')
   await page.getByRole('button', { name: 'Settings', exact: true }).focus()
   await page.getByRole('button', { name: 'Settings', exact: true }).press('Enter')
   await page.getByRole('button', { name: 'Connections', exact: true }).last().click()

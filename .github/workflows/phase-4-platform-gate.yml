@@ -77,6 +77,7 @@ jobs:
             src/platform/settings/composables/useSettingSearch.test.ts \
             src/platform/settings/components/SettingGroup.test.ts \
             src/workbench/extensions/manager/composables/nodePack/localManagerPackCatalog.test.ts \
+            src/services/gateway/registrySearchGateway.hyperStudio.test.ts \
             src/components/rightSidePanel/errors/MissingPackGroupRow.test.ts
       - name: Test local managed node-pack catalog
         shell: bash
@@ -193,6 +194,17 @@ jobs:
             & ../../scripts/with-local-env.ps1 -Executable node -Arguments @('node_modules/vite/bin/vite.js', 'build', '--config', 'vite.remote.config.ts')
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           } finally { Pop-Location }
+      - name: Test embedded local Manager catalog
+        shell: pwsh
+        run: |
+          Push-Location apps/workflow-ui
+          try {
+            & ../../scripts/with-local-env.ps1 -Executable node -Arguments @('node_modules/vitest/vitest.mjs', 'run', 'src/services/gateway/registrySearchGateway.hyperStudio.test.ts', 'src/workbench/extensions/manager/composables/nodePack/localManagerPackCatalog.test.ts')
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          } finally { Pop-Location }
+          $env:PYTHONPATH = (Join-Path $env:GITHUB_WORKSPACE 'services/workflow')
+          & ./scripts/with-local-env.ps1 -Executable python -Arguments @('-B', '-m', 'unittest', 'services/workflow/tests-unit/hyper_studio_pack_catalog_test.py')
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Package unsigned Windows installer and install inside checkout
         shell: pwsh
         run: |
@@ -212,6 +224,8 @@ jobs:
           & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/smoke-packaged-electron.mjs')
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/smoke-project-controls.mjs')
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/smoke-first-party-controls.mjs')
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/smoke-editor-controls.mjs')
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
