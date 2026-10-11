@@ -338,22 +338,84 @@ try {
 
   const clipLocator = () => page.locator(`[data-clip-id="${gestureClip.id}"]`)
   await menu('Tools', 'Selection Tool')
+  assert.match(await page.locator('button').filter({ hasText: 'Selection Tool' }).first().getAttribute('class'), /bg-brand/)
   const initialStart = gestureClip.startTime
   const firstBox = await clipLocator().boundingBox()
   assert.ok(firstBox, 'dragged clip is not visible')
-  const moveStartX = firstBox.x + Math.min(firstBox.width / 2, 45)
-  const moveY = firstBox.y + firstBox.height / 2
   const viewport = page.viewportSize()
+  const hitProbe = await page.evaluate(({ clipId, box }) => {
+    const offsets = [25, 45, 75, 100]
+    const heights = [box.height / 2, 10, box.height - 10]
+    const candidates = []
+    for (const ox of offsets) {
+      for (const oy of heights) {
+        const x = box.x + ox
+        const y = box.y + oy
+        if (x >= window.innerWidth - 20 || y >= window.innerHeight - 5) continue
+        const hit = document.elementFromPoint(x, y)
+        const hitClipId = hit instanceof Element ? hit.closest('[data-clip-id]')?.getAttribute('data-clip-id') : null
+        const inButton = hit instanceof Element && Boolean(hit.closest('button'))
+        candidates.push({ x, y, tag: hit?.tagName ?? null, hitClipId, inButton })
+        if (hitClipId === clipId && !inButton) return { point: { x, y }, candidates }
+      }
+    }
+    return { point: null, candidates }
+  }, { clipId: gestureClip.id, box: firstBox })
+  const evidencePath = path.join(home, 'clip-move-evidence.json')
+  if (!hitProbe.point) {
+    fs.writeFileSync(evidencePath, JSON.stringify({
+      stage: 'no unobstructed clip hit target', clipId: gestureClip.id,
+      initialStart, firstBox, viewport, hitProbe,
+    }, null, 2))
+  }
+  assert.ok(hitProbe.point, `no unobstructed clip hit target: ${JSON.stringify(hitProbe.candidates)}`)
+  const moveStartX = hitProbe.point.x
+  const moveY = hitProbe.point.y
   const moveDeltaX = Math.min(40, Math.floor((viewport?.width ?? 984) - moveStartX - 20))
   assert.ok(moveDeltaX >= 25, `not enough visible timeline room to move clip: ${moveDeltaX}px`)
-  fs.writeFileSync(path.join(home, 'clip-move-evidence.json'), JSON.stringify({
-    clipId: gestureClip.id, initialStart, firstBox, viewport,
-    from: { x: moveStartX, y: moveY }, to: { x: moveStartX + moveDeltaX, y: moveY },
-  }, null, 2))
+  await page.evaluate(() => {
+    window.__editorClipMoveEvents = []
+    for (const type of ['mousedown', 'mousemove', 'mouseup']) {
+      document.addEventListener(type, event => {
+        const target = event.target instanceof Element ? event.target : null
+        window.__editorClipMoveEvents.push({
+          type, x: event.clientX, y: event.clientY,
+          tag: target?.tagName ?? null,
+          clipId: target?.closest('[data-clip-id]')?.getAttribute('data-clip-id') ?? null,
+        })
+      }, true)
+    }
+  })
+  const saveMoveEvidence = async stage => {
+    const dom = await page.evaluate(({ clipId, x, y }) => {
+      const clip = document.querySelector(`[data-clip-id="${clipId}"]`)
+      const hit = document.elementFromPoint(x, y)
+      return {
+        className: clip?.className ?? null,
+        hitTag: hit?.tagName ?? null,
+        hitClipId: hit instanceof Element ? hit.closest('[data-clip-id]')?.getAttribute('data-clip-id') ?? null : null,
+        events: window.__editorClipMoveEvents,
+      }
+    }, { clipId: gestureClip.id, x: moveStartX, y: moveY })
+    fs.writeFileSync(evidencePath, JSON.stringify({
+      stage, clipId: gestureClip.id, initialStart, firstBox, viewport, hitProbe,
+      from: { x: moveStartX, y: moveY }, to: { x: moveStartX + moveDeltaX, y: moveY }, dom,
+    }, null, 2))
+  }
+  await saveMoveEvidence('before mousedown')
   await page.mouse.move(moveStartX, moveY)
   await page.mouse.down()
+  try {
+    await page.waitForFunction(id => document.querySelector(`[data-clip-id="${id}"]`)?.classList.contains('cursor-grabbing'), gestureClip.id, { timeout: 2500 })
+  } catch {
+    await saveMoveEvidence('mousedown did not enter dragging state')
+    await page.mouse.up().catch(() => {})
+    throw new Error(`Clip mousedown did not enter dragging state; evidence: ${evidencePath}`)
+  }
+  await saveMoveEvidence('dragging state entered')
   await page.mouse.move(moveStartX + moveDeltaX, moveY, { steps: 8 })
   await page.mouse.up()
+  await saveMoveEvidence('after mouseup')
   await waitUntil(() => activeTimeline()?.clips.find(clip => clip.id === gestureClip.id)?.startTime > initialStart + 0.2, 'moved image clip')
   gestureClip = activeTimeline().clips.find(clip => clip.id === gestureClip.id)
   record('Move timeline clip with Selection Tool', `${initialStart.toFixed(2)}s → ${gestureClip.startTime.toFixed(2)}s`)
