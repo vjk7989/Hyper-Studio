@@ -20,8 +20,8 @@ The numbered steps below are sequential gates. A subtask stays `[·]` after impl
 
 - [x] 5.2.1 After shared-storage setup, offer Connect a video API, Explore without a connection, and optional local-model setup once when no profile exists.
 - [x] 5.2.2 Reuse Connections and its secure profile store; persist Explore, bypass the choice for existing profiles, and keep basic editing available without a key.
-- [·] 5.2.3 Consolidate duplicate shared-storage picker; handle locked vault, picker cancel, validation error, restart, keyboard focus, and reduced motion. Picker, restart, focus, and reduced-motion tests passed; a locked-vault installed fixture remains.
-- [·] 5.2.4 Pass focused tests and a fresh installed Windows onboarding smoke; refresh architecture record, handoff, code map, Graft graph, and codebase-memory status. Windows run 38122551915 passed; locked-vault fixture and status writeup remain.
+- [x] 5.2.3 Consolidate duplicate shared-storage picker; handle locked vault, picker cancel, validation error, restart, keyboard focus, and reduced motion.
+- [x] 5.2.4 Pass focused tests and a fresh installed Windows onboarding smoke; refresh architecture record, handoff, code map, Graft graph, and codebase-memory status. [Run 38123552292](https://github.com/vjk7989/Hyper-Studio/actions/runs/38123552292) passed after the reduced-motion failure and fix.
 
 ### 5.3 Shared shell polish — Windows gate
 

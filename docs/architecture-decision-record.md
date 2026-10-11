@@ -110,6 +110,13 @@ This record separates accepted product decisions from verified implementation. P
 - **Startup:** Probe PyTorch acceleration asynchronously, with cancellation and a cache keyed by the interpreter and installation marker. A failed or stale probe cannot spawn the engine after project shutdown.
 - **Evidence:** Desktop 1,486/1,486, extra editor 2/2 and native 6/6, Vue bridge 7/7, engine/runtime 8/8, desktop and scoped Vue typechecks passed locally. The first installed Windows run measured warm ten-toggle p95 66 ms, preserved unsaved Workflow node IDs, and stopped the engine on project close. The final run passed Editor Undo/focus and project B isolation with p95 80 ms. The older installed baseline was p95 1,188 ms on a different machine. See `docs/gates/phase-5-experience-switch-gate.md`.
 
+## ADR 0014: First-run connections are a skippable shell decision
+
+- **Status:** Phase 5.2 Windows installed gate passed in [run 38123552292](https://github.com/vjk7989/Hyper-Studio/actions/runs/38123552292).
+- **Decision:** Select the shared-storage root before rendering the shell. When no provider profile exists, show one connection choice after splash completion. Connect embeds the existing Connections form and secure profile store. Explore persists a private `connectionOnboardingSkipped` flag in app state; it stores no credential and leaves local editing available. Existing profiles bypass the choice. Optional local-model setup routes to Settings and never starts a download from the prompt.
+- **Interaction:** One shared-storage picker owns cancel, error, busy, and focus behavior. The prompt traps focus, preserves the explicit Explore choice across restart, keeps the Retry path for a locked profile vault, and suppresses its transition under reduced motion. The Projects page no longer owns a duplicate storage picker.
+- **Evidence and limits:** Fresh installed smoke and 1,489 desktop tests passed. Run 38123169585 exposed a missing reduced-motion rule; rerun 38123552292 passed after correction. The locked-vault case uses a controlled rejected profile-list IPC fixture. Live provider credentials and shared-storage-root migration with existing private profiles were not exercised.
+
 ## Imported source provenance and licenses
 
 
