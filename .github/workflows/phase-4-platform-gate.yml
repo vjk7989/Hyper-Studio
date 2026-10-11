@@ -288,7 +288,11 @@ jobs:
             .local-tmp/editor-track-commands-*/results.json
             .local-tmp/editor-track-commands-*/drag-evidence.json
             .local-tmp/workflow-control-smoke-*/workflow-open-failed.png
+            .local-tmp/workflow-control-smoke-*/failure.png
             .local-tmp/workflow-control-smoke-*/electron.log
+            .local-tmp/workflow-widget-undo-*/*.png
+            .local-tmp/workflow-run-isolation-*/*.png
+            .local-tmp/manager-install-smoke-*/*.png
             .local-tmp/manager-install-smoke-*/project-create-failed.png
             .local-tmp/manager-install-smoke-*/import-snapshot-failed.png
             .local-tmp/manager-install-smoke-*/post-restart-snapshot-failed.png
