@@ -426,9 +426,23 @@ try {
 
   await menu('Tools', 'Blade Tool')
   assert.match(await page.locator('button').filter({ hasText: 'Blade Tool' }).first().getAttribute('class'), /bg-brand/)
-  const bladeBox = await clipLocator().boundingBox()
-  assert.ok(bladeBox && bladeBox.width > 35, 'clip is too narrow for a blade split')
-  await page.mouse.click(bladeBox.x + bladeBox.width / 2, bladeBox.y + bladeBox.height / 2)
+  // A moved clip can extend beyond the narrow installed-app viewport. Center its
+  // scroll position before choosing a point, then prove the point hits that clip.
+  await clipLocator().evaluate(element => element.scrollIntoView({ block: 'nearest', inline: 'center' }))
+  const bladeTarget = await clipLocator().evaluate(element => {
+    const box = element.getBoundingClientRect()
+    const viewport = element.closest('.overflow-auto')?.getBoundingClientRect()
+    if (!viewport) return null
+    const left = Math.max(box.left + 20, viewport.left + 12)
+    const right = Math.min(box.right - 20, viewport.right - 12)
+    const x = Math.min(Math.max(box.left + box.width / 2, left), right)
+    const y = box.top + box.height / 2
+    const hit = document.elementFromPoint(x, y)
+    return { x, y, visibleWidth: right - left, hitClipId: hit?.closest('[data-clip-id]')?.getAttribute('data-clip-id') }
+  })
+  assert.ok(bladeTarget && bladeTarget.visibleWidth > 20, 'clip has no visible interior for blade split')
+  assert.equal(bladeTarget.hitClipId, gestureClip.id, 'blade point must hit the moved clip')
+  await page.mouse.click(bladeTarget.x, bladeTarget.y)
   await waitUntil(() => activeTimeline()?.clips.length === 2, 'blade split into two clips')
   const splitClips = [...activeTimeline().clips].sort((a, b) => a.startTime - b.startTime)
   assert.ok(splitClips.every(clip => clip.assetId === imageAsset.id))
@@ -439,7 +453,9 @@ try {
   assert.match(await page.locator('button').filter({ hasText: 'Selection Tool' }).first().getAttribute('class'), /bg-brand/)
   const trimClip = splitClips[1]
   const durationBeforeTrim = trimClip.duration
-  const trimBox = await page.locator(`[data-clip-id="${trimClip.id}"]`).boundingBox()
+  const trimLocator = page.locator(`[data-clip-id="${trimClip.id}"]`)
+  await trimLocator.evaluate(element => element.scrollIntoView({ block: 'nearest', inline: 'center' }))
+  const trimBox = await trimLocator.boundingBox()
   assert.ok(trimBox && trimBox.width > 30, 'split clip is too narrow to trim')
   await page.mouse.move(trimBox.x + trimBox.width - 5, trimBox.y + trimBox.height / 2)
   await page.mouse.down()
