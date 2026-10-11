@@ -2534,6 +2534,7 @@ export function VideoEditorTimelineEditingPanel(props: VideoEditorTimelineEditin
                               key={`thumb-${clip.id}-${clip.takeIndex ?? 'default'}`}
                               src={pathToFileUrl(thumbPath)}
                               alt=""
+                              draggable={false}
                               className="h-8 aspect-video object-cover rounded"
                             />
                           ) : (

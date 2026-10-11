@@ -369,6 +369,10 @@ try {
     }, null, 2))
   }
   assert.ok(hitProbe.point, `no unobstructed clip hit target: ${JSON.stringify(hitProbe.candidates)}`)
+  // Exercise the thumbnail itself: native image dragging must not steal the
+  // pointer stream from the timeline's clip-move handler.
+  assert.equal(hitProbe.candidates.at(-1)?.tag, 'IMG', 'clip-move fixture must hit its thumbnail')
+  assert.equal(await clipLocator().locator('img').first().getAttribute('draggable'), 'false')
   const moveStartX = hitProbe.point.x
   const moveY = hitProbe.point.y
   const moveDeltaX = Math.min(40, Math.floor((viewport?.width ?? 984) - moveStartX - 20))
