@@ -89,6 +89,11 @@ try {
   await canvas.locator('#graph-canvas').press('Control+,')
   const settings=canvas.getByTestId('settings-dialog')
   await settings.waitFor({state:'visible',timeout:10000})
+  // The embedded canvas is narrower than the desktop shell. Settings uses its
+  // responsive layout here, with the navigation hidden until requested.
+  if (await settings.locator('nav').first().getAttribute('inert') !== null) {
+    await settings.getByRole('button', {name:'Show left panel'}).click()
+  }
   await settings.locator('[data-nav-id="extension"]').click()
   assert.ok((await settings.innerText()).length>0,'Extension settings must render')
   await canvas.locator('body').press('Escape')

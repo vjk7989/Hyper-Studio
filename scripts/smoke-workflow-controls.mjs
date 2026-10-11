@@ -21,6 +21,10 @@ const fixture = {
 }
 const source = path.join(home, 'unlinked-local.json')
 fs.writeFileSync(source, JSON.stringify(fixture))
+const delayFixturePath = path.join(shared, 'extensions', 'workflow', `hyper_studio_smoke_delay_${Date.now()}`)
+assert.ok(delayFixturePath.startsWith(`${root}${path.sep}`), 'Delay fixture must stay in the repository')
+fs.mkdirSync(delayFixturePath, { recursive: true })
+fs.copyFileSync(path.join(root, 'scripts', 'fixtures', 'workflow-delay', '__init__.py'), path.join(delayFixturePath, '__init__.py'))
 const env = {
   ...process.env, HOME: home, USERPROFILE: home, APPDATA: path.join(home, 'appdata'),
   LOCALAPPDATA: path.join(home, 'localappdata'), TEMP: path.join(home, 'temp'), TMP: path.join(home, 'temp'),
@@ -151,10 +155,22 @@ try {
   assert.deepEqual(exported.links[0].slice(1, 5), [17, 0, 29, 0])
   log('PASS import, save, export JSON roundtrip and IDs')
 
-  // Repeated tiny images keep the active cancel control available without models.
-  const batch = frame.getByRole('textbox', { name: 'Batch Count' })
-  await batch.fill('100')
-  await batch.press('Enter')
+  // A disposable output node holds an actual local job open long enough to
+  // observe Cancel. Tiny image batches can finish before the UI notices them.
+  const delaySource = path.join(home, 'cancel-local.json')
+  fs.writeFileSync(delaySource, JSON.stringify({
+    last_node_id: 41, last_link_id: 0,
+    nodes: [{ id: 41, type: 'HyperStudioSmokeDelay', pos: [200, 150], size: [270, 58], flags: {}, order: 0, mode: 0, inputs: [], outputs: [], properties: { 'Node name for S&R': 'HyperStudioSmokeDelay' }, widgets_values: [8] }],
+    links: [], groups: [], config: {}, extra: { ds: { scale: 1, offset: [0, 0] } }, version: 0.4,
+  }))
+  await app.evaluate(({ dialog }, file) => { dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [file] }) }, delaySource)
+  await window.getByRole('button', { name: 'Import', exact: true }).click()
+  for (let i = 0; i < 80; i++) {
+    const active = await snapshot()
+    if (active.nodes?.map(node => node.id).join(',') === '41') break
+    await window.waitForTimeout(250)
+  }
+  assert.deepEqual((await snapshot()).nodes.map(node => node.id), [41], 'Delay workflow must load before running')
   await frame.getByTestId('queue-button').click()
   const cancel = frame.getByRole('button', { name: 'Cancel current run' })
   let active = false
@@ -163,9 +179,11 @@ try {
     await window.waitForTimeout(100)
   }
   assert.ok(active, 'Cancel must become enabled during an active run')
-  const interruptResponse = window.waitForResponse(response => new URL(response.url()).pathname.endsWith('/interrupt') && response.request().method() === 'POST', { timeout: 15000 })
-  await cancel.click()
-  assert.equal((await interruptResponse).status(), 200, 'Active cancel must reach the managed engine')
+  const [interruptResponse] = await Promise.all([
+    window.waitForResponse(response => new URL(response.url()).pathname.endsWith('/interrupt') && response.request().method() === 'POST', { timeout: 15000 }),
+    cancel.click(),
+  ])
+  assert.equal(interruptResponse.status(), 200, 'Active cancel must reach the managed engine')
   log('PASS active queue cancel reached managed engine')
   log('ENGINE', engine)
 } finally {
@@ -173,4 +191,6 @@ try {
     for (const liveWindow of BrowserWindow.getAllWindows()) liveWindow.destroy()
   })
   await app.close()
+  // Remove only the uniquely named disposable test node installed above.
+  if (delayFixturePath.startsWith(`${shared}${path.sep}`)) fs.rmSync(delayFixturePath, { recursive: true, force: true })
 }

@@ -139,5 +139,10 @@ try {
   assert.deepEqual(redone.nodes.map(node => node.id), nodeIds)
   console.log('PASS widget Redo through keyboard with IDs preserved')
 } finally {
+  // Unsaved graph edits can trigger a renderer beforeunload dialog while
+  // Playwright is closing the app. Destroy the disposable smoke window first.
+  await app.evaluate(({ BrowserWindow }) => {
+    for (const liveWindow of BrowserWindow.getAllWindows()) liveWindow.destroy()
+  })
   await app.close()
 }
