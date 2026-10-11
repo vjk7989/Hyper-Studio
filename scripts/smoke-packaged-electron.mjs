@@ -40,7 +40,7 @@ try {
   window.on('response', response => { if (response.status() >= 400) badResponses.push(`${response.status()} ${response.url()}`) })
   window.on('requestfailed', request => { if (failedRequests.length < 20) failedRequests.push(request.url()) })
   window.on('request', request => {
-    if (/^https?:\/\/(?:api\.comfy\.org|(?:www\.)?comfy\.org|(?:www\.)?ltx\.studio)(?:\/|$)/i.test(request.url())) {
+    if (/^https?:\/\/(?:[a-z0-9-]+\.)?comfy\.org(?:\/|$)|^https?:\/\/(?:www\.)?ltx\.studio(?:\/|$)/i.test(request.url())) {
       upstreamCloudRequests.push(request.url())
     }
   })
@@ -288,8 +288,11 @@ try {
       throw new Error(`Embedded Workflow dark Settings heading lacks contrast: ${JSON.stringify(headingContrast)}`)
     }
   }
-  if (upstreamCloudRequests.length) throw new Error(`Unexpected upstream cloud requests: ${upstreamCloudRequests.join(', ')}`)
-  process.stdout.write('No account button or observed renderer request to upstream Comfy/LTX cloud during packaged workflow smoke\n')
+  const blockedUpstreamAttempts = pageErrors.filter(error => /https?:\/\/(?:[a-z0-9-]+\.)?comfy\.org|https?:\/\/(?:www\.)?ltx\.studio/i.test(error))
+  if (upstreamCloudRequests.length || blockedUpstreamAttempts.length) {
+    throw new Error(`Unexpected upstream cloud requests or attempts: ${JSON.stringify({ upstreamCloudRequests, blockedUpstreamAttempts })}`)
+  }
+  process.stdout.write('No account button, renderer request, or blocked attempt to upstream Comfy/LTX cloud during packaged workflow smoke\n')
   process.stdout.write(`Packaged Electron Workflow canvas, JSON roundtrip, and bidirectional usable media passed: ${title}\n`)
 } finally {
   await app.close()

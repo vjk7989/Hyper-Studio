@@ -33,10 +33,10 @@ The numbered steps below are sequential gates. A subtask stays `[·]` after impl
 
 - [·] 5.4.1 Record each reachable first-party control, expected result, fixture, test, evidence, and defect status. The repository-local OpenCode inventory and Windows failure triage were reviewed; fresh installed controls and uncovered Editor track commands remain under test.
 - [·] 5.4.2 Exercise Editor timeline actions and export with disposable media, plus Workflow wiring, run/cancel, JSON IDs, Manager review, shared media, and appearance. Script work started; fresh installed gates are pending.
-  - [·] 5.4.2a Exercise real Editor clip drag, blade/trim, tool shortcuts, track routing/commands, and a short rendered local video with cancel/failure handling. Drag passed in run 38159838424; the clip-move target needs a rerun before the later assertions can pass.
+  - [·] 5.4.2a Exercise real Editor clip drag, blade/trim, tool shortcuts, track routing/commands, and a short rendered local video with cancel/failure handling. Asset drag passed in runs 38159838424 and 38161000701; clip movement remains unresolved and the later assertions cannot be checked off.
   - [·] 5.4.2b Exercise Workflow mouse port wiring, node edit/Undo, active queue cancel, and JSON roundtrip with stable node IDs. Local packaged checks passed; fresh installed check is pending.
   - [·] 5.4.2c Exercise Manager review/update/uninstall with a local fixture, cross-mode media after restart, and light/dark persistence. Local packaged checks passed; fresh installed check is pending.
-- [ ] 5.4.3 Use mocked providers and the local engine where live services are unnecessary; fix each failed control and rerun its group before proceeding.
+- [·] 5.4.3 Use mocked providers and the local engine where live services are unnecessary; fix each failed control and rerun its group before proceeding. The Windows log exposed an attempted inherited Workflow release check; its embedded-build guard and no-call smoke are awaiting the fresh package gate.
 - [ ] 5.4.4 Pass relevant upstream suites and fresh installed Windows interaction checks; refresh phase records and graphs.
 
 ### 5.5 Brand and platform release gate
