@@ -236,6 +236,12 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/smoke-editor-controls.mjs')
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/smoke-workflow-controls.mjs')
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/smoke-workflow-run-isolation.mjs')
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/smoke-manager-local-install.mjs')
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/smoke-mode-switch-timing.mjs')
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/audit-branding.mjs')
@@ -263,4 +269,9 @@ jobs:
             .local-tmp/packaged-electron-smoke/electron.log
             .local-tmp/packaged-electron-smoke/shared-storage/caches/workflow/*/install.log
             .local-tmp/editor-controls-*/failure.png
+            .local-tmp/workflow-control-smoke-*/workflow-open-failed.png
+            .local-tmp/workflow-control-smoke-*/electron.log
+            .local-tmp/manager-install-smoke-*/project-create-failed.png
+            .local-tmp/manager-install-smoke-*/import-snapshot-failed.png
+            .local-tmp/manager-install-smoke-*/post-restart-snapshot-failed.png
           if-no-files-found: ignore

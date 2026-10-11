@@ -91,6 +91,7 @@ try {
   assert.equal(await page.evaluate(() => document.activeElement?.closest('[role="dialog"]')?.getAttribute('aria-labelledby')), 'connection-choice-title')
   await connectionChoice.getByRole('button', { name: /Connect a video API/ }).click()
   await page.getByRole('dialog', { name: 'Add a video connection' }).waitFor({ state: 'visible' })
+  await page.waitForFunction(() => document.activeElement?.closest('[role="dialog"]')?.getAttribute('aria-labelledby') === 'connection-choice-title' && document.activeElement?.tagName === 'INPUT')
   await page.keyboard.press('Escape')
   await connectionChoice.waitFor({ state: 'visible' })
   await connectionChoice.getByRole('button', { name: /Explore without a connection/ }).click()
