@@ -1,5 +1,9 @@
 # Codebase map
 
+## Verified latest checkpoint
+
+Source commit `30cab86` passed [three-platform run 38098445173](https://github.com/vjk7989/Hyper-Studio/actions/runs/38098445173): Windows unsigned NSIS install and cold/Editor/project/brand smokes, plus macOS/Linux package smokes. The [Windows installer artifact](https://github.com/vjk7989/Hyper-Studio/actions/runs/38098445173/artifacts/11687088366) is the valid output; the local NSIS file is partial after G: ran out of space. See the tables below for exact edit points. Graft is current at 7,085 files, 64,494 nodes, 161,121 edges; the separate codebase-memory MCP snapshot remains stale.
+
 ## Image metadata without optional Python
 
 | Need | Exact entry point | Check |

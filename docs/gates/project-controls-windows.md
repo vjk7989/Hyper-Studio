@@ -1,5 +1,9 @@
 # Project controls and Windows functional gate — 2026-10-11
 
+## Latest installed Windows gate
+
+[Run 38098445173](https://github.com/vjk7989/Hyper-Studio/actions/runs/38098445173) built and installed the unsigned Windows NSIS on a clean GitHub Actions runner from commit `30cab86`. The installed package passed first-use Workflow canvas/JSON/bidirectional media with no account/upstream-cloud request, project lifecycle 7/7, Editor 19/19 including delayed Undo and FCPXML image reimport, desktop 1,483/1,483, and the packaged brand audit (zero legacy visual filenames in three build trees). macOS and Linux packaged jobs also passed. [The installer artifact](https://github.com/vjk7989/Hyper-Studio/actions/runs/38098445173/artifacts/11687088366) expires 2026-10-18. The local `apps/desktop/release/Hyper-Studio-Setup.exe` is only a partial output from a disk-full attempt and must not be used. The wider feature and release limits listed below remain open.
+
 Status: **project gate and scoped Windows installed controls passed on final5; broader feature audit remains open**. This checkpoint uses repository-local fixtures. Live hosted generation and model-backed local generation have no credentials or model packs and are not claimed.
 
 ## Final5 installed checkpoint

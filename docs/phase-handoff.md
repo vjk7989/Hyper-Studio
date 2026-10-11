@@ -1,5 +1,11 @@
 # Phase handoff
 
+## Latest scoped gate: Windows installed + macOS/Linux packaged (2026-10-11)
+
+[GitHub Actions run 38098445173](https://github.com/vjk7989/Hyper-Studio/actions/runs/38098445173) passed all three jobs for commit `30cab86`. Windows built and installed an unsigned NSIS inside the checkout; its cold Workflow, JSON/media, project lifecycle 7/7, Editor 19/19 (including FCPXML image reimport without optional Python), desktop 1,483/1,483, and brand audit passed. macOS and Linux package smokes/brand checks passed. [Download the Windows installer artifact](https://github.com/vjk7989/Hyper-Studio/actions/runs/38098445173/artifacts/11687088366) before it expires on 2026-10-18. The local `apps/desktop/release/Hyper-Studio-Setup.exe` is a partial disk-full output and **must not** be distributed. The Graft graph was refreshed at 7,085 files, 64,494 nodes, 161,121 edges; codebase-memory fast reindex still needs repair.
+
+Keep the wider control/release gate open: actual model inference, live hosted video APIs, external third-party packs, macOS/Linux installer install/uninstall, and several specialized Editor/Workflow controls were not exercised. Use `docs/gates/project-controls-interaction-audit.md` for exact evidence and gaps; do not infer complete functionality from the scoped smoke.
+
 ## Clean Windows image-import follow-up
 
 The Windows Actions installer built and installed in run 38097635600. Its cold Workflow, project removal 7/7, and Editor controls through FCPXML export passed; FCPXML reimport stopped because `apps/desktop/electron/ipc/image-utils.ts` required Pillow from the optional Python backend. That helper now uses Electron `nativeImage` for image dimensions and thumbnails. An unpacked Windows Editor smoke passed all 19 checks with `python` removed from `PATH`, confirming the image import no longer needs a system Python/Pillow install. Desktop 1,483/1,483, TypeScript, and Vite/unpacked build passed. Run the installed Windows CI gate again before marking the newest checkpoint complete. macOS/Linux passed run 38097635600 before this image helper change; they also need the newest source rerun.

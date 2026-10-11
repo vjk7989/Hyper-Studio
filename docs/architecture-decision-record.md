@@ -2,21 +2,21 @@
 
 ## ADR 0012: Electron image metadata must work without optional Python
 
-- **Status:** Implemented; Windows installed CI rerun pending.
+- **Status:** Implemented; Windows installed and macOS/Linux packaged jobs passed in run 38098445173.
 - **Decision:** Use Electron `nativeImage` for imported image dimensions and thumbnails in the main process. Preserve the existing video/ffmpeg path. Reject unreadable images explicitly.
 - **Reason:** A clean installed Windows app can use Editor and hosted connections without the optional LTX Python runtime. FCPXML image reimport reached the image-copy handler but its Pillow subprocess was unavailable on CI, so the timeline was not added. The same unpacked Editor smoke passed 19/19 with `python` absent from `PATH` after this change.
-- **Evidence:** Local Windows TypeScript, Vite/unpacked build, desktop 1,483/1,483, and two 19-control Editor smokes passed; the second ran with no `python` command on `PATH`. GitHub Actions run 38097635600 passed macOS/Linux, Windows cold package and project lifecycle, but failed the final Editor import before this fix. The next run must prove the installed Windows package.
+- **Evidence:** Local Windows TypeScript, Vite/unpacked build, desktop 1,483/1,483, and two 19-control Editor smokes passed; the second ran with no `python` command on `PATH`. GitHub Actions run 38098445173 passed installed Windows Editor 19/19, cold Workflow package, project lifecycle 7/7, brand audit, and macOS/Linux packaged jobs. Live model-backed generation remains outside this gate.
 
 ## ADR 0011: FCPXML media type comes from its source path
 
-- **Status:** Fixed in the Windows unpacked app; unsigned installed-package and platform CI reruns pending.
+- **Status:** Fixed; installed Windows and macOS/Linux package gates passed in run 38098445173.
 - **Decision:** When parsing an FCPXML resource, use its decoded `src` path to classify image/video media before the optional human-readable asset name. Keep `hasVideo=0`/`hasAudio=1` for audio-only resources.
 - **Reason:** A valid package exported an image asset with the generic name `Clip`. Reimport classified it as video, attempted an ffmpeg frame extract, and failed before adding the timeline. The source path still had `.png` and correctly identifies the still image.
-- **Evidence:** The Windows unpacked Editor smoke now passes 19 controls including SRT export, parseable FCPXML export, and reimport into a new timeline with the media clip. TypeScript, Vite, and desktop 1,483/1,483 passed. NSIS generation could not complete locally because G: ran out of disk while writing its installer; a Windows Actions package/install/smoke job is the release gate for this change.
+- **Evidence:** The Windows unpacked and installed Editor smokes passed 19 controls including SRT export, parseable FCPXML export, and reimport into a new timeline with the media clip. TypeScript, Vite, and desktop 1,483/1,483 passed. Local NSIS generation could not complete because G: ran out of disk; the Windows Actions package/install/smoke job passed and uploaded the unsigned installer artifact in run 38098445173.
 
 ## ADR 0010: Keep Editor history stable during asset metadata upgrades
 
-- **Status:** Implemented and verified in the later Windows installed project-controls refresh; cross-platform rerun pending.
+- **Status:** Implemented and verified in Windows installed and macOS/Linux packaged jobs, run 38098445173.
 - **Decision:** Key visual-asset metadata migration to the sorted set of incomplete media jobs, rather than the project assets array identity. Unrelated autosaves do not restart an unresolved migration or remount the Editor. Keep the migration's project-specific updates and initial progress UI.
 - **Reason:** An imported media asset with unavailable optional metadata could trigger the migration effect on every Editor save. Its progress screen temporarily unmounted the Editor, clearing in-memory Undo history. A delayed installed smoke reproduced the failure; the rebuilt installer passed the same delayed Undo/Redo path.
 - **Evidence:** `project-asset-metadata-migration.test.mjs` and Editor action tests passed 2/2; installed Editor smoke passed 17 controls including Undo after autosave and FCPXML export; desktop tests passed 1,483/1,483, TypeScript and NSIS build passed. The installed first-party sweep also verified Light/Dark Settings, Connections, and removed duplicate legacy key prompts. Graft refresh: 7,085 files, 64,494 nodes, 161,124 edges. Separate codebase-memory index and macOS/Linux rerun remain pending.

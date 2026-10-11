@@ -10,9 +10,9 @@ Status: `[x]` verified complete; `[·]` in progress or only partly verified; `[ 
 - [·] Run the Windows first-party interaction audit across Home, Explore Tools, Connections, Settings, Editor, Workflow, Manager, and export. A later installed refresh passed first-party controls, Editor 17/17, local Workflow Run, project lifecycle 7/7, and 1,483/1,483 desktop tests; untested upstream controls and optional visual states remain in the gate report.
 - [x] Remove inherited Gen Space retirement copy and duplicate LTX/fal key-entry controls; verify light/dark Settings selection and delayed Editor Undo after autosave in the rebuilt Windows installer.
 - [x] In the Windows unpacked app, verify SRT export and exported PNG FCPXML reimport; fix FCPXML media type detection when the asset name is generic. Editor smoke now passes 19/19.
-- [·] Build and freshly install the latest unsigned Windows NSIS on a GitHub Actions Windows runner. Local NSIS packaging ran out of G: space after the unpacked build passed; the partial installer is not a release artifact.
-- [·] Confirm FCPXML image reimport on a clean installed Windows runner. The unpacked Editor smoke passes 19/19 without `python` on `PATH` after replacing the Pillow dependency; installed CI rerun is pending.
-- [·] Rerun macOS/Linux packaged gates for the latest Windows source refresh before claiming that refresh cross-platform.
+- [x] Build and freshly install the latest unsigned Windows NSIS on a GitHub Actions Windows runner; upload the installer artifact in run 38098445173. The local partial NSIS remains unusable because G: ran out of space.
+- [x] Confirm FCPXML image reimport on a clean installed Windows runner. The Editor smoke passed 19/19 after replacing the optional Pillow dependency.
+- [x] Rerun macOS/Linux packaged gates for the latest source. All three platform jobs passed in run 38098445173.
 - [x] After the scoped Windows gate, pass macOS and Linux packaged smokes in GitHub Actions run 38093974210; both jobs also passed the embedded-account, local node-pack, desktop, and brand-audit steps.
 - [·] At each completed gate, refresh the architecture record, handoff, code map, codebase-memory snapshot, and Graft graph. Final5 Windows documents and Graft are refreshed; the separate codebase-memory worker crashed during fast reindex, so its snapshot remains unverified.
 
