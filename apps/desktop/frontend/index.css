@@ -119,3 +119,9 @@ html[data-platform="darwin"] .window-drag [role="button"] {
   border-color: rgb(var(--accent)) !important;
   background-color: rgb(var(--accent) / 0.1) !important;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .connection-choice-panel {
+    transition-duration: 0s !important;
+  }
+}

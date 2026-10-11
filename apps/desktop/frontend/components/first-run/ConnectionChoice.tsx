@@ -124,7 +124,7 @@ export function ConnectionChoice() {
 
   return <div className="fixed inset-0 z-[70] flex items-center justify-center overflow-y-auto bg-black/70 p-4 backdrop-blur-sm">
     <div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="connection-choice-title" aria-busy={busy} onKeyDown={onKeyDown} onKeyUp={event => event.stopPropagation()}
-      className={`my-auto w-full rounded-xl border border-separator bg-surface-primary text-fg-primary shadow-2xl transition-[max-width] duration-200 motion-reduce:transition-none ${state === 'connecting' ? 'max-w-4xl' : 'max-w-lg'}`}>
+      className={`connection-choice-panel my-auto w-full rounded-xl border border-separator bg-surface-primary text-fg-primary shadow-2xl transition-[max-width] duration-200 ${state === 'connecting' ? 'max-w-4xl' : 'max-w-lg'}`}>
       <div className="border-b border-separator p-6">
         {state === 'connecting' && <button type="button" className="mb-4 inline-flex items-center gap-1 rounded-md px-2 py-1 text-sm text-fg-secondary hover:bg-action" onClick={() => setState('choice')}><ArrowLeft size={16} />Back</button>}
         <div className="mb-4 inline-flex rounded-lg bg-action p-3"><KeyRound size={24} aria-hidden="true" /></div>
