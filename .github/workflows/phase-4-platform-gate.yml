@@ -293,6 +293,7 @@ jobs:
             .local-tmp/workflow-widget-undo-*/*.png
             .local-tmp/workflow-run-isolation-*/*.png
             .local-tmp/manager-install-smoke-*/*.png
+            .local-tmp/manager-install-smoke-*/install-review-accessibility.txt
             .local-tmp/manager-install-smoke-*/project-create-failed.png
             .local-tmp/manager-install-smoke-*/import-snapshot-failed.png
             .local-tmp/manager-install-smoke-*/post-restart-snapshot-failed.png
