@@ -1,4 +1,4 @@
-import { type ReactNode, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import { MoreVertical, Plus, Radio, Search, Settings } from "lucide-react";
 import { useLocation } from "react-router";
 import { Button } from "@/ds/Button/Button";
@@ -98,6 +98,31 @@ export function HomeSidebarMenu({
   const recentFeatureIds = useRecentSidebarTools();
   const recentProjects = useRecentSidebarProjects();
   const [activeRecentMenuId, setActiveRecentMenuId] = useState<string | null>(null);
+  const activeRecentRowRef = useRef<HTMLDivElement>(null);
+  const activeRecentTriggerRef = useRef<HTMLButtonElement>(null);
+  const activeRecentMenuRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!activeRecentMenuId) return;
+    const onPointerDown = (event: PointerEvent) => {
+      if (!activeRecentRowRef.current?.contains(event.target as Node)) setActiveRecentMenuId(null);
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      event.preventDefault();
+      setActiveRecentMenuId(null);
+      activeRecentTriggerRef.current?.focus();
+    };
+    document.addEventListener('pointerdown', onPointerDown);
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown);
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [activeRecentMenuId]);
+  const openRecentMenu = (projectId: string) => {
+    setActiveRecentMenuId(projectId);
+    requestAnimationFrame(() => activeRecentMenuRef.current?.querySelector<HTMLButtonElement>('[role="menuitem"]')?.focus());
+  };
   const navEntries = planHomeSidebarNavEntries(
     plan,
     recentFeatureIds,
@@ -160,7 +185,10 @@ export function HomeSidebarMenu({
       recentProjectItems.push({
         type: "custom",
         node: (
-          <div className={styles.recentProjectEntry}>
+          <div ref={activeRecentMenuId === entry.project.id ? activeRecentRowRef : null} className={styles.recentProjectEntry}
+            onBlur={event => {
+              if (activeRecentMenuId === entry.project.id && !event.currentTarget.contains(event.relatedTarget as Node | null)) setActiveRecentMenuId(null);
+            }}>
             <div className={styles.recentProjectRow}>
               <HomeNavButton
                 isActive={isHomeSidebarRecentProjectActive(location.pathname, entry.path)}
@@ -174,17 +202,26 @@ export function HomeSidebarMenu({
                 }}
               />
               <button
+                ref={activeRecentMenuId === entry.project.id ? activeRecentTriggerRef : null}
                 type="button"
                 data-testid={`recent-project-menu-${entry.project.id}`}
                 aria-label={`More options for ${entry.project.name}`}
+                aria-haspopup="menu"
+                aria-controls={activeRecentMenuId === entry.project.id ? `recent-project-options-${entry.project.id}` : undefined}
                 aria-expanded={activeRecentMenuId === entry.project.id}
                 className={styles.recentProjectMenuButton}
-                onClick={() => setActiveRecentMenuId(current => current === entry.project.id ? null : entry.project.id)}
+                onClick={() => activeRecentMenuId === entry.project.id ? setActiveRecentMenuId(null) : openRecentMenu(entry.project.id)}
+                onKeyDown={event => {
+                  if (event.key !== 'ArrowDown') return;
+                  event.preventDefault();
+                  if (activeRecentMenuId !== entry.project.id) openRecentMenu(entry.project.id);
+                  else activeRecentMenuRef.current?.querySelector<HTMLButtonElement>('[role="menuitem"]')?.focus();
+                }}
               ><MoreVertical size={16} aria-hidden /></button>
             </div>
             {activeRecentMenuId === entry.project.id && (
-              <div className={styles.recentProjectMenu}>
-                <button type="button" onClick={() => {
+              <div ref={activeRecentMenuRef} id={`recent-project-options-${entry.project.id}`} role="menu" aria-label={`Options for ${entry.project.name}`} className={styles.recentProjectMenu}>
+                <button type="button" role="menuitem" onClick={() => {
                   setActiveRecentMenuId(null);
                   actions.goTo(`${paths.projects}?remove=${encodeURIComponent(entry.project.id)}`, { clearActiveProject: true });
                   onNavigateComplete?.();

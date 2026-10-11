@@ -231,6 +231,9 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/smoke-first-party-controls.mjs')
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $env:HYPER_STUDIO_SETTINGS_SMOKE_HOME = Join-Path $env:GITHUB_WORKSPACE '.local-tmp/settings-shortcuts-smoke'
+          & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/smoke-settings-shortcuts.mjs')
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/smoke-editor-controls.mjs')
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/smoke-mode-switch-timing.mjs')
@@ -255,6 +258,8 @@ jobs:
             .local-tmp/packaged-electron-smoke/*.png
             .local-tmp/first-run-storage-smoke/*.png
             .local-tmp/first-run-storage-smoke/electron.log
+            .local-tmp/settings-shortcuts-smoke/electron.log
+            .local-tmp/settings-shortcuts-smoke/failure.png
             .local-tmp/packaged-electron-smoke/electron.log
             .local-tmp/packaged-electron-smoke/shared-storage/caches/workflow/*/install.log
             .local-tmp/editor-controls-*/failure.png

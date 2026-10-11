@@ -52,6 +52,44 @@ function ProjectCard({
 }) {
   const [showMenu, setShowMenu] = useState(false);
   const [imgError, setImgError] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const menuTriggerRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!showMenu) return;
+    const onPointerDown = (event: PointerEvent) => {
+      if (!cardRef.current?.contains(event.target as Node)) setShowMenu(false);
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      event.preventDefault();
+      setShowMenu(false);
+      menuTriggerRef.current?.focus();
+    };
+    document.addEventListener('pointerdown', onPointerDown);
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown);
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [showMenu]);
+
+  const openMenu = () => {
+    setShowMenu(true);
+    requestAnimationFrame(() => menuRef.current?.querySelector<HTMLButtonElement>('[role="menuitem"]')?.focus());
+  };
+
+  const onMenuKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) return;
+    const items = menuRef.current?.querySelectorAll<HTMLButtonElement>('[role="menuitem"]');
+    if (!items?.length) return;
+    event.preventDefault();
+    const index = Array.from(items).indexOf(document.activeElement as HTMLButtonElement);
+    const next = event.key === 'Home' ? 0 : event.key === 'End' ? items.length - 1
+      : (index + (event.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length;
+    items[next].focus();
+  };
 
   // Keep existing representative selection logic: prefer first image, else first asset.
   const representativeAsset =
@@ -65,10 +103,12 @@ function ProjectCard({
 
   return (
     <div
+      ref={cardRef}
       data-testid={`project-card-${project.id}`}
-      className="group relative bg-surface-primary rounded-[var(--radius-lg)] overflow-hidden border border-separator-secondary hover:border-separator transition-colors cursor-pointer"
+      className={`group relative bg-surface-primary rounded-[var(--radius-lg)] border border-separator-secondary hover:border-separator transition-colors cursor-pointer ${showMenu ? 'z-30' : ''}`}
+      onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setShowMenu(false); }}
     >
-      <div className="aspect-video bg-surface-secondary flex items-center justify-center relative overflow-hidden">
+      <div className="aspect-video bg-surface-secondary flex items-center justify-center relative overflow-hidden rounded-t-[var(--radius-lg)]">
         {representativeAsset && !imgError ? (
           representativeAsset.type === "video" ? (
             representativeBigThumbnailUrl ? (
@@ -118,13 +158,23 @@ function ProjectCard({
       <button type="button" aria-label={`Open ${project.name}`} onClick={onOpen} className="absolute inset-0 z-10 rounded-[var(--radius-lg)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-fg-primary" />
 
       <button
+        ref={menuTriggerRef}
         type="button"
         data-testid={`project-card-menu-${project.id}`}
         aria-label={`More options for ${project.name}`}
+        aria-haspopup="menu"
+        aria-controls={showMenu ? `project-options-${project.id}` : undefined}
         aria-expanded={showMenu}
         onClick={(e) => {
           e.stopPropagation();
-          setShowMenu(!showMenu);
+          if (showMenu) setShowMenu(false);
+          else openMenu();
+        }}
+        onKeyDown={event => {
+          if (event.key !== 'ArrowDown') return;
+          event.preventDefault();
+          if (!showMenu) openMenu();
+          else menuRef.current?.querySelector<HTMLButtonElement>('[role="menuitem"]')?.focus();
         }}
         className="absolute z-20 top-2 right-2 p-1.5 rounded bg-surface-overlay opacity-100 transition-opacity focus-visible:outline focus-visible:outline-2 focus-visible:outline-fg-primary"
       >
@@ -133,10 +183,17 @@ function ProjectCard({
 
       {showMenu && (
         <div
+          ref={menuRef}
+          id={`project-options-${project.id}`}
+          role="menu"
+          aria-label={`Options for ${project.name}`}
           className="absolute top-10 right-2 bg-surface-primary rounded-[var(--radius-lg)] shadow-lg border border-separator py-1 z-30 min-w-[120px]"
           onClick={(e) => e.stopPropagation()}
+          onKeyDown={onMenuKeyDown}
         >
           <button
+            type="button"
+            role="menuitem"
             onClick={() => {
               onRename();
               setShowMenu(false);
@@ -146,8 +203,10 @@ function ProjectCard({
             <Pencil className="h-4 w-4" />
             <Text as="span" variant="body" size="lg">Rename</Text>
           </button>
-          {onImport && <button onClick={() => { onImport(); setShowMenu(false); }} className="w-full px-3 py-2 text-left text-fg-primary hover:bg-action flex items-center gap-2"><FolderOpen className="h-4 w-4" /><Text as="span" variant="body" size="lg">Import to folder</Text></button>}
+          {onImport && <button type="button" role="menuitem" onClick={() => { onImport(); setShowMenu(false); }} className="w-full px-3 py-2 text-left text-fg-primary hover:bg-action flex items-center gap-2"><FolderOpen className="h-4 w-4" /><Text as="span" variant="body" size="lg">Import to folder</Text></button>}
           <button
+            type="button"
+            role="menuitem"
             onClick={() => {
               onDelete();
               setShowMenu(false);
@@ -517,7 +576,9 @@ export function ProjectsPage() {
             <Text as="h2" id="project-create-title" variant="heading" size="lg" className="mb-4">
               Create New Project
             </Text>
+            <label htmlFor="project-create-name" className="mb-2 block text-sm font-medium text-fg-primary">Project name</label>
             <TextField
+              id="project-create-name"
               value={newProjectName}
               onInputChange={setNewProjectName}
               placeholder="Project name"
@@ -541,7 +602,7 @@ export function ProjectsPage() {
                 </button>
               </div>
             </div>
-            {createError && <Text as="p" variant="body" size="sm" className="mt-3 text-fg-danger">{createError}</Text>}
+            {createError && <div role="alert"><Text as="p" variant="body" size="sm" className="mt-3 text-fg-danger">{createError}</Text></div>}
             <div className="flex justify-end gap-3 mt-6">
               <Button
                 appearance="neutral"
@@ -581,7 +642,9 @@ export function ProjectsPage() {
             <Text as="h2" id="project-rename-title" variant="heading" size="lg" className="mb-4">
               Rename Project
             </Text>
+            <label htmlFor="project-rename-name" className="mb-2 block text-sm font-medium text-fg-primary">Project name</label>
             <TextField
+              id="project-rename-name"
               value={renameValue}
               onInputChange={setRenameValue}
               placeholder="Project name"

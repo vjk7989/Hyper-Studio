@@ -78,6 +78,7 @@ function useApiKeyFocus(
   isOpen: boolean,
   activeTab: TabId,
   setActiveTab: (tab: TabId) => void,
+  reduceMotion: boolean | null,
   sectionRef?: React.RefObject<HTMLElement | null>,
   containerRef?: React.RefObject<HTMLElement | null>,
 ) {
@@ -106,7 +107,7 @@ function useApiKeyFocus(
             container.scrollTop +
             section.getBoundingClientRect().top -
             container.getBoundingClientRect().top;
-          container.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+          container.scrollTo({ top: Math.max(0, top), behavior: reduceMotion ? "auto" : "smooth" });
         }
         inputRef.current?.focus({ preventScroll: sectionRef != null });
         setPending(false);
@@ -117,7 +118,7 @@ function useApiKeyFocus(
     return () => {
       window.clearTimeout(timeoutId);
     };
-  }, [activeTab, pending, isOpen, sectionRef, containerRef]);
+  }, [activeTab, pending, isOpen, reduceMotion, sectionRef, containerRef]);
 
   const openAndFocus = () => {
     setActiveTab("connections");
@@ -193,6 +194,8 @@ export function SettingsScreen({
   onCheckForUpdates,
 }: SettingsScreenProps) {
   const active = isOpen;
+  const reduceMotion = useReducedMotion();
+  const dialogRef = useRef<HTMLDivElement>(null);
   const {
     settings,
     updateSettings,
@@ -209,12 +212,13 @@ export function SettingsScreen({
   const [activeTab, setActiveTab] = useState<TabId>("general");
   const tabBodyRef = useRef<HTMLDivElement>(null);
   const geminiSectionRef = useRef<HTMLElement>(null);
-  const ltxApiKey = useApiKeyFocus(active, activeTab, setActiveTab);
-  const falApiKey = useApiKeyFocus(active, activeTab, setActiveTab);
+  const ltxApiKey = useApiKeyFocus(active, activeTab, setActiveTab, reduceMotion);
+  const falApiKey = useApiKeyFocus(active, activeTab, setActiveTab, reduceMotion);
   const geminiApiKey = useApiKeyFocus(
     active,
     activeTab,
     setActiveTab,
+    reduceMotion,
     geminiSectionRef,
     tabBodyRef,
   );
@@ -315,8 +319,6 @@ export function SettingsScreen({
     // eslint-disable-next-line react-hooks/exhaustive-deps -- fallbackId is only used when the key is missing or the list fails
   }, [active, settings.hasGeminiApiKey]);
 
-  const reduceMotion = useReducedMotion();
-
   const showSection = (tabId: TabId) => activeTab === tabId;
 
   const tabs = [
@@ -351,10 +353,10 @@ export function SettingsScreen({
         container.scrollTop +
         section.getBoundingClientRect().top -
         container.getBoundingClientRect().top;
-      container.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+      container.scrollTo({ top: Math.max(0, top), behavior: reduceMotion ? "auto" : "smooth" });
     }, 100);
     return () => window.clearTimeout(timeoutId);
-  }, [active, initialScrollAnchor]);
+  }, [active, initialScrollAnchor, reduceMotion]);
 
   const selectSettingsSection = (tabId: TabId) => {
     setActiveTab(tabId);
@@ -373,10 +375,49 @@ export function SettingsScreen({
 
   useEffect(() => {
     if (!isOpen) return;
+    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const frame = window.requestAnimationFrame(() => {
+      const panel = dialogRef.current;
+      const selectedTab = panel?.querySelector<HTMLElement>('[aria-current="page"]');
+      (selectedTab ?? panel?.querySelector<HTMLElement>('button:not(:disabled)') ?? panel)?.focus();
+    });
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.requestAnimationFrame(() => {
+        if (previousFocus?.isConnected) previousFocus.focus();
+      });
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const isTopModal = () => {
+      const visible = Array.from(document.querySelectorAll<HTMLElement>('[role="dialog"][aria-modal="true"], [role="alertdialog"][aria-modal="true"]'))
+        .filter(element => element.getClientRects().length > 0);
+      return visible.at(-1) === dialogRef.current;
+    };
     const onKeyDown = (event: KeyboardEvent) => {
+      if (event.defaultPrevented || !isTopModal()) return;
       if (event.key === "Escape") {
         event.preventDefault();
         onClose?.();
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const focusable = Array.from(dialogRef.current?.querySelectorAll<HTMLElement>(
+        'a[href], button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])',
+      ) ?? []).filter(element => element.getClientRects().length > 0 && !element.closest('[hidden], [inert], [aria-hidden="true"]'));
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (!first || !last) {
+        event.preventDefault();
+        dialogRef.current?.focus();
+      } else if (event.shiftKey && (document.activeElement === first || !dialogRef.current?.contains(document.activeElement))) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (document.activeElement === last || !dialogRef.current?.contains(document.activeElement))) {
+        event.preventDefault();
+        first.focus();
       }
     };
     window.addEventListener("keydown", onKeyDown);
@@ -806,10 +847,12 @@ export function SettingsScreen({
         {...backdropMotion}
       />
       <motion.div
+        ref={dialogRef}
         className={panelClassName}
         role="dialog"
         aria-modal
         aria-label="Settings"
+        tabIndex={-1}
         {...panelMotion}
       >
         {settingsFrame}

@@ -25,8 +25,8 @@ The numbered steps below are sequential gates. A subtask stays `[·]` after impl
 
 ### 5.3 Shared shell polish — Windows gate
 
-- [ ] 5.3.1 Review Projects, Recent, Home, Explore Tools, Connections, and Settings labels, empty/busy/error states, focus return, and keyboard operation.
-- [ ] 5.3.2 Fix proven defects without changing safe project removal rules or the Vercel-derived theme.
+- [·] 5.3.1 Review Projects, Recent, Home, Explore Tools, Connections, and Settings labels, empty/busy/error states, focus return, and keyboard operation. Source audit and scoped fixes are ready; installed checks pending.
+- [·] 5.3.2 Fix proven defects without changing safe project removal rules or the Vercel-derived theme. Project menus, Connections action isolation, Settings focus, and slash shortcut are implemented; gate pending.
 - [ ] 5.3.3 Pass focused and installed interaction checks; refresh phase records and graphs.
 
 ### 5.4 Reachable-control inventory — Windows gate

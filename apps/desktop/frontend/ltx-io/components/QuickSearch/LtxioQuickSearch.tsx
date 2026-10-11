@@ -1,5 +1,6 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { clsx } from "clsx";
+import { useReducedMotion } from "framer-motion";
 import { Search } from "lucide-react";
 import {
   useCallback,
@@ -43,6 +44,7 @@ export function LtxioQuickSearch({
 }) {
   const portalContainer = useThemedPortalContainer();
   const { isOpen, close, toggle } = useQuickSearch();
+  const reduceMotion = useReducedMotion();
   const recentFeatureIds = useRecentSidebarTools();
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
@@ -97,10 +99,14 @@ export function LtxioQuickSearch({
   }, [activeIndex]);
 
   const shouldHandleSlash = useCallback(
-    (event: KeyboardEvent) =>
-      !event.metaKey &&
-      !event.ctrlKey &&
-      (event.key === "/" || event.code === "Slash" || event.code === "NumpadDivide"),
+    (event: KeyboardEvent) => {
+      if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey) return false;
+      if (event.key !== "/" && event.code !== "Slash" && event.code !== "NumpadDivide") return false;
+      const target = event.target instanceof Element ? event.target : document.activeElement;
+      if (target?.closest('input, textarea, select, [contenteditable], [role="textbox"]')) return false;
+      // The shortcut belongs to the shell, not a Settings or onboarding dialog.
+      return !document.querySelector('[role="dialog"][aria-modal="true"]:not([data-hyper-studio-search]), [role="alertdialog"][aria-modal="true"]');
+    },
     [],
   );
 
@@ -144,7 +150,7 @@ export function LtxioQuickSearch({
       target.getBoundingClientRect().top -
       scroller.getBoundingClientRect().top -
       paddingTop;
-    scroller.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+    scroller.scrollTo({ top: Math.max(0, top), behavior: reduceMotion ? "auto" : "smooth" });
     const firstInSection = rows.findIndex((row) => row.sectionId === sectionId);
     if (firstInSection >= 0) setActiveIndex(firstInSection);
   };
@@ -227,6 +233,7 @@ export function LtxioQuickSearch({
       <Dialog.Portal container={portalContainer ?? undefined}>
         <Dialog.Overlay className={styles.backdrop} />
         <Dialog.Content
+          data-hyper-studio-search
           className={styles.dialog}
           aria-describedby={undefined}
           onOpenAutoFocus={(event) => event.preventDefault()}
