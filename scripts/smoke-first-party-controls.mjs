@@ -241,6 +241,17 @@ try {
     throw new Error(`Embedded Manager local catalog failed: ${JSON.stringify(localCatalog).slice(0, 500)}`)
   }
   record('Workflow Manager searches bundled local catalog', 'PASS')
+  const managerRequests = []
+  page.on('request', request => {
+    if (/api\.comfy\.org|algolia\.net/i.test(request.url())) managerRequests.push(request.url())
+  })
+  await page.getByRole('button', { name: 'Extensions', exact: true }).click()
+  const manager = canvas.locator('.manager-dialog')
+  await manager.waitFor({ state: 'visible', timeout: 10000 })
+  await manager.locator('input').first().fill('Impact')
+  await manager.getByText('ComfyUI Impact Pack', { exact: true }).first().waitFor({ state: 'visible', timeout: 15000 })
+  if (managerRequests.length) throw new Error(`Manager contacted an inherited cloud registry: ${managerRequests.join(', ')}`)
+  record('Workflow Manager UI finds local pack without cloud registry', 'PASS')
   await page.getByRole('button', { name: 'Settings', exact: true }).focus()
   await page.getByRole('button', { name: 'Settings', exact: true }).press('Enter')
   await page.getByRole('button', { name: 'Connections', exact: true }).last().click()

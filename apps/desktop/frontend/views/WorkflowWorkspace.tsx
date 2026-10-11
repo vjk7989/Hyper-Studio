@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Film, FolderOpen, RefreshCw, Workflow } from 'lucide-react'
+import { Blocks, Film, FolderOpen, RefreshCw, Workflow } from 'lucide-react'
 import type { Project } from '../types/project-model'
 import type { WorkspaceMediaEntry } from '../../shared/electron-api-schema'
 import { pathToFileUrl } from '../lib/file-url'
@@ -109,6 +109,11 @@ export function WorkflowWorkspace({ project, media, onSwitchToEditor }: { projec
     catch (error) { setFileError(error instanceof Error ? error.message : 'Could not export workflow') }
   }
 
+  const openManager = () => {
+    if (!url || !frameReady || !frame.current?.contentWindow) return
+    frame.current.contentWindow.postMessage({ type: 'hyper-studio:open-manager' }, new URL(url).origin)
+  }
+
   return (
     <div className={styles.workflowWorkspace}>
       <div className={styles.workflowToolbar}>
@@ -119,6 +124,7 @@ export function WorkflowWorkspace({ project, media, onSwitchToEditor }: { projec
         <button type="button" className={styles.workflowMediaButton} onClick={() => void importFile()}><FolderOpen size={14} aria-hidden="true" /> Import</button>
         <button type="button" className={styles.workflowMediaButton} onClick={() => void save()} disabled={!frameReady}>Save</button>
         <button type="button" className={styles.workflowMediaButton} onClick={() => void exportFile()}>Export</button>
+        <button type="button" className={styles.workflowMediaButton} onClick={openManager} disabled={!frameReady}><Blocks size={14} aria-hidden="true" /> Extensions</button>
         <button type="button" className={styles.workflowMediaButton} aria-expanded={showMedia} onClick={() => setShowMedia(value => !value)}>
           Shared files ({media.length})
         </button>

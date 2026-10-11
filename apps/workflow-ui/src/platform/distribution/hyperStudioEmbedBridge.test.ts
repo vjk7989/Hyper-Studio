@@ -3,6 +3,10 @@ import { installHyperStudioEmbedBridge, isSafeWorkflowName, isTrustedHyperStudio
 
 vi.mock('@/scripts/app', () => ({ app: { graphToPrompt: async () => ({ workflow: { nodes: [{ id: 7 }] } }) } }))
 const openWorkflowAction = vi.fn(async () => ({ success: true }))
+const openManager = vi.fn(async () => {})
+vi.mock('@/workbench/extensions/manager/composables/useManagerState', () => ({
+  useManagerState: () => ({ openManager })
+}))
 vi.mock('@/platform/workflow/core/services/workflowActionsService', () => ({
   useWorkflowActionsService: () => ({ openWorkflowAction }),
 }))
@@ -69,6 +73,29 @@ describe('Hyper-Studio embed bridge boundaries', () => {
         origin: 'https://example.com', data: { type: 'hyper-studio:request-workflow', requestId: 'two' },
       }))
       expect(postMessage).not.toHaveBeenCalled()
+    } finally {
+      if (previous) Object.defineProperty(window, 'parent', previous)
+    }
+  })
+
+  it('opens local Extensions only for a trusted parent message', async () => {
+    openManager.mockClear()
+    const parent = { postMessage: vi.fn() } as unknown as Window
+    const previous = Object.getOwnPropertyDescriptor(window, 'parent')
+    Object.defineProperty(window, 'parent', { configurable: true, value: parent })
+    try {
+      installHyperStudioEmbedBridge()
+      window.dispatchEvent(new MessageEvent('message', {
+        source: parent, origin: 'https://example.com',
+        data: { type: 'hyper-studio:open-manager' }
+      }))
+      expect(openManager).not.toHaveBeenCalled()
+      markHyperStudioCanvasReady()
+      window.dispatchEvent(new MessageEvent('message', {
+        source: parent, origin: 'null',
+        data: { type: 'hyper-studio:open-manager' }
+      }))
+      await vi.waitFor(() => expect(openManager).toHaveBeenCalledWith({ initialTab: 'all' }))
     } finally {
       if (previous) Object.defineProperty(window, 'parent', previous)
     }

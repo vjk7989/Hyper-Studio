@@ -1,4 +1,5 @@
 import type { ComfyWorkflowJSON } from '@/platform/workflow/validation/schemas/workflowSchema'
+import type { ManagerTab } from '@/workbench/extensions/manager/types/comfyManagerTypes'
 
 const MAX_WORKFLOW_BYTES = 20 * 1024 * 1024
 let markCanvasReady!: () => void
@@ -48,6 +49,19 @@ export function installHyperStudioEmbedBridge(): void {
     if (event.source !== window.parent || !isTrustedHyperStudioHost(event.origin)) return
     const data = event.data as Record<string, unknown> | null
     if (!data || typeof data !== 'object') return
+
+    if (data.type === 'hyper-studio:open-manager') {
+      void import('@/workbench/extensions/manager/composables/useManagerState')
+        .then(async ({ useManagerState }) => {
+          await canvasReady
+          await useManagerState().openManager({ initialTab: 'all' as ManagerTab })
+        })
+        .catch((error: unknown) => window.parent.postMessage(
+          { type: 'hyper-studio:workflow-error', error: error instanceof Error ? error.message : 'Could not open Extensions' },
+          event.origin === 'null' || event.origin === 'file://' ? '*' : event.origin
+        ))
+      return
+    }
 
     if (data.type === 'hyper-studio:open-workflow') {
       const reportError = (error: unknown) => {
