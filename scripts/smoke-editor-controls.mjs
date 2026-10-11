@@ -84,6 +84,7 @@ const launch = async () => {
 try {
   await launch()
   await page.evaluate(folder => window.electronAPI.setSharedStorageRoot({ folder }), path.join(home, 'shared'))
+  await page.evaluate(() => window.electronAPI.setConnectionOnboardingSkipped({ skipped: true }))
   await page.reload({ waitUntil: 'domcontentloaded' })
   await page.evaluate(() => { location.hash = '#/projects' })
   await page.getByTestId('new-project-card').waitFor({ state: 'visible', timeout: 30000 })

@@ -28,6 +28,7 @@ try {
   const shared = path.join(home, 'shared-storage')
   fs.mkdirSync(shared, { recursive: true })
   await window.evaluate(folder => window.electronAPI.setSharedStorageRoot({ folder }), shared)
+  await window.evaluate(() => window.electronAPI.setConnectionOnboardingSkipped({ skipped: true }))
   await window.reload({ waitUntil: 'domcontentloaded' })
   await window.evaluate(() => { window.location.hash = '#/projects' })
   await window.getByTestId('sidebar-new-project').waitFor({ state: 'visible', timeout: 30000 })

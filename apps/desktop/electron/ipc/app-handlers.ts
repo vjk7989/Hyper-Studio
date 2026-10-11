@@ -11,7 +11,7 @@ import {
   getUpdateState, checkForUpdatesNow, startUpdateDownload, installUpdateAndRestart,
   skipUpdateVersion, setAutoCheckUpdatesEnabled,
 } from '../updater'
-import { getAutoCheckUpdates, setWindowTheme } from '../app-state'
+import { getAutoCheckUpdates, getConnectionOnboardingSkipped, setConnectionOnboardingSkipped, setWindowTheme } from '../app-state'
 import { freeDiskBytes } from '../free-disk-space'
 import { handle } from './typed-handle'
 import { takePendingDeepLink } from '../deep-link-inbox'
@@ -99,6 +99,9 @@ export function registerAppHandlers(hooks?: {
     const settingsPath = path.join(app.getPath('userData'), 'app_state.json')
     return getSetupStatus(settingsPath)
   })
+
+  handle('getConnectionOnboardingSkipped', () => getConnectionOnboardingSkipped())
+  handle('setConnectionOnboardingSkipped', ({ skipped }) => setConnectionOnboardingSkipped(skipped))
 
   handle('completeSetup', () => {
     const settingsPath = path.join(app.getPath('userData'), 'app_state.json')

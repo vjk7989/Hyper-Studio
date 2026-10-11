@@ -14,6 +14,7 @@ import { useGenerationRecoveryWatcher } from './hooks/use-generation-recovery-wa
 import { logger } from './lib/logger'
 import { LaunchGate } from './components/FirstRunSetup'
 import { SharedStorageSetup } from './components/first-run/SharedStorageSetup'
+import { ConnectionChoice } from './components/first-run/ConnectionChoice'
 import { usePythonSetup } from './hooks/use-python-setup'
 import { AppShellLayoutProvider } from './components/AppShell'
 import { LogViewer } from './components/LogViewer'
@@ -319,6 +320,8 @@ function AppContent() {
               <RouterProvider router={router} />
             </DevFlagsProvider>
           </QueryClientProvider>
+
+          {!isForcedFirstRun && <ConnectionChoice localModelsAvailable={!forceApiGenerations} />}
 
           {showPythonAvailabilityNotice && (
             <div role="status" className="pointer-events-none fixed bottom-4 left-4 z-50 max-w-sm rounded-lg border border-separator bg-surface-primary px-4 py-3 text-sm text-fg-secondary shadow-lg">

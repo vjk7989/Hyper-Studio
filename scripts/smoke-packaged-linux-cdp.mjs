@@ -78,6 +78,7 @@ try {
   fs.mkdirSync(shared, { recursive: true })
   fs.mkdirSync(project, { recursive: true })
   await page.evaluate(folder => window.electronAPI.setSharedStorageRoot({ folder }), shared)
+  await page.evaluate(() => window.electronAPI.setConnectionOnboardingSkipped({ skipped: true }))
   await page.reload({ waitUntil: 'domcontentloaded' })
   await page.evaluate(() => { window.location.hash = '#/projects' })
   await page.getByTestId('new-project-card').waitFor({ state: 'visible', timeout: 45000 })

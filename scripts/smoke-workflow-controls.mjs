@@ -20,6 +20,7 @@ try {
   window.on('console', message => { if (message.type() === 'error') errors.push(message.text()) })
   await window.waitForLoadState('domcontentloaded')
   await window.evaluate(folder => window.electronAPI.setSharedStorageRoot({ folder }), shared)
+  await window.evaluate(() => window.electronAPI.setConnectionOnboardingSkipped({ skipped: true }))
   await window.reload({ waitUntil: 'domcontentloaded' })
   await window.evaluate(() => { window.location.hash = '#/projects' })
   await window.getByTestId('new-project-card').waitFor({ state: 'visible', timeout: 30000 })

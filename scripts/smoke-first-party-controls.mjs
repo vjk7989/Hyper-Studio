@@ -53,6 +53,7 @@ try {
     fs.writeFileSync(path.join(home, `${label}.json`), JSON.stringify({ url: page.url(), body: (await page.locator('body').innerText()).slice(0, 12000), controls, inputs }, null, 2))
   }
   await page.evaluate(folder => window.electronAPI.setSharedStorageRoot({ folder }), shared)
+  await page.evaluate(() => window.electronAPI.setConnectionOnboardingSkipped({ skipped: true }))
   await page.reload({ waitUntil: 'domcontentloaded' })
   await describe('landing')
   await page.getByRole('button', { name: 'Home', exact: true }).last().click()

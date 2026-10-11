@@ -10,6 +10,8 @@ export interface AppState {
   skippedUpdateVersion?: string
   autoCheckUpdates?: boolean
   setupComplete?: boolean
+  /** One-time choice to explore without a provider connection. No key data. */
+  connectionOnboardingSkipped?: boolean
   /** Mirrors the in-app theme preference so Mac glass can follow it on launch. */
   windowTheme?: 'light' | 'dark' | 'system'
   [key: string]: unknown
@@ -33,6 +35,17 @@ export function readAppState(): AppState {
 
 export function writeAppState(state: AppState): void {
   fs.writeFileSync(getAppStatePath(), JSON.stringify(state, null, 2))
+}
+
+export function getConnectionOnboardingSkipped(): boolean {
+  return readAppState().connectionOnboardingSkipped === true
+}
+
+export function setConnectionOnboardingSkipped(skipped: boolean): boolean {
+  const state = readAppState()
+  state.connectionOnboardingSkipped = skipped
+  writeAppState(state)
+  return skipped
 }
 
 let cachedProjectAssetsPath: string | null = null

@@ -179,7 +179,7 @@ function NewProjectCard({ onCreate }: { onCreate: () => void }) {
           New Project
         </Text>
         <Text as="p" variant="body" size="sm" className="mt-1 text-fg-secondary">
-          Create a timeline project
+          Create an Editor or Workflow project
         </Text>
       </div>
     </button>
@@ -209,12 +209,14 @@ export function ProjectsPage() {
   const [isCreating, setIsCreating] = useState(false);
   const [newProjectName, setNewProjectName] = useState("");
   const [projectFolder, setProjectFolder] = useState<string | null>(null);
+  const [isChoosingProjectFolder, setIsChoosingProjectFolder] = useState(false);
   const [workspaceMode, setWorkspaceMode] = useState<'editor' | 'workflow'>('editor');
   const [createError, setCreateError] = useState<string | null>(null);
   const [storageRoot, setStorageRoot] = useState<string | null | undefined>(undefined);
-  const [storageFolder, setStorageFolder] = useState<string | null>(null);
   const [storageError, setStorageError] = useState<string | null>(null);
   const [isOpeningFolder, setIsOpeningFolder] = useState(false);
+  const openFolderButtonRef = useRef<HTMLButtonElement>(null);
+  const projectFolderButtonRef = useRef<HTMLButtonElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [renamingId, setRenamingId] = useState<string | null>(null);
   const [renameValue, setRenameValue] = useState("");
@@ -308,7 +310,7 @@ export function ProjectsPage() {
   );
 
   const handleCreateProject = async () => {
-    if (!newProjectName.trim() || !projectFolder || isSubmitting) return;
+    if (!newProjectName.trim() || !projectFolder || isChoosingProjectFolder || isSubmitting) return;
     setIsSubmitting(true);
     setCreateError(null);
     let createdProjectId: string | null = null;
@@ -343,18 +345,36 @@ export function ProjectsPage() {
     }
   };
 
+  const chooseProjectFolder = async () => {
+    if (isChoosingProjectFolder || isSubmitting) return;
+    setIsChoosingProjectFolder(true);
+    try {
+      const folder = await window.electronAPI.selectProjectFolder();
+      if (folder) { setProjectFolder(folder); setCreateError(null); }
+    } catch (error) {
+      setCreateError(error instanceof Error ? error.message : 'Could not open the folder picker.');
+    } finally {
+      setIsChoosingProjectFolder(false);
+      requestAnimationFrame(() => projectFolderButtonRef.current?.focus());
+    }
+  };
+
   const handleOpenExistingFolder = async () => {
-    const folder = await window.electronAPI.selectProjectFolder();
-    if (!folder) return;
+    if (isOpeningFolder) return;
     setIsOpeningFolder(true);
     setCreateError(null);
     try {
+      const folder = await window.electronAPI.selectProjectFolder();
+      if (!folder) return;
       const manifest = await window.electronAPI.openWorkspaceProject({ folder });
       await registerWorkspaceProject(manifest, folder);
       handleOpenProject(manifest.projectId);
     } catch (error) {
       setCreateError(error instanceof Error ? error.message : 'Could not open that project folder.');
-    } finally { setIsOpeningFolder(false); }
+    } finally {
+      setIsOpeningFolder(false);
+      requestAnimationFrame(() => openFolderButtonRef.current?.focus());
+    }
   };
 
   const handleImportLegacyProject = async (project: Project) => {
@@ -433,12 +453,12 @@ export function ProjectsPage() {
 
   if (storageRoot === undefined) return <div className="h-full flex items-center justify-center text-fg-secondary">Preparing Hyper-Studio storage...</div>;
 
-  if (storageRoot === null) return <div className="h-full flex items-center justify-center p-6"><div className="w-full max-w-md rounded-[var(--radius-lg)] border border-separator bg-surface-primary p-6"><Text as="h1" variant="heading" size="lg">Choose shared storage</Text><Text as="p" variant="body" size="md" className="mt-3 text-fg-secondary">Hyper-Studio keeps managed runtimes, models, caches, and connection settings in this folder. Choose a drive with enough space.</Text><button type="button" className="mt-5 w-full rounded-lg border border-separator px-3 py-2 text-left hover:bg-action" onClick={() => { void window.electronAPI.selectProjectFolder().then(setStorageFolder).catch(error => setStorageError(String(error))); }}><Folder className="inline h-4 w-4 mr-2" />{storageFolder ?? 'Choose a folder'}</button>{storageError && <Text as="p" variant="body" size="sm" className="mt-3 text-fg-danger">{storageError}</Text>}<div className="mt-6 flex justify-end"><Button appearance="brand" hierarchy="primary" size="md" label="Continue" disabled={!storageFolder} onClick={() => { if (!storageFolder) return; void window.electronAPI.setSharedStorageRoot({ folder: storageFolder }).then(setStorageRoot).catch(error => setStorageError(String(error))); }} /></div></div></div>;
+  if (storageRoot === null) return <div className="h-full flex items-center justify-center p-6"><div role="alert" className="w-full max-w-md rounded-[var(--radius-lg)] border border-separator bg-surface-primary p-6"><Text as="h1" variant="heading" size="lg">Shared storage is unavailable</Text><Text as="p" variant="body" size="md" className="mt-3 text-fg-secondary">Restart Hyper-Studio to finish storage setup before opening projects.</Text>{storageError && <Text as="p" variant="body" size="sm" className="mt-3 text-fg-danger">{storageError}</Text>}</div></div>;
 
   return (
     <>
       <div className="pb-8 text-base">
-        <div className="mb-5 flex flex-wrap items-center justify-between gap-3"><Text as="p" variant="body" size="sm" className="text-fg-secondary">Shared storage: {storageRoot}</Text><button type="button" disabled={isOpeningFolder} onClick={() => { void handleOpenExistingFolder(); }} className="rounded-lg border border-separator px-3 py-2 text-fg-primary hover:bg-action"><FolderOpen className="inline h-4 w-4 mr-2" />Open project folder</button></div>
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-3"><Text as="p" variant="body" size="sm" className="min-w-0 break-all text-fg-secondary">Shared storage: {storageRoot}</Text><button ref={openFolderButtonRef} type="button" disabled={isOpeningFolder} onClick={() => { void handleOpenExistingFolder(); }} className="rounded-lg border border-separator px-3 py-2 text-fg-primary hover:bg-action disabled:opacity-50"><FolderOpen className="inline h-4 w-4 mr-2" />{isOpeningFolder ? 'Opening…' : 'Open project folder'}</button></div>
         {createError && !isCreating && <Text as="p" variant="body" size="sm" className="mb-4 text-fg-danger">{createError}</Text>}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           <NewProjectCard onCreate={() => setIsCreating(true)} />
@@ -486,9 +506,9 @@ export function ProjectsPage() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="project-create-title"
-            aria-busy={isSubmitting}
+            aria-busy={isSubmitting || isChoosingProjectFolder}
             className="max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto rounded-[var(--radius-lg)] border border-separator bg-surface-primary p-6"
-            onKeyDown={event => handleFormDialogKeyDown(event, closeCreateDialog, isSubmitting)}
+            onKeyDown={event => handleFormDialogKeyDown(event, closeCreateDialog, isSubmitting || isChoosingProjectFolder)}
             onSubmit={(e) => {
               e.preventDefault();
               void handleCreateProject();
@@ -505,13 +525,9 @@ export function ProjectsPage() {
             />
             <div className="mt-5">
               <Text as="p" variant="label" size="md" className="mb-2">Project folder</Text>
-              <button type="button" onClick={() => {
-                void window.electronAPI.selectProjectFolder().then(folder => {
-                  if (folder) { setProjectFolder(folder); setCreateError(null); }
-                }).catch(() => setCreateError('Could not open the folder picker.'));
-              }} title={projectFolder ?? 'Choose a folder'} className="flex w-full min-w-0 items-center gap-2 rounded-lg border border-separator px-3 py-2 text-left text-sm text-fg-primary hover:bg-action">
+              <button ref={projectFolderButtonRef} type="button" disabled={isChoosingProjectFolder || isSubmitting} onClick={() => { void chooseProjectFolder(); }} title={projectFolder ?? 'Choose a folder'} className="flex w-full min-w-0 items-center gap-2 rounded-lg border border-separator px-3 py-2 text-left text-sm text-fg-primary hover:bg-action disabled:opacity-50">
                 <Folder className="h-4 w-4 shrink-0" />
-                <span className="min-w-0 truncate">{projectFolder ?? 'Choose a folder'}</span>
+                <span className="min-w-0 truncate">{isChoosingProjectFolder ? 'Opening folder picker…' : projectFolder ?? 'Choose a folder'}</span>
               </button>
             </div>
             <div className="mt-5">
@@ -533,7 +549,7 @@ export function ProjectsPage() {
                 size="md"
                 label="Cancel"
                 onClick={closeCreateDialog}
-                disabled={isSubmitting}
+                disabled={isSubmitting || isChoosingProjectFolder}
               />
               <Button
                 appearance="brand"
@@ -541,7 +557,7 @@ export function ProjectsPage() {
                 size="md"
                 label="Create"
                 type="submit"
-                disabled={!newProjectName.trim() || !projectFolder || isSubmitting}
+                disabled={!newProjectName.trim() || !projectFolder || isChoosingProjectFolder || isSubmitting}
               />
             </div>
           </form>

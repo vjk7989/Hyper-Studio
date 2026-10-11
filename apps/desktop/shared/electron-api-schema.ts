@@ -216,6 +216,8 @@ export const electronAPISchemas = {
     input: z.object({}),
     output: z.object({ needsSetup: z.boolean() }),
   },
+  getConnectionOnboardingSkipped: { input: z.object({}), output: z.boolean() },
+  setConnectionOnboardingSkipped: { input: z.object({ skipped: z.boolean() }), output: z.boolean() },
   completeSetup: {
     input: z.object({}),
     output: z.boolean(),

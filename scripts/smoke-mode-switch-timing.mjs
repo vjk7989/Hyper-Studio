@@ -32,6 +32,7 @@ try {
   await window.waitForLoadState('domcontentloaded')
   timings.coldWindowMs = Math.round(performance.now() - launchedAt)
   await window.evaluate(folder => window.electronAPI.setSharedStorageRoot({ folder }), shared)
+  await window.evaluate(() => window.electronAPI.setConnectionOnboardingSkipped({ skipped: true }))
   await window.reload({ waitUntil: 'domcontentloaded' })
   await window.evaluate(() => { window.location.hash = '#/projects' })
   await window.getByTestId('new-project-card').waitFor({ state: 'visible', timeout: 30000 })

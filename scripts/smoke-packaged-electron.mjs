@@ -52,6 +52,7 @@ try {
   if (!path.resolve(shared).startsWith(`${root}${path.sep}`)) throw new Error('Smoke shared storage must remain inside the repository')
   fs.mkdirSync(shared, { recursive: true })
   await window.evaluate(folder => window.electronAPI.setSharedStorageRoot({ folder }), shared)
+  await window.evaluate(() => window.electronAPI.setConnectionOnboardingSkipped({ skipped: true }))
   await window.reload({ waitUntil: 'domcontentloaded' })
   await window.evaluate(() => { window.location.hash = '#/projects' })
   try {
