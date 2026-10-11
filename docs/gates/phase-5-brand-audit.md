@@ -1,5 +1,11 @@
 # Phase 5 surface-brand audit (final7 scoped package gates passed)
 
+## Local Manager search follow-up (2026-10-11)
+
+The previously uncertain general Manager search path is now contained in the managed engine. The embedded Vue gateway selects a local provider; `/hyper-studio/node-packs?search=...` reads the bundled Manager catalog and only returns entries with a GitHub repository URL. React now exposes an Extensions button in the Workflow toolbar, using the existing trusted parent-to-canvas boundary. The Windows installed smoke in [run 38100244801](https://github.com/vjk7989/Hyper-Studio/actions/runs/38100244801) opened the Manager dialog, found a bundled Impact pack, and observed no request to `api.comfy.org` or Algolia. macOS and Linux package jobs also passed. The local read-only scan still reports 232 source matches, 178 review candidates, 253 tracked visuals, and zero residual legacy visual filenames in three built trees.
+
+The three Agent consent/free-use paths and the CRDT debug label remain in inherited source, but the packaged embedded distribution neither registers the Agent extension (cloud-only or explicit standalone developer harness) nor enables the developer panel. Generic Agent/auth compatibility chunks can still exist in the built tree; these checks establish reachability limits, not full source removal. Graft and the codebase-memory live graph refreshed; the latter reported no compressed repository artifact. Real external pack install/update/uninstall, optional visual overlays, remaining media frames, and live providers remain outside this gate.
+
 Status: **final7 scoped Windows installed visual/functional and macOS/Linux packaged gates passed; broader Phase 5 release review remains open**. The final7 Windows installer includes export and embedded-bundle fixes (`5360748`, `9370589`, `c9c0633`, `0c3125a`), canvas readiness fix `f66fa25`, and dark Workflow contrast fixes `29680d8` and `6003ba8`. Both platform jobs succeeded in [run 38073188574](https://github.com/vjk7989/Hyper-Studio/actions/runs/38073188574). Run
 `scripts/with-local-env.ps1 .tools/node-v26.8.2-win-x64/node.exe scripts/audit-branding.mjs`
 from the repository root after every fresh UI build/package. The full machine

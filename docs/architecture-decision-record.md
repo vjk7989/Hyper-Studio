@@ -1,5 +1,13 @@
 # Architecture decision record
 
+## ADR 0013: Embedded Extensions search stays on the managed engine
+
+- **Status:** Windows installed and macOS/Linux packaged gate passed in [run 38100244801](https://github.com/vjk7989/Hyper-Studio/actions/runs/38100244801), source commit `d29dd71`.
+- **Decision:** The React Workflow toolbar exposes Extensions through a parent-origin-checked canvas message. In embedded mode, the Vue Manager search gateway uses only `/hyper-studio/node-packs` on the managed loopback engine. That endpoint searches the bundled Manager catalog, including listed node names and descriptions, and only returns packs with a GitHub repository URL. Existing workflow node IDs and the reviewed install path are unchanged.
+- **Reason:** The embedded layout lacked a general Manager entry point, while its inherited public search could contact Algolia or the upstream registry. A user must be able to browse extensions without an inherited cloud request or separate account.
+- **Evidence:** Focused Vue gateway/bridge tests, Python catalog tests, Vue and desktop TypeScript/builds, local unpacked first-party smoke, and the fresh installed Windows smoke passed. The installed Manager dialog found a local Impact pack with no observed `api.comfy.org` or Algolia request. macOS/Linux packaged jobs passed. Graft and the codebase-memory live graph were refreshed; the latter reported 655,150 nodes and 976,907 edges, but no compressed repository artifact. This does not verify an external pack download, update/uninstall, or every Manager panel.
+- **Navigation:** `frontend/views/WorkflowWorkspace.tsx` owns the button; `src/platform/distribution/hyperStudioEmbedBridge.ts` handles its message; `src/services/gateway/registrySearchGateway.ts` selects `hyperStudioLocalSearchProvider.ts`; `services/workflow/hyper_studio_pack_catalog.py` implements catalog search.
+
 ## ADR 0012: Electron image metadata must work without optional Python
 
 - **Status:** Implemented; Windows installed and macOS/Linux packaged jobs passed in run 38098445173.

@@ -1,5 +1,15 @@
 # Codebase map
 
+## Local Extensions Manager checkpoint
+
+Source `d29dd71` passed [run 38100244801](https://github.com/vjk7989/Hyper-Studio/actions/runs/38100244801) on Windows installed, macOS packaged, and Linux packaged. Graft build/map: 7,087 files, 64,502 nodes, 161,151 edges. Codebase-memory fast index refreshed its live graph (655,150 nodes, 976,907 edges) and finds the new search symbol, but reported no compressed repository artifact.
+
+| Need | Exact entry point | Verification |
+| --- | --- | --- |
+| Open Extensions from the embedded Workflow | `apps/desktop/frontend/views/WorkflowWorkspace.tsx` → `apps/workflow-ui/src/platform/distribution/hyperStudioEmbedBridge.ts` | Host button posts only to the trusted canvas origin; bridge checks parent source and local origin, then opens Manager after canvas readiness. Installed Windows smoke opened the dialog. |
+| Search installed Manager catalog without inherited cloud | `apps/workflow-ui/src/services/gateway/registrySearchGateway.ts`, `src/services/providers/hyperStudioLocalSearchProvider.ts`, `services/workflow/server.py`, `services/workflow/hyper_studio_pack_catalog.py` | Embedded mode uses local `/hyper-studio/node-packs?search=...`; backend searches bundled JSON and validates GitHub repository URLs. Installed UI found an Impact pack with no observed public registry/Algolia request. |
+| Test and package gate | `apps/workflow-ui/src/services/gateway/registrySearchGateway.hyperStudio.test.ts`, `src/platform/distribution/hyperStudioEmbedBridge.test.ts`, `services/workflow/tests-unit/hyper_studio_pack_catalog_test.py`, `scripts/smoke-first-party-controls.mjs`, `.github/workflows/phase-4-platform-gate.yml` | Focused tests and all three packaged jobs passed. The smoke covers dialog opening, search result, and cloud request observation; external pack download remains unverified. |
+
 ## Verified latest checkpoint
 
 Source commit `30cab86` passed [three-platform run 38098445173](https://github.com/vjk7989/Hyper-Studio/actions/runs/38098445173): Windows unsigned NSIS install and cold/Editor/project/brand smokes, plus macOS/Linux package smokes. The [Windows installer artifact](https://github.com/vjk7989/Hyper-Studio/actions/runs/38098445173/artifacts/11687088366) is the valid output; the local NSIS file is partial after G: ran out of space. See the tables below for exact edit points. Graft is current at 7,085 files, 64,494 nodes, 161,121 edges; the separate codebase-memory MCP snapshot remains stale.

@@ -1,5 +1,9 @@
 # Project controls and first-party interaction inventory
 
+## Extensions Manager follow-up (2026-10-11)
+
+The embedded Workflow had no general Manager menu entry, so a new host Extensions button opens the Vue Manager through a trusted canvas message. Its search uses the managed engine's bundled catalog. The installed Windows first-party smoke in [run 38100244801](https://github.com/vjk7989/Hyper-Studio/actions/runs/38100244801) opened the dialog, searched for Impact, found a pack, and observed no public Comfy Registry or Algolia request. Local Python catalog tests and Vue gateway/bridge tests passed; Windows, macOS, and Linux package jobs passed. The Manager reviewed install path still has only a local-fixture execution test. External pack install, update, uninstall, and every Manager subpanel remain unverified.
+
 ## Three-platform checkpoint passed (2026-10-11)
 
 [GitHub Actions run 38098445173](https://github.com/vjk7989/Hyper-Studio/actions/runs/38098445173) passed Windows, macOS, and Linux package jobs on commit `30cab86`. Windows built and silently installed the unsigned NSIS inside the checkout. The installed app passed cold Workflow canvas/JSON/bidirectional media with no account button or observed upstream Comfy/LTX cloud request; project lifecycle 7/7; Editor 19/19 including delayed Undo, SRT export, and exported PNG FCPXML reimport; desktop 1,483/1,483; and the brand audit (232 source matches, 178 classified candidates, 253 tracked visuals, zero residual legacy visual filenames in three build trees). macOS and Linux packaged smoke and brand checks passed. The [unsigned Windows installer artifact](https://github.com/vjk7989/Hyper-Studio/actions/runs/38098445173/artifacts/11687088366) is retained by GitHub Actions until 2026-10-18; the local `release/Hyper-Studio-Setup.exe` is a disk-full partial file and must not be distributed.

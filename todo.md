@@ -4,6 +4,9 @@ Status: `[x]` verified complete; `[·]` in progress or only partly verified; `[ 
 
 ## Current checkpoint — project controls and functional smoke
 
+- [x] Expose Extensions from embedded Workflow and route its search through the managed local catalog. Focused tests and Windows installed/macOS/Linux packaged gate passed in run 38100244801; the installed Manager dialog found an Impact pack without a public registry/Algolia request.
+- [·] Exercise real external pack download, update/uninstall, every Manager panel, live hosted video providers, model inference, and the remaining specialized Editor/Workflow controls; the passing scoped gate does not cover them.
+
 - [x] Show New Project from an empty Recent projects list; provide one remove dialog from Recent and Projects with app-only and OS Trash choices.
 - [x] Verify app-only removal preserves files and can be reopened; pass installed OS Trash/failure recovery, manifest/path guards, and active-job blocking.
 - [x] Verify create, open, rename, initial mode, close/reopen, and restart persistence in the final5 installed app.
@@ -14,7 +17,7 @@ Status: `[x]` verified complete; `[·]` in progress or only partly verified; `[ 
 - [x] Confirm FCPXML image reimport on a clean installed Windows runner. The Editor smoke passed 19/19 after replacing the optional Pillow dependency.
 - [x] Rerun macOS/Linux packaged gates for the latest source. All three platform jobs passed in run 38098445173.
 - [x] After the scoped Windows gate, pass macOS and Linux packaged smokes in GitHub Actions run 38093974210; both jobs also passed the embedded-account, local node-pack, desktop, and brand-audit steps.
-- [·] At each completed gate, refresh the architecture record, handoff, code map, codebase-memory snapshot, and Graft graph. Final5 Windows documents and Graft are refreshed; the separate codebase-memory worker crashed during fast reindex, so its snapshot remains unverified.
+- [·] At each completed gate, refresh the architecture record, handoff, code map, codebase-memory snapshot, and Graft graph. The latest Manager gate documents and Graft are refreshed; codebase-memory fast index now has the new symbols, but did not produce a compressed repository artifact, so portable snapshot synchronization remains unverified.
 
 ## Phase 1 — Baseline and containment
 
@@ -68,7 +71,7 @@ Status: `[x]` verified complete; `[·]` in progress or only partly verified; `[ 
 - [·] Review generic auth compatibility chunks, 178 source string candidates, light/dark and optional visual states, and individual PSD/error-report interactions.
 - [·] Complete release packaging checks: scoped Windows installed and macOS/Linux packaged gates passed; macOS/Linux installer installation/uninstall, full rebrand review, installation from a real external third-party source, and live provider acceptance remain.
 - [x] Update architecture record, handoff, code map, and Graft graph (final7: 7,073 files; 64,447 nodes; 159,003 edges).
-- [·] Verify the separate codebase-memory snapshot after two fast-reindex worker crashes and finish the broader release checkpoint.
+- [·] Produce and verify a portable codebase-memory snapshot and finish the broader release checkpoint. The latest fast index succeeded in its live graph (655,150 nodes, 976,907 edges), but reported no compressed repository artifact.
 
 ## Managed OpenCode V2 worker
 
