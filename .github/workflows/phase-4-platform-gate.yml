@@ -208,6 +208,7 @@ jobs:
         shell: pwsh
         run: |
           $env:HYPER_STUDIO_SMOKE_EXE = (Resolve-Path '.local-tmp/installed-ci/Hyper-Studio.exe').Path
+          $env:HYPER_STUDIO_EDITOR_SMOKE_EXE = $env:HYPER_STUDIO_SMOKE_EXE
           & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/smoke-packaged-electron.mjs')
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/smoke-project-controls.mjs')
