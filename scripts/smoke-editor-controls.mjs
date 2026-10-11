@@ -66,6 +66,14 @@ const waitUntil = async (predicate, label, timeoutMs = 15000) => {
   }
   throw new Error(`Timed out waiting for ${label}`)
 }
+const sessionLogText = () => {
+  const logDir = path.join(home, 'user-data', 'logs')
+  if (!fs.existsSync(logDir)) return ''
+  return fs.readdirSync(logDir)
+    .filter(name => name.startsWith('session_') && name.endsWith('.log'))
+    .map(name => fs.readFileSync(path.join(logDir, name), 'utf8'))
+    .join('\n')
+}
 const readEditor = () => JSON.parse(fs.readFileSync(path.join(project, '.hyper-studio', 'editor.json'), 'utf8'))
 const activeTimeline = () => {
   const model = readEditor()
@@ -336,9 +344,44 @@ try {
   await waitUntil(() => activeTimeline()?.clips.find(clip => clip.id === trimClip.id)?.duration < durationBeforeTrim - 0.1, 'Redo trim')
   record('Trim Undo and Redo', 'edge returns to original duration, then shortened duration')
 
+  const copiedPng = path.join(project, 'assets', 'red.png')
+  const temporarilyUnavailablePng = path.join(fixture, 'red-temporarily-unavailable.png')
+  const nativeFailurePath = path.join(home, 'expected-native-failure.mp4')
+  fs.renameSync(copiedPng, temporarilyUnavailablePng)
+  try {
+    await app.evaluate(({ dialog }, filePath) => {
+      dialog.showSaveDialog = async () => ({ canceled: false, filePath })
+    }, nativeFailurePath)
+    await page.getByRole('button', { name: 'Export', exact: true }).last().click()
+    await page.getByRole('button', { name: 'Export Video' }).click()
+    await page.getByText('Export failed', { exact: true }).waitFor({ state: 'visible', timeout: 15000 })
+    await page.getByText(/Source file not found: red\.png/).waitFor({ state: 'visible' })
+    assert.equal(fs.existsSync(nativeFailurePath), false)
+    await page.getByRole('button', { name: 'Try Again' }).click()
+    await page.getByRole('button', { name: 'Export Video' }).waitFor({ state: 'visible' })
+    record('Native export failure returns to settings', 'missing disposable source reports error; Try Again restores controls')
+  } finally {
+    fs.renameSync(temporarilyUnavailablePng, copiedPng)
+  }
+
+  const cancelPath = path.join(home, 'editor-canceled-render.mp4')
+  await app.evaluate(({ dialog }, filePath) => {
+    dialog.showSaveDialog = async () => ({ canceled: false, filePath })
+  }, cancelPath)
+  await page.locator('div.fixed.inset-0.z-50 select').first().selectOption('3840x2160')
+  await page.getByRole('button', { name: 'Export Video' }).click()
+  await waitUntil(() => sessionLogText().includes('[ffmpeg] spawn:'), 'native ffmpeg export start', 15000)
+  await page.getByRole('button', { name: 'Cancel', exact: true }).click()
+  await waitUntil(() => sessionLogText().includes('Stopping active export process'), 'native ffmpeg cancellation', 15000)
+  await page.getByRole('button', { name: 'Export Video' }).waitFor({ state: 'visible', timeout: 15000 })
+  await page.waitForTimeout(1000)
+  assert.equal(await page.getByText('Export failed', { exact: true }).count(), 0)
+  assert.equal(await page.getByText('Export complete', { exact: true }).count(), 0)
+  assert.equal(fs.existsSync(cancelPath), false)
+  record('Cancel active native video export', 'ffmpeg process started and stopped; settings remain available')
+
   const renderPath = path.join(home, 'editor-local-render.mp4')
   await app.evaluate(({ dialog }) => { dialog.showSaveDialog = async () => ({ canceled: true }) })
-  await page.getByRole('button', { name: 'Export', exact: true }).last().click()
   await page.getByRole('button', { name: 'Export Video' }).click()
   await page.getByRole('button', { name: 'Export Video' }).waitFor({ state: 'visible', timeout: 15000 })
   await page.waitForTimeout(250)
