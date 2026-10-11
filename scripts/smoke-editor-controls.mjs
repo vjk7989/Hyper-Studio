@@ -281,8 +281,12 @@ try {
   await waitUntil(() => activeTimeline()?.clips.length === 0, 'empty gesture timeline')
   const gestureTimelineId = activeTimeline().id
   const assetCard = page.locator(`[data-asset-card][data-asset-id="${imageAsset.id}"]`)
-  await assetCard.dragTo(page.locator('[data-track-bg="true"]').first(), {
-    targetPosition: { x: 120, y: 20 },
+  const dropTrack = page.locator('[data-track-bg="true"]').first()
+  await dropTrack.scrollIntoViewIfNeeded()
+  const dropTrackBox = await dropTrack.boundingBox()
+  assert.ok(dropTrackBox && dropTrackBox.height > 20, 'video track is not visible for asset drag')
+  await assetCard.dragTo(dropTrack, {
+    targetPosition: { x: 120, y: Math.min(20, dropTrackBox.height / 2) },
     timeout: 15000,
   })
   await waitUntil(() => activeTimeline()?.clips.some(clip => clip.assetId === imageAsset.id), 'dragged image clip', 20000)

@@ -238,9 +238,15 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/smoke-workflow-controls.mjs')
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/smoke-workflow-widget-undo.mjs')
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/smoke-workflow-run-isolation.mjs')
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/smoke-manager-local-install.mjs')
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/smoke-provider-cross-mode.mjs')
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/smoke-cold-reopen.mjs')
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/smoke-mode-switch-timing.mjs')
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
