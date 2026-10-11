@@ -256,7 +256,11 @@ try {
   await page.locator('input[type=file][accept=".xml,.fcpxml,.aaf"]').setInputFiles(packagePath)
   await page.getByRole('button', { name: 'Import Timeline', exact: true }).last().waitFor({ state: 'visible', timeout: 15000 })
   await page.getByRole('button', { name: 'Import Timeline', exact: true }).last().click()
-  await waitUntil(() => readEditor().timelines.length === timelineCountBeforeImport + 1, 'imported FCPXML timeline', 20000)
+  try {
+    await waitUntil(() => readEditor().timelines.length === timelineCountBeforeImport + 1, 'imported FCPXML timeline', 20000)
+  } catch (error) {
+    throw new Error(`${error}; import dialog: ${(await page.locator('body').innerText()).slice(-700)}`)
+  }
   assert.ok(activeTimeline()?.clips.length >= 1, 'imported FCPXML timeline has no media clip')
   record('Import exported FCPXML timeline', 'new timeline contains the exported media clip')
 } catch (error) {

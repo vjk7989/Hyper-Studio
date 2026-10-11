@@ -1,5 +1,12 @@
 # Architecture decision record
 
+## ADR 0012: Electron image metadata must work without optional Python
+
+- **Status:** Implemented; Windows installed CI rerun pending.
+- **Decision:** Use Electron `nativeImage` for imported image dimensions and thumbnails in the main process. Preserve the existing video/ffmpeg path. Reject unreadable images explicitly.
+- **Reason:** A clean installed Windows app can use Editor and hosted connections without the optional LTX Python runtime. FCPXML image reimport reached the image-copy handler but its Pillow subprocess was unavailable on CI, so the timeline was not added. The same unpacked Editor smoke passed 19/19 with `python` absent from `PATH` after this change.
+- **Evidence:** Local Windows TypeScript, Vite/unpacked build, desktop 1,483/1,483, and two 19-control Editor smokes passed; the second ran with no `python` command on `PATH`. GitHub Actions run 38097635600 passed macOS/Linux, Windows cold package and project lifecycle, but failed the final Editor import before this fix. The next run must prove the installed Windows package.
+
 ## ADR 0011: FCPXML media type comes from its source path
 
 - **Status:** Fixed in the Windows unpacked app; unsigned installed-package and platform CI reruns pending.

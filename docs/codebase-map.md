@@ -1,5 +1,15 @@
 # Codebase map
 
+## Image metadata without optional Python
+
+| Need | Exact entry point | Check |
+| --- | --- | --- |
+| Copy/import visual asset | `apps/desktop/electron/ipc/file-handlers.ts` (`addVisualAssetToProject`, `createVisualThumbnails`) | Copies into project `assets/`, generates image thumbnail, probes dimensions; video still uses ffmpeg. |
+| Decode and resize image in host | `apps/desktop/electron/ipc/image-utils.ts` | Uses Electron `nativeImage` instead of optional Python/Pillow; Windows unpacked Editor 19/19 passed with `python` absent from `PATH`. |
+| Editor FCPXML reimport smoke | `scripts/smoke-editor-controls.mjs` | Reports import dialog text on failure; CI diagnostics artifact now includes hidden `.local-tmp` files. |
+
+Current Graft build/map: 7,085 files, 64,494 nodes, 161,121 edges. The separate codebase-memory MCP snapshot remains older because its fast-index worker crashed in earlier attempts.
+
 ## FCPXML roundtrip and current Windows gate
 
 | Need | Exact entry point | Check |

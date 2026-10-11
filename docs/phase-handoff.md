@@ -1,5 +1,9 @@
 # Phase handoff
 
+## Clean Windows image-import follow-up
+
+The Windows Actions installer built and installed in run 38097635600. Its cold Workflow, project removal 7/7, and Editor controls through FCPXML export passed; FCPXML reimport stopped because `apps/desktop/electron/ipc/image-utils.ts` required Pillow from the optional Python backend. That helper now uses Electron `nativeImage` for image dimensions and thumbnails. An unpacked Windows Editor smoke passed all 19 checks with `python` removed from `PATH`, confirming the image import no longer needs a system Python/Pillow install. Desktop 1,483/1,483, TypeScript, and Vite/unpacked build passed. Run the installed Windows CI gate again before marking the newest checkpoint complete. macOS/Linux passed run 38097635600 before this image helper change; they also need the newest source rerun.
+
 ## Latest FCPXML and Windows package follow-up
 
 `frontend/lib/timeline-import.ts` now derives FCPXML media type from the decoded source path. The Editor's own exported image was named `Clip`; the previous parser treated it as video and invoked unavailable ffmpeg during reimport. The Windows unpacked build passed a 19-control smoke including imported media, SRT export, delayed Undo, FCPXML export, and FCPXML reimport with a new timeline and clip. Desktop tests 1,483/1,483, TypeScript, and Vite passed. A background asset metadata upgrade now leaves an already open Editor mounted (`frontend/views/Project.tsx`). The earlier checkpoint CI run 38096210853 passed macOS and Linux; **the newest FCPXML source has not yet passed those jobs**.

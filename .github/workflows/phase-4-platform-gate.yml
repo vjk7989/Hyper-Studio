@@ -230,6 +230,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: phase4-smoke-windows
+          include-hidden-files: true
           path: |
             .local-tmp/packaged-electron-smoke/*.png
             .local-tmp/packaged-electron-smoke/electron.log
