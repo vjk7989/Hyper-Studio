@@ -44,7 +44,9 @@ try {
   await window.getByTestId('new-project-card').click()
   await window.getByPlaceholder('Project name').fill('Switch timing')
   await window.getByText('Choose a folder', { exact: true }).click()
-  await window.getByPlaceholder('Project name').press('Enter')
+  // The native folder picker resolves asynchronously. Clicking Create waits
+  // for its enabled state after the chosen folder reaches React state.
+  await window.getByRole('button', { name: 'Create', exact: true }).click()
 
   const editor = window.getByRole('button', { name: 'Editor', exact: true }).first()
   const workflow = window.getByRole('button', { name: 'Workflow', exact: true }).first()
