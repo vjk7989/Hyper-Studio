@@ -222,6 +222,7 @@ jobs:
         run: |
           $env:HYPER_STUDIO_SMOKE_EXE = (Resolve-Path '.local-tmp/installed-ci/Hyper-Studio.exe').Path
           $env:HYPER_STUDIO_EDITOR_SMOKE_EXE = $env:HYPER_STUDIO_SMOKE_EXE
+          $env:HYPER_STUDIO_STORAGE_SMOKE_HOME = Join-Path $env:GITHUB_WORKSPACE '.local-tmp/first-run-storage-smoke'
           & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/smoke-first-run-storage.mjs')
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/smoke-packaged-electron.mjs')
@@ -252,6 +253,8 @@ jobs:
           include-hidden-files: true
           path: |
             .local-tmp/packaged-electron-smoke/*.png
+            .local-tmp/first-run-storage-smoke/*.png
+            .local-tmp/first-run-storage-smoke/electron.log
             .local-tmp/packaged-electron-smoke/electron.log
             .local-tmp/packaged-electron-smoke/shared-storage/caches/workflow/*/install.log
             .local-tmp/editor-controls-*/failure.png

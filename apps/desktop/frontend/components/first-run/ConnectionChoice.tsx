@@ -3,7 +3,7 @@ import { ArrowLeft, ArrowRight, KeyRound, Loader2, Sparkles } from 'lucide-react
 import { ProviderConnectionsSection } from '../settings/ProviderConnectionsSection'
 import { connectionChoiceEscapeAction, resolveConnectionChoiceState, type ConnectionChoiceState } from './connection-choice-state'
 
-export function ConnectionChoice({ localModelsAvailable }: { localModelsAvailable: boolean }) {
+export function ConnectionChoice() {
   const [state, setState] = useState<ConnectionChoiceState>('loading')
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
@@ -94,8 +94,9 @@ export function ConnectionChoice({ localModelsAvailable }: { localModelsAvailabl
     event.stopPropagation()
     if (event.key === 'Escape') {
       event.preventDefault()
-      if (connectionChoiceEscapeAction(state) === 'back') setState('choice')
-      else void explore()
+      const action = connectionChoiceEscapeAction(state)
+      if (action === 'back') setState('choice')
+      else if (action === 'explore') void explore()
       return
     }
     if (event.key !== 'Tab') return
@@ -128,7 +129,7 @@ export function ConnectionChoice({ localModelsAvailable }: { localModelsAvailabl
           <button type="button" disabled={busy} className="flex w-full items-center justify-between rounded-lg border border-separator p-4 text-left hover:bg-action disabled:opacity-50" onClick={() => void explore()}>
             <span><span className="block font-medium">Explore without a connection</span><span className="mt-1 block text-sm text-fg-secondary">Create a project, import media, and edit without an API key.</span></span>{busy ? <Loader2 size={18} className="animate-spin" aria-hidden="true" /> : <Sparkles size={18} aria-hidden="true" />}
           </button>
-          {localModelsAvailable && <button type="button" disabled={busy} className="rounded-lg px-3 py-2 text-left text-sm text-fg-secondary hover:bg-action disabled:opacity-50" onClick={() => void openLocalModels()}>Set up optional local models in Settings</button>}
+          <button type="button" disabled={busy} className="rounded-lg px-3 py-2 text-left text-sm text-fg-secondary hover:bg-action disabled:opacity-50" onClick={() => void openLocalModels()}>Set up optional local models in Settings</button>
         </div>}
         {state === 'error' && <button type="button" className="mt-4 rounded-lg border border-separator px-3 py-2 text-sm hover:bg-action" onClick={() => void refresh()}>Retry connection check</button>}
         {error && <p role="alert" className="mt-4 text-sm text-fg-danger">{error}</p>}

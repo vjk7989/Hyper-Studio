@@ -17,6 +17,6 @@ describe('first-run connection choice', () => {
   it('returns from Connect on Escape and explores on Escape from the choice', () => {
     assert.equal(connectionChoiceEscapeAction('connecting'), 'back')
     assert.equal(connectionChoiceEscapeAction('choice'), 'explore')
-    assert.equal(connectionChoiceEscapeAction('error'), 'explore')
+    assert.equal(connectionChoiceEscapeAction('error'), 'none')
   })
 })

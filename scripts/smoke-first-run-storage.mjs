@@ -22,8 +22,9 @@ const env = {
 }
 
 const app = await electron.launch({ executablePath, cwd: root, env, args: ['--no-sandbox', '--disable-gpu'], timeout: 120000 })
+let page
 try {
-  const page = await app.firstWindow({ timeout: 45000 })
+  page = await app.firstWindow({ timeout: 45000 })
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.getByRole('heading', { name: 'Choose shared storage' }).waitFor({ state: 'visible', timeout: 45000 })
   const chooser = page.getByRole('button', { name: 'Choose a folder' })
@@ -83,6 +84,7 @@ try {
 
   const connectionChoice = page.getByRole('dialog', { name: 'Make something with Hyper-Studio' })
   await connectionChoice.waitFor({ state: 'visible', timeout: 45000 })
+  await connectionChoice.getByRole('button', { name: 'Set up optional local models in Settings' }).waitFor({ state: 'visible' })
   await page.waitForFunction(() => document.activeElement?.textContent?.includes('Connect a video API'))
   await connectionChoice.getByRole('button', { name: /Connect a video API/ }).click()
   await page.getByRole('dialog', { name: 'Add a video connection' }).waitFor({ state: 'visible' })
@@ -95,6 +97,9 @@ try {
   await page.getByTestId('sidebar-new-project').waitFor({ state: 'visible', timeout: 45000 })
   assert.equal(await page.getByRole('dialog', { name: /Make something with Hyper-Studio|Add a video connection/ }).count(), 0)
   process.stdout.write('PASS: zero-profile connection choice supports Back, Explore, and persisted skip after restart\n')
+} catch (error) {
+  if (page) await page.screenshot({ path: path.join(home, 'failure.png') }).catch(() => undefined)
+  throw error
 } finally {
   await app.close()
 }

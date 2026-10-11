@@ -321,7 +321,7 @@ function AppContent() {
             </DevFlagsProvider>
           </QueryClientProvider>
 
-          {!isForcedFirstRun && <ConnectionChoice localModelsAvailable={!forceApiGenerations} />}
+          {!isForcedFirstRun && splashFinished && <ConnectionChoice />}
 
           {showPythonAvailabilityNotice && (
             <div role="status" className="pointer-events-none fixed bottom-4 left-4 z-50 max-w-sm rounded-lg border border-separator bg-surface-primary px-4 py-3 text-sm text-fg-secondary shadow-lg">

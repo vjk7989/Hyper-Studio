@@ -13,6 +13,8 @@ export function resolveConnectionChoiceState({
   return currentState === 'connecting' ? 'connecting' : 'choice'
 }
 
-export function connectionChoiceEscapeAction(state: ConnectionChoiceState): 'back' | 'explore' {
-  return state === 'connecting' ? 'back' : 'explore'
+export function connectionChoiceEscapeAction(state: ConnectionChoiceState): 'back' | 'explore' | 'none' {
+  if (state === 'connecting') return 'back'
+  if (state === 'choice') return 'explore'
+  return 'none'
 }
