@@ -2,9 +2,11 @@
 
 ## Current result
 
-- **Installed checks against current source:** pending Windows Actions package. No current-source control defect was reproduced locally.
+- **Installed checks against current source:** Windows Actions run `38128889578` passed 20 Editor assertions, then timed out waiting for the dragged image clip. The failure is a smoke target selection error: the first `[data-track-bg]` is the subtitle row, whose `onDrop` intentionally ignores media. The updated smoke computes the first video row from persisted track metadata and records `drag-evidence.json` with target kind, geometry, and drag events. This correction has not yet run in Actions.
 - **Smoke additions:** persisted/UI checks for imported asset drag, clip movement, Blade split, Selection shortcut with right-edge trim, trim Undo/Redo, native missing-source failure and Try Again, save-dialog cancellation, active ffmpeg cancellation, and H.264 MP4 rendering with `ftyp`/`moov` atom checks. The missing-source check temporarily moves only the disposable project copy of the imported PNG and restores it before rendering. The active-cancel check waits for an ffmpeg spawn in the isolated profile log, then requires a logged process stop and idle UI without a late done/error state.
 - **Earlier installed evidence:** the pre-Phase-5.1 final5 binary is stale. Its Undo-after-mode-toggle failure is excluded from this gate. The prior Editor control smoke had reached 10 checks before that stale failure. The root Windows run `38125371341` passed current Undo/focus behavior.
+
+The CI artifact for run `38128889578` was inspected at `.local-tmp/editor-ci-38128889578/editor-controls-1791711603409/failure.png`. `VideoEditorTimelineEditingPanel.tsx` builds display rows as subtitles, reversed video tracks, then audio tracks (lines 1035–1048); its subtitle row drop handler prevents and returns (lines 2384–2388). No product defect is indicated by this failure.
 
 ## Commands and results
 
@@ -21,6 +23,7 @@ Full local build log: `.local-tmp/editor-current-build.log`. The direct Vite cra
 ## Changed files
 
 - `scripts/smoke-editor-controls.mjs`: make onboarding skip optional for compatible binary probing; add bounded Editor gesture and local video export assertions. No desktop source file was changed.
+- The drag probe now targets the first video display row and writes `drag-evidence.json` before waiting for persistence, so a later failure retains dragstart/dragover/drop coordinates and data-transfer types.
 - This report.
 
 ## Remaining limits

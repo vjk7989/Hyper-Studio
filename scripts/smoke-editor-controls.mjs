@@ -289,18 +289,49 @@ try {
   await waitUntil(() => activeTimeline()?.clips.length === 0, 'empty gesture timeline')
   const gestureTimelineId = activeTimeline().id
   const assetCard = page.locator(`[data-asset-card][data-asset-id="${imageAsset.id}"]`)
-  const dropTrack = page.locator('[data-track-bg="true"]').first()
+  const gestureTracks = activeTimeline().tracks
+  const subtitleCount = gestureTracks.filter(track => track.type === 'subtitle').length
+  const videoTracks = gestureTracks.filter(track => track.type !== 'subtitle' && track.kind !== 'audio')
+  assert.ok(videoTracks.length > 0, 'gesture timeline has no video track')
+  const targetTrack = videoTracks.at(-1) // Video rows display in reverse order after subtitle rows.
+  assert.ok(!targetTrack.locked, `target video track ${targetTrack.name} is locked`)
+  const dropTrack = page.locator('[data-track-bg="true"]').nth(subtitleCount)
+  assert.equal(await page.locator('[data-track-bg="true"]').count(), gestureTracks.length)
   await dropTrack.scrollIntoViewIfNeeded()
   const dropTrackBox = await dropTrack.boundingBox()
+  const assetCardBox = await assetCard.boundingBox()
   assert.ok(dropTrackBox && dropTrackBox.height > 20, 'video track is not visible for asset drag')
+  assert.ok(assetCardBox, 'imported image card is not visible for drag')
+  await page.evaluate(() => {
+    window.__editorDragEvents = []
+    for (const type of ['dragstart', 'dragenter', 'dragover', 'drop', 'dragend']) {
+      document.addEventListener(type, event => {
+        const target = event.target instanceof Element ? event.target : null
+        window.__editorDragEvents.push({
+          type,
+          target: target?.closest('[data-track-bg]') ? 'track' : target?.closest('[data-asset-card]') ? 'asset-card' : target?.tagName ?? 'unknown',
+          assetId: target?.closest('[data-asset-card]')?.getAttribute('data-asset-id') ?? null,
+          types: [...(event.dataTransfer?.types ?? [])],
+          x: event.clientX,
+          y: event.clientY,
+        })
+      }, { capture: true, once: type === 'drop' || type === 'dragend' })
+    }
+  })
   await assetCard.dragTo(dropTrack, {
     targetPosition: { x: 120, y: Math.min(20, dropTrackBox.height / 2) },
     timeout: 15000,
   })
+  fs.writeFileSync(path.join(home, 'drag-evidence.json'), JSON.stringify({
+    targetTrack: { name: targetTrack.name, kind: targetTrack.kind, type: targetTrack.type, displayIndex: subtitleCount },
+    assetCardBox,
+    dropTrackBox,
+    events: await page.evaluate(() => window.__editorDragEvents),
+  }, null, 2))
   await waitUntil(() => activeTimeline()?.clips.some(clip => clip.assetId === imageAsset.id), 'dragged image clip', 20000)
   assert.equal(activeTimeline()?.id, gestureTimelineId)
   let gestureClip = activeTimeline().clips.find(clip => clip.assetId === imageAsset.id)
-  record('Drag imported asset onto video track', `clip ${gestureClip.id} at ${gestureClip.startTime.toFixed(2)}s`)
+  record('Drag imported asset onto video track', `${targetTrack.name}; clip ${gestureClip.id} at ${gestureClip.startTime.toFixed(2)}s`)
 
   const clipLocator = () => page.locator(`[data-clip-id="${gestureClip.id}"]`)
   await menu('Tools', 'Selection Tool')
