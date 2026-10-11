@@ -80,6 +80,13 @@ try {
     if (imported.nodes?.map(node => node.id).join(',') === nodeIds.join(',')) break
     await window.waitForTimeout(250)
   }
+  if (imported.nodes?.map(node => node.id).join(',') !== nodeIds.join(',')) {
+    console.log('IMPORT DIAGNOSTIC', JSON.stringify({
+      openEnabled: await window.getByRole('button', { name: 'Open', exact: true }).isEnabled(),
+      alert: await window.locator('[role="alert"]').allInnerTexts(),
+      graphNodeIds: await frame.evaluate(() => window.app?.graph?._nodes?.map(node => node.id) ?? null),
+    }))
+  }
   assert.deepEqual(imported.nodes.map(node => node.id), nodeIds)
   assert.equal(imported.nodes[0].widgets_values[0], 64)
   // LiteGraph paints numeric widgets on canvas. Double-click their value to

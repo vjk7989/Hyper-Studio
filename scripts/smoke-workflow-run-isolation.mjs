@@ -64,6 +64,13 @@ try {
     if (imported.nodes?.length===2) break
     await window.waitForTimeout(250)
   }
+  if (imported.nodes?.length !== 2) {
+    log('IMPORT DIAGNOSTIC', {
+      openEnabled: await window.getByRole('button',{name:'Open',exact:true}).isEnabled(),
+      alert: await window.locator('[role="alert"]').allInnerTexts(),
+      graphNodeIds: await canvas.locator('#graph-canvas').evaluate(() => window.app?.graph?._nodes?.map(node => node.id) ?? null),
+    })
+  }
   assert.deepEqual(imported.nodes.map(node=>node.id),[1,2], 'Imported workflow must retain node IDs')
   assert.equal(imported.links.length,1,'Imported workflow must retain its graph link')
   await canvas.getByTestId('queue-button').click()

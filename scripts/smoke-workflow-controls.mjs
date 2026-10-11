@@ -91,6 +91,13 @@ try {
     if (imported.nodes?.map(node => node.id).join(',') === originalIds.join(',')) break
     await window.waitForTimeout(250)
   }
+  if (imported.nodes?.map(node => node.id).join(',') !== originalIds.join(',')) {
+    log('IMPORT DIAGNOSTIC', {
+      openEnabled: await window.getByRole('button', { name: 'Open', exact: true }).isEnabled(),
+      alert: await window.locator('[role="alert"]').allInnerTexts(),
+      graphNodeIds: await frame.evaluate(() => window.app?.graph?._nodes?.map(node => node.id) ?? null),
+    })
+  }
   assert.deepEqual(imported.nodes.map(node => node.id), originalIds, 'Import must preserve original node IDs')
   assert.equal(imported.links.length, 0, 'Fixture must begin without a connection')
   log('PASS import and original node IDs', originalIds)

@@ -17,6 +17,7 @@ export function WorkflowWorkspace({ project, media, active, onSwitchToEditor }: 
   const [fileError, setFileError] = useState<string | null>(null)
   const frame = useRef<HTMLIFrameElement>(null)
   const readinessRequest = useRef<string | null>(null)
+  const [pendingImport, setPendingImport] = useState<{ projectId: string; name: string; contents: string } | null>(null)
   const start = useCallback(async () => {
     setEngine({ state: 'starting' })
     try { setEngine(await window.electronAPI.startWorkflowEngine({ projectId: project.id })) }
@@ -84,6 +85,15 @@ export function WorkflowWorkspace({ project, media, active, onSwitchToEditor }: 
     setWorkflowName(name)
   }, [url, frameReady])
 
+  useEffect(() => {
+    const pending = pendingImport
+    if (!pending || !frameReady) return
+    setPendingImport(null)
+    if (pending.projectId !== project.id) return
+    try { sendOpen(pending.name, pending.contents) }
+    catch (error) { setFileError(error instanceof Error ? error.message : 'Could not open imported workflow') }
+  }, [frameReady, pendingImport, project.id, sendOpen])
+
   const open = async () => {
     setFileError(null)
     try {
@@ -99,7 +109,7 @@ export function WorkflowWorkspace({ project, media, active, onSwitchToEditor }: 
       if (!result) return
       await refreshWorkflows()
       setWorkflowName(result.name)
-      if (frameReady) sendOpen(result.name, result.contents)
+      setPendingImport({ projectId: project.id, name: result.name, contents: result.contents })
     } catch (error) { setFileError(error instanceof Error ? error.message : 'Could not import workflow') }
   }
 
