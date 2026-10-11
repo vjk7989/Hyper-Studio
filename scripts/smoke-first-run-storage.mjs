@@ -89,9 +89,32 @@ try {
   assert.equal(await connectionChoice.evaluate(node => getComputedStyle(node).transitionDuration), '0s')
   await page.evaluate(() => document.querySelector('[data-testid="sidebar-new-project"]')?.focus())
   assert.equal(await page.evaluate(() => document.activeElement?.closest('[role="dialog"]')?.getAttribute('aria-labelledby')), 'connection-choice-title')
+  await app.evaluate(({ ipcMain }) => {
+    ipcMain.removeHandler('getProviderVaultStatus')
+    ipcMain.handle('getProviderVaultStatus', () => new Promise(resolve => {
+      globalThis.__resolveFirstRunVaultStatus = resolve
+    }))
+  })
   await connectionChoice.getByRole('button', { name: /Connect a video API/ }).click()
-  await page.getByRole('dialog', { name: 'Add a video connection' }).waitFor({ state: 'visible' })
-  await page.waitForFunction(() => document.activeElement?.closest('[role="dialog"]')?.getAttribute('aria-labelledby') === 'connection-choice-title' && document.activeElement?.tagName === 'INPUT')
+  const connectionForm = page.getByRole('dialog', { name: 'Add a video connection' })
+  await connectionForm.waitFor({ state: 'visible' })
+  await connectionForm.locator('section[aria-busy="true"]').waitFor({ state: 'visible' })
+  assert.equal(await connectionForm.getByRole('textbox', { name: 'Connection name' }).isDisabled(), true)
+  await app.evaluate(() => new Promise(resolve => {
+    const release = () => {
+      if (!globalThis.__resolveFirstRunVaultStatus) { setTimeout(release, 10); return }
+      globalThis.__resolveFirstRunVaultStatus({ mode: 'os', available: true })
+      delete globalThis.__resolveFirstRunVaultStatus
+      resolve()
+    }
+    release()
+  }))
+  await page.waitForFunction(() => document.activeElement?.closest('[role="dialog"]')?.getAttribute('aria-labelledby') === 'connection-choice-title' && document.activeElement?.getAttribute('placeholder') === 'My video API')
+  const providerSelect = connectionForm.getByRole('combobox', { name: 'Provider' })
+  await providerSelect.focus()
+  await providerSelect.selectOption('runway')
+  assert.equal(await providerSelect.evaluate(node => document.activeElement === node), true)
+  process.stdout.write('PASS: delayed connection refresh restores first enabled field once without stealing later focus\n')
   await page.keyboard.press('Escape')
   await connectionChoice.waitFor({ state: 'visible' })
   await connectionChoice.getByRole('button', { name: /Explore without a connection/ }).click()

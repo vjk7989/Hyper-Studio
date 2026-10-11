@@ -28,7 +28,9 @@ function splitStatuses(value: string): string[] {
   return value.split(',').map(item => item.trim()).filter(Boolean)
 }
 
-export function ProviderConnectionsSection() {
+export function ProviderConnectionsSection({ focusFirstFieldWhenReady = false }: { focusFirstFieldWhenReady?: boolean } = {}) {
+  const sectionRef = useRef<HTMLElement>(null)
+  const initialFocusDoneRef = useRef(false)
   const [profiles, setProfiles] = useState<ProviderProfileMetadata[]>([])
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [name, setName] = useState('')
@@ -49,6 +51,14 @@ export function ProviderConnectionsSection() {
   const connectionChanged = Boolean(selectedProfile?.hasApiKey && (
     provider !== selectedProfile.provider || baseUrl.trim() !== (selectedProfile.baseUrl ?? '')
   ))
+
+  useEffect(() => {
+    if (!focusFirstFieldWhenReady || initialFocusDoneRef.current || pendingAction || (!vault && !error)) return
+    const field = sectionRef.current?.querySelector<HTMLInputElement>('input:not(:disabled)')
+    if (!field) return
+    field.focus()
+    initialFocusDoneRef.current = document.activeElement === field
+  }, [focusFirstFieldWhenReady, pendingAction, vault, error])
 
   const refresh = async () => {
     const [nextProfiles, nextVault] = await Promise.all([
@@ -149,7 +159,7 @@ export function ProviderConnectionsSection() {
     }, 'Could not import existing keys. Check secure storage and try again.')
   }
 
-  return <section aria-busy={!!pendingAction} className="space-y-5 text-fg-primary">
+  return <section ref={sectionRef} aria-busy={!!pendingAction} className="space-y-5 text-fg-primary">
     <p className="text-sm text-fg-secondary">Create named connections once, then choose a connection and model for each project or job. Keys stay in the secure local vault.</p>
     <div className="flex flex-wrap gap-2"><button type="button" className={buttonClass} disabled={!!pendingAction || !vault?.available} onClick={() => void importLegacyKeys()}>Import existing keys</button><button type="button" className={buttonClass} disabled={!!pendingAction} onClick={() => void runAction('refresh', refresh, 'Could not load connections. Try Refresh connections.')}>Refresh connections</button></div>
     {vault && !vault.available && <div className="rounded-lg border border-separator bg-surface-secondary p-4 space-y-3"><h3 className="font-medium">Unlock secure storage</h3><p className="text-sm text-fg-secondary">Enter your vault passphrase. New Linux vaults need a passphrase of at least 12 characters.</p><Field label="Vault passphrase" value={passphrase} onChange={setPassphrase} type="password" disabled={!!pendingAction} /><div className="flex gap-2"><button type="button" className={buttonClass} disabled={!!pendingAction || !passphrase} onClick={() => void manageVault(false)}>Unlock</button><button type="button" className={buttonClass} disabled={!!pendingAction || passphrase.length < 12} onClick={() => void manageVault(true)}>Create vault</button></div></div>}

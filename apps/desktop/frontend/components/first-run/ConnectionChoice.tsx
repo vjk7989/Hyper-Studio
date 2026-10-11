@@ -55,7 +55,7 @@ export function ConnectionChoice() {
     if (state === 'loading') return
     wasVisibleRef.current = true
     if (state === 'choice' || state === 'error') connectButtonRef.current?.focus()
-    if (state === 'connecting') dialogRef.current?.querySelector<HTMLInputElement>('input')?.focus()
+    if (state === 'connecting') dialogRef.current?.querySelector<HTMLButtonElement>('button')?.focus()
   }, [state])
 
   useEffect(() => {
@@ -134,7 +134,7 @@ export function ConnectionChoice() {
           : 'Connect a video API for generation, or start with your own media and add a connection later.'}</p>
       </div>
       <div className="max-h-[min(70vh,780px)] overflow-y-auto p-6">
-        {state === 'connecting' ? <ProviderConnectionsSection /> : <div className="grid gap-3">
+        {state === 'connecting' ? <ProviderConnectionsSection focusFirstFieldWhenReady /> : <div className="grid gap-3">
           <button ref={connectButtonRef} type="button" className="flex w-full items-center justify-between rounded-lg border border-separator p-4 text-left hover:bg-action focus-visible:outline focus-visible:outline-2 focus-visible:outline-fg-primary" onClick={() => setState('connecting')}>
             <span><span className="block font-medium">Connect a video API</span><span className="mt-1 block text-sm text-fg-secondary">Use LTX, Runway, Veo, fal.ai, or a custom endpoint.</span></span><ArrowRight size={18} aria-hidden="true" />
           </button>
