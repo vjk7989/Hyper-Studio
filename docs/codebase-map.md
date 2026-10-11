@@ -1,5 +1,16 @@
 # Codebase map
 
+## Phase 5.3 shared-shell controls
+
+[Windows installed run 38125371341](https://github.com/vjk7989/Hyper-Studio/actions/runs/38125371341) passed 1,492/1,492 desktop tests and ten warm mode toggles at **72 ms p95**. The [gate report](gates/phase-5-shell-controls.md) has the corrected smoke trail and limits.
+
+| Need to change | Exact entry point | Check |
+| --- | --- | --- |
+| Recent-project and Projects menu keyboard/focus behavior | `apps/desktop/frontend/components/home/HomeSidebarMenu.tsx`, `frontend/views/Projects.tsx` | Installed project-controls and first-party shell smokes; app-only removal keeps files, explicit Trash has guards. |
+| Connection busy/error isolation | `apps/desktop/frontend/components/settings/ProviderConnectionsSection.tsx`, `frontend/components/settings/connection-action-gate.ts` | Focused gate tests and installed Connections actions; pending save/test/import/delete cannot overlap. |
+| Settings focus, nested Escape, trigger return, reduced-motion scroll | `apps/desktop/frontend/components/SettingsModal.tsx` | `scripts/smoke-settings-shortcuts.mjs` in fresh Windows installed app. |
+| Explore slash shortcut and text-entry guard | `apps/desktop/frontend/ltx-io/components/QuickSearch/LtxioQuickSearch.tsx` | Search opens outside dialogs, does not cover Settings/onboarding, and `/` remains text inside inputs. |
+
 ## Phase 5.1 mode-switch and startup path
 
 Windows installed [run 38120631024](https://github.com/vjk7989/Hyper-Studio/actions/runs/38120631024) passed the retained-surface slice with warm ten-toggle p95 **66 ms**; [final run 38121218674](https://github.com/vjk7989/Hyper-Studio/actions/runs/38121218674) passed Editor Undo/focus and second-project isolation with p95 **80 ms**. Graft refreshed at **7,088 files, 64,520 nodes, 161,206 edges**; codebase-memory still misses the new prewarm symbol despite reporting `indexed`.

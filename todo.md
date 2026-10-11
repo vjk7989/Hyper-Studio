@@ -25,9 +25,9 @@ The numbered steps below are sequential gates. A subtask stays `[·]` after impl
 
 ### 5.3 Shared shell polish — Windows gate
 
-- [·] 5.3.1 Review Projects, Recent, Home, Explore Tools, Connections, and Settings labels, empty/busy/error states, focus return, and keyboard operation. Source audit and scoped fixes are ready; installed checks pending.
-- [·] 5.3.2 Fix proven defects without changing safe project removal rules or the Vercel-derived theme. Project menus, Connections action isolation, Settings focus, and slash shortcut are implemented; gate pending.
-- [ ] 5.3.3 Pass focused and installed interaction checks; refresh phase records and graphs.
+- [x] 5.3.1 Review Projects, Recent, Home, Explore Tools, Connections, and Settings labels, empty/busy/error states, focus return, and keyboard operation.
+- [x] 5.3.2 Fix proven defects without changing safe project removal rules or the Vercel-derived theme. Project menus, Connections action isolation, Settings focus, and slash shortcut passed the installed gate.
+- [x] 5.3.3 Pass focused and installed interaction checks; refresh phase records and graphs. Windows run 38125371341 passed 1,492 desktop tests, installed shell controls, and ten warm toggles at 72 ms p95; Graft refreshed to 7,095 files, 64,551 nodes, 161,278 edges. Codebase-memory reports the current SHA but lacks verified current symbols.
 
 ### 5.4 Reachable-control inventory — Windows gate
 

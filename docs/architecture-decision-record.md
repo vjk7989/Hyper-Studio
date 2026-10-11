@@ -1,5 +1,13 @@
 # Architecture decision record
 
+## ADR 0015: Shared-shell controls own focus and serialize connection actions
+
+- **Status:** Phase 5.3 Windows installed gate passed in [run 38125371341](https://github.com/vjk7989/Hyper-Studio/actions/runs/38125371341), source `17c8893`.
+- **Decision:** Recent-project and Projects menus expose keyboard entry/exit and preserve project files unless Trash is explicitly chosen. Settings takes initial focus, traps Tab in its top dialog, and restores the connected trigger after Escape, Close, or backdrop dismissal. Explore's slash shortcut yields to dialogs and text entry. Connections keeps one pending mutation at a time and surfaces recoverable errors. Reduced-motion scrolling uses `auto`.
+- **Reason:** Shell actions need predictable focus and bounded mutation even while the embedded Editor and Workflow surfaces remain mounted. The shortcut must not place Search over a modal, and a slow provider action must not duplicate a key/profile operation.
+- **Evidence:** Desktop 1,492/1,492, TypeScript, Vue build, brand audit and fresh unsigned Windows installed shell/project/Settings/timing smokes passed. Warm ten-toggle p95 was 72 ms. The [gate report](gates/phase-5-shell-controls.md) records two smoke harness failures and their corrected reruns. OpenCode's bounded read-only audit passed 25/25 focused checks; it flagged further modal-order and connection error-path coverage without reproducing a defect.
+- **Limit:** This records a Windows shell checkpoint, not complete Editor/Workflow functional or live-provider verification. macOS/Linux package gates for this slice remain pending.
+
 ## ADR 0013: Embedded Extensions search stays on the managed engine
 
 - **Status:** Windows installed and macOS/Linux packaged gate passed in [run 38100244801](https://github.com/vjk7989/Hyper-Studio/actions/runs/38100244801), source commit `d29dd71`.

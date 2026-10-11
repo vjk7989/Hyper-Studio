@@ -1,5 +1,13 @@
 # Phase handoff
 
+## Current continuation: Phase 5.3 shared-shell Windows gate passed
+
+[Windows run 38125371341](https://github.com/vjk7989/Hyper-Studio/actions/runs/38125371341) passed the unsigned installed app at `17c8893`: desktop **1,492/1,492**, TypeScript, Vue build, brand audit, project controls, first-party shell, Settings shortcuts, and ten-toggle timing (**72 ms p95**). Recent/Projects menus, Connections pending-action isolation, Settings focus and return, Explore slash gating, and reduced-motion scroll are the scoped changes. [Gate report](gates/phase-5-shell-controls.md) records two test-harness failures and their fixes: run 38124463606 used the wrong Search Escape locator; run 38124984538 raced the asynchronous project-folder step. The final rerun passed. OpenCode's repository-local read-only audit passed 25/25 focused checks and made no source edit.
+
+Phase 5.4 still needs Editor gesture/render and active Workflow control coverage. Additional modal-order and connection error-path cases identified by the audit remain useful checks. No live hosted provider or model-backed inference is verified, and macOS/Linux release gates have not been rerun for this shell slice. Keep the Windows unsigned package scoped to its observed checks.
+
+Graft refreshed at **7,095 files, 64,551 nodes, 161,278 edges**. Codebase-memory reports the current SHA and `ready` but its Phase 5 symbol coverage remains unverified; use Graft and current source when it misses a symbol.
+
 ## Current continuation: Phase 5.2 first-run Windows gate passed
 
 [Windows run 38123552292](https://github.com/vjk7989/Hyper-Studio/actions/runs/38123552292) passed the unsigned installed app with 1,489 desktop tests, TypeScript, Vue build, brand audit, and first-run storage/connection smoke. The prompt appears after shared storage and splash when no profile exists, embeds the existing Connections form, offers persistent Explore without a connection, and links to optional local-model Settings. Project creation and local editing remain usable without a key. The installed fixture verified picker cancel/busy/error/focus, choice restart, locked-vault error/Escape/Retry, modal focus containment, and reduced motion. Run 38123169585 failed the new transition assertion; `262eceb` fixed it and the rerun passed. [Gate report](gates/phase-5-first-run.md) has the trail.
