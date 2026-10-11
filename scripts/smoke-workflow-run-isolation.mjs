@@ -1,3 +1,4 @@
+import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -6,7 +7,7 @@ import { _electron as electron } from '../apps/workflow-ui/node_modules/@playwri
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const home = path.join(root, '.local-tmp', `workflow-run-isolation-${Date.now()}`)
 const shared = path.join(root, '.local-tmp', 'packaged-electron-smoke-project-controls', 'shared-storage')
-const executablePath = path.resolve(process.env.HYPER_STUDIO_SMOKE_EXE || path.join(root, '.local-tmp', 'installed-project-controls-final', 'Hyper-Studio.exe'))
+const executablePath = path.resolve(process.env.HYPER_STUDIO_SMOKE_EXE || path.join(root, 'apps', 'desktop', 'release', 'win-unpacked', 'Hyper-Studio.exe'))
 if (!executablePath.startsWith(`${root}${path.sep}`) || !fs.existsSync(executablePath)) throw new Error('Smoke executable must be an existing repository-local file')
 const source = path.join(home, 'linked-local.json')
 for (const folder of [home, path.join(home, 'appdata'), path.join(home, 'localappdata'), path.join(home, 'temp')]) fs.mkdirSync(folder, { recursive: true })
@@ -24,7 +25,7 @@ try {
   const window = await app.firstWindow({ timeout:45000 })
   await window.waitForLoadState('domcontentloaded')
   await window.evaluate(folder => window.electronAPI.setSharedStorageRoot({folder}), shared)
-  await window.evaluate(() => window.electronAPI.setConnectionOnboardingSkipped({ skipped: true }))
+  await window.evaluate(() => window.electronAPI.setConnectionOnboardingSkipped?.({ skipped: true }))
   await window.reload({waitUntil:'domcontentloaded'})
   await window.evaluate(() => { window.location.hash = '#/projects' })
   await window.getByTestId('new-project-card').waitFor({state:'visible',timeout:30000})
@@ -34,9 +35,18 @@ try {
   await window.getByPlaceholder('Project name').fill('Run isolation')
   await window.getByText('Workflow mode',{exact:true}).click()
   await window.getByText('Choose a folder',{exact:true}).click()
-  await window.getByPlaceholder('Project name').press('Enter')
+  await window.getByRole('button',{name:'Create',exact:true}).click()
   const canvas = window.frameLocator('iframe[title="Hyper-Studio workflow canvas"]')
   await canvas.locator('#graph-canvas').waitFor({state:'visible',timeout:60000})
+  await canvas.locator('#graph-canvas').evaluate(() => new Promise((resolve, reject) => {
+    const started = Date.now()
+    const poll = () => {
+      if (window.app?.graph && window.app?.canvas?.graph) resolve()
+      else if (Date.now() - started > 30000) reject(new Error('Workflow graph did not initialize'))
+      else setTimeout(poll, 100)
+    }
+    poll()
+  }))
   const engine=await window.evaluate(()=>window.electronAPI.getWorkflowEngineStatus())
   const snapshot=async()=>window.evaluate(async origin=>{
     const target=document.querySelector('iframe[title="Hyper-Studio workflow canvas"]')?.contentWindow
@@ -48,29 +58,32 @@ try {
   },new URL(engine.url).origin)
   await app.evaluate(({dialog},file)=>{ dialog.showOpenDialog=async()=>({canceled:false,filePaths:[file]}) },source)
   await window.getByRole('button',{name:'Import',exact:true}).click()
-  await window.waitForTimeout(1500)
-  log('TABS',await canvas.getByTestId('workflow-tab').evaluateAll(els=>els.map(e=>({text:e.textContent?.trim(),state:e.getAttribute('data-state'),path:e.getAttribute('data-workflow-path')}))))
-  log('SNAPSHOT',await snapshot())
-  await window.screenshot({path:path.join(home,'before-run.png')})
+  let imported
+  for (let i=0;i<60;i++) {
+    imported=await snapshot()
+    if (imported.nodes?.length===2) break
+    await window.waitForTimeout(250)
+  }
+  assert.deepEqual(imported.nodes.map(node=>node.id),[1,2], 'Imported workflow must retain node IDs')
+  assert.equal(imported.links.length,1,'Imported workflow must retain its graph link')
   await canvas.getByTestId('queue-button').click()
-  await window.waitForTimeout(2500)
-  log('BODY AFTER RUN',(await canvas.locator('body').innerText()).slice(-1800))
-  const outputs=fs.existsSync(path.join(projectFolder,'outputs'))?fs.readdirSync(path.join(projectFolder,'outputs')):[]
-  log('OUTPUTS',outputs)
-  if(!outputs.some(name=>/^workflow-control-ui_.*\.png$/.test(name))) throw new Error('Linked local workflow did not produce its PNG')
+  let outputs=[]
+  for (let i=0;i<120;i++) {
+    outputs=fs.existsSync(path.join(projectFolder,'outputs'))?fs.readdirSync(path.join(projectFolder,'outputs')):[]
+    if (outputs.some(name=>/^workflow-control-ui_.*\.png$/.test(name))) break
+    await window.waitForTimeout(250)
+  }
+  assert.ok(outputs.some(name=>/^workflow-control-ui_.*\.png$/.test(name)), 'Linked local workflow must produce a PNG')
   if((await canvas.locator('body').innerText()).includes('Required input missing')) throw new Error('Successful linked workflow still shows a required-input warning')
-  await window.screenshot({path:path.join(home,'after-run.png')})
-  log('MANAGER BUTTONS',await canvas.locator('button').evaluateAll(els=>els.filter(e=>e.getBoundingClientRect().width).map(e=>({text:e.textContent?.trim(),aria:e.getAttribute('aria-label')})).filter(x=>/manager|extension|install|update|uninstall/i.test(`${x.text} ${x.aria}`))))
+  log('PASS linked local execution generated PNG',outputs.find(name=>name.startsWith('workflow-control-ui_')))
   await canvas.getByRole('button',{name:'Graph mode, workflow actions'}).click()
-  log('GRAPH MENU',(await canvas.locator('body').innerText()).slice(-1200))
-  await window.screenshot({path:path.join(home,'graph-menu.png')})
+  assert.ok((await canvas.locator('body').innerText()).includes('Workflow'),'Graph action menu must open')
   await canvas.locator('body').press('Escape')
   await canvas.locator('#graph-canvas').press('Control+,')
   const settings=canvas.getByTestId('settings-dialog')
   await settings.waitFor({state:'visible',timeout:10000})
   await settings.locator('[data-nav-id="extension"]').click()
-  log('EXTENSION SETTINGS',(await settings.innerText()).slice(0,1600))
-  await window.screenshot({path:path.join(home,'extension-settings.png')})
+  assert.ok((await settings.innerText()).length>0,'Extension settings must render')
   await canvas.locator('body').press('Escape')
   const missing=JSON.parse(fs.readFileSync(source,'utf8'))
   missing.nodes.push({id:99,type:'WorkflowSmokeMissingNode',pos:[420,450],size:[260,80],flags:{},order:2,mode:0,inputs:[],outputs:[],properties:{cnr_id:'workflow-control-missing-pack'},widgets_values:[]})
@@ -78,11 +91,13 @@ try {
   const missingSource=path.join(home,'missing-node.json');fs.writeFileSync(missingSource,JSON.stringify(missing))
   await app.evaluate(({dialog},file)=>{ dialog.showOpenDialog=async()=>({canceled:false,filePaths:[file]}) },missingSource)
   await window.getByRole('button',{name:'Import',exact:true}).click()
-  await window.waitForTimeout(1500)
-  log('MISSING SNAPSHOT',await snapshot())
-  log('MISSING BODY',(await canvas.locator('body').innerText()).slice(-1300))
+  const importedMissing=path.join(projectFolder,'workflows','missing-node.json')
+  for (let i=0;i<60 && !fs.existsSync(importedMissing);i++) await window.waitForTimeout(250)
+  assert.ok(fs.existsSync(importedMissing),'Missing-node workflow must be copied into the project')
+  assert.deepEqual(JSON.parse(fs.readFileSync(importedMissing,'utf8')).nodes.map(node=>node.id),[1,2,99],'Missing third-party node and original IDs must survive import')
   await canvas.getByRole('button',{name:'Toggle properties panel'}).click()
   await canvas.getByTestId('panel-tab-errors').click()
-  log('MISSING ERRORS',(await canvas.locator('body').innerText()).slice(-1600))
-  await window.screenshot({path:path.join(home,'missing-node.png')})
+  const missingErrors=await canvas.locator('body').innerText()
+  assert.match(missingErrors,/WorkflowSmokeMissingNode|missing node|missing custom node/i,'Missing-node guidance must be visible')
+  log('PASS missing-node JSON and guidance')
 } finally { await app.close() }
