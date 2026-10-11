@@ -341,9 +341,18 @@ try {
   const initialStart = gestureClip.startTime
   const firstBox = await clipLocator().boundingBox()
   assert.ok(firstBox, 'dragged clip is not visible')
-  await page.mouse.move(firstBox.x + Math.min(firstBox.width / 2, 45), firstBox.y + firstBox.height / 2)
+  const moveStartX = firstBox.x + Math.min(firstBox.width / 2, 45)
+  const moveY = firstBox.y + firstBox.height / 2
+  const viewport = page.viewportSize()
+  const moveDeltaX = Math.min(40, Math.floor((viewport?.width ?? 984) - moveStartX - 20))
+  assert.ok(moveDeltaX >= 25, `not enough visible timeline room to move clip: ${moveDeltaX}px`)
+  fs.writeFileSync(path.join(home, 'clip-move-evidence.json'), JSON.stringify({
+    clipId: gestureClip.id, initialStart, firstBox, viewport,
+    from: { x: moveStartX, y: moveY }, to: { x: moveStartX + moveDeltaX, y: moveY },
+  }, null, 2))
+  await page.mouse.move(moveStartX, moveY)
   await page.mouse.down()
-  await page.mouse.move(firstBox.x + Math.min(firstBox.width / 2, 45) + 120, firstBox.y + firstBox.height / 2, { steps: 8 })
+  await page.mouse.move(moveStartX + moveDeltaX, moveY, { steps: 8 })
   await page.mouse.up()
   await waitUntil(() => activeTimeline()?.clips.find(clip => clip.id === gestureClip.id)?.startTime > initialStart + 0.2, 'moved image clip')
   gestureClip = activeTimeline().clips.find(clip => clip.id === gestureClip.id)
