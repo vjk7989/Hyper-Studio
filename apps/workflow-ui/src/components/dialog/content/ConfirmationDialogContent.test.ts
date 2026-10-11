@@ -69,10 +69,14 @@ describe('ConfirmationDialogContent', () => {
   describe('button surface per type', () => {
     it("type='default' renders Cancel and Confirm", () => {
       renderComponent({ type: 'default' })
-      expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument()
-      expect(
-        screen.getByRole('button', { name: 'Confirm' })
-      ).toBeInTheDocument()
+      const cancel = screen.getByRole('button', { name: 'Cancel' })
+      const confirm = screen.getByRole('button', { name: 'Confirm' })
+      expect(cancel).toBeInTheDocument()
+      expect(confirm).toBeInTheDocument()
+      // PrimeIcons render glyphs through CSS ::before; Chromium includes those
+      // glyphs in the accessible name unless each decorative icon is hidden.
+      expect(cancel.querySelector('i')).toHaveAttribute('aria-hidden', 'true')
+      expect(confirm.querySelector('i')).toHaveAttribute('aria-hidden', 'true')
     })
 
     it("type='delete' renders Cancel and Delete", () => {

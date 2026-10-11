@@ -58,11 +58,11 @@
         autofocus
         @click="onCancel"
       >
-        <i class="pi pi-undo" />
+        <i class="pi pi-undo" aria-hidden="true" />
         {{ $t('g.cancel') }}
       </Button>
       <Button v-if="type === 'default'" variant="primary" @click="onConfirm">
-        <i class="pi pi-check" />
+        <i class="pi pi-check" aria-hidden="true" />
         {{ $t('g.confirm') }}
       </Button>
       <Button
@@ -70,7 +70,7 @@
         variant="destructive"
         @click="onConfirm"
       >
-        <i class="pi pi-trash" />
+        <i class="pi pi-trash" aria-hidden="true" />
         {{ $t('g.delete') }}
       </Button>
       <Button
@@ -78,16 +78,16 @@
         variant="destructive"
         @click="onConfirm"
       >
-        <i class="pi pi-save" />
+        <i class="pi pi-save" aria-hidden="true" />
         {{ $t('g.overwrite') }}
       </Button>
       <template v-else-if="type === 'dirtyClose'">
         <Button variant="secondary" @click="onDeny">
-          <i class="pi pi-times" />
+          <i class="pi pi-times" aria-hidden="true" />
           {{ denyLabel ?? $t('g.no') }}
         </Button>
         <Button autofocus @click="onConfirm">
-          <i class="pi pi-save" />
+          <i class="pi pi-save" aria-hidden="true" />
           {{ $t('g.save') }}
         </Button>
       </template>
@@ -96,7 +96,7 @@
         variant="destructive"
         @click="onConfirm"
       >
-        <i class="pi pi-eraser" />
+        <i class="pi pi-eraser" aria-hidden="true" />
         {{ $t('desktopMenu.reinstall') }}
       </Button>
       <!-- Info - just show an OK button -->
@@ -105,7 +105,7 @@
       </Button>
       <!-- Invalid - just show a close button. -->
       <Button v-else variant="primary" @click="onCancel">
-        <i class="pi pi-times" />
+        <i class="pi pi-times" aria-hidden="true" />
         {{ $t('g.close') }}
       </Button>
     </div>

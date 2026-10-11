@@ -159,13 +159,20 @@ try {
   if (!reviewText.includes('ComfyUI Impact Pack') || !reviewText.includes(reviewedUrl)) throw new Error('Review did not show the pack name and exact source')
   if (installRequestCount || fs.existsSync(installedPath)) throw new Error('Install started before explicit review confirmation')
   await window.screenshot({ path: path.join(home, 'install-review.png') })
-  await installReview.getByRole('button', { name: 'Cancel', exact: true }).click()
+  const cancel = installReview.getByRole('button', { name: 'Cancel', exact: true })
+  const confirm = installReview.getByRole('button', { name: 'Confirm', exact: true })
+  if (await cancel.count() !== 1 || await confirm.count() !== 1) {
+    const accessibleControls = await installReview.ariaSnapshot()
+    fs.writeFileSync(path.join(home, 'install-review-accessibility.txt'), accessibleControls)
+    throw new Error('Review buttons must have accessible names Cancel and Confirm; see install-review-accessibility.txt')
+  }
+  await cancel.click()
   await installReview.waitFor({ state: 'hidden' })
   if (installRequestCount || fs.existsSync(installedPath)) throw new Error('Canceling install review started the Manager task')
   process.stdout.write('PASS: canceled third-party-node review leaves Manager queue and shared storage untouched\n')
   await installButton.click()
   await installReview.waitFor({ state: 'visible', timeout: 10000 })
-  await installReview.getByRole('button', { name: 'Confirm', exact: true }).click({ timeout: 5000 })
+  await confirm.click({ timeout: 5000 })
   for (let attempt = 0; attempt < 40 && !task; attempt++) await window.waitForTimeout(250)
   if (installRequestCount !== 1 || task?.kind !== 'install' || task.params?.id !== packId || task.params?.mode !== 'local' || task.params?.selected_version !== 'nightly' || task.params?.repository !== reviewedUrl) {
     throw new Error(`Reviewed manager task mismatch: ${JSON.stringify(task)}`)
