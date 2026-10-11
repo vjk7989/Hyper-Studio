@@ -147,6 +147,12 @@ try {
   if (!reviewText.includes('ComfyUI Impact Pack') || !reviewText.includes(reviewedUrl)) throw new Error('Review did not show the pack name and exact source')
   if (installRequestCount || fs.existsSync(installedPath)) throw new Error('Install started before explicit review confirmation')
   await window.screenshot({ path: path.join(home, 'install-review.png') })
+  await canvas.getByRole('dialog').last().getByRole('button', { name: 'Cancel', exact: true }).click()
+  await canvas.getByText('Review third-party node installation', { exact: true }).waitFor({ state: 'hidden' })
+  if (installRequestCount || fs.existsSync(installedPath)) throw new Error('Canceling install review started the Manager task')
+  process.stdout.write('PASS: canceled third-party-node review leaves Manager queue and shared storage untouched\n')
+  await installButton.click()
+  await canvas.getByText('Review third-party node installation', { exact: true }).waitFor({ state: 'visible', timeout: 10000 })
   await canvas.getByRole('dialog').last().locator('button').last().click({ timeout: 5000 })
   for (let attempt = 0; attempt < 40 && !task; attempt++) await window.waitForTimeout(250)
   if (installRequestCount !== 1 || task?.kind !== 'install' || task.params?.id !== packId || task.params?.mode !== 'local' || task.params?.selected_version !== 'nightly' || task.params?.repository !== reviewedUrl) {

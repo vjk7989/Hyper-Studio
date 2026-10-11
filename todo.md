@@ -31,8 +31,8 @@ The numbered steps below are sequential gates. A subtask stays `[·]` after impl
 
 ### 5.4 Reachable-control inventory — Windows gate
 
-- [ ] 5.4.1 Record each reachable first-party control, expected result, fixture, test, evidence, and defect status.
-- [ ] 5.4.2 Exercise Editor timeline actions and export with disposable media, plus Workflow wiring, run/cancel, JSON IDs, Manager review, shared media, and appearance.
+- [·] 5.4.1 Record each reachable first-party control, expected result, fixture, test, evidence, and defect status. Storage is available again; repository-local OpenCode read-only inventory is running and awaits Codex review.
+- [·] 5.4.2 Exercise Editor timeline actions and export with disposable media, plus Workflow wiring, run/cancel, JSON IDs, Manager review, shared media, and appearance. Script work started; fresh installed gates are pending.
   - [ ] 5.4.2a Exercise real Editor clip drag, blade/trim, tool shortcuts, and a short rendered local video with cancel/failure handling.
   - [ ] 5.4.2b Exercise Workflow mouse port wiring, node edit/Undo, active queue cancel, and JSON roundtrip with stable node IDs.
   - [ ] 5.4.2c Exercise Manager review/update/uninstall with a local fixture, cross-mode media after restart, and light/dark persistence.

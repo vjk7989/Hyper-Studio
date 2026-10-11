@@ -233,6 +233,15 @@ try {
   await window.locator('.ltx-io[data-theme="dark"]').first().waitFor({ state: 'visible', timeout: 15000 })
   await window.locator('iframe[title="Hyper-Studio workflow canvas"]').waitFor({ state: 'visible', timeout: 45000 })
   await window.frameLocator('iframe[title="Hyper-Studio workflow canvas"]').locator('#graph-canvas').waitFor({ state: 'visible', timeout: 45000 })
+  const reopenedMedia = await window.evaluate(projectId => window.electronAPI.listWorkspaceMedia({ projectId }), engine.projectId)
+  for (const name of ['hyper-studio-package_00001_.png', 'editor-import.png', 'hyper-studio-editor-input_00001_.png']) {
+    if (!reopenedMedia.some(item => item.relativePath.endsWith(name))) throw new Error(`Shared media index lost ${name} after renderer restart`)
+  }
+  const reopenedSharedFiles = window.getByRole('button', { name: /Shared files \(\d+\)/ })
+  await reopenedSharedFiles.waitFor({ state: 'visible', timeout: 15000 })
+  if (await reopenedSharedFiles.getAttribute('aria-expanded') !== 'true') await reopenedSharedFiles.click()
+  await window.getByText('editor-import.png', { exact: true }).waitFor({ state: 'visible', timeout: 15000 })
+  process.stdout.write('Shared Workflow and Editor media remain indexed and visible after renderer restart\n')
   await window.screenshot({ path: path.join(home, 'workflow-dark.png') })
   if (process.platform === 'win32') {
     const workflowCanvas = window.frameLocator('iframe[title="Hyper-Studio workflow canvas"]')
