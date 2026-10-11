@@ -688,7 +688,9 @@ function parseFcpXml(doc: Document): ParsedTimeline | null {
     }
     
     const decodedPath = decodePathUrl(src)
-    const type = !hasVideo && hasAudio ? 'audio' : detectMediaType(assetName || src)
+    // FCPXML asset names are often generic (for example "Clip"). The source
+    // path carries the extension needed to distinguish a still from a video.
+    const type = !hasVideo && hasAudio ? 'audio' : detectMediaType(decodedPath || src || assetName)
     
     mediaRefs.set(assetId, {
       id: assetId,

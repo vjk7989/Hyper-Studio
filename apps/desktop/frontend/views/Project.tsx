@@ -159,8 +159,10 @@ export function Project() {
     { id: 'gen-space', label: 'Gen Space', icon: <Sparkles className={styles.tabIcon} /> },
     { id: 'video-editor', label: 'Video Editor', icon: <Film className={styles.tabIcon} /> },
   ]
-  const shouldShowAssetMetadataMigrationProgressScreen = assetMetadataMigrationProgress.running
-    || (upgradePassProjectId !== activeProjectId && needsAssetMetadataMigration)
+  // Only block the initial project open. Later imports upgrade in the background so
+  // the Editor stays mounted and its in-memory edit/undo state is not discarded.
+  const shouldShowAssetMetadataMigrationProgressScreen = upgradePassProjectId !== activeProjectId
+    && (assetMetadataMigrationProgress.running || needsAssetMetadataMigration)
 
   if (shouldShowAssetMetadataMigrationProgressScreen) {
     const progressPct = assetMetadataMigrationProgress.total > 0

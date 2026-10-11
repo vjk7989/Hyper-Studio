@@ -135,3 +135,103 @@ jobs:
             .local-tmp/packaged-electron-smoke/linux/shared-storage/caches/workflow/diagnostics/engine-startup.log
             .local-tmp/packaged-electron-smoke/linux/shared-storage/caches/workflow/*/install.log
           if-no-files-found: ignore
+
+  windows-package-and-smoke:
+    runs-on: windows-2025
+    timeout-minutes: 90
+    env:
+      CSC_IDENTITY_AUTO_DISCOVERY: "false"
+      NPM_CONFIG_CACHE: ${{ github.workspace }}/.local-cache/npm
+      ELECTRON_CACHE: ${{ github.workspace }}/.local-cache/electron
+      ELECTRON_BUILDER_CACHE: ${{ github.workspace }}/.local-cache/electron-builder
+      TEMP: ${{ github.workspace }}/.local-tmp
+      TMP: ${{ github.workspace }}/.local-tmp
+      TMPDIR: ${{ github.workspace }}/.local-tmp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "26"
+      - name: Prepare repository-local package managers and caches
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force .local-cache, .local-tmp, .tools/pnpm10, .tools/pnpm11 | Out-Null
+          & ./scripts/with-local-env.ps1 -Executable npm.cmd -Arguments @('install', '--prefix', '.tools/pnpm10', '--no-audit', '--no-fund', 'pnpm@10.30.3')
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & ./scripts/with-local-env.ps1 -Executable npm.cmd -Arguments @('install', '--prefix', '.tools/pnpm11', '--no-audit', '--no-fund', 'pnpm@11.13.1')
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Add-Content -Path $env:GITHUB_PATH -Value (Join-Path $env:GITHUB_WORKSPACE '.tools/pnpm10/node_modules/.bin')
+      - name: Build embedded workflow canvas
+        shell: pwsh
+        run: |
+          $env:PATH = (Join-Path $env:GITHUB_WORKSPACE '.tools/pnpm11/node_modules/.bin') + ';' + $env:PATH
+          & ./scripts/with-local-env.ps1 -Executable node -Arguments @('.tools/pnpm11/node_modules/pnpm/bin/pnpm.cjs', '--dir', 'apps/workflow-ui', 'install', '--frozen-lockfile', '--store-dir', "$env:GITHUB_WORKSPACE/.local-cache/pnpm11")
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Push-Location apps/workflow-ui
+          try {
+            $env:DISTRIBUTION = 'desktop'
+            $env:VITE_HYPER_STUDIO_EMBEDDED = 'true'
+            & ../../scripts/with-local-env.ps1 -Executable node -Arguments @('node_modules/vite/bin/vite.js', 'build', '--config', 'vite.config.mts')
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          } finally { Pop-Location }
+      - name: Build and test desktop
+        shell: pwsh
+        run: |
+          $env:PATH = (Join-Path $env:GITHUB_WORKSPACE '.tools/pnpm10/node_modules/.bin') + ';' + $env:PATH
+          & ./scripts/with-local-env.ps1 -Executable node -Arguments @('.tools/pnpm10/node_modules/pnpm/bin/pnpm.cjs', '--dir', 'apps/desktop', 'install', '--frozen-lockfile', '--store-dir', "$env:GITHUB_WORKSPACE/.local-cache/pnpm10")
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Push-Location apps/desktop
+          try {
+            & ../../scripts/with-local-env.ps1 -Executable node -Arguments @('--experimental-strip-types', '--test', '--test-reporter=spec', 'frontend/**/*.test.ts', 'electron/**/*.test.ts', 'shared/**/*.test.ts')
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            & ../../scripts/with-local-env.ps1 -Executable node -Arguments @('--experimental-strip-types', '--test', '--experimental-loader', './frontend/views/editor/editor-test-loader.mjs', 'frontend/views/editor/editor-actions.test.mjs', 'frontend/lib/project-asset-metadata-migration.test.mjs')
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            & ../../scripts/with-local-env.ps1 -Executable node -Arguments @('node_modules/typescript/bin/tsc', '--noEmit')
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            & ../../scripts/with-local-env.ps1 -Executable node -Arguments @('node_modules/vite/bin/vite.js', 'build')
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            & ../../scripts/with-local-env.ps1 -Executable node -Arguments @('node_modules/vite/bin/vite.js', 'build', '--config', 'vite.remote.config.ts')
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          } finally { Pop-Location }
+      - name: Package unsigned Windows installer and install inside checkout
+        shell: pwsh
+        run: |
+          $env:PATH = (Join-Path $env:GITHUB_WORKSPACE '.tools/pnpm10/node_modules/.bin') + ';' + $env:PATH
+          & ./scripts/prepare-workflow-tool.ps1
+          Push-Location apps/desktop
+          try {
+            & ../../scripts/with-local-env.ps1 -Executable node -Arguments @('node_modules/electron-builder/cli.js', '--win', '--x64', '--publish', 'never')
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          } finally { Pop-Location }
+          & ./scripts/install-windows-local.ps1 -Destination '.local-tmp/installed-ci'
+      - name: Smoke installed Windows app and audit brand
+        shell: pwsh
+        run: |
+          $env:HYPER_STUDIO_SMOKE_EXE = (Resolve-Path '.local-tmp/installed-ci/Hyper-Studio.exe').Path
+          & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/smoke-packaged-electron.mjs')
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/smoke-project-controls.mjs')
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/smoke-editor-controls.mjs')
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/audit-branding.mjs')
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $audit = Get-Content '.local-cache/brand-audit/audit.json' -Raw | ConvertFrom-Json
+          if ($audit.summary.builtResidualVisualNames -ne 0 -or @($audit.built | Where-Object present).Count -lt 3) { throw 'Packaged brand audit failed' }
+      - name: Upload unsigned Windows installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: hyper-studio-windows-unsigned
+          path: apps/desktop/release/Hyper-Studio-Setup.exe
+          retention-days: 7
+      - name: Preserve Windows smoke diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase4-smoke-windows
+          path: |
+            .local-tmp/packaged-electron-smoke/*.png
+            .local-tmp/packaged-electron-smoke/electron.log
+            .local-tmp/packaged-electron-smoke/shared-storage/caches/workflow/*/install.log
+            .local-tmp/editor-controls-*/failure.png
+          if-no-files-found: ignore

@@ -1,5 +1,12 @@
 # Architecture decision record
 
+## ADR 0011: FCPXML media type comes from its source path
+
+- **Status:** Fixed in the Windows unpacked app; unsigned installed-package and platform CI reruns pending.
+- **Decision:** When parsing an FCPXML resource, use its decoded `src` path to classify image/video media before the optional human-readable asset name. Keep `hasVideo=0`/`hasAudio=1` for audio-only resources.
+- **Reason:** A valid package exported an image asset with the generic name `Clip`. Reimport classified it as video, attempted an ffmpeg frame extract, and failed before adding the timeline. The source path still had `.png` and correctly identifies the still image.
+- **Evidence:** The Windows unpacked Editor smoke now passes 19 controls including SRT export, parseable FCPXML export, and reimport into a new timeline with the media clip. TypeScript, Vite, and desktop 1,483/1,483 passed. NSIS generation could not complete locally because G: ran out of disk while writing its installer; a Windows Actions package/install/smoke job is the release gate for this change.
+
 ## ADR 0010: Keep Editor history stable during asset metadata upgrades
 
 - **Status:** Implemented and verified in the later Windows installed project-controls refresh; cross-platform rerun pending.

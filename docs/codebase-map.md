@@ -1,5 +1,13 @@
 # Codebase map
 
+## FCPXML roundtrip and current Windows gate
+
+| Need | Exact entry point | Check |
+| --- | --- | --- |
+| Media type when importing FCPXML | `apps/desktop/frontend/lib/timeline-import.ts` (`parseFcpXml`, `detectMediaType`) | Classify from decoded `src` extension before generic asset name; unpacked 19-control Editor smoke passes image FCPXML reimport. |
+| XML import with project media copy | `apps/desktop/frontend/components/ImportTimelineModal.tsx`, `electron/ipc/file-handlers.ts`, `frontend/views/editor/editor-actions.ts` | The modal copies external media; a wrongly classified PNG previously tried ffmpeg and blocked the timeline. |
+| Unsigned Windows package on CI | `.github/workflows/phase-4-platform-gate.yml` (`windows-package-and-smoke`), `scripts/install-windows-local.ps1` | New runner job builds NSIS, installs in checkout, and runs package/project/Editor/brand smokes. Local NSIS output is partial due to G: capacity; do not distribute it. |
+
 ## Latest project-control/Editor checkpoint
 
 | Need to change | Go to | Verified boundary |

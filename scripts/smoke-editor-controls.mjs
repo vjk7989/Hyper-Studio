@@ -18,7 +18,7 @@ for (const subdir of ['', 'appdata', 'localappdata', 'temp', 'shared', 'project'
 const redPng = path.join(fixture, 'red.png')
 const toneWav = path.join(fixture, 'tone.wav')
 const captions = path.join(fixture, 'caption.srt')
-fs.writeFileSync(redPng, Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL/nwAAAABJRU5ErkJggg==', 'base64'))
+fs.copyFileSync(path.join(root, 'apps', 'desktop', 'public', 'favicon.png'), redPng)
 const wav = Buffer.alloc(44 + 44100 * 2)
 wav.write('RIFF', 0)
 wav.writeUInt32LE(wav.length - 8, 4)
@@ -119,6 +119,15 @@ try {
   await page.locator('input[type=file][accept=".srt"]').setInputFiles(captions)
   await page.getByText('Smoke caption', { exact: true }).first().waitFor({ state: 'visible', timeout: 10000 })
   record('Import SRT', 'one visible cue')
+
+  const subtitleExportPath = path.join(home, 'subtitle-export.srt')
+  await app.evaluate(({ dialog }, filePath) => {
+    dialog.showSaveDialog = async () => ({ canceled: false, filePath })
+  }, subtitleExportPath)
+  await page.getByRole('button', { name: 'Export SRT' }).click()
+  await waitUntil(() => fs.existsSync(subtitleExportPath), 'SRT export file')
+  assert.match(fs.readFileSync(subtitleExportPath, 'utf8'), /Smoke caption/)
+  record('Export SRT', 'saved subtitle file contains the imported cue')
 
   await page.locator('input[type=file][accept="video/*,audio/*,image/*"]').first().setInputFiles([redPng, toneWav])
   const mediaPath = path.join(project, '.hyper-studio', 'media.json')
@@ -240,6 +249,16 @@ try {
   assert.ok(parsed.assetCount >= 1 && parsed.clipCount >= 1 && parsed.hasPng, JSON.stringify(parsed))
   record('Export local FCPXML package', `${path.basename(packagePath)}; ${parsed.assetCount} asset, ${parsed.clipCount} clip`)
   await page.screenshot({ path: path.join(home, 'editor-package-complete.png') })
+
+  const timelineCountBeforeImport = readEditor().timelines.length
+  await page.locator('div.fixed.inset-0.z-50').first().click({ position: { x: 5, y: 5 } })
+  await menu('File', 'Import Timeline (XML)...')
+  await page.locator('input[type=file][accept=".xml,.fcpxml,.aaf"]').setInputFiles(packagePath)
+  await page.getByRole('button', { name: 'Import Timeline', exact: true }).last().waitFor({ state: 'visible', timeout: 15000 })
+  await page.getByRole('button', { name: 'Import Timeline', exact: true }).last().click()
+  await waitUntil(() => readEditor().timelines.length === timelineCountBeforeImport + 1, 'imported FCPXML timeline', 20000)
+  assert.ok(activeTimeline()?.clips.length >= 1, 'imported FCPXML timeline has no media clip')
+  record('Import exported FCPXML timeline', 'new timeline contains the exported media clip')
 } catch (error) {
   results.push({ name: 'smoke', status: 'FAIL', detail: String(error) })
   fs.writeFileSync(path.join(home, 'results.json'), JSON.stringify(results, null, 2))
