@@ -20,6 +20,13 @@ vi.mock(import('semver'), () => ({
 }))
 
 const mockData = vi.hoisted(() => ({ isDesktop: true, isCloud: false }))
+const mockEmbedded = vi.hoisted(() => ({ value: false }))
+
+vi.mock(import('@/platform/distribution/hyperStudio'), () => ({
+  get isHyperStudioEmbedded() {
+    return mockEmbedded.value
+  }
+}))
 
 vi.mock(import('@/platform/distribution/types'), () => ({
   get isDesktop() {
@@ -80,6 +87,7 @@ describe('useReleaseStore', () => {
 
   beforeEach(() => {
     mockData.isCloud = false
+    mockEmbedded.value = false
     activeTour = ref(null)
     vi.spyOn(useOnboardingTourStore(), 'activeTour', 'get').mockImplementation(
       () => activeTour.value
@@ -269,6 +277,19 @@ describe('useReleaseStore', () => {
   })
 
   describe('release initialization', () => {
+    it('does not call the inherited release API in the embedded build', async () => {
+      mockEmbedded.value = true
+      const store = useReleaseStore()
+      const releaseService = useReleaseService()
+
+      await store.initialize()
+      await store.fetchReleases()
+
+      expect(releaseService.getReleases).not.toHaveBeenCalled()
+      expect(store.isLoading).toBe(false)
+      expect(store.error).toBeNull()
+    })
+
     it('should fetch releases successfully', async () => {
       const store = useReleaseStore()
       const releaseService = useReleaseService()

@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 import { compare, valid } from 'semver'
 import { computed, ref } from 'vue'
 
+import { isHyperStudioEmbedded } from '@/platform/distribution/hyperStudio'
 import { isCloud, isDesktop } from '@/platform/distribution/types'
 import { useOnboardingOverlayStore } from '@/platform/onboarding/onboardingOverlayStore'
 import { useOnboardingTourStore } from '@/platform/onboarding/onboardingTourStore'
@@ -253,7 +254,7 @@ export const useReleaseStore = defineStore('release', () => {
 
   // Fetch releases from API
   async function fetchReleases(): Promise<void> {
-    if (isLoading.value) {
+    if (isHyperStudioEmbedded || isLoading.value) {
       return
     }
 
