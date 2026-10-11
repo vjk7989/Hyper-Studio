@@ -49,6 +49,15 @@ $env:OPENCODE_CONFIG = $configFile
 $env:OPENCODE_DISABLE_AUTOUPDATE = '1'
 $env:npm_config_cache = Join-Path $paths.cache 'npm'
 
+# Let bounded agents use the same repository-local Graft CLI and Node runtime
+# as Codex without resolving tools from another drive or a global install.
+$graftBin = Join-Path $repoRoot '.tools/graft/node_modules/.bin'
+$nodeBin = Join-Path $repoRoot '.tools/node-v26.8.2-win-x64'
+if ((Test-Path -LiteralPath (Join-Path $graftBin 'graft.cmd')) -and
+    (Test-Path -LiteralPath (Join-Path $nodeBin 'node.exe'))) {
+    $env:PATH = "$graftBin;$nodeBin;$env:PATH"
+}
+
 Set-Location -LiteralPath $repoRoot
 $exitCode = 1
 try {
