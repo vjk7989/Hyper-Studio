@@ -122,6 +122,9 @@ try {
   await window.getByPlaceholder('Project name').fill('Isolated workflow')
   await window.getByText('Workflow mode', { exact: true }).click()
   await window.getByText('Choose a folder', { exact: true }).click()
+  // The native picker resolves after its click handler returns. Wait until the
+  // form is actionable so Enter tests submission rather than a busy form.
+  await window.getByRole('button', { name: 'Create', exact: true }).click({ trial: true })
   await window.getByPlaceholder('Project name').press('Enter')
   await window.waitForFunction(async previousId => {
     const status = await window.electronAPI.getWorkflowEngineStatus()
