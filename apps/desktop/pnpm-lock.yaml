@@ -53,9 +53,6 @@ importers:
       electron-updater:
         specifier: ^6.8.3
         version: 6.8.3
-      ffmpeg-static:
-        specifier: 5.3.0
-        version: 5.3.0
       framer-motion:
         specifier: ^11.18.2
         version: 11.18.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -150,6 +147,9 @@ importers:
       eslint-plugin-react-hooks:
         specifier: 7.1.1
         version: 7.1.1(eslint@10.9.1(jiti@1.21.7))
+      ffmpeg-static:
+        specifier: 5.3.0
+        version: 5.3.0
       openapi-typescript:
         specifier: ^7.10.1
         version: 7.13.0(typescript@5.9.3)

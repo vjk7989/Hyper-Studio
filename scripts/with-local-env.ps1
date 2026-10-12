@@ -13,6 +13,11 @@ foreach ($path in @($cacheRoot, $tempRoot)) {
     New-Item -ItemType Directory -Force -Path $path | Out-Null
 }
 
+# Some dependency installers use Windows LocalAppData even when XDG_CACHE_HOME
+# is set. Keep those downloads inside this checkout too.
+$env:LOCALAPPDATA = Join-Path $cacheRoot 'appdata-local'
+New-Item -ItemType Directory -Force -Path $env:LOCALAPPDATA | Out-Null
+
 $env:npm_config_cache = Join-Path $cacheRoot 'npm'
 $env:COREPACK_HOME = Join-Path $cacheRoot 'corepack'
 $env:XDG_CACHE_HOME = $cacheRoot
