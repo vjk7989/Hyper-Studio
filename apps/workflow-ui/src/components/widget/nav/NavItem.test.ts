@@ -19,3 +19,22 @@ it('can activate navigation from keyboard focus', async () => {
   await fireEvent.keyDown(item, { key: ' ' })
   expect(onClick).toHaveBeenCalledTimes(2)
 })
+
+it('does not forward activation keys to parent canvas shortcuts', async () => {
+  const onClick = vi.fn()
+  const parentKeydown = vi.fn()
+  const { container } = render(NavItem, {
+    props: { icon: 'icon-[lucide--settings]', onClick },
+    slots: { default: 'Extension' }
+  })
+  container.addEventListener('keydown', parentKeydown)
+
+  const item = screen.getByRole('button', { name: 'Extension' })
+  await fireEvent.keyDown(item, { key: 'Enter' })
+  expect(onClick).toHaveBeenCalledTimes(1)
+  expect(parentKeydown).not.toHaveBeenCalled()
+  await fireEvent.keyDown(item, { key: ' ' })
+
+  expect(onClick).toHaveBeenCalledTimes(2)
+  expect(parentKeydown).not.toHaveBeenCalled()
+})

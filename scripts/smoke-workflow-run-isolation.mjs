@@ -101,6 +101,9 @@ try {
   }
   await canvas.locator('#graph-canvas').focus()
   assert.equal(await canvas.locator('#graph-canvas').evaluate(element=>document.activeElement===element),true,'Workflow canvas must accept keyboard focus')
+  const settingsBrowserErrors=[]
+  window.on('pageerror',error=>settingsBrowserErrors.push(`pageerror: ${error.message}`))
+  window.on('console',message=>{if(message.type()==='error') settingsBrowserErrors.push(`console: ${message.text()}`)})
   await canvas.locator('#graph-canvas').press('Control+,')
   const settings=canvas.getByTestId('settings-dialog')
   try {
@@ -111,6 +114,7 @@ try {
       menuCount:await canvas.getByRole('menu').count(),
       iframeUrl:await canvas.locator('body').evaluate(() => location.href).catch(() => null),
       bodyText:(await canvas.locator('body').innerText().catch(() => '')).slice(0,1000),
+      browserErrors:settingsBrowserErrors.slice(-12),
     }
     fs.writeFileSync(path.join(home,'settings-open-failure.json'),JSON.stringify(evidence,null,2))
     await window.screenshot({path:path.join(home,'settings-open-failure.png')}).catch(()=>{})
@@ -135,6 +139,7 @@ try {
       iframeUrl:await canvas.locator('body').evaluate(() => location.href).catch(() => null),
       settingsCount:await settings.count(),
       bodyText:(await canvas.locator('body').innerText().catch(() => '')).slice(0,1000),
+      browserErrors:settingsBrowserErrors.slice(-12),
     }
     fs.writeFileSync(path.join(home,'settings-failure.json'),JSON.stringify(evidence,null,2))
     await window.screenshot({path:path.join(home,'settings-failure.png')}).catch(()=>{})

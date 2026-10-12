@@ -15,8 +15,8 @@
     tabindex="0"
     @mouseenter="checkOverflow"
     @click="onClick"
-    @keydown.enter.prevent="onClick"
-    @keydown.space.prevent="onClick"
+    @keydown.enter.stop.prevent="onClick"
+    @keydown.space.stop.prevent="onClick"
   >
     <NavIcon v-if="icon" :icon="icon" />
     <i v-else class="text-neutral icon-[lucide--folder] shrink-0 text-xs" />
