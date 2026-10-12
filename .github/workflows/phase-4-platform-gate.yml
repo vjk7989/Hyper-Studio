@@ -284,6 +284,8 @@ jobs:
             .local-tmp/editor-controls-*/failure.png
             .local-tmp/editor-controls-*/drag-evidence.json
             .local-tmp/editor-controls-*/clip-move-evidence.json
+            .local-tmp/editor-controls-*/native-export-failure.txt
+            .local-tmp/editor-controls-*/native-export-failure.png
             .local-tmp/editor-track-commands-*/failure.png
             .local-tmp/editor-track-commands-*/results.json
             .local-tmp/editor-track-commands-*/drag-evidence.json
