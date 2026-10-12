@@ -87,7 +87,20 @@ try {
   await canvas.getByRole('menu').waitFor({state:'visible',timeout:10000})
   await canvas.locator('body').press('Escape')
   await canvas.getByRole('menu').waitFor({state:'hidden',timeout:10000})
-  await canvas.locator('#graph-canvas').click({position:{x:5,y:5}})
+  // The tab strip overlaps the canvas origin and a post-run loading overlay
+  // can briefly intercept pointer input. Wait for loading, then focus the
+  // keyboard target directly so the shortcut is still exercised.
+  try { await canvas.getByTestId('app-loading-overlay').waitFor({state:'hidden',timeout:30000}) }
+  catch(error) {
+    log('CANVAS READINESS DIAGNOSTIC',{
+      loadingOverlay:await canvas.getByTestId('app-loading-overlay').count(),
+      graphPresent:await canvas.locator('#graph-canvas').count(),
+      bodyText:(await canvas.locator('body').innerText().catch(()=>'')).slice(0,1000),
+    })
+    throw error
+  }
+  await canvas.locator('#graph-canvas').focus()
+  assert.equal(await canvas.locator('#graph-canvas').evaluate(element=>document.activeElement===element),true,'Workflow canvas must accept keyboard focus')
   await canvas.locator('#graph-canvas').press('Control+,')
   const settings=canvas.getByTestId('settings-dialog')
   try {
