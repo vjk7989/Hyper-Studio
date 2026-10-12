@@ -511,7 +511,25 @@ try {
     await page.getByText('Export failed', { exact: true }).waitFor({ state: 'visible', timeout: 15000 })
     const failureDialog = page.locator('div.fixed.inset-0.z-50').last()
     const failureText = await failureDialog.innerText()
-    fs.writeFileSync(path.join(home, 'native-export-failure.txt'), failureText)
+    const failureUi = await page.evaluate(() => {
+      const button = [...document.querySelectorAll('button')].find(element => element.textContent?.trim() === 'Try Again')
+      const overlay = button?.closest('div.fixed.inset-0.z-50')
+      const describe = element => element ? {
+        tag: element.tagName,
+        className: element.className,
+        ariaHidden: element.getAttribute('aria-hidden'),
+        hidden: element.hidden,
+        inert: element.inert,
+        display: getComputedStyle(element).display,
+        visibility: getComputedStyle(element).visibility,
+        opacity: getComputedStyle(element).opacity,
+        rect: element.getBoundingClientRect().toJSON(),
+      } : null
+      const ancestors = []
+      for (let element = button; element && ancestors.length < 12; element = element.parentElement) ancestors.push(describe(element))
+      return { button: describe(button), overlay: describe(overlay), ancestors }
+    })
+    fs.writeFileSync(path.join(home, 'native-export-failure.txt'), `${failureText}\n\nUI diagnostics:\n${JSON.stringify(failureUi, null, 2)}`)
     await failureDialog.screenshot({ path: path.join(home, 'native-export-failure.png') })
     assert.match(failureText, /Source file not found: red\.png/, 'missing source must identify the asset; inspect native-export-failure.txt')
     assert.equal(fs.existsSync(nativeFailurePath), false)
