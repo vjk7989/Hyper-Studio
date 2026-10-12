@@ -1,5 +1,14 @@
 # Architecture decision record
 
+## ADR 0016: The embedded Workflow ships without inherited cloud or account surfaces
+
+- **Status:** Accepted at implementation commit `e4f1035`. The fresh Windows installed gate passed in [run 38237150406](https://github.com/vjk7989/Hyper-Studio/actions/runs/38237150406), followed by the macOS/Linux package gate in [run 38238687573](https://github.com/vjk7989/Hyper-Studio/actions/runs/38238687573).
+- **Decision:** The embedded Vue build omits inherited cloud account routes, OAuth/Firebase entry points, account and billing dialogs, hosted Agent consent, cloud promotion media, and upstream registry/network helpers. Compatibility imports resolve to inert embedded auth, billing, consent, and engine API facades. Global Workflow settings use the managed local engine, and Manager discovery stays on the local reviewed catalog. Help and issue links use Hyper-Studio-owned destinations. Desktop Settings exposes provider credentials only through Connections; the dormant legacy API-key forms and duplicate fetch/mutation paths are removed.
+- **Package boundary:** Embedded output disables source-map generation and rejects emitted `.map` files without rewriting minified JavaScript or CSS. It also rejects known inherited cloud destinations and branded asset names, excludes `.pytest_cache` and `.ci` from the managed engine package, and omits the unused sign-in promotion image. The same package-hygiene guard runs against Windows, macOS, and Linux packaged Workflow output.
+- **Compatibility boundary:** Preserve imported workflow JSON, node IDs, node class/schema identifiers, `Comfy.*` setting IDs, provider/model names, and required legal attribution. A workflow that contains a removed cloud node keeps its serialized ID and receives missing-node guidance; the embedded app does not issue its inherited cloud request.
+- **Evidence:** Windows run 38237150406 passed 1,495/1,495 desktop tests, 2/2 Editor/migration tests, the embedded canvas and Manager checks, fresh unsigned NSIS installation, and all 15 installed smoke scripts. Warm mode switching measured 79 ms p95. Its package audit found zero source maps, forbidden assets, forbidden destinations, or residual legacy visual filenames in built trees. Artifact `11741935156` uploaded as a 431,511,687-byte zip. Platform run 38238687573 passed macOS 15 package/smoke/brand in 5m19s and Ubuntu 24.04 in 4m12s. The read-only OpenCode audit changed no source; Codex reviewed its report and the resulting implementation.
+- **Limits:** The Windows package is unsigned. Live provider acceptance, model-backed inference, and installation from a real external pack source remain unverified.
+
 ## ADR 0015: Shared-shell controls own focus and serialize connection actions
 
 - **Status:** Phase 5.3 Windows installed gate passed in [run 38125371341](https://github.com/vjk7989/Hyper-Studio/actions/runs/38125371341), source `17c8893`.

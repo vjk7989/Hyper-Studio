@@ -41,10 +41,10 @@ The numbered steps below are sequential gates. A subtask stays `[·]` after impl
 
 ### 5.5 Brand and platform release gate
 
-- [ ] 5.5.1 Inspect remaining light/dark, loading, empty, and error states plus inherited cloud/account paths; fix residual app-owned branding.
-- [ ] 5.5.2 Pass full relevant unit suites, typechecks, builds, brand scan, unsigned Windows NSIS installation and smoke.
-- [ ] 5.5.3 After Windows passes, pass macOS and Linux packaged smokes in GitHub Actions; fix and rerun affected jobs.
-- [ ] 5.5.4 Refresh architecture record, handoff, code map, Graft graph, and codebase-memory status; record live provider/model/external-pack limits without claiming verification.
+- [x] 5.5.1 Inspect remaining light/dark, loading, empty, and error states plus inherited cloud/account paths; fix residual app-owned branding. Embedded cloud/account routes, UI, assets, hosted operations, and inherited destinations are absent from the shipped build; Windows installed interaction and brand smoke passed in run 38237150406.
+- [x] 5.5.2 Pass full relevant unit suites, typechecks, builds, brand scan, unsigned Windows NSIS installation and smoke. Run 38237150406 passed 1,495 desktop tests, 2 editor/migration tests, the embedded canvas and Manager gates, a fresh unsigned NSIS install, all 15 installed-app smoke scripts, and the packaged brand/asset audit.
+- [x] 5.5.3 After Windows passes, pass macOS and Linux packaged smokes in GitHub Actions; fix and rerun affected jobs. Run 38238687573 passed macOS 15 packaging/smoke/brand audit in 5m19s and Ubuntu 24.04 packaging/smoke/brand audit in 4m12s against commit `e4f1035`.
+- [x] 5.5.4 Refresh architecture record, handoff, code map, Graft graph, and codebase-memory status; record live provider/model/external-pack limits without claiming verification. Graft covers 7,112 files/64,607 nodes/159,439 edges; codebase-memory is indexed at 655,222 nodes/976,899 edges and reported no portable artifact.
 
 ## Current checkpoint — project controls and functional smoke
 
