@@ -54,11 +54,12 @@ jobs:
           pnpm --version
           node .tools/pnpm11/node_modules/pnpm/bin/pnpm.cjs --dir apps/workflow-ui install --frozen-lockfile --store-dir "$GITHUB_WORKSPACE/.local-cache/pnpm11"
           (cd apps/workflow-ui && node --max-old-space-size=4096 node_modules/vue-tsc/bin/vue-tsc.js --noEmit -p tsconfig.hyper-studio.json)
-          (cd apps/workflow-ui && DISTRIBUTION=localhost VITE_HYPER_STUDIO_EMBEDDED=true node node_modules/vite/bin/vite.js build --config vite.config.mts)
+          (cd apps/workflow-ui && DISTRIBUTION=localhost VITE_HYPER_STUDIO_EMBEDDED=true GENERATE_SOURCEMAP=false node node_modules/vite/bin/vite.js build --config vite.config.mts)
           if ! grep -R -F -q 'hyper-studio:request-workflow' apps/workflow-ui/dist/assets; then
             echo 'Embedded workflow bridge is missing from the canvas build' >&2
             exit 1
           fi
+          node scripts/assert-package-hygiene.mjs apps/workflow-ui/dist
       - name: Test embedded workflow account isolation
         shell: bash
         run: |
@@ -102,6 +103,7 @@ jobs:
         run: |
           node .tools/pnpm10/node_modules/pnpm/bin/pnpm.cjs --dir apps/desktop exec electron-builder --mac --arm64 --dir --publish never
           "$GITHUB_WORKSPACE/apps/desktop/release/mac-arm64/Hyper-Studio.app/Contents/Resources/tools/ffmpeg" -version | sed -n '1p'
+          node scripts/assert-package-hygiene.mjs apps/desktop/release/mac-arm64/Hyper-Studio.app/Contents/Resources/workflow-frontend
           export HYPER_STUDIO_SMOKE_EXE="$GITHUB_WORKSPACE/apps/desktop/release/mac-arm64/Hyper-Studio.app/Contents/MacOS/Hyper-Studio"
           node scripts/smoke-packaged-electron.mjs
       - name: Package and smoke Linux
@@ -110,6 +112,7 @@ jobs:
         run: |
           node .tools/pnpm10/node_modules/pnpm/bin/pnpm.cjs --dir apps/desktop exec electron-builder --linux --x64 --dir --publish never
           "$GITHUB_WORKSPACE/apps/desktop/release/linux-unpacked/resources/tools/ffmpeg" -version | sed -n '1p'
+          node scripts/assert-package-hygiene.mjs apps/desktop/release/linux-unpacked/resources/workflow-frontend
           export HYPER_STUDIO_SMOKE_EXE="$GITHUB_WORKSPACE/apps/desktop/release/linux-unpacked/hyper-studio"
           xvfb-run -a node scripts/smoke-packaged-linux-cdp.mjs
       - name: Audit packaged brand assets
@@ -176,11 +179,14 @@ jobs:
           try {
             $env:DISTRIBUTION = 'localhost'
             $env:VITE_HYPER_STUDIO_EMBEDDED = 'true'
+            $env:GENERATE_SOURCEMAP = 'false'
             & ../../scripts/with-local-env.ps1 -Executable node -Arguments @('--max-old-space-size=4096', 'node_modules/vue-tsc/bin/vue-tsc.js', '--noEmit', '-p', 'tsconfig.hyper-studio.json')
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
             & ../../scripts/with-local-env.ps1 -Executable node -Arguments @('node_modules/vite/bin/vite.js', 'build', '--config', 'vite.config.mts')
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           } finally { Pop-Location }
+          & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/assert-package-hygiene.mjs', 'apps/workflow-ui/dist')
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Build and test desktop
         shell: pwsh
         run: |
@@ -228,6 +234,8 @@ jobs:
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           } finally { Pop-Location }
           & ./scripts/install-windows-local.ps1 -Destination '.local-tmp/installed-ci'
+          & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/assert-package-hygiene.mjs', '.local-tmp/installed-ci/resources/workflow-frontend')
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           $ffmpeg = Join-Path $env:GITHUB_WORKSPACE '.local-tmp/installed-ci/resources/tools/ffmpeg.exe'
           if (-not (Test-Path -LiteralPath $ffmpeg)) { throw 'Installed FFmpeg is missing' }
           & $ffmpeg -version | Select-Object -First 1

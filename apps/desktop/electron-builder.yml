@@ -54,6 +54,9 @@ extraResources:
       - "!**/.git/**"
   - from: ../workflow-ui/dist
     to: workflow-frontend
+    filter:
+      - "**/*"
+      - "!**/*.map"
   - from: resources/explore-assets
     to: explore-assets
   - from: dist-remote
