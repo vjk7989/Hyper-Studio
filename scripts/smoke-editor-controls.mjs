@@ -498,12 +498,15 @@ try {
   const copiedPng = path.join(project, 'assets', 'red.png')
   const temporarilyUnavailablePng = path.join(fixture, 'red-temporarily-unavailable.png')
   const nativeFailurePath = path.join(home, 'expected-native-failure.mp4')
-  fs.renameSync(copiedPng, temporarilyUnavailablePng)
   try {
     await app.evaluate(({ dialog }, filePath) => {
       dialog.showSaveDialog = async () => ({ canceled: false, filePath })
     }, nativeFailurePath)
     await page.getByRole('button', { name: 'Export', exact: true }).last().click()
+    // The project media watcher reacts to missing files. Open the settings
+    // dialog first so this check isolates native export's missing-source path.
+    await page.getByRole('button', { name: 'Export Video' }).waitFor({ state: 'visible', timeout: 5000 })
+    fs.renameSync(copiedPng, temporarilyUnavailablePng)
     await page.getByRole('button', { name: 'Export Video' }).click()
     await page.getByText('Export failed', { exact: true }).waitFor({ state: 'visible', timeout: 15000 })
     const failureDialog = page.locator('div.fixed.inset-0.z-50').last()
@@ -516,7 +519,7 @@ try {
     await page.getByRole('button', { name: 'Export Video' }).waitFor({ state: 'visible' })
     record('Native export failure returns to settings', 'missing disposable source reports error; Try Again restores controls')
   } finally {
-    fs.renameSync(temporarilyUnavailablePng, copiedPng)
+    if (fs.existsSync(temporarilyUnavailablePng)) fs.renameSync(temporarilyUnavailablePng, copiedPng)
   }
 
   const cancelPath = path.join(home, 'editor-canceled-render.mp4')
