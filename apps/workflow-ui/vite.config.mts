@@ -19,6 +19,7 @@ import { createHtmlPlugin } from 'vite-plugin-html'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
 import { comfyAPIPlugin } from './build/plugins/comfyAPIPlugin.ts'
+import { hyperStudioEmbeddedOutputPlugin } from './build/plugins/hyperStudioEmbeddedOutputPlugin.ts'
 
 dotenvConfig()
 
@@ -485,6 +486,7 @@ export default defineConfig({
   },
 
   plugins: [
+    hyperStudioEmbeddedOutputPlugin(IS_HYPER_STUDIO_EMBEDDED),
     {
       name: 'hyper-studio-embedded-account-ui',
       enforce: 'pre',
