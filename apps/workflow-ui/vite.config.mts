@@ -43,6 +43,9 @@ const EMBEDDED_ACCOUNT_IDENTITY = resolve(
 const EMBEDDED_AUTH_STORE = resolve(
   'src/platform/distribution/embeddedAuthStore.ts'
 )
+const EMBEDDED_BILLING_CONTEXT = resolve(
+  'src/platform/distribution/embeddedBillingContext.ts'
+)
 const EMBEDDED_COMFY_API = resolve(
   'src/platform/distribution/embeddedComfyApi.ts'
 )
@@ -511,6 +514,14 @@ export default defineConfig({
         ) {
           return EMBEDDED_COMFY_API
         }
+        if (
+          source === '@/composables/billing/useBillingContext' ||
+          normalizedSource.endsWith(
+            '/src/composables/billing/useBillingContext.ts'
+          )
+        ) {
+          return EMBEDDED_BILLING_CONTEXT
+        }
         if (source === '@/platform/auth/firebaseIdentity') {
           return EMBEDDED_ACCOUNT_IDENTITY
         }
@@ -969,6 +980,8 @@ export default defineConfig({
     alias: {
       ...(IS_HYPER_STUDIO_EMBEDDED
         ? {
+            '@/composables/billing/useBillingContext':
+              EMBEDDED_BILLING_CONTEXT,
             '@/config/comfyApi': EMBEDDED_COMFY_API,
             '@/platform/auth/firebaseIdentity': EMBEDDED_ACCOUNT_IDENTITY,
             '@/stores/authStore': EMBEDDED_AUTH_STORE,
