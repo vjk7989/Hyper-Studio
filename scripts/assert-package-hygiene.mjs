@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 
 const FORBIDDEN_ASSET_NAME = /^(?:Cloud[A-Za-z0-9]*|ComfyCloud[A-Za-z0-9]*|comfy-(?:cloud|logo)|OAuth[A-Za-z0-9]*|onboardingCloudRoutes|cloudFeedbackTopbarButton|useCloudAuthPage|useSubscriptionDialog|vendor-firebase|firebaseIdentity|SignInContent|SignUpForm|UserPanel|UserSelectView|CreditsPanel|Subscription(?:Required|Inactive|Transition|Cancellation)[A-Za-z0-9]*|CancelSubscriptionDialogContent|SubscribeToRun|ApiNodesSignInContent|CurrentUserPopoverWorkspace|WorkspaceSwitcherPopover|(?:Create|Delete|Edit|Leave|TeamWorkspaces|SetMemberCreditLimit|InviteMember|InviteMemberUpsell|RevokeInvite|RemoveMember|ChangeMemberRole|DowngradeRemoveMembers)DialogContent)(?:[-.])/i
 const FORBIDDEN_DESTINATIONS = [
-  /(?<![a-z0-9.-])(?:[a-z0-9-]+\.)*comfy\.org\b/gi,
+  /(?:https?|wss?):\/\/(?:[a-z0-9-]+\.)*comfy\.org\b/gi,
   /https?:\/\/[^\s"'`]*\.firebaseapp\.com\b/gi,
   /https?:\/\/[^\s"'`]*\.firebaseio\.com\b/gi,
   /https?:\/\/(?:identitytoolkit|securetoken)\.googleapis\.com\b/gi
