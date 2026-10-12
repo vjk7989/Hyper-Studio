@@ -131,7 +131,7 @@ try {
   assert.equal(await extensionNav.evaluate(element=>document.activeElement===element),true,'Settings navigation must be keyboard focusable')
   // Vue ignores events dispatched in the same task that attached its listener.
   // Use a bounded host-side wait because animation frames can pause in CI.
-  await canvas.waitForTimeout(75)
+  await window.waitForTimeout(75)
   await settings.waitFor({state:'visible',timeout:5000})
   await extensionNav.press('Enter')
   try {
