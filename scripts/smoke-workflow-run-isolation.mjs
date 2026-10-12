@@ -145,4 +145,24 @@ try {
   const missingErrors=await canvas.locator('body').innerText()
   assert.match(missingErrors,/WorkflowSmokeMissingNode|missing node|missing custom node/i,'Missing-node guidance must be visible')
   log('PASS missing-node JSON and guidance')
-} finally { await app.close() }
+} finally {
+  // A dirty imported graph can raise beforeunload while Electron is closing.
+  // Handle that dialog explicitly: Playwright's automatic dismissal can race
+  // the destroyed frame and reject with "No dialog is showing" after every
+  // assertion has already passed.
+  const shutdownDialogs=[]
+  const dialogHandlers=[]
+  const unexpectedDialogErrors=[]
+  for(const page of app.windows()) page.on('dialog',dialog=>{
+    shutdownDialogs.push(dialog.type())
+    dialogHandlers.push(dialog.accept().catch(error=>{
+      if(!/No dialog is showing|Target (page|browser|context) has been closed/i.test(String(error))) unexpectedDialogErrors.push(error)
+    }))
+  })
+  try { await app.close() }
+  finally {
+    await Promise.all(dialogHandlers)
+    if(shutdownDialogs.length) log('SHUTDOWN DIALOGS',shutdownDialogs)
+    if(unexpectedDialogErrors.length) throw unexpectedDialogErrors[0]
+  }
+}
