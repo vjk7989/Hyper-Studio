@@ -67,6 +67,31 @@ test('rejects inherited cloud assets and destinations', async (t) => {
   ])
 })
 
+test('rejects unified and workspace subscription chunks with eager cloud destinations', async (t) => {
+  const root = await fixture({
+    ...requiredFiles,
+    'assets/SubscriptionRequiredDialogContentUnified-cafe1234.js':
+      'const accountEndpoint = "https://cloud.comfy.org/api/account"',
+    'assets/SubscriptionRequiredDialogContentWorkspace-beef5678.js':
+      'const billingEndpoint = "https://cloud.comfy.org/api/billing"'
+  })
+  t.after(() => rm(root, { recursive: true, force: true }))
+
+  const result = await inspectWorkflowFrontend(root)
+
+  assert.equal(result.ok, false)
+  assert.deepEqual(result.forbiddenAssets, [
+    'assets/SubscriptionRequiredDialogContentUnified-cafe1234.js',
+    'assets/SubscriptionRequiredDialogContentWorkspace-beef5678.js'
+  ])
+  assert.equal(result.forbiddenDestinations.length, 2)
+  assert.ok(
+    result.forbiddenDestinations.every(
+      ({ destination }) => destination === 'https://cloud.comfy.org'
+    )
+  )
+})
+
 test('requires the build manifest and embed bridge', async (t) => {
   const root = await fixture({ 'assets/index.js': 'console.log("local")' })
   t.after(() => rm(root, { recursive: true, force: true }))

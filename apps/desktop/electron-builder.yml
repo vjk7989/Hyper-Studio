@@ -51,6 +51,8 @@ extraResources:
       - "!user/**"
       - "!tests/**"
       - "!tests-unit/**"
+      - "!**/.pytest_cache/**"
+      - "!**/.ci/**"
       - "!**/.git/**"
   - from: ../workflow-ui/dist
     to: workflow-frontend

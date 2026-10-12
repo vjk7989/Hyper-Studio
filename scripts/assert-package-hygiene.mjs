@@ -39,7 +39,7 @@ async function walkFiles(root) {
 
 export async function inspectWorkflowFrontend(rootPath) {
   const root = path.resolve(rootPath)
-  const files = await walkFiles(root)
+  const files = (await walkFiles(root)).sort()
   const relative = (file) => path.relative(root, file).replaceAll('\\', '/')
   const sourceMaps = files.filter((file) => file.toLowerCase().endsWith('.map'))
   const forbiddenAssets = files.filter((file) =>

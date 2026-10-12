@@ -233,6 +233,11 @@ jobs:
             & ../../scripts/with-local-env.ps1 -Executable node -Arguments @('node_modules/electron-builder/cli.js', '--win', '--x64', '--publish', 'never')
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           } finally { Pop-Location }
+          $packagedWorkflowFrontend = 'apps/desktop/release/win-unpacked/resources/workflow-frontend'
+          if (Test-Path -LiteralPath $packagedWorkflowFrontend) {
+            & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/assert-package-hygiene.mjs', $packagedWorkflowFrontend)
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
           & ./scripts/install-windows-local.ps1 -Destination '.local-tmp/installed-ci'
           & ./scripts/with-local-env.ps1 -Executable node -Arguments @('scripts/assert-package-hygiene.mjs', '.local-tmp/installed-ci/resources/workflow-frontend')
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
