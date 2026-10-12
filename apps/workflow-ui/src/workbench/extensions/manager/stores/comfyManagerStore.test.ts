@@ -550,6 +550,55 @@ describe('useComfyManagerStore', () => {
     }
   })
 
+  it.for([
+    {
+      name: 'a Git-only pack offered as nightly',
+      installed: {
+        aux_id: 'ltdrdata/ComfyUI-Impact-Pack',
+        cnr_id: '',
+        ver: '1234567',
+        enabled: true
+      },
+      expectedVersion: 'unknown'
+    },
+    {
+      name: 'a registry pack installed from Git',
+      installed: {
+        aux_id: 'ltdrdata/ComfyUI-Impact-Pack',
+        cnr_id: 'comfyui-impact-pack',
+        ver: '1234567',
+        enabled: true
+      },
+      expectedVersion: 'nightly'
+    },
+    {
+      name: 'a pack with no installed metadata',
+      installed: undefined,
+      expectedVersion: 'nightly'
+    }
+  ])(
+    'updates $name using the Manager installed identity',
+    async ({ installed, expectedVersion }) => {
+      vi.mocked(mockManagerService.listInstalledPacks).mockResolvedValue(
+        installed ? { 'comfyui-impact-pack': installed } : {}
+      )
+      const store = useComfyManagerStore()
+      await store.refreshInstalledList()
+      await nextTick()
+
+      await store.updatePack.call({
+        id: 'comfyui-impact-pack',
+        version: 'nightly'
+      })
+
+      expect(mockManagerService.updatePack).toHaveBeenCalledWith(
+        { node_name: 'comfyui-impact-pack', node_ver: expectedVersion },
+        expect.any(String),
+        expect.any(AbortSignal)
+      )
+    }
+  )
+
   const scenarios = [
     {
       method: 'updatePack',

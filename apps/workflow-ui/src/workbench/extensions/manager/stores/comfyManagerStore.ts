@@ -488,9 +488,15 @@ export const useComfyManagerStore = defineStore('comfyManager', () => {
   const updatePack = useCachedRequest<ManagerPackInfo, void>(
     async (params: ManagerPackInfo, signal?: AbortSignal) => {
       updateAllPacks.cancel()
+      const installedPack = installedPacks.value[params.id]
       const updateParams: components['schemas']['UpdatePackParams'] = {
         node_name: params.id,
-        node_ver: params.version
+        // Manager indexes a Git-only install in unknown_active_nodes even when
+        // the catalog offers its nightly version. Match the installed identity.
+        node_ver:
+          installedPack?.aux_id && !installedPack.cnr_id
+            ? 'unknown'
+            : params.version
       }
       const task = (taskId: string) =>
         managerService.updatePack(updateParams, taskId, signal)

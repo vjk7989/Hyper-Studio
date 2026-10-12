@@ -264,6 +264,12 @@ try {
   await packCard.click()
   const updateButton = manager.getByRole('button', { name: 'Try Update', exact: true })
   await updateButton.waitFor({ state: 'visible', timeout: 15000 })
+  const installedPackResponse = await fetch(new URL('v2/customnode/installed', restarted.url))
+  if (!installedPackResponse.ok) throw new Error(`Manager installed-pack lookup failed: ${installedPackResponse.status}`)
+  const installedPack = (await installedPackResponse.json())[packId]
+  if (!installedPack?.aux_id || installedPack.cnr_id) {
+    throw new Error(`Fixture must be a Git-only install for this update test: ${JSON.stringify(installedPack)}`)
+  }
   const submittedTasks = []
   window.on('request', request => {
     if (/\/v2\/manager\/queue\/task(?:\?|$)/.test(request.url())) submittedTasks.push(JSON.parse(request.postData() || '{}'))
@@ -271,7 +277,7 @@ try {
   await updateButton.click()
   for (let attempt = 0; attempt < 40 && submittedTasks.length < 1; attempt++) await window.waitForTimeout(250)
   const updateTask = submittedTasks[0]
-  if (submittedTasks.length !== 1 || updateTask?.kind !== 'update' || updateTask.params?.node_name !== packId || updateTask.params?.node_ver !== 'nightly') {
+  if (submittedTasks.length !== 1 || updateTask?.kind !== 'update' || updateTask.params?.node_name !== packId || updateTask.params?.node_ver !== 'unknown') {
     throw new Error(`Manager update task mismatch: ${JSON.stringify(submittedTasks)}`)
   }
   const updated = await waitForBatch(updateTask.ui_id)
