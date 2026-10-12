@@ -5,10 +5,16 @@ import fs from 'fs'
 import { isDev, getCurrentDir } from '../config'
 import { logger } from '../logger'
 import { getPythonDir } from '../python-setup'
+import { findPackagedFfmpegPath } from './packaged-ffmpeg'
 
 let activeExportProcess: ChildProcess | null = null
 
 export function findFfmpegPath(): string | null {
+  if (!isDev) {
+    const packagedBinary = findPackagedFfmpegPath(process.resourcesPath, process.platform)
+    if (packagedBinary) return packagedBinary
+  }
+
   let binDir: string | null = null
 
   if (process.platform === 'win32') {
