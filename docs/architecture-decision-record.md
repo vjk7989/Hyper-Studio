@@ -125,6 +125,14 @@ This record separates accepted product decisions from verified implementation. P
 - **Interaction:** One shared-storage picker owns cancel, error, busy, and focus behavior. The prompt traps focus, preserves the explicit Explore choice across restart, keeps the Retry path for a locked profile vault, and suppresses its transition under reduced motion. The Projects page no longer owns a duplicate storage picker.
 - **Evidence and limits:** Fresh installed smoke and 1,489 desktop tests passed. Run 38123169585 exposed a missing reduced-motion rule; rerun 38123552292 passed after correction. The locked-vault case uses a controlled rejected profile-list IPC fixture. Live provider credentials and shared-storage-root migration with existing private profiles were not exercised.
 
+## ADR 0015: Preserve mounted surfaces during background media migration
+
+- **Status:** Phase 5.4 Windows installed control gate passed in [run 38227106140](https://github.com/vjk7989/Hyper-Studio/actions/runs/38227106140) at `d50bf07`.
+- **Decision:** A background media migration or cross-mode media notification updates the active project's data without changing the mounted Editor identity. Modal state, Undo history, focus, and in-progress local interaction remain attached to the existing surface. Installed Workflow smoke cleanup uses a bounded dirty-state teardown so a failed browser interaction cannot hang CI; that teardown is test-only and does not alter application behavior.
+- **Reason:** An earlier installed run remounted Editor when Workflow media arrived during Export, discarding the retry state. Another run waited indefinitely during Workflow Settings cleanup. Both failures obscured the actual control result and made the gate nondeterministic.
+- **Evidence:** The final run passed 1,494 desktop tests and 2 focused Editor action tests. The installed app passed 30 Editor controls, including media arrival during Export and a 29,006-byte native H.264 render; Workflow passed local PNG execution, Settings → Extension navigation, missing-node ID preservation, wiring, and cancel; Manager passed local-fixture install/update/uninstall with no external renderer request. Custom HTTP selection across both modes, cold reopen, 70 ms warm-switch p95, and zero built residual visual names also passed.
+- **Limits:** Live hosted provider generation, model-backed inference, installation from a real external pack source, remaining optional visual states, and this continuation's macOS/Linux package gates are unverified.
+
 ## Imported source provenance and licenses
 
 

@@ -1,5 +1,19 @@
 # Codebase map
 
+## Phase 5.4 Windows control checkpoint
+
+[Windows run 38227106140](https://github.com/vjk7989/Hyper-Studio/actions/runs/38227106140) passed at `d50bf07`: 1,494 desktop tests, 2 focused Editor action tests, 30 installed Editor controls with a 29,006-byte H.264 render, Workflow local PNG/Settings Extension/missing-node ID checks, Manager local-fixture install/update/uninstall with no external renderer request, Custom HTTP profile use in both modes, cold reopen, ten warm switches at 70 ms p95, and zero built residual visual names.
+
+| Concern | Primary edit points | Verified behavior |
+| --- | --- | --- |
+| Background media migration without Editor remount | `apps/desktop/frontend/views/Project.tsx` and the Editor media synchronization path | Incoming Workflow media updates the mounted Editor without discarding Export state; installed Editor controls passed 30/30. |
+| Installed Editor control/render smoke | `scripts/smoke-editor-controls.mjs`, `scripts/smoke-editor-actions.mjs` | Timeline gestures, track commands, Undo/Redo, export success/failure/cancel/retry, and native H.264 inspection passed. |
+| Workflow active controls and bounded cleanup | `scripts/smoke-workflow-run-isolation.mjs` | Local PNG execution, wiring, cancellation, stable JSON IDs, missing-node guidance, and Settings → Extension passed. Dirty teardown is bounded test-only cleanup. |
+| Manager offline lifecycle | `scripts/smoke-manager-local-install.mjs` and repository-local Manager fixtures | Reviewed install, restart, update, and uninstall passed; the renderer made no external request. |
+| Shared profile, reopen, and switch checks | `scripts/smoke-provider-cross-mode.mjs`, `scripts/smoke-packaged-reopen.mjs`, `scripts/smoke-mode-switch-timing.mjs` | One Custom HTTP profile worked across both modes, cold reopen passed, and warm toggle p95 was 70 ms. |
+
+Graft refreshed at this checkpoint to 7,102 files, 64,588 nodes, 159,445 edges, and 7,102 cards. The persistent codebase-memory snapshot refreshed with status `indexed` at 655,150 nodes and 976,907 edges; it is not verified live shared synchronization. Live provider calls, model-backed inference, installation from a real external pack source, and the Phase 5.5 macOS/Linux release rerun are outside this checkpoint.
+
 ## Phase 5.3 shared-shell controls
 
 [Windows installed run 38125371341](https://github.com/vjk7989/Hyper-Studio/actions/runs/38125371341) passed 1,492/1,492 desktop tests and ten warm mode toggles at **72 ms p95**. The [gate report](gates/phase-5-shell-controls.md) has the corrected smoke trail and limits.
