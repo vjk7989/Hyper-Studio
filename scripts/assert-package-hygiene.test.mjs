@@ -50,7 +50,11 @@ test('allows source-map examples embedded in JavaScript strings', async (t) => {
     ...requiredFiles,
     'assets/vendor.js': [
       'const lineExample = "//# sourceMappingURL=example.js.map"',
-      "const blockExample = '/*# sourceMappingURL=example.js.map */'"
+      "const blockExample = '/*# sourceMappingURL=example.js.map */'",
+      'const templateExample = `before',
+      '//# sourceMappingURL=template.js.map',
+      '/*# sourceMappingURL=template-block.js.map */',
+      'after`'
     ].join('\n')
   })
   t.after(() => rm(root, { recursive: true, force: true }))
@@ -59,6 +63,25 @@ test('allows source-map examples embedded in JavaScript strings', async (t) => {
 
   assert.equal(result.ok, true)
   assert.deepEqual(result.sourceMapReferences, [])
+})
+
+test('rejects end-of-file line and block directives after code', async (t) => {
+  const root = await fixture({
+    ...requiredFiles,
+    'assets/inline-line.js':
+      'const line = true//# sourceMappingURL=inline-line.js.map\n',
+    'assets/inline-block.js':
+      'const block = true/*# sourceMappingURL=inline-block.js.map */\n'
+  })
+  t.after(() => rm(root, { recursive: true, force: true }))
+
+  const result = await inspectWorkflowFrontend(root)
+
+  assert.equal(result.ok, false)
+  assert.deepEqual(result.sourceMapReferences, [
+    'assets/inline-block.js',
+    'assets/inline-line.js'
+  ])
 })
 
 test('rejects inherited cloud assets and destinations', async (t) => {

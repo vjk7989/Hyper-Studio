@@ -19,7 +19,7 @@ const TEXT_EXTENSIONS = new Set([
   '.txt'
 ])
 const SOURCE_MAP_REFERENCE =
-  /(?:^[\t ]*\/\/[#@]\s*sourceMappingURL=.*$|\/\*[#@]\s*sourceMappingURL=[^*]*\*\/[\t ]*$)/m
+  /(?:\/\/[#@][\t ]*sourceMappingURL=[^\r\n]*|\/\*[#@][\t ]*sourceMappingURL=[\s\S]*?\*\/)[\t \r\n]*$/
 
 async function walkFiles(root) {
   const files = []
