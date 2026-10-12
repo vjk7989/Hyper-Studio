@@ -21,6 +21,7 @@ const env = { ...process.env, HOME:home, USERPROFILE:home, APPDATA:path.join(hom
 const app = await electron.launch({ executablePath, cwd:root, env, args:['--no-sandbox','--disable-gpu','--disable-dev-shm-usage'], timeout:120000 })
 const log = (...v) => process.stdout.write(`${v.map(x => typeof x === 'string' ? x : JSON.stringify(x)).join(' ')}\n`)
 log('HOME', home)
+let controlsPassed=false
 try {
   const window = await app.firstWindow({ timeout:45000 })
   // Standalone Playwright has no action timeout by default. A covered canvas
@@ -178,6 +179,10 @@ try {
   const missingErrors=await canvas.locator('body').innerText()
   assert.match(missingErrors,/WorkflowSmokeMissingNode|missing node|missing custom node/i,'Missing-node guidance must be visible')
   log('PASS missing-node JSON and guidance')
+  controlsPassed=true
+} catch(error) {
+  log('FAIL workflow controls',String(error))
+  throw error
 } finally {
   log('STEP shutdown begin')
   // A dirty imported graph can raise beforeunload while Electron is closing.
@@ -206,8 +211,26 @@ try {
     // installed smokes cover clean shutdown; this one has already checked its
     // controls, so terminate only its repository-local disposable app process.
     log('WARN forced dirty-workflow cleanup', {pid:app.process()?.pid, home, ...closeResult})
-    try { app.process()?.kill() }
-    catch(error) { log('WARN process kill failed',String(error)) }
+    let cleanupOk=true
+    try {
+      const child=app.process()
+      if(child && child.exitCode===null && !child.kill()) cleanupOk=false
+    } catch(error) {
+      cleanupOk=false
+      log('WARN process kill failed',String(error))
+    }
+    // Playwright can retain an open transport even after its Electron child is
+    // killed. No assertions remain here; terminate this smoke process after
+    // the warning reaches CI output, preserving failure if controls failed.
+    const exitCode=controlsPassed && cleanupOk?0:1
+    await new Promise(resolve=>{
+      const flushTimer=setTimeout(resolve,250)
+      process.stdout.write(`STEP forced cleanup exit ${exitCode}\n`,()=>{
+        clearTimeout(flushTimer)
+        resolve()
+      })
+    })
+    process.exit(exitCode)
   }
   let dialogTimer
   const dialogsSettled=await Promise.race([
@@ -216,6 +239,6 @@ try {
   ])
   clearTimeout(dialogTimer)
   if(shutdownDialogs.length) log('SHUTDOWN DIALOGS',shutdownDialogs)
-  if(!dialogsSettled) log('WARN shutdown dialog handlers exceeded 5 seconds')
-  if(unexpectedDialogErrors.length) log('WARN shutdown dialog errors',unexpectedDialogErrors.map(String))
+  assert.ok(dialogsSettled,'Shutdown dialog handlers exceeded 5 seconds')
+  if(unexpectedDialogErrors.length) throw unexpectedDialogErrors[0]
 }
