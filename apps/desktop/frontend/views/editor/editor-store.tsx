@@ -2,7 +2,7 @@ import React, { createContext, useCallback, useContext, useMemo } from 'react'
 import { createStore, type StoreApi } from 'zustand/vanilla'
 import { useStoreWithEqualityFn } from 'zustand/traditional'
 import type { EditorState } from './editor-state'
-import { equalUndoSnapshot, getUndoSnapshot } from './editor-state'
+import { applyUndoSnapshot, equalUndoSnapshot, getUndoSnapshot } from './editor-state'
 import * as editorActions from './editor-actions'
 
 const MAX_UNDO_HISTORY = 50
@@ -15,6 +15,7 @@ interface EditorStore {
   setStateWithoutHistory: (value: EditorSetStateAction) => void
   beginHistoryGesture: () => void
   endHistoryGesture: () => void
+  cancelHistoryGesture: () => void
 }
 
 export type EditorStoreApi = StoreApi<EditorStore>
@@ -49,6 +50,12 @@ export function createEditorStore(initialState: EditorState): EditorStoreApi {
       if (start === null) return
       gestureStart = null
       set((prev) => ({ state: recordHistoryStep(start, prev.state) }))
+    },
+    cancelHistoryGesture: () => {
+      const start = gestureStart
+      if (start === null) return
+      gestureStart = null
+      set((prev) => ({ state: applyUndoSnapshot(prev.state, getUndoSnapshot(start)) }))
     },
   }))
   return store
@@ -112,6 +119,7 @@ export function useEditorHistoryGesture() {
   return useMemo(() => ({
     begin: () => store.getState().beginHistoryGesture(),
     end: () => store.getState().endHistoryGesture(),
+    cancel: () => store.getState().cancelHistoryGesture(),
   }), [store])
 }
 

@@ -478,6 +478,23 @@ try {
   await waitUntil(() => activeTimeline()?.clips.find(clip => clip.id === trimClip.id)?.duration < durationBeforeTrim - 0.1, 'Redo trim')
   record('Trim Undo and Redo', 'edge returns to original duration, then shortened duration')
 
+  const durationBeforeCanceledTrim = activeTimeline().clips.find(clip => clip.id === trimClip.id).duration
+  await trimLocator.evaluate(element => element.scrollIntoView({ block: 'nearest', inline: 'center' }))
+  const cancelTrimBox = await trimLocator.boundingBox()
+  assert.ok(cancelTrimBox && cancelTrimBox.width > 40, 'clip is too narrow for canceled trim check')
+  await page.mouse.move(cancelTrimBox.x + cancelTrimBox.width - 5, cancelTrimBox.y + cancelTrimBox.height / 2)
+  await page.mouse.down()
+  await page.mouse.move(cancelTrimBox.x + cancelTrimBox.width - 30, cancelTrimBox.y + cancelTrimBox.height / 2, { steps: 5 })
+  await waitUntil(() => activeTimeline()?.clips.find(clip => clip.id === trimClip.id)?.duration < durationBeforeCanceledTrim - 0.1, 'in-progress trim before Escape')
+  await page.keyboard.press('Escape')
+  await page.mouse.up()
+  await waitUntil(() => Math.abs(activeTimeline()?.clips.find(clip => clip.id === trimClip.id)?.duration - durationBeforeCanceledTrim) < 0.1, 'Escape restores canceled trim')
+  await menu('Edit', 'Undo')
+  await waitUntil(() => Math.abs(activeTimeline()?.clips.find(clip => clip.id === trimClip.id)?.duration - durationBeforeTrim) < 0.1, 'Undo skips canceled trim')
+  await menu('Edit', 'Redo')
+  await waitUntil(() => Math.abs(activeTimeline()?.clips.find(clip => clip.id === trimClip.id)?.duration - durationBeforeCanceledTrim) < 0.1, 'Redo after canceled trim')
+  record('Escape cancels trim without an Undo step', 'reverted preview; next Undo targets the preceding committed trim')
+
   const copiedPng = path.join(project, 'assets', 'red.png')
   const temporarilyUnavailablePng = path.join(fixture, 'red-temporarily-unavailable.png')
   const nativeFailurePath = path.join(home, 'expected-native-failure.mp4')

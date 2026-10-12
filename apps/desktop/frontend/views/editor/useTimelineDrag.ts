@@ -66,7 +66,7 @@ interface UseTimelineDragParams {
   totalDuration: number
   clips: TimelineClip[]
   setClips: React.Dispatch<React.SetStateAction<TimelineClip[]>>
-  historyGesture: { begin: () => void; end: () => void }
+  historyGesture: { begin: () => void; end: () => void; cancel: () => void }
   tracks: Track[]
   selectedClipIds: Set<string>
   setSelectedClipIds: React.Dispatch<React.SetStateAction<Set<string>>>
@@ -112,6 +112,7 @@ export function useTimelineDrag(params: UseTimelineDragParams) {
 
   const [draggingClip, setDraggingClip] = useState<DraggingClipState | null>(null)
   const [resizingClip, setResizingClip] = useState<ResizingClipState | null>(null)
+  const resizeCancelledRef = useRef(false)
   const [slipSlideClip, setSlipSlideClip] = useState<SlipSlideClipState | null>(null)
   const [lassoRect, setLassoRect] = useState<{ startX: number; startY: number; currentX: number; currentY: number } | null>(null)
   const lassoOriginRef = useRef<{ scrollLeft: number; containerLeft: number; containerTop: number } | null>(null)
@@ -623,8 +624,11 @@ export function useTimelineDrag(params: UseTimelineDragParams) {
       clearDragPreviewDom()
     }
     if (resizingClip) {
-      setClips(prev => resolveOverlaps(prev, new Set([resizingClip.clipId])))
-      historyGesture.end()
+      if (!resizeCancelledRef.current) {
+        setClips(prev => resolveOverlaps(prev, new Set([resizingClip.clipId])))
+        historyGesture.end()
+      }
+      resizeCancelledRef.current = false
     }
     
     setDraggingClip(null)
@@ -632,7 +636,7 @@ export function useTimelineDrag(params: UseTimelineDragParams) {
   }, [lassoRect, clips, pixelsPerSecond, draggingClip, resizingClip, setClips, getTrackHeight, trackTopPx, clearDragPreviewDom, historyGesture])
   
   const handleResizeMove = useCallback((e: MouseEvent) => {
-    if (!resizingClip) return
+    if (!resizingClip || resizeCancelledRef.current) return
     
     const clip = clips.find(c => c.id === resizingClip.clipId)
     if (!clip) return
@@ -874,6 +878,7 @@ export function useTimelineDrag(params: UseTimelineDragParams) {
     // Prevent resizing clips on locked tracks
     if (tracks[clip.trackIndex]?.locked) return
     
+    resizeCancelledRef.current = false
     historyGesture.begin()
     setSelectedClipIds(expandWithLinkedClips(new Set([clip.id])))
     
@@ -928,12 +933,26 @@ export function useTimelineDrag(params: UseTimelineDragParams) {
     if (resizingClip) {
       window.addEventListener('mousemove', handleResizeMove)
       window.addEventListener('mouseup', handleMouseUp)
+      window.addEventListener('blur', handleMouseUp)
+      const cancelOnEscape = (event: KeyboardEvent) => {
+        if (event.key !== 'Escape') return
+        event.preventDefault()
+        event.stopPropagation()
+        resizeCancelledRef.current = true
+        historyGesture.cancel()
+        setResizingClip(null)
+      }
+      window.addEventListener('keydown', cancelOnEscape, true)
       return () => {
         window.removeEventListener('mousemove', handleResizeMove)
         window.removeEventListener('mouseup', handleMouseUp)
+        window.removeEventListener('blur', handleMouseUp)
+        window.removeEventListener('keydown', cancelOnEscape, true)
       }
     }
-  }, [resizingClip, handleResizeMove, handleMouseUp])
+  }, [resizingClip, handleResizeMove, handleMouseUp, historyGesture])
+
+  useEffect(() => () => historyGesture.end(), [historyGesture])
   
   // --- Slip/Slide mouse move handler ---
   const handleSlipSlideMove = useCallback((e: MouseEvent) => {
