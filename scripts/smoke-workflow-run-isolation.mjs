@@ -129,6 +129,9 @@ try {
   await extensionNav.waitFor({state:'visible'})
   await extensionNav.focus()
   assert.equal(await extensionNav.evaluate(element=>document.activeElement===element),true,'Settings navigation must be keyboard focusable')
+  // Let Vue attach the newly mounted navigation listener before sending Enter.
+  await extensionNav.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))))
+  await settings.waitFor({state:'visible',timeout:5000})
   await extensionNav.press('Enter')
   try {
     await settings.waitFor({state:'visible',timeout:5000})

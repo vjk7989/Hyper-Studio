@@ -1,9 +1,12 @@
 import { render, screen } from '@testing-library/vue'
+import PrimeVue from 'primevue/config'
 import { beforeEach, expect, it, vi } from 'vitest'
 import { nextTick, ref } from 'vue'
 import type { Ref } from 'vue'
 
 import { i18n } from '@/i18n'
+import GlobalDialog from '@/components/dialog/GlobalDialog.vue'
+import { useDialogStore } from '@/stores/dialogStore'
 import type { NavGroupData } from '@/types/navTypes'
 
 import SettingDialog from './SettingDialog.vue'
@@ -134,4 +137,58 @@ it('falls back when the active navigation item becomes unavailable', async () =>
   expect(
     screen.queryByText('workspace-allowlist panel')
   ).not.toBeInTheDocument()
+})
+
+it('keeps the Reka settings dialog open when Extension is selected with Enter', async () => {
+  settingUiMocks.navGroups.value = [
+    {
+      title: 'General',
+      items: [
+        {
+          id: 'extension',
+          label: 'Extension',
+          icon: 'icon-[lucide--puzzle]'
+        }
+      ]
+    }
+  ]
+  render(GlobalDialog, { global: { plugins: [PrimeVue, i18n] } })
+  const dialogStore = useDialogStore()
+  dialogStore.showDialog({
+    key: 'global-settings',
+    component: SettingDialog,
+    props: {
+      onClose: () => dialogStore.closeDialog({ key: 'global-settings' })
+    },
+    dialogComponentProps: {
+      renderer: 'reka',
+      modal: false,
+      dismissOnFocusOutside: false,
+      size: 'full'
+    }
+  })
+
+  const navigation = await screen.findByRole('button', { name: 'Extension' })
+  navigation.focus()
+  expect(document.activeElement).toBe(navigation)
+  const immediateEvent = new KeyboardEvent('keydown', {
+    key: 'Enter',
+    bubbles: true,
+    cancelable: true
+  })
+  navigation.dispatchEvent(immediateEvent)
+  expect(immediateEvent.defaultPrevented).toBe(false)
+  expect(screen.queryByText('extension panel')).not.toBeInTheDocument()
+
+  // Vue ignores events dispatched in the same task that attached its listener.
+  await new Promise((resolve) => setTimeout(resolve, 0))
+  const settledEvent = new KeyboardEvent('keydown', {
+    key: 'Enter',
+    bubbles: true,
+    cancelable: true
+  })
+  navigation.dispatchEvent(settledEvent)
+  expect(settledEvent.defaultPrevented).toBe(true)
+  expect(await screen.findByText('extension panel')).toBeInTheDocument()
+  expect(screen.getByTestId('settings-dialog')).toBeInTheDocument()
 })
