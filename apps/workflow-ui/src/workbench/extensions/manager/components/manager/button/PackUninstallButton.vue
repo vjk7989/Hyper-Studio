@@ -15,6 +15,7 @@ import { useI18n } from 'vue-i18n'
 import Button from '@/components/ui/button/Button.vue'
 import type { ButtonVariants } from '@comfyorg/design-system/button.variants'
 import type { components } from '@/types/comfyRegistryTypes'
+import type { LocalManagerPack } from '@/workbench/extensions/manager/composables/nodePack/localManagerPackCatalog'
 import { useComfyManagerStore } from '@/workbench/extensions/manager/stores/comfyManagerStore'
 import type { components as ManagerComponents } from '@/workbench/extensions/manager/types/generatedManagerTypes'
 
@@ -30,7 +31,11 @@ const { t } = useI18n()
 
 const createPayload = (
   uninstallItem: NodePack
-): ManagerComponents['schemas']['ManagerPackInfo'] | undefined => {
+):
+  | (ManagerComponents['schemas']['ManagerPackInfo'] & {
+      hyperStudioLocalCatalog?: boolean
+    })
+  | undefined => {
   if (!uninstallItem.id) {
     console.error('Node ID is required for uninstallation')
     return
@@ -38,7 +43,10 @@ const createPayload = (
 
   return {
     id: uninstallItem.id,
-    version: uninstallItem.latest_version?.version || 'unknown'
+    version: uninstallItem.latest_version?.version || 'unknown',
+    hyperStudioLocalCatalog:
+      (uninstallItem as Partial<LocalManagerPack>).hyperStudioLocalCatalog ===
+      true
   }
 }
 

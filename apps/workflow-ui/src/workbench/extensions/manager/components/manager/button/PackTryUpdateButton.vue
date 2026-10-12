@@ -24,6 +24,7 @@ import DotSpinner from '@/components/common/DotSpinner.vue'
 import Button from '@/components/ui/button/Button.vue'
 import type { ButtonVariants } from '@comfyorg/design-system/button.variants'
 import type { components } from '@/types/comfyRegistryTypes'
+import type { LocalManagerPack } from '@/workbench/extensions/manager/composables/nodePack/localManagerPackCatalog'
 import { useComfyManagerStore } from '@/workbench/extensions/manager/stores/comfyManagerStore'
 
 type NodePack = components['schemas']['Node']
@@ -48,7 +49,9 @@ async function tryUpdate() {
   try {
     await managerStore.updatePack.call({
       id: nodePack.id,
-      version: 'nightly'
+      version: 'nightly',
+      hyperStudioLocalCatalog:
+        (nodePack as Partial<LocalManagerPack>).hyperStudioLocalCatalog === true
     })
     managerStore.updatePack.clear()
   } catch (error) {

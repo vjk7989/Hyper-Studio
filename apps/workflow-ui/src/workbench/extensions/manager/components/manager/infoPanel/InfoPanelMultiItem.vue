@@ -80,6 +80,7 @@ import Button from '@/components/ui/button/Button.vue'
 import ModelInfoField from '@/platform/assets/components/modelInfo/ModelInfoField.vue'
 import { useComfyRegistryStore } from '@/stores/comfyRegistryStore'
 import type { components } from '@/types/comfyRegistryTypes'
+import type { LocalManagerPack } from '@/workbench/extensions/manager/composables/nodePack/localManagerPackCatalog'
 import { cn } from '@comfyorg/tailwind-utils'
 import PackStatusMessage from '@/workbench/extensions/manager/components/manager/PackStatusMessage.vue'
 import PackInstallButton from '@/workbench/extensions/manager/components/manager/button/PackInstallButton.vue'
@@ -128,7 +129,9 @@ async function updateSelectedNightlyPacks() {
       if (!pack.id) continue
       await managerStore.updatePack.call({
         id: pack.id,
-        version: 'nightly'
+        version: 'nightly',
+        hyperStudioLocalCatalog:
+          (pack as Partial<LocalManagerPack>).hyperStudioLocalCatalog === true
       })
     }
     managerStore.updatePack.clear()

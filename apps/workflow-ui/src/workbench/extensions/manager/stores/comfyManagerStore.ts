@@ -26,6 +26,7 @@ import { versionStatusFilters } from '@/workbench/extensions/manager/utils/nodeP
 type InstallPackParams = components['schemas']['InstallPackParams']
 type InstalledPacksResponse = components['schemas']['InstalledPacksResponse']
 type ManagerPackInfo = components['schemas']['ManagerPackInfo']
+type PackActionInfo = ManagerPackInfo & { hyperStudioLocalCatalog?: boolean }
 type ManagerPackInstalled = components['schemas']['ManagerPackInstalled']
 type ManagerTaskHistory = Record<
   string,
@@ -463,22 +464,28 @@ export const useComfyManagerStore = defineStore('comfyManager', () => {
     }
   }
 
-  const isUnknownGitPack = (packId: NodePackId) => {
-    const installedPack = installedPacks.value[packId]
-    return !!installedPack?.aux_id && !installedPack.cnr_id
+  const getUnknownGitIdentity = (params: PackActionInfo) => {
+    const installedPack = installedPacks.value[params.id]
+    if (!installedPack?.aux_id) return null
+    // Manager writes a cnr_id for a Git install, even if an offline restart
+    // puts it in unknown_active_nodes. The local catalog identifies that case.
+    if (installedPack.cnr_id && !params.hyperStudioLocalCatalog) return null
+    const repositoryName = installedPack.aux_id.split('/').at(-1)
+    return repositoryName || params.id
   }
 
   const uninstallPack = async (
-    params: ManagerPackInfo,
+    params: PackActionInfo,
     signal?: AbortSignal
   ) => {
     installPack.clear()
     installPack.cancel()
 
     installingPacksIds.value.add(params.id)
+    const unknownGitName = getUnknownGitIdentity(params)
     const uninstallParams: components['schemas']['UninstallPackParams'] = {
-      node_name: params.id,
-      is_unknown: isUnknownGitPack(params.id)
+      node_name: unknownGitName ?? params.id,
+      is_unknown: unknownGitName !== null
     }
     const task = (taskId: string) => {
       taskIdToPackId.value.set(taskId, params.id)
@@ -490,14 +497,13 @@ export const useComfyManagerStore = defineStore('comfyManager', () => {
     )
   }
 
-  const updatePack = useCachedRequest<ManagerPackInfo, void>(
-    async (params: ManagerPackInfo, signal?: AbortSignal) => {
+  const updatePack = useCachedRequest<PackActionInfo, void>(
+    async (params: PackActionInfo, signal?: AbortSignal) => {
       updateAllPacks.cancel()
+      const unknownGitName = getUnknownGitIdentity(params)
       const updateParams: components['schemas']['UpdatePackParams'] = {
-        node_name: params.id,
-        // Manager indexes a Git-only install in unknown_active_nodes even when
-        // the catalog offers its nightly version. Match the installed identity.
-        node_ver: isUnknownGitPack(params.id) ? 'unknown' : params.version
+        node_name: unknownGitName ?? params.id,
+        node_ver: unknownGitName ? 'unknown' : params.version
       }
       const task = (taskId: string) =>
         managerService.updatePack(updateParams, taskId, signal)

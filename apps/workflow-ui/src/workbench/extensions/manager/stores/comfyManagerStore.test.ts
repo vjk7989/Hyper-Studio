@@ -559,6 +559,20 @@ describe('useComfyManagerStore', () => {
         ver: '1234567',
         enabled: true
       },
+      localCatalog: false,
+      expectedName: 'ComfyUI-Impact-Pack',
+      expectedVersion: 'unknown'
+    },
+    {
+      name: 'an offline local-catalog Git pack with a generated CNR ID',
+      installed: {
+        aux_id: 'ltdrdata/ComfyUI-Impact-Pack',
+        cnr_id: 'comfyui-impact-pack',
+        ver: '1234567',
+        enabled: true
+      },
+      localCatalog: true,
+      expectedName: 'ComfyUI-Impact-Pack',
       expectedVersion: 'unknown'
     },
     {
@@ -569,16 +583,20 @@ describe('useComfyManagerStore', () => {
         ver: '1234567',
         enabled: true
       },
+      localCatalog: false,
+      expectedName: 'comfyui-impact-pack',
       expectedVersion: 'nightly'
     },
     {
       name: 'a pack with no installed metadata',
       installed: undefined,
+      localCatalog: false,
+      expectedName: 'comfyui-impact-pack',
       expectedVersion: 'nightly'
     }
   ])(
     'updates $name using the Manager installed identity',
-    async ({ installed, expectedVersion }) => {
+    async ({ installed, localCatalog, expectedName, expectedVersion }) => {
       vi.mocked(mockManagerService.listInstalledPacks).mockResolvedValue(
         installed ? { 'comfyui-impact-pack': installed } : {}
       )
@@ -588,11 +606,12 @@ describe('useComfyManagerStore', () => {
 
       await store.updatePack.call({
         id: 'comfyui-impact-pack',
-        version: 'nightly'
+        version: 'nightly',
+        hyperStudioLocalCatalog: localCatalog
       })
 
       expect(mockManagerService.updatePack).toHaveBeenCalledWith(
-        { node_name: 'comfyui-impact-pack', node_ver: expectedVersion },
+        { node_name: expectedName, node_ver: expectedVersion },
         expect.any(String),
         expect.any(AbortSignal)
       )
@@ -608,6 +627,20 @@ describe('useComfyManagerStore', () => {
         ver: '1234567',
         enabled: true
       },
+      localCatalog: false,
+      expectedName: 'ComfyUI-Impact-Pack',
+      isUnknown: true
+    },
+    {
+      name: 'an offline local-catalog Git pack with a generated CNR ID',
+      installed: {
+        aux_id: 'ltdrdata/ComfyUI-Impact-Pack',
+        cnr_id: 'comfyui-impact-pack',
+        ver: '1234567',
+        enabled: true
+      },
+      localCatalog: true,
+      expectedName: 'ComfyUI-Impact-Pack',
       isUnknown: true
     },
     {
@@ -618,11 +651,13 @@ describe('useComfyManagerStore', () => {
         ver: '1234567',
         enabled: true
       },
+      localCatalog: false,
+      expectedName: 'comfyui-impact-pack',
       isUnknown: false
     }
   ])(
     'uninstalls $name using the Manager installed identity',
-    async ({ installed, isUnknown }) => {
+    async ({ installed, localCatalog, expectedName, isUnknown }) => {
       vi.mocked(mockManagerService.listInstalledPacks).mockResolvedValue({
         'comfyui-impact-pack': installed
       })
@@ -632,11 +667,12 @@ describe('useComfyManagerStore', () => {
 
       await store.uninstallPack({
         id: 'comfyui-impact-pack',
-        version: 'nightly'
+        version: 'nightly',
+        hyperStudioLocalCatalog: localCatalog
       })
 
       expect(mockManagerService.uninstallPack).toHaveBeenCalledWith(
-        { node_name: 'comfyui-impact-pack', is_unknown: isUnknown },
+        { node_name: expectedName, is_unknown: isUnknown },
         expect.any(String),
         undefined
       )
