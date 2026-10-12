@@ -73,6 +73,13 @@ export function parseSettingsInitialReason(
   return undefined;
 }
 
+/** Key-required entry points now target the shared secure Connections form. */
+export function shouldFocusConnectionFirstField(
+  reason: SettingsInitialReason | undefined,
+): boolean {
+  return reason === "geminiKeyRequired" || reason === "ltxKeyRequired";
+}
+
 export type SettingsOpenDetail = {
   tab?: SettingsTabId;
   /** Row to scroll to once the tab mounts, for legacy hash links like #promptEnhancer. */

@@ -6,6 +6,7 @@ import {
   parseSettingsInitialReason,
   parseSettingsScrollAnchor,
   parseSettingsTabId,
+  shouldFocusConnectionFirstField,
 } from './settings-navigation.ts'
 
 describe('isSettingsTabAvailable', () => {
@@ -67,10 +68,16 @@ describe('parseSettingsScrollAnchor', () => {
 })
 
 describe('parseSettingsInitialReason', () => {
-  it('accepts the reasons that focus an API key field', () => {
+  it('accepts the reasons that focus the secure Connections form', () => {
     assert.equal(parseSettingsInitialReason('geminiKeyRequired'), 'geminiKeyRequired')
     assert.equal(parseSettingsInitialReason('ltxKeyRequired'), 'ltxKeyRequired')
     assert.equal(parseSettingsInitialReason('other'), undefined)
     assert.equal(parseSettingsInitialReason(null), undefined)
+  })
+
+  it('focuses Connections for both legacy key-required entry points only', () => {
+    assert.equal(shouldFocusConnectionFirstField('geminiKeyRequired'), true)
+    assert.equal(shouldFocusConnectionFirstField('ltxKeyRequired'), true)
+    assert.equal(shouldFocusConnectionFirstField(undefined), false)
   })
 })
