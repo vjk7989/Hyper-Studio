@@ -23,6 +23,9 @@ const log = (...v) => process.stdout.write(`${v.map(x => typeof x === 'string' ?
 log('HOME', home)
 try {
   const window = await app.firstWindow({ timeout:45000 })
+  // Standalone Playwright has no action timeout by default. A covered canvas
+  // control must fail with evidence instead of holding the CI job indefinitely.
+  window.setDefaultTimeout(15000)
   await window.waitForLoadState('domcontentloaded')
   await window.evaluate(folder => window.electronAPI.setSharedStorageRoot({folder}), shared)
   await window.evaluate(() => window.electronAPI.setConnectionOnboardingSkipped?.({ skipped: true }))
@@ -83,10 +86,13 @@ try {
   assert.ok(outputs.some(name=>/^workflow-control-ui_.*\.png$/.test(name)), 'Linked local workflow must produce a PNG')
   if((await canvas.locator('body').innerText()).includes('Required input missing')) throw new Error('Successful linked workflow still shows a required-input warning')
   log('PASS linked local execution generated PNG',outputs.find(name=>name.startsWith('workflow-control-ui_')))
+  log('STEP graph menu open')
   await canvas.getByRole('button',{name:'Graph mode, workflow actions'}).click()
+  log('STEP graph menu opened')
   await canvas.getByRole('menu').waitFor({state:'visible',timeout:10000})
   await canvas.locator('body').press('Escape')
   await canvas.getByRole('menu').waitFor({state:'hidden',timeout:10000})
+  log('STEP graph menu dismissed')
   // The tab strip overlaps the canvas origin and a post-run loading overlay
   // can briefly intercept pointer input. Wait for loading, then focus the
   // keyboard target directly so the shortcut is still exercised.
@@ -99,15 +105,18 @@ try {
     })
     throw error
   }
+  log('STEP canvas overlay hidden')
   await canvas.locator('#graph-canvas').focus()
   assert.equal(await canvas.locator('#graph-canvas').evaluate(element=>document.activeElement===element),true,'Workflow canvas must accept keyboard focus')
   const settingsBrowserErrors=[]
   window.on('pageerror',error=>settingsBrowserErrors.push(`pageerror: ${error.message}`))
   window.on('console',message=>{if(message.type()==='error') settingsBrowserErrors.push(`console: ${message.text()}`)})
+  log('STEP settings shortcut')
   await canvas.locator('#graph-canvas').press('Control+,')
   const settings=canvas.getByTestId('settings-dialog')
   try {
     await settings.waitFor({state:'visible',timeout:15000})
+    log('STEP settings opened')
   } catch(error) {
     const evidence={
       activeElement:await canvas.locator('body').evaluate(() => document.activeElement?.outerHTML.slice(0,500)).catch(() => null),
@@ -133,10 +142,12 @@ try {
   // Use a bounded host-side wait because animation frames can pause in CI.
   await window.waitForTimeout(75)
   await settings.waitFor({state:'visible',timeout:5000})
+  log('STEP extension navigation Enter')
   await extensionNav.press('Enter')
   try {
     await settings.waitFor({state:'visible',timeout:5000})
     await settings.locator('.extension-panel').waitFor({state:'visible',timeout:10000})
+    log('STEP extension panel visible')
   } catch(error) {
     const evidence={
       iframeCount:await window.locator('iframe[title="Hyper-Studio workflow canvas"]').count(),
@@ -168,6 +179,7 @@ try {
   assert.match(missingErrors,/WorkflowSmokeMissingNode|missing node|missing custom node/i,'Missing-node guidance must be visible')
   log('PASS missing-node JSON and guidance')
 } finally {
+  log('STEP shutdown begin')
   // A dirty imported graph can raise beforeunload while Electron is closing.
   // Handle that dialog explicitly: Playwright's automatic dismissal can race
   // the destroyed frame and reject with "No dialog is showing" after every
@@ -181,8 +193,17 @@ try {
       if(!/No dialog is showing|Target (page|browser|context) has been closed/i.test(String(error))) unexpectedDialogErrors.push(error)
     }))
   })
-  try { await app.close() }
+  const shutdownWatchdog=setTimeout(()=>{
+    log('FAIL shutdown exceeded 30 seconds', {pid:app.process()?.pid, home})
+    app.process()?.kill()
+    process.exit(1)
+  },30000)
+  try {
+    await app.close()
+    log('STEP shutdown complete')
+  }
   finally {
+    clearTimeout(shutdownWatchdog)
     await Promise.all(dialogHandlers)
     if(shutdownDialogs.length) log('SHUTDOWN DIALOGS',shutdownDialogs)
     if(unexpectedDialogErrors.length) throw unexpectedDialogErrors[0]
