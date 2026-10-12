@@ -312,7 +312,7 @@ try {
   await uninstallButton.click()
   for (let attempt = 0; attempt < 40 && submittedTasks.length < 2; attempt++) await window.waitForTimeout(250)
   const uninstallTask = submittedTasks[1]
-  if (submittedTasks.length !== 2 || uninstallTask?.kind !== 'uninstall' || uninstallTask.params?.node_name !== packId || uninstallTask.params?.is_unknown !== false) {
+  if (submittedTasks.length !== 2 || uninstallTask?.kind !== 'uninstall' || uninstallTask.params?.node_name !== packId || uninstallTask.params?.is_unknown !== true) {
     throw new Error(`Manager uninstall task mismatch: ${JSON.stringify(submittedTasks)}`)
   }
   const uninstalled = await waitForBatch(uninstallTask.ui_id)
