@@ -89,13 +89,31 @@ try {
   await canvas.locator('#graph-canvas').press('Control+,')
   const settings=canvas.getByTestId('settings-dialog')
   await settings.waitFor({state:'visible',timeout:10000})
-  // The embedded canvas is narrower than the desktop shell. Settings uses its
-  // responsive layout here, with the navigation hidden until requested.
-  if (await settings.locator('nav').first().getAttribute('inert') !== null) {
-    await settings.getByRole('button', {name:'Show left panel'}).click()
+  // The embedded canvas can cross the responsive breakpoint as the dialog
+  // settles. Check the actual navigation control immediately before clicking.
+  const showSettingsNav=settings.getByRole('button',{name:'Show left panel'})
+  if(await showSettingsNav.isVisible()) await showSettingsNav.click()
+  const extensionNav=settings.locator('[data-nav-id="extension"]')
+  await extensionNav.waitFor({state:'visible'})
+  await extensionNav.focus()
+  assert.equal(await extensionNav.evaluate(element=>document.activeElement===element),true,'Settings navigation must be keyboard focusable')
+  await extensionNav.press('Enter')
+  try {
+    await settings.waitFor({state:'visible',timeout:5000})
+    await settings.locator('.extension-panel').waitFor({state:'visible',timeout:10000})
+  } catch(error) {
+    const evidence={
+      iframeCount:await window.locator('iframe[title="Hyper-Studio workflow canvas"]').count(),
+      iframeUrl:await canvas.locator('body').evaluate(() => location.href).catch(() => null),
+      settingsCount:await settings.count(),
+      bodyText:(await canvas.locator('body').innerText().catch(() => '')).slice(0,1000),
+    }
+    fs.writeFileSync(path.join(home,'settings-failure.json'),JSON.stringify(evidence,null,2))
+    await window.screenshot({path:path.join(home,'settings-failure.png')}).catch(()=>{})
+    log('SETTINGS DIAGNOSTIC',evidence)
+    throw error
   }
-  await settings.locator('[data-nav-id="extension"]').click()
-  assert.ok((await settings.innerText()).length>0,'Extension settings must render')
+  assert.ok((await settings.innerText()).includes('Extension'),'Extension settings must render')
   await canvas.locator('body').press('Escape')
   const missing=JSON.parse(fs.readFileSync(source,'utf8'))
   missing.nodes.push({id:99,type:'WorkflowSmokeMissingNode',pos:[420,450],size:[260,80],flags:{},order:2,mode:0,inputs:[],outputs:[],properties:{cnr_id:'workflow-control-missing-pack'},widgets_values:[]})
