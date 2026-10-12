@@ -6,6 +6,7 @@ Hyper-Studio incorporates open-source components whose original names are retain
 - **ComfyUI workflow engine** — GNU General Public License version 3. Original project: https://github.com/comfyanonymous/ComfyUI. The installed engine also contains its `LICENSE` file.
 - **ComfyUI frontend** — GNU General Public License version 3. Original project: https://github.com/Comfy-Org/ComfyUI_frontend. The complete GPLv3 text follows below.
 - **Geist font** — Copyright 2024 The Geist Project Authors. SIL Open Font License 1.1. Original project: https://github.com/vercel/geist-font. The complete OFL text follows below.
+- **FFmpeg command-line binary** — Installed from `ffmpeg-static` 5.3.0 for local editing and export. The platform binary and its corresponding license and build README are packaged separately under `resources/tools` and `resources/legal/ffmpeg`. FFmpeg source: https://ffmpeg.org/download.html. Binary build information: https://github.com/eugeneware/ffmpeg-static/releases/tag/b6.1.1. The complete GPLv3 text follows below.
 
 Provider and model names in Hyper-Studio identify their respective providers and models. Their service and model terms apply separately; selecting a provider does not transfer its rights or credentials to Hyper-Studio.
 

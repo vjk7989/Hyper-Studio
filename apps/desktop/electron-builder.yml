@@ -30,6 +30,13 @@ asarUnpack:
 afterPack: scripts/copy-koffi-native.cjs
 
 extraResources:
+  - from: node_modules/ffmpeg-static
+    to: legal/ffmpeg
+    filter:
+      - "*.LICENSE"
+      - "*.README"
+      - LICENSE
+      - README.md
   - from: ../../services/workflow
     to: workflow-engine
     filter:
@@ -75,6 +82,8 @@ extraResources:
 
 win:
   extraResources:
+    - from: node_modules/ffmpeg-static/ffmpeg.exe
+      to: tools/ffmpeg.exe
     - from: ../../.tools/workflow/uv.exe
       to: tools/uv.exe
     - from: resources/workflow-requirements-win.lock
@@ -99,6 +108,8 @@ nsis:
 
 mac:
   extraResources:
+    - from: node_modules/ffmpeg-static/ffmpeg
+      to: tools/ffmpeg
     - from: ../../.tools/workflow/macos-arm64/uv
       to: tools/uv
     - from: resources/workflow-requirements-mac-arm64.lock
@@ -149,6 +160,8 @@ dmg:
 
 linux:
   extraResources:
+    - from: node_modules/ffmpeg-static/ffmpeg
+      to: tools/ffmpeg
     - from: ../../.tools/workflow/linux-x64/uv
       to: tools/uv
     - from: resources/workflow-requirements-linux-x64.lock
