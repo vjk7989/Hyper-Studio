@@ -105,7 +105,7 @@ function ProjectCard({
     <div
       ref={cardRef}
       data-testid={`project-card-${project.id}`}
-      className={`group relative bg-surface-primary rounded-[var(--radius-lg)] border border-separator-secondary hover:border-separator transition-colors cursor-pointer ${showMenu ? 'z-30' : ''}`}
+      className={`group relative bg-surface-primary rounded-[var(--radius-lg)] border border-separator-secondary hover:border-separator transition-colors motion-reduce:transition-none cursor-pointer ${showMenu ? 'z-30' : ''}`}
       onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setShowMenu(false); }}
     >
       <div className="aspect-video bg-surface-secondary flex items-center justify-center relative overflow-hidden rounded-t-[var(--radius-lg)]">
@@ -143,7 +143,7 @@ function ProjectCard({
           <Folder className="h-12 w-12 text-fg-tertiary" />
         )}
         {/* Hover overlay */}
-        <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity" />
+        <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity motion-reduce:transition-none" />
       </div>
 
       <div className="p-3">
@@ -227,7 +227,7 @@ function NewProjectCard({ onCreate }: { onCreate: () => void }) {
     <button
       type="button"
       data-testid="new-project-card"
-      className="group relative bg-surface-primary rounded-[var(--radius-lg)] overflow-hidden border border-separator-secondary hover:border-separator transition-colors text-left"
+      className="group relative bg-surface-primary rounded-[var(--radius-lg)] overflow-hidden border border-separator-secondary hover:border-separator transition-colors motion-reduce:transition-none text-left"
       onClick={onCreate}
     >
       <div className="aspect-video bg-surface-secondary flex items-center justify-center">
@@ -518,7 +518,7 @@ export function ProjectsPage() {
     <>
       <div className="pb-8 text-base">
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3"><Text as="p" variant="body" size="sm" className="min-w-0 break-all text-fg-secondary">Shared storage: {storageRoot}</Text><button ref={openFolderButtonRef} type="button" disabled={isOpeningFolder} onClick={() => { void handleOpenExistingFolder(); }} className="rounded-lg border border-separator px-3 py-2 text-fg-primary hover:bg-action disabled:opacity-50"><FolderOpen className="inline h-4 w-4 mr-2" />{isOpeningFolder ? 'Opening…' : 'Open project folder'}</button></div>
-        {createError && !isCreating && <Text as="p" variant="body" size="sm" className="mb-4 text-fg-danger">{createError}</Text>}
+        {createError && !isCreating && <div role="alert"><Text as="p" variant="body" size="sm" className="mb-4 text-fg-danger">{createError}</Text></div>}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           <NewProjectCard onCreate={() => setIsCreating(true)} />
           {projects.map((project) => (
@@ -582,6 +582,7 @@ export function ProjectsPage() {
               value={newProjectName}
               onInputChange={setNewProjectName}
               placeholder="Project name"
+              disabled={isSubmitting || isChoosingProjectFolder}
               autoFocus
             />
             <div className="mt-5">
@@ -594,10 +595,10 @@ export function ProjectsPage() {
             <div className="mt-5">
               <Text as="p" variant="label" size="md" className="mb-2">Start in</Text>
               <div className="grid grid-cols-2 gap-2">
-                <button type="button" aria-pressed={workspaceMode === 'editor'} onClick={() => setWorkspaceMode('editor')} className={`rounded-lg border p-3 text-left text-sm leading-5 ${workspaceMode === 'editor' ? 'border-fg-primary bg-action' : 'border-separator'}`}>
+                <button type="button" aria-pressed={workspaceMode === 'editor'} disabled={isSubmitting || isChoosingProjectFolder} onClick={() => setWorkspaceMode('editor')} className={`rounded-lg border p-3 text-left text-sm leading-5 disabled:opacity-50 ${workspaceMode === 'editor' ? 'border-fg-primary bg-action' : 'border-separator'}`}>
                   <Film className="mb-2 h-5 w-5" />Editor mode
                 </button>
-                <button type="button" aria-pressed={workspaceMode === 'workflow'} onClick={() => setWorkspaceMode('workflow')} className={`rounded-lg border p-3 text-left text-sm leading-5 ${workspaceMode === 'workflow' ? 'border-fg-primary bg-action' : 'border-separator'}`}>
+                <button type="button" aria-pressed={workspaceMode === 'workflow'} disabled={isSubmitting || isChoosingProjectFolder} onClick={() => setWorkspaceMode('workflow')} className={`rounded-lg border p-3 text-left text-sm leading-5 disabled:opacity-50 ${workspaceMode === 'workflow' ? 'border-fg-primary bg-action' : 'border-separator'}`}>
                   <Workflow className="mb-2 h-5 w-5" />Workflow mode
                 </button>
               </div>
@@ -616,9 +617,10 @@ export function ProjectsPage() {
                 appearance="brand"
                 hierarchy="primary"
                 size="md"
-                label="Create"
+                label={isSubmitting ? 'Creating…' : 'Create'}
                 type="submit"
                 disabled={!newProjectName.trim() || !projectFolder || isChoosingProjectFolder || isSubmitting}
+                isLoading={isSubmitting}
               />
             </div>
           </form>
@@ -648,6 +650,7 @@ export function ProjectsPage() {
               value={renameValue}
               onInputChange={setRenameValue}
               placeholder="Project name"
+              disabled={isRenaming}
               autoFocus
             />
             {renameError && <p role="alert" className="mt-3 text-sm text-fg-danger">{renameError}</p>}

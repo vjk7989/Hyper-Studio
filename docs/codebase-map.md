@@ -161,3 +161,12 @@ Python editor backend       Workflow engine
 ```
 
 Project/media IPC, secure profiles, provider broker, workflow lifecycle, project workflow files, and embedded canvas passed the scoped Phase 4 integration gate. Packaged zero-model output appeared in Workflow shared files and Video Editor; an imported Editor PNG was consumed by `LoadImage` → `SaveImage`. Chrome iframe roundtrip, packaged toolbar JSON byte roundtrip, and packaged relaunch with workflow bytes/nine media entries/engine API passed. A packaged local Custom HTTP mock kept an Editor job running across the Workflow toggle, executed the first-party node with the same saved profile, and indexed two videos. macOS/Linux packaged smokes passed in CI run 38057082762. Live hosted API acceptance and broker in-flight job recovery remain unverified.
+
+## Phase 5.6 dark-default and polish paths
+
+| Concern | Primary paths | Verification |
+| --- | --- | --- |
+| Desktop/remote theme ownership | `apps/desktop/frontend/App.tsx`, `frontend/remote/App.tsx`, `shared/window-chrome.ts` | Fresh dark default; saved Light/System remain in the existing theme provider and Settings control. |
+| Workflow early theme | `apps/workflow-ui/index.html`, `src/services/colorPaletteService.ts` | Early splash defaults dark and consumes the same persisted palette keys written after theme changes. |
+| Shared shell forms | `apps/desktop/frontend/views/Projects.tsx`, `components/settings/ProviderConnectionsSection.tsx` | Pending-state field locking, status/error feedback, focus, keyboard, reduced-motion, and project-removal smokes. |
+| Launch and mode timing | `components/startup-loader/StartupLoader.module.scss`, `scripts/smoke-launch-timing.mjs`, `scripts/smoke-mode-switch-timing.mjs` | Installed reload-to-usable median 369 ms; warm switch p95 51 ms; first Workflow 15.9 s. |

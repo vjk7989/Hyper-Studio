@@ -256,9 +256,8 @@ function AppContent() {
   // One phase → one view. The shell phases (splash/setup/
   // missing-models/ready) render beneath the splash overlay, which releases
   // once the app is ready (any shell phase past 'splash').
-  // Pre-ready first-run UI is pinned to the light theme its roots already
-  // declare (data-theme="light"); the provider keeps Info→Tooltip portals
-  // inside the themed subtree. The ready app tree stays exactly as-is.
+  // Every boot phase inherits the owning theme provider, including a saved
+  // Light or System preference. This also keeps tooltip portals in its scope.
   let beneathSplashView: ReactNode = null
   let earlyView: ReactNode = null
   switch (phase.kind) {
@@ -293,16 +292,12 @@ function AppContent() {
       break
     case 'setup':
       beneathSplashView = (
-        <ThemeProvider scheme="light">
-          <LaunchGate onComplete={handleFirstRunComplete} />
-        </ThemeProvider>
+        <LaunchGate onComplete={handleFirstRunComplete} />
       )
       break
     case 'missing-models':
       beneathSplashView = (
-        <ThemeProvider scheme="light">
-          <LaunchGate onComplete={handleFirstRunComplete} />
-        </ThemeProvider>
+        <LaunchGate onComplete={handleFirstRunComplete} />
       )
       break
     case 'ready':
@@ -409,7 +404,7 @@ function AppContent() {
 
 function App() {
   return (
-    <ThemeProvider defaultPreference="system" className={styles.themeRoot}>
+    <ThemeProvider defaultPreference="dark" className={styles.themeRoot}>
       <ProjectProvider>
         <KeyboardShortcutsProvider>
           <AppSettingsProvider>

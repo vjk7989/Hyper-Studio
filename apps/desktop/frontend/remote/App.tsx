@@ -125,7 +125,7 @@ const remoteRouter = createBrowserRouter(
 
 export function App() {
   return (
-    <ThemeProvider defaultPreference="light" className={styles.themeRoot}>
+    <ThemeProvider defaultPreference="dark" className={styles.themeRoot}>
       <RouterProvider router={remoteRouter} />
     </ThemeProvider>
   );

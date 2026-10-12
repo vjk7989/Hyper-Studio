@@ -120,6 +120,8 @@ try {
   }
   await page.getByRole('button', { name: 'Connections', exact: true }).last().click()
   await page.getByRole('button', { name: 'Add connection' }).click()
+  await page.waitForFunction(() => document.activeElement?.getAttribute('placeholder') === 'My video API')
+  record('Connections Add connection focuses the new name field', 'PASS')
   await page.getByPlaceholder('My video API').fill('Local UI mock')
   await page.locator('label').filter({ hasText: /^Provider/ }).locator('select').selectOption('custom')
   await page.getByPlaceholder('https://api.example.com').fill(mockUrl)

@@ -267,6 +267,7 @@ jobs:
             'scripts/smoke-provider-cross-mode.mjs',
             'scripts/smoke-cold-reopen.mjs',
             'scripts/smoke-mode-switch-timing.mjs',
+            'scripts/smoke-launch-timing.mjs',
             'scripts/audit-branding.mjs'
           )
           $failures = @()

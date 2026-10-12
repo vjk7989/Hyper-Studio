@@ -100,9 +100,16 @@ describe('legacy project design-system conversion', () => {
 
   it('uses one app theme instead of forcing Home light or Project dark', () => {
     const app = source('App.tsx')
-    const rootTheme = app.match(/<ThemeProvider defaultPreference="system"[^>]*>/)
-    assert.ok(rootTheme, 'root ThemeProvider should default to system')
+    const rootTheme = app.match(/<ThemeProvider defaultPreference="dark"[^>]*>/)
+    assert.ok(rootTheme, 'root ThemeProvider should default to dark')
     assert.equal(rootTheme[0].includes('scheme='), false)
+    assert.equal(app.includes('scheme="light"'), false)
+
+    const remote = source('remote/App.tsx')
+    assert.match(remote, /<ThemeProvider defaultPreference="dark"[^>]*>/)
+
+    const windowChrome = readFileSync(join(frontendRoot, '..', 'shared', 'window-chrome.ts'), 'utf8')
+    assert.match(windowChrome, /APP_THEME_PREFERENCE = 'dark'/)
 
     const layout = source('components/home/DesktopHomeLayout.tsx')
     assert.equal(layout.includes('scheme="light"'), false)

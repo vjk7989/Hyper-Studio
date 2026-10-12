@@ -33,4 +33,4 @@ export const GLASS_MATERIAL = 'sidebar' as const
  * After that, main persists the in-app theme preference (`light` / `dark` /
  * `system`) so Mac glass matches the UI instead of only the OS.
  */
-export const APP_THEME_PREFERENCE = 'system' as const
+export const APP_THEME_PREFERENCE = 'dark' as const

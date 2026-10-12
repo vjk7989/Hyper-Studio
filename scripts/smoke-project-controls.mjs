@@ -36,10 +36,22 @@ try {
 
   const projectFolder = path.join(home, 'project-to-trash')
   fs.mkdirSync(projectFolder, { recursive: true })
-  await app.evaluate(({ dialog }, folder) => { dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [folder] }) }, projectFolder)
+  await app.evaluate(({ dialog }, folder) => {
+    dialog.showOpenDialog = () => new Promise(resolve => {
+      globalThis.__resolveProjectFolderPicker = () => resolve({ canceled: false, filePaths: [folder] })
+    })
+  }, projectFolder)
   await window.getByTestId('sidebar-new-project').click()
   await window.getByPlaceholder('Project name').fill('Project controls smoke')
   await window.getByText('Choose a folder', { exact: true }).click()
+  const createDialog = window.getByRole('dialog', { name: 'Create New Project' })
+  await window.waitForFunction(() => document.querySelector('form[role="dialog"][aria-busy="true"]') !== null)
+  for (const control of [window.getByPlaceholder('Project name'), createDialog.getByRole('button', { name: 'Editor mode' }), createDialog.getByRole('button', { name: 'Workflow mode' })]) {
+    if (!(await control.isDisabled())) throw new Error('Project creation controls remained editable while choosing a folder')
+  }
+  await app.evaluate(() => globalThis.__resolveProjectFolderPicker())
+  await window.waitForFunction(() => document.querySelector('form[role="dialog"][aria-busy="true"]') === null)
+  process.stdout.write('PASS: project name and mode stay fixed while the folder picker is open\n')
   await window.screenshot({ path: path.join(home, 'create-with-long-folder.png') })
   await window.getByRole('button', { name: 'Create', exact: true }).click()
   const manifestPath = path.join(projectFolder, '.hyper-studio', 'project.json')

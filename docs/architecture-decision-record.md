@@ -152,3 +152,10 @@ This record separates accepted product decisions from verified implementation. P
 | Workflow canvas | `apps/workflow-ui/` | `Comfy-Org/ComfyUI_frontend` tag `v1.55.14`, commit `3ac95778a0be903c9c9ed7682c811ecd6da02f0e` | `apps/workflow-ui/LICENSE`: GNU GPL v3; provenance in `README.hyper-studio.md` | Sparse local source import; no nested `.git`. Embedded build is branded, while full optional asset/translation audit remains. |
 
 The imported source and license files do not establish that its existing branded binaries, signing, telemetry, or external destinations are suitable for Hyper-Studio. Preserve license and notice files in release artifacts and review obligations before release.
+
+## ADR 0017: Dark defaults remain preferences, and startup polish stays measurable
+
+- **Decision:** Fresh desktop, remote, and embedded Workflow launches start dark. Light and System remain user preferences, and the Workflow splash persists the same palette keys that its early HTML reads. First-run screens inherit the root preference instead of forcing Light.
+- **Decision:** Shorten only the splash exit opacity transition from 400 ms to 200 ms. Keep runtime prewarm and engine startup unchanged; measure first-window, reload-to-usable, first Workflow, and warm switching independently.
+- **Decision:** Project creation freezes its name and mode while the native folder picker is pending. Connections exposes pending state and returns focus to the new connection name field.
+- **Evidence:** The fresh unsigned Windows install passed the full installed smoke set, with ten warm switches at 51 ms p95 and preserved unsaved Workflow IDs/project isolation. See `docs/gates/phase-5-final-polish.md`.

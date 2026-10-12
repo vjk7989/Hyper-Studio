@@ -190,3 +190,9 @@ The imported baseline is committed as `df6e295`. Phase 2 workspace changes are i
 ## Prior checkpoint: Phase 1 baseline and containment
 
 Imported editor and workflow source, license files, local build wrapper, preliminary rounded logo/theme, folder selection and mode switch, and upstream endpoint containment were checkpointed in `df6e295`. Exact upstream source commits are not established because imported copies lack `.git` history. Preserve Apache-2.0 and GPL-3.0 notices. The branded Vue frontend source pinned to engine package `1.55.14` has not yet been imported.
+
+## Phase 5.6 final polish checkpoint
+
+Dark is now the fresh-install default across desktop, remote, first-run, and embedded Workflow surfaces while saved Light/System choices remain supported. Project creation locks mutable fields during folder selection; Connections has clearer empty/pending states and deterministic focus. The splash exit transition is 200 ms and has a dedicated reload-to-usable measurement.
+
+The local Windows gate passed 1,495 desktop tests, 2 Editor/migration tests, 173 curated Workflow tests, TypeScript checks, frontend builds, a fresh unsigned NSIS install, and the full installed smoke sweep. Ten warm switches measured 51 ms p95; first Workflow was 15.9 seconds on this machine. The installer is 431,127,051 bytes with SHA-256 `311E06BCF80238CBEB56E0CCB0DBFB8F560B203DE57A9F964189B40016F9522E` and is unsigned as requested. Cross-platform GitHub Actions verification for this checkpoint is pending.

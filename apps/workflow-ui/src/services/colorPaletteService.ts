@@ -231,8 +231,8 @@ export const useColorPaletteService = () => {
 
     try {
       const splashBg = isLightTheme ? '#FFFFFF' : comfyColorPalette['bg-color']
-      localStorage.setItem('comfy-splash-bg', splashBg)
-      localStorage.setItem('comfy-splash-fg', comfyColorPalette['fg-color'])
+      localStorage.setItem('hyper-studio-splash-bg', splashBg)
+      localStorage.setItem('hyper-studio-splash-fg', comfyColorPalette['fg-color'])
     } catch (_) {
       /* empty */
     }

@@ -1,9 +1,11 @@
 @use "@/ds/styles/themes/animationsValues.scss" as *;
 
+$splash-exit-duration: 200ms;
+
 .root {
   --splash-wait-duration: #{$bounce-duration};
   --splash-finish-duration: #{$duration-slow};
-  --splash-fade-duration: #{$duration-slow};
+  --splash-fade-duration: #{$splash-exit-duration};
   position: relative;
   display: flex;
   height: 100vh;
@@ -12,7 +14,7 @@
   justify-content: center;
   background-color: transparent;
   opacity: 1;
-  transition: opacity $duration-slow $easing-entrance-productive;
+  transition: opacity $splash-exit-duration $easing-entrance-productive;
 }
 
 .rootExiting {

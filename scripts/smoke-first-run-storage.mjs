@@ -27,6 +27,7 @@ try {
   page = await app.firstWindow({ timeout: 45000 })
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.getByRole('heading', { name: 'Choose shared storage' }).waitFor({ state: 'visible', timeout: 45000 })
+  assert.equal(await page.locator('.ltx-io').first().getAttribute('data-theme'), 'dark')
   const chooser = page.getByRole('button', { name: 'Choose a folder' })
   const continueButton = page.getByRole('button', { name: 'Continue' })
   assert.equal(await continueButton.isDisabled(), true)
@@ -84,6 +85,7 @@ try {
 
   const connectionChoice = page.getByRole('dialog', { name: 'Make something with Hyper-Studio' })
   await connectionChoice.waitFor({ state: 'visible', timeout: 45000 })
+  assert.equal(await page.locator('.ltx-io').first().getAttribute('data-theme'), 'dark')
   await connectionChoice.getByRole('button', { name: 'Set up optional local models in Settings' }).waitFor({ state: 'visible' })
   await page.waitForFunction(() => document.activeElement?.textContent?.includes('Connect a video API'))
   assert.equal(await connectionChoice.evaluate(node => getComputedStyle(node).transitionDuration), '0s')

@@ -6,6 +6,17 @@ Status: `[x]` verified complete; `[·]` in progress or only partly verified; `[ 
 
 The numbered steps below are sequential gates. A subtask stays `[·]` after implementation until its focused tests and installed-app check pass; only then is it `[x]`. Prior scoped platform gates do not close these broader checks.
 
+### 5.6 Final dark-default polish and verification
+
+- [x] 5.6.1 Make dark the default in first-run, Editor, embedded Workflow, and remote surfaces; remove forced light setup overrides while preserving saved Light/System preferences.
+  - [x] Verify fresh dark startup and existing Light/System preferences across restart, portals, and the Workflow bridge.
+- [x] 5.6.2 Improve shared-shell project, Connections, and Settings forms with consistent labels, pending/error feedback, focus return, keyboard access, and reduced-motion behavior.
+  - [x] Pass focused edge cases and fresh installed interaction smoke without changing project-removal safeguards.
+- [x] 5.6.3 Measure fresh installed Windows cold launch, first usable Workflow entry, and ten warm switches; make one narrow launch change only if same-runner evidence identifies a safe delay.
+  - [x] Verify no loss of unsaved Editor/Workflow state, jobs, focus, or project isolation after the change. Fresh installed p95 was 51 ms; unsaved Workflow IDs and second-project isolation passed.
+- [x] 5.6.4 Pass relevant offline unit/function/feature tests, typechecks, builds, brand/package audit, unsigned NSIS installation, and Windows control smoke; fix and rerun failures. Windows passed 1,495 desktop tests, 2 Editor/migration tests, 173 curated Workflow tests, fresh installation, and the complete installed smoke sweep.
+- [ ] 5.6.5 After the Windows gate passes, pass macOS and Linux packaged smoke on GitHub Actions; refresh architecture record, handoff, code map, Graft, and codebase-memory status, then push the verified checkpoint to `phase4-platform-gate`.
+
 ### 5.1 Fast, stable mode switching — Windows gate
 
 - [x] 5.1.1 Measure cold launch, first Workflow entry, and ten warm Editor↔Workflow switches on one Windows runner; retain raw timing logs and report p95. Installed run 38120631024: warm p95 66 ms.
