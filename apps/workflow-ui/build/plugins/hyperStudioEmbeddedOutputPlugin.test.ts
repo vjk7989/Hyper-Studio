@@ -8,8 +8,7 @@ import {
   excludeInheritedIconsFromTemplateGlob,
   hyperStudioEmbeddedOutputPlugin,
   removeEmbeddedPromoAssets,
-  stripInheritedIconSafelist,
-  stripSourceMapReferences
+  stripInheritedIconSafelist
 } from './hyperStudioEmbeddedOutputPlugin'
 
 describe('hyperStudioEmbeddedOutputPlugin', () => {
@@ -21,41 +20,6 @@ describe('hyperStudioEmbeddedOutputPlugin', () => {
     expect(stripInheritedIconSafelist(source)).toBe(`
 @source inline("icon-[comfy--{claude,credits}]");
 @source inline("icon-mask-[comfy--{depth-to-image,workflow}]");`)
-  })
-
-  it('removes only the end-of-file source-map reference from emitted text', () => {
-    const source = [
-      'const first = true',
-      '//# sourceMappingURL=vendor.js.map',
-      'const second = true /*# sourceMappingURL=data:application/json;base64,AAAA */'
-    ].join('\n')
-
-    expect(stripSourceMapReferences(source)).toBe(
-      [
-        'const first = true',
-        '//# sourceMappingURL=vendor.js.map',
-        'const second = true '
-      ].join('\n')
-    )
-  })
-
-  it('preserves source-map examples embedded in JavaScript strings', () => {
-    const source = [
-      'const lineExample = "//# sourceMappingURL=example.js.map"',
-      "const blockExample = '/*# sourceMappingURL=example.js.map */'",
-      'const templateExample = `before',
-      '//# sourceMappingURL=template.js.map',
-      '/*# sourceMappingURL=template-block.js.map */',
-      'after`'
-    ].join('\n')
-
-    expect(stripSourceMapReferences(source)).toBe(source)
-  })
-
-  it('removes an end-of-file line directive placed after code', () => {
-    const source = 'const value = true//# sourceMappingURL=app.js.map\n'
-
-    expect(stripSourceMapReferences(source)).toBe('const value = true')
   })
 
   it('excludes inherited product icons from the template icon glob', () => {

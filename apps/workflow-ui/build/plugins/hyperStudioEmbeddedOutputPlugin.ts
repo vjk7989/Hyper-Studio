@@ -9,8 +9,6 @@ const TEMPLATE_DISPLAY_SUFFIX =
   '/src/platform/workflow/templates/utils/templateDisplay.ts'
 const INHERITED_ICON_SAFELIST =
   /(icon(?:-mask)?-\[comfy--\{)([^}]+)(\}\])/g
-const SOURCE_MAP_REFERENCE =
-  /(?:\/\/[#@][\t ]*sourceMappingURL=[^\r\n]*|\/\*[#@][\t ]*sourceMappingURL=[\s\S]*?\*\/)[\t \r\n]*$/
 const EMBEDDED_PROMO_ASSET_PATHS = [
   'assets/images/partner-nodes-signin.webp'
 ] as const
@@ -37,27 +35,6 @@ export function excludeInheritedIconsFromTemplateGlob(source: string): string {
   )
 }
 
-export function stripSourceMapReferences(source: string): string {
-  return source.replace(SOURCE_MAP_REFERENCE, '')
-}
-
-type BundleItem =
-  | { type: 'chunk'; code: string }
-  | { type: 'asset'; source: string | Uint8Array }
-
-function stripBundleSourceMapReferences(bundle: Record<string, BundleItem>) {
-  for (const item of Object.values(bundle)) {
-    if (item.type === 'chunk') {
-      item.code = stripSourceMapReferences(item.code)
-      continue
-    }
-
-    if (typeof item.source === 'string') {
-      item.source = stripSourceMapReferences(item.source)
-    }
-  }
-}
-
 export async function removeEmbeddedPromoAssets(outputDirectory: string) {
   await Promise.all(
     EMBEDDED_PROMO_ASSET_PATHS.map((relativePath) =>
@@ -80,13 +57,6 @@ export function hyperStudioEmbeddedOutputPlugin(enabled: boolean): Plugin {
           ? excludeInheritedIconsFromTemplateGlob(source)
           : source
       return code === source ? null : { code, map: null }
-    },
-    generateBundle(_options, bundle) {
-      if (enabled) {
-        stripBundleSourceMapReferences(
-          bundle as unknown as Record<string, BundleItem>
-        )
-      }
     },
     async writeBundle(options) {
       if (enabled && options.dir) {

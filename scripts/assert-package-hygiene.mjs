@@ -18,9 +18,6 @@ const TEXT_EXTENSIONS = new Set([
   '.svg',
   '.txt'
 ])
-const SOURCE_MAP_REFERENCE =
-  /(?:\/\/[#@][\t ]*sourceMappingURL=[^\r\n]*|\/\*[#@][\t ]*sourceMappingURL=[\s\S]*?\*\/)[\t \r\n]*$/
-
 async function walkFiles(root) {
   const files = []
   const pending = [root]
@@ -48,16 +45,12 @@ export async function inspectWorkflowFrontend(rootPath) {
     FORBIDDEN_ASSET_NAME.test(path.basename(file))
   )
   const forbiddenDestinations = []
-  const sourceMapReferences = []
   let hasBridge = false
 
   for (const file of files) {
     if (!TEXT_EXTENSIONS.has(path.extname(file).toLowerCase())) continue
     const content = await readFile(file, 'utf8')
     if (content.includes('hyper-studio:request-workflow')) hasBridge = true
-    if (SOURCE_MAP_REFERENCE.test(content)) {
-      sourceMapReferences.push(relative(file))
-    }
     for (const pattern of FORBIDDEN_DESTINATIONS) {
       for (const match of content.matchAll(pattern)) {
         forbiddenDestinations.push({
@@ -76,7 +69,6 @@ export async function inspectWorkflowFrontend(rootPath) {
     ),
     hasBridge,
     sourceMaps: sourceMaps.map(relative),
-    sourceMapReferences,
     forbiddenAssets: forbiddenAssets.map(relative),
     forbiddenDestinations
   }
@@ -84,7 +76,6 @@ export async function inspectWorkflowFrontend(rootPath) {
     result.hasBuildManifest &&
     result.hasBridge &&
     result.sourceMaps.length === 0 &&
-    result.sourceMapReferences.length === 0 &&
     result.forbiddenAssets.length === 0 &&
     result.forbiddenDestinations.length === 0
   return result
@@ -106,7 +97,6 @@ async function main(args) {
       hasBuildManifest: result.hasBuildManifest,
       hasBridge: result.hasBridge,
       sourceMapCount: result.sourceMaps.length,
-      sourceMapReferenceCount: result.sourceMapReferences.length,
       forbiddenAssetCount: result.forbiddenAssets.length,
       forbiddenDestinationCount: result.forbiddenDestinations.length
     }
@@ -118,7 +108,6 @@ async function main(args) {
           {
             root: result.root,
             sourceMaps: result.sourceMaps.slice(0, 20),
-            sourceMapReferences: result.sourceMapReferences.slice(0, 20),
             forbiddenAssets: result.forbiddenAssets.slice(0, 20),
             forbiddenDestinations: result.forbiddenDestinations.slice(0, 20)
           },
