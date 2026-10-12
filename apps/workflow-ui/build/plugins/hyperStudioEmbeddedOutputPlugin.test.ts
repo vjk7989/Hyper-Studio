@@ -35,6 +35,15 @@ describe('hyperStudioEmbeddedOutputPlugin', () => {
     )
   })
 
+  it('preserves source-map examples embedded in JavaScript strings', () => {
+    const source = [
+      'const lineExample = "//# sourceMappingURL=example.js.map"',
+      "const blockExample = '/*# sourceMappingURL=example.js.map */'"
+    ].join('\n')
+
+    expect(stripSourceMapReferences(source)).toBe(source)
+  })
+
   it('excludes inherited product icons from the template icon glob', () => {
     const source = `const iconFiles = import.meta.glob(
   '../../../../../packages/design-system/src/icons/*.svg',

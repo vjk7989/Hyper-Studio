@@ -18,6 +18,8 @@ const TEXT_EXTENSIONS = new Set([
   '.svg',
   '.txt'
 ])
+const SOURCE_MAP_REFERENCE =
+  /(?:^[\t ]*\/\/[#@]\s*sourceMappingURL=.*$|\/\*[#@]\s*sourceMappingURL=[^*]*\*\/[\t ]*$)/m
 
 async function walkFiles(root) {
   const files = []
@@ -53,7 +55,7 @@ export async function inspectWorkflowFrontend(rootPath) {
     if (!TEXT_EXTENSIONS.has(path.extname(file).toLowerCase())) continue
     const content = await readFile(file, 'utf8')
     if (content.includes('hyper-studio:request-workflow')) hasBridge = true
-    if (/sourceMappingURL\s*=/.test(content)) {
+    if (SOURCE_MAP_REFERENCE.test(content)) {
       sourceMapReferences.push(relative(file))
     }
     for (const pattern of FORBIDDEN_DESTINATIONS) {

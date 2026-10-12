@@ -10,7 +10,7 @@ const TEMPLATE_DISPLAY_SUFFIX =
 const INHERITED_ICON_SAFELIST =
   /(icon(?:-mask)?-\[comfy--\{)([^}]+)(\}\])/g
 const SOURCE_MAP_REFERENCE =
-  /(?:\/\/[#@]\s*sourceMappingURL=.*?(?=\r?\n|$)|\/\*[#@]\s*sourceMappingURL=.*?\*\/)/g
+  /(?:^[\t ]*\/\/[#@]\s*sourceMappingURL=.*$|\/\*[#@]\s*sourceMappingURL=[^*]*\*\/[\t ]*$)/gm
 const EMBEDDED_PROMO_ASSET_PATHS = [
   'assets/images/partner-nodes-signin.webp'
 ] as const

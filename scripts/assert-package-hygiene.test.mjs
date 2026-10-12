@@ -45,6 +45,22 @@ test('rejects source maps and source map references', async (t) => {
   assert.deepEqual(result.sourceMapReferences, ['assets/index.js'])
 })
 
+test('allows source-map examples embedded in JavaScript strings', async (t) => {
+  const root = await fixture({
+    ...requiredFiles,
+    'assets/vendor.js': [
+      'const lineExample = "//# sourceMappingURL=example.js.map"',
+      "const blockExample = '/*# sourceMappingURL=example.js.map */'"
+    ].join('\n')
+  })
+  t.after(() => rm(root, { recursive: true, force: true }))
+
+  const result = await inspectWorkflowFrontend(root)
+
+  assert.equal(result.ok, true)
+  assert.deepEqual(result.sourceMapReferences, [])
+})
+
 test('rejects inherited cloud assets and destinations', async (t) => {
   const root = await fixture({
     ...requiredFiles,
