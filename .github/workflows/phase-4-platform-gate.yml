@@ -294,6 +294,7 @@ jobs:
             .local-tmp/workflow-run-isolation-*/*.png
             .local-tmp/manager-install-smoke-*/*.png
             .local-tmp/manager-install-smoke-*/install-review-accessibility.txt
+            .local-tmp/manager-install-smoke-*/manager-update-failed.json
             .local-tmp/mode-switch-timing-*/second-project-failure.png
             .local-tmp/mode-switch-timing-*/second-project-failure.json
             .local-tmp/manager-install-smoke-*/project-create-failed.png
