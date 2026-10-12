@@ -548,7 +548,7 @@ try {
   }, renderPath)
   await page.locator('div.fixed.inset-0.z-50 select').first().selectOption('1280x720')
   await page.getByRole('button', { name: 'Export Video' }).click()
-  await page.getByText('Export complete', { exact: true }).waitFor({ state: 'visible', timeout: 120000 })
+  await page.getByText('Export complete', { exact: true }).first().waitFor({ state: 'visible', timeout: 120000 })
   await waitUntil(() => fs.existsSync(renderPath) && fs.statSync(renderPath).size > 1024, 'rendered MP4 file', 10000)
   const mp4 = fs.readFileSync(renderPath)
   assert.equal(mp4.toString('ascii', 4, 8), 'ftyp', 'rendered file is missing MP4 ftyp atom')
