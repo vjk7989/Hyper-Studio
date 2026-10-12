@@ -40,6 +40,9 @@ const EMBEDDED_ACCOUNT_PLACEHOLDER = resolve(
 const EMBEDDED_ACCOUNT_IDENTITY = resolve(
   'src/platform/distribution/embeddedAccountIdentity.ts'
 )
+const EMBEDDED_AUTH_STORE = resolve(
+  'src/platform/distribution/embeddedAuthStore.ts'
+)
 const EMBEDDED_FIREBASE_APP = resolve(
   'src/platform/distribution/embeddedFirebaseApp.ts'
 )
@@ -492,6 +495,13 @@ export default defineConfig({
       enforce: 'pre',
       resolveId(source) {
         if (!IS_HYPER_STUDIO_EMBEDDED) return null
+        const normalizedSource = source.replaceAll('\\', '/').split('?', 1)[0]
+        if (
+          source === '@/stores/authStore' ||
+          normalizedSource.endsWith('/src/stores/authStore.ts')
+        ) {
+          return EMBEDDED_AUTH_STORE
+        }
         if (source === '@/platform/auth/firebaseIdentity') {
           return EMBEDDED_ACCOUNT_IDENTITY
         }

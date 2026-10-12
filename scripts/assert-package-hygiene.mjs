@@ -4,10 +4,10 @@ import { fileURLToPath } from 'node:url'
 
 const FORBIDDEN_ASSET_NAME = /^(?:Cloud[A-Za-z0-9]*|ComfyCloud[A-Za-z0-9]*|comfy-(?:cloud|logo)|OAuth[A-Za-z0-9]*|onboardingCloudRoutes|cloudFeedbackTopbarButton|useCloudAuthPage|useSubscriptionDialog|vendor-firebase|firebaseIdentity|SignInContent|SignUpForm|UserPanel|UserSelectView|CreditsPanel|Subscription(?:Required|Inactive|Transition|Cancellation)[A-Za-z0-9]*|CancelSubscriptionDialogContent|SubscribeToRun|ApiNodesSignInContent|CurrentUserPopoverWorkspace|WorkspaceSwitcherPopover|(?:Create|Delete|Edit|Leave|TeamWorkspaces|SetMemberCreditLimit|InviteMember|InviteMemberUpsell|RevokeInvite|RemoveMember|ChangeMemberRole|DowngradeRemoveMembers)DialogContent)(?:[-.])/i
 const FORBIDDEN_DESTINATIONS = [
-  /https?:\/\/(?:cloud|platform|app|auth|account)\.comfy\.org\b/i,
-  /https?:\/\/[^\s"'`]*\.firebaseapp\.com\b/i,
-  /https?:\/\/[^\s"'`]*\.firebaseio\.com\b/i,
-  /https?:\/\/(?:identitytoolkit|securetoken)\.googleapis\.com\b/i
+  /(?<![a-z0-9.-])(?:[a-z0-9-]+\.)*comfy\.org\b/gi,
+  /https?:\/\/[^\s"'`]*\.firebaseapp\.com\b/gi,
+  /https?:\/\/[^\s"'`]*\.firebaseio\.com\b/gi,
+  /https?:\/\/(?:identitytoolkit|securetoken)\.googleapis\.com\b/gi
 ]
 const TEXT_EXTENSIONS = new Set([
   '.css',
@@ -57,8 +57,7 @@ export async function inspectWorkflowFrontend(rootPath) {
       sourceMapReferences.push(relative(file))
     }
     for (const pattern of FORBIDDEN_DESTINATIONS) {
-      const match = content.match(pattern)
-      if (match) {
+      for (const match of content.matchAll(pattern)) {
         forbiddenDestinations.push({
           file: relative(file),
           destination: match[0]

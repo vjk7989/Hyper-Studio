@@ -64,7 +64,7 @@ test('rejects inherited cloud assets and destinations', async (t) => {
   assert.deepEqual(result.forbiddenDestinations, [
     {
       file: 'assets/CloudLoginView-deadbeef.js',
-      destination: 'https://cloud.comfy.org'
+      destination: 'cloud.comfy.org'
     }
   ])
 })
@@ -89,8 +89,36 @@ test('rejects unified and workspace subscription chunks with eager cloud destina
   assert.equal(result.forbiddenDestinations.length, 2)
   assert.ok(
     result.forbiddenDestinations.every(
-      ({ destination }) => destination === 'https://cloud.comfy.org'
+      ({ destination }) => destination === 'cloud.comfy.org'
     )
+  )
+})
+
+test('rejects every inherited Comfy-owned runtime destination', async (t) => {
+  const root = await fixture({
+    ...requiredFiles,
+    'assets/runtime.js': [
+      'https://comfy.org/account',
+      'https://testcloud.comfy.org/api',
+      'https://stagingcloud.comfy.org/session',
+      'wss://api.comfy.org/ws',
+      'media.comfy.org'
+    ].join('\n')
+  })
+  t.after(() => rm(root, { recursive: true, force: true }))
+
+  const result = await inspectWorkflowFrontend(root)
+
+  assert.equal(result.ok, false)
+  assert.deepEqual(
+    result.forbiddenDestinations.map(({ destination }) => destination),
+    [
+      'comfy.org',
+      'testcloud.comfy.org',
+      'stagingcloud.comfy.org',
+      'api.comfy.org',
+      'media.comfy.org'
+    ]
   )
 })
 
