@@ -8,7 +8,8 @@ import { isHyperStudioEmbedded } from '@/platform/distribution/hyperStudio'
 const HYPER_STUDIO_REPOSITORY = 'https://github.com/vjk7989/Hyper-Studio'
 
 /**
- * Composable for building docs.comfy.org URLs with automatic locale and platform detection
+ * Composable for building upstream documentation URLs with automatic locale
+ * and platform detection.
  *
  * @example
  * ```ts
@@ -16,14 +17,14 @@ const HYPER_STUDIO_REPOSITORY = 'https://github.com/vjk7989/Hyper-Studio'
  *
  * // Simple usage
  * const changelogUrl = buildDocsUrl('/changelog', { includeLocale: true })
- * // => 'https://docs.comfy.org/zh/changelog' (if Chinese)
+ * // => localized upstream changelog (if Chinese)
  *
  * // With platform detection
  * const desktopUrl = buildDocsUrl('/installation/desktop', {
  *   includeLocale: true,
  *   platform: true
  * })
- * // => 'https://docs.comfy.org/zh/installation/desktop/macos' (if Chinese + macOS)
+ * // => localized upstream desktop guide (if Chinese + macOS)
  * ```
  */
 export function useExternalLink() {
@@ -43,7 +44,7 @@ export function useExternalLink() {
   })
 
   /**
-   * Build a docs.comfy.org URL with optional locale and platform
+   * Build an upstream documentation URL with optional locale and platform.
    *
    * @param path - The path after the domain (e.g., '/installation/desktop')
    * @param options - Options for building the URL
@@ -53,10 +54,10 @@ export function useExternalLink() {
    *
    * @example
    * ```ts
-   * buildDocsUrl('/changelog') // => 'https://docs.comfy.org/changelog'
-   * buildDocsUrl('/changelog', { includeLocale: true }) // => 'https://docs.comfy.org/zh/changelog' (if Chinese)
+   * buildDocsUrl('/changelog')
+   * buildDocsUrl('/changelog', { includeLocale: true })
    * buildDocsUrl('/installation/desktop', { includeLocale: true, platform: true })
-   * // => 'https://docs.comfy.org/zh/installation/desktop/macos' (if Chinese + macOS)
+   * // => localized upstream desktop guide (if Chinese + macOS)
    * ```
    */
   const buildDocsUrl = (
@@ -66,7 +67,12 @@ export function useExternalLink() {
       platform?: boolean
     } = {}
   ): string => {
-    if (isHyperStudioEmbedded) return `${HYPER_STUDIO_REPOSITORY}#readme`
+    if (
+      import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true' ||
+      isHyperStudioEmbedded
+    ) {
+      return `${HYPER_STUDIO_REPOSITORY}#readme`
+    }
     const { includeLocale = false, platform: includePlatform = false } = options
 
     let url = 'https://docs.comfy.org'
@@ -88,14 +94,46 @@ export function useExternalLink() {
 
   const staticUrls = {
     // Static external URLs
-    discord: isHyperStudioEmbedded ? `${HYPER_STUDIO_REPOSITORY}/issues` : 'https://discord.com/invite/comfyorg',
-    github: isHyperStudioEmbedded ? HYPER_STUDIO_REPOSITORY : 'https://github.com/Comfy-Org/ComfyUI',
-    githubIssues: isHyperStudioEmbedded ? `${HYPER_STUDIO_REPOSITORY}/issues` : 'https://github.com/Comfy-Org/ComfyUI/issues',
-    githubFrontend: isHyperStudioEmbedded ? HYPER_STUDIO_REPOSITORY : 'https://github.com/Comfy-Org/ComfyUI_frontend',
-    githubElectron: isHyperStudioEmbedded ? HYPER_STUDIO_REPOSITORY : 'https://github.com/Comfy-Org/electron',
-    forum: isHyperStudioEmbedded ? `${HYPER_STUDIO_REPOSITORY}/issues` : 'https://forum.comfy.org/',
-    comfyOrg: isHyperStudioEmbedded ? HYPER_STUDIO_REPOSITORY : 'https://comfy.org/',
-    status: isHyperStudioEmbedded ? HYPER_STUDIO_REPOSITORY : 'https://status.comfy.org/'
+    discord:
+      import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true' ||
+      isHyperStudioEmbedded
+        ? `${HYPER_STUDIO_REPOSITORY}/issues`
+        : 'https://discord.com/invite/comfyorg',
+    github:
+      import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true' ||
+      isHyperStudioEmbedded
+        ? HYPER_STUDIO_REPOSITORY
+        : 'https://github.com/Comfy-Org/ComfyUI',
+    githubIssues:
+      import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true' ||
+      isHyperStudioEmbedded
+        ? `${HYPER_STUDIO_REPOSITORY}/issues`
+        : 'https://github.com/Comfy-Org/ComfyUI/issues',
+    githubFrontend:
+      import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true' ||
+      isHyperStudioEmbedded
+        ? HYPER_STUDIO_REPOSITORY
+        : 'https://github.com/Comfy-Org/ComfyUI_frontend',
+    githubElectron:
+      import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true' ||
+      isHyperStudioEmbedded
+        ? HYPER_STUDIO_REPOSITORY
+        : 'https://github.com/Comfy-Org/electron',
+    forum:
+      import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true' ||
+      isHyperStudioEmbedded
+        ? `${HYPER_STUDIO_REPOSITORY}/issues`
+        : 'https://forum.comfy.org/',
+    comfyOrg:
+      import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true' ||
+      isHyperStudioEmbedded
+        ? HYPER_STUDIO_REPOSITORY
+        : 'https://comfy.org/',
+    status:
+      import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true' ||
+      isHyperStudioEmbedded
+        ? HYPER_STUDIO_REPOSITORY
+        : 'https://status.comfy.org/'
   }
 
   /** Common doc paths for use with buildDocsUrl */

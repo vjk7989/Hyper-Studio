@@ -491,7 +491,7 @@ export class ComfyApi extends EventTarget {
    * {@link queuePrompt} improperly, which causes extra parameters to be lost
    * in the function call chain.
    *
-   * Ref: https://cs.comfy.org/search?q=context:global+%22api.queuePrompt+%3D%22&patternType=keyword&sm=0
+   * Ref: upstream source search for assignments to api.queuePrompt.
    *
    * TODO: Move this field to parameter of {@link queuePrompt} once all
    * custom nodes are patched.

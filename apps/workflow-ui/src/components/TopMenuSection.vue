@@ -86,12 +86,12 @@
               />
               <LoginButton v-else-if="!isIntegratedTabBar && !isHyperStudioEmbedded" />
               <Button
-                v-if="isCloud && flags.workflowSharingEnabled"
+                v-if="isCloud && workflowSharingEnabled"
                 v-tooltip.bottom="shareTooltipConfig"
                 variant="secondary"
                 :aria-label="t('actionbar.shareTooltip')"
-                @click="() => openShareDialog().catch(toastErrorHandler)"
-                @pointerenter="prefetchShareDialog"
+                @click="openCloudShareDialog"
+                @pointerenter="prefetchCloudShareDialog"
               >
                 <i class="icon-[comfy--send] size-4" />
                 <span class="not-md:hidden">
@@ -166,7 +166,14 @@
 <script setup lang="ts">
 import { useLocalStorage, useMutationObserver } from '@vueuse/core'
 import { storeToRefs } from 'pinia'
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import {
+  computed,
+  defineAsyncComponent,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watchEffect
+} from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import ComfyActionbar from '@/components/actionbar/ComfyActionbar.vue'
@@ -177,18 +184,13 @@ import QueueNotificationBannerHost from '@/components/queue/QueueNotificationBan
 import QueueProgressOverlay from '@/components/queue/QueueProgressOverlay.vue'
 import ErrorOverlay from '@/components/error/ErrorOverlay.vue'
 import ActionBarButtons from '@/components/topbar/ActionBarButtons.vue'
-import CurrentUserButton from '@/components/topbar/CurrentUserButton.vue'
-import LoginButton from '@/components/topbar/LoginButton.vue'
 import StatusBadge from '@/components/common/StatusBadge.vue'
 import Button from '@/components/ui/button/Button.vue'
-import { useCurrentUser } from '@/composables/auth/useCurrentUser'
 import { useQueueFeatureFlags } from '@/composables/queue/useQueueFeatureFlags'
 import { useErrorHandling } from '@/composables/useErrorHandling'
 import { buildTooltipConfig } from '@/composables/useTooltipConfig'
-import FreeTierQuota from '@/platform/cloud/subscription/components/FreeTierQuota.vue'
 import { isHyperStudioEmbedded } from '@/platform/distribution/hyperStudio'
 import { useSettingStore } from '@/platform/settings/settingStore'
-import { useTelemetry } from '@/platform/telemetry'
 import { app } from '@/scripts/app'
 import { useExecutionErrorStore } from '@/stores/executionErrorStore'
 import { useAgentNodeSelectionStore } from '@/stores/agentNodeSelectionStore'
@@ -197,16 +199,29 @@ import { useQueueUIStore } from '@/stores/queueStore'
 import { useRightSidePanelStore } from '@/stores/workspace/rightSidePanelStore'
 import { useWorkspaceStore } from '@/stores/workspaceStore'
 import { isCloud } from '@/platform/distribution/types'
-import { useFeatureFlags } from '@/composables/useFeatureFlags'
-import {
-  openShareDialog,
-  prefetchShareDialog
-} from '@/platform/workflow/sharing/composables/lazyShareDialog'
 import { useConflictAcknowledgment } from '@/workbench/extensions/manager/composables/useConflictAcknowledgment'
 import { useManagerState } from '@/workbench/extensions/manager/composables/useManagerState'
-import { useManagerSurveyDialog } from '@/workbench/extensions/manager/composables/useManagerSurveyDialog'
 import { ManagerTab } from '@/workbench/extensions/manager/types/comfyManagerTypes'
 import { cn } from '@comfyorg/tailwind-utils'
+
+const embeddedBuild =
+  import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true'
+const EmptyEmbeddedSurface = { render: () => null }
+const CurrentUserButton =
+  import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true'
+  ? EmptyEmbeddedSurface
+  : defineAsyncComponent(
+      () => import('@/components/topbar/CurrentUserButton.vue')
+    )
+const LoginButton = import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true'
+  ? EmptyEmbeddedSurface
+  : defineAsyncComponent(() => import('@/components/topbar/LoginButton.vue'))
+const FreeTierQuota = import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true'
+  ? EmptyEmbeddedSurface
+  : defineAsyncComponent(
+      () =>
+        import('@/platform/cloud/subscription/components/FreeTierQuota.vue')
+    )
 
 const settingStore = useSettingStore()
 const workspaceStore = useWorkspaceStore()
@@ -216,9 +231,8 @@ const isActionBarsHidden = computed(
   () => agentNodeSelectionStore.isActionBarsHidden
 )
 const managerState = useManagerState()
-const managerSurveyDialog = useManagerSurveyDialog()
-const { flags } = useFeatureFlags()
-const { isLoggedIn } = useCurrentUser()
+const isLoggedIn = ref(false)
+const workflowSharingEnabled = ref(false)
 const { t } = useI18n()
 const { toastErrorHandler } = useErrorHandling()
 const executionErrorStore = useExecutionErrorStore()
@@ -246,7 +260,7 @@ const hasDockedButtons = computed(() => {
   if (actionBarButtonStore.buttons.length > 0) return true
   if (hasLegacyContent.value) return true
   if (!isIntegratedTabBar.value) return true
-  if (isCloud && flags.workflowSharingEnabled) return true
+  if (isCloud && workflowSharingEnabled.value) return true
   if (!isRightSidePanelOpen.value) return true
   return false
 })
@@ -313,10 +327,14 @@ const rightSidePanelTooltipConfig = computed(() =>
 )
 
 function openRightSidePanel() {
-  useTelemetry()?.trackUiButtonClicked({
-    button_id: 'right_side_panel_opened',
-    element_group: 'top_menu'
-  })
+  if (!embeddedBuild) {
+    void import('@/platform/telemetry').then(({ useTelemetry }) => {
+      useTelemetry()?.trackUiButtonClicked({
+        button_id: 'right_side_panel_opened',
+        element_group: 'top_menu'
+      })
+    })
+  }
   rightSidePanelStore.togglePanel()
 }
 
@@ -356,7 +374,38 @@ onMounted(() => {
     legacyCommandsContainerRef.value.appendChild(app.menu.element)
     checkLegacyContent()
   }
+  if (!embeddedBuild) {
+    void Promise.all([
+      import('@/composables/auth/useCurrentUser'),
+      import('@/composables/useFeatureFlags')
+    ]).then(([{ useCurrentUser }, { useFeatureFlags }]) => {
+      const currentUser = useCurrentUser()
+      const featureFlags = useFeatureFlags()
+      watchEffect(() => {
+        isLoggedIn.value = currentUser.isLoggedIn.value
+        workflowSharingEnabled.value = featureFlags.flags.workflowSharingEnabled
+      })
+    })
+  }
 })
+
+async function openCloudShareDialog() {
+  if (embeddedBuild) return
+  try {
+    const { openShareDialog } =
+      await import('@/platform/workflow/sharing/composables/lazyShareDialog')
+    await openShareDialog()
+  } catch (error) {
+    toastErrorHandler(error)
+  }
+}
+
+function prefetchCloudShareDialog() {
+  if (embeddedBuild) return
+  void import('@/platform/workflow/sharing/composables/lazyShareDialog').then(
+    ({ prefetchShareDialog }) => prefetchShareDialog()
+  )
+}
 
 onBeforeUnmount(() => {
   if (legacyContentCheckRafId === null) return
@@ -367,7 +416,10 @@ onBeforeUnmount(() => {
 
 const openCustomNodeManager = async () => {
   if (isCloud) {
-    managerSurveyDialog.show()
+    if (embeddedBuild) return
+    const { useManagerSurveyDialog } =
+      await import('@/workbench/extensions/manager/composables/useManagerSurveyDialog')
+    useManagerSurveyDialog().show()
     return
   }
   try {

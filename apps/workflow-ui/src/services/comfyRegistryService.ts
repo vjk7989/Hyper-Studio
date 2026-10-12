@@ -5,7 +5,14 @@ import { ref } from 'vue'
 import type { components, operations } from '@/types/comfyRegistryTypes'
 import { isAbortError } from '@/utils/typeGuardUtil'
 
-const API_BASE_URL = 'https://api.comfy.org'
+// Hyper-Studio's embedded build uses the managed local catalog and must never
+// contact the inherited registry service directly. The local URL is an inert
+// fallback for legacy Manager callers that have not yet been routed through
+// the local catalog provider.
+const API_BASE_URL =
+  import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true'
+    ? '/api/hyper-studio/registry-disabled'
+    : 'https://api.comfy.org'
 
 const registryApiClient = axios.create({
   baseURL: API_BASE_URL,

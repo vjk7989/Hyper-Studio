@@ -322,7 +322,12 @@ function useSubscriptionInternal() {
   }
 
   const handleLearnMore = () => {
-    window.open('https://docs.comfy.org', '_blank')
+    window.open(
+      import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true'
+        ? 'https://github.com/vjk7989/Hyper-Studio#readme'
+        : 'https://docs.comfy.org',
+      '_blank'
+    )
   }
 
   const handleInvoiceHistory = async () => {

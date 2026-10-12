@@ -40,6 +40,7 @@ import { storeToRefs } from 'pinia'
 
 import {
   computed,
+  defineAsyncComponent,
   nextTick,
   onBeforeUnmount,
   onMounted,
@@ -49,14 +50,9 @@ import {
 } from 'vue'
 
 import { runWhenGlobalIdle } from '@/base/common/async'
-import MenuHamburger from '@/components/MenuHamburger.vue'
 import UnloadWindowConfirmDialog from '@/components/dialog/UnloadWindowConfirmDialog.vue'
 import GraphCanvas from '@/components/graph/GraphCanvas.vue'
-import PartnerNodesEducationCard from '@/components/actionbar/PartnerNodesEducationCard.vue'
-import TourOverlay from '@/platform/onboarding/TourOverlay.vue'
-import FirstRunTour from '@/renderer/extensions/firstRunTour/FirstRunTour.vue'
 import GlobalToast from '@/components/toast/GlobalToast.vue'
-import InviteAcceptedToast from '@/platform/workspace/components/toasts/InviteAcceptedToast.vue'
 import RerouteMigrationToast from '@/components/toast/RerouteMigrationToast.vue'
 import { useBrowserTabTitle } from '@/composables/useBrowserTabTitle'
 import { useCoreCommands } from '@/composables/useCoreCommands'
@@ -70,13 +66,10 @@ import type { ServerConfig, ServerConfigValue } from '@/constants/serverConfig'
 import { setActiveLocale } from '@/i18n'
 import AssetExportProgressDialog from '@/platform/assets/components/AssetExportProgressDialog.vue'
 import ModelImportProgressDialog from '@/platform/assets/components/ModelImportProgressDialog.vue'
-import DesktopCloudNotificationController from '@/platform/cloud/notification/components/DesktopCloudNotificationController.vue'
 import { isCloud, isDesktop } from '@/platform/distribution/types'
 import { isHyperStudioEmbedded } from '@/platform/distribution/hyperStudio'
 import { markHyperStudioCanvasReady } from '@/platform/distribution/hyperStudioEmbedBridge'
 import { useSettingStore } from '@/platform/settings/settingStore'
-import { useTelemetry } from '@/platform/telemetry'
-import { getShellLayoutSnapshot } from '@/platform/telemetry/utils/getShellLayoutSnapshot'
 import { useFrontendVersionMismatchWarning } from '@/platform/updates/common/useFrontendVersionMismatchWarning'
 import { useVersionCompatibilityStore } from '@/platform/updates/common/versionCompatibilityStore'
 import { useCanvasStore } from '@/renderer/core/canvas/canvasStore'
@@ -88,7 +81,6 @@ import { useKeybindingService } from '@/platform/keybindings/keybindingService'
 import { useAppMode } from '@/composables/useAppMode'
 import { useCommandStore } from '@/stores/commandStore'
 import { useExecutionStore } from '@/stores/executionStore'
-import { useAuthStore } from '@/stores/authStore'
 import { useAssetsStore } from '@/stores/assetsStore'
 import { useMenuItemStore } from '@/stores/menuItemStore'
 import { useModelStore } from '@/stores/modelStore'
@@ -108,6 +100,43 @@ import BuilderMenu from '@/components/builder/BuilderMenu.vue'
 import BuilderToolbar from '@/components/builder/BuilderToolbar.vue'
 import LinearView from '@/views/LinearView.vue'
 import ManagerProgressToast from '@/workbench/extensions/manager/components/ManagerProgressToast.vue'
+
+const embeddedBuild =
+  import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true'
+const EmptyEmbeddedSurface = { render: () => null }
+const MenuHamburger = import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true'
+  ? EmptyEmbeddedSurface
+  : defineAsyncComponent(() => import('@/components/MenuHamburger.vue'))
+const PartnerNodesEducationCard =
+  import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true'
+  ? EmptyEmbeddedSurface
+  : defineAsyncComponent(
+      () => import('@/components/actionbar/PartnerNodesEducationCard.vue')
+    )
+const TourOverlay = import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true'
+  ? EmptyEmbeddedSurface
+  : defineAsyncComponent(() => import('@/platform/onboarding/TourOverlay.vue'))
+const FirstRunTour = import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true'
+  ? EmptyEmbeddedSurface
+  : defineAsyncComponent(
+      () => import('@/renderer/extensions/firstRunTour/FirstRunTour.vue')
+    )
+const InviteAcceptedToast =
+  import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true'
+  ? EmptyEmbeddedSurface
+  : defineAsyncComponent(
+      () =>
+        import('@/platform/workspace/components/toasts/InviteAcceptedToast.vue')
+    )
+const DesktopCloudNotificationController =
+  import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true'
+  ? EmptyEmbeddedSurface
+  : defineAsyncComponent(
+      () =>
+        import(
+          '@/platform/cloud/notification/components/DesktopCloudNotificationController.vue'
+        )
+    )
 
 setupAutoQueueHandler()
 useProgressFavicon()
@@ -130,8 +159,22 @@ watch(linearMode, (isLinear) => {
   }
 })
 
-const telemetry = useTelemetry()
-const authStore = useAuthStore()
+type Telemetry = NonNullable<
+  ReturnType<(typeof import('@/platform/telemetry'))['useTelemetry']>
+>
+let telemetry: Telemetry | undefined
+let getShellLayoutSnapshot:
+  | (typeof import('@/platform/telemetry/utils/getShellLayoutSnapshot'))['getShellLayoutSnapshot']
+  | undefined
+if (import.meta.env.VITE_HYPER_STUDIO_EMBEDDED !== 'true') {
+  void Promise.all([
+    import('@/platform/telemetry'),
+    import('@/platform/telemetry/utils/getShellLayoutSnapshot')
+  ]).then(([telemetryModule, shellLayoutModule]) => {
+    telemetry = telemetryModule.useTelemetry() ?? undefined
+    getShellLayoutSnapshot = shellLayoutModule.getShellLayoutSnapshot
+  })
+}
 let hasTrackedLogin = false
 
 watch(
@@ -307,23 +350,27 @@ const onGraphReady = () => {
   graphReady.value = true
   if (isHyperStudioEmbedded) markHyperStudioCanvasReady()
   runWhenGlobalIdle(() => {
+    const activeTelemetry = telemetry
     // Track user login when app is ready in graph view (cloud only)
-    if (isCloud && authStore.isAuthenticated && !hasTrackedLogin) {
-      telemetry?.trackUserLoggedIn()
-      hasTrackedLogin = true
+    if (isCloud && !embeddedBuild && !hasTrackedLogin) {
+      void import('@/stores/authStore').then(({ useAuthStore }) => {
+        if (!useAuthStore().isAuthenticated || hasTrackedLogin) return
+        telemetry?.trackUserLoggedIn()
+        hasTrackedLogin = true
+      })
     }
 
     // Set up page visibility tracking (cloud only)
-    if (isCloud && telemetry) {
+    if (isCloud && activeTelemetry) {
       useEventListener(document, 'visibilitychange', () => {
-        telemetry.trackPageVisibilityChanged({
+        activeTelemetry.trackPageVisibilityChanged({
           visibility_state: document.visibilityState as 'visible' | 'hidden'
         })
       })
     }
 
     // Set up tab count tracking (cloud only)
-    if (isCloud && telemetry) {
+    if (isCloud && activeTelemetry) {
       const tabCountChannel = new BroadcastChannel('comfyui-tab-count')
       const activeTabs = new Map<string, number>()
       const currentTabId = createUuidv4()
@@ -357,7 +404,7 @@ const onGraphReady = () => {
 
         // Track tab count (include current tab)
         const tabCount = activeTabs.size + 1
-        telemetry.trackTabCount({ tab_count: tabCount })
+        activeTelemetry.trackTabCount({ tab_count: tabCount })
       }, 60000 * 5)
 
       // Send initial heartbeat
@@ -365,8 +412,8 @@ const onGraphReady = () => {
     }
 
     // Shell layout snapshot, once per session (cloud only)
-    if (isCloud && telemetry) {
-      telemetry.trackShellLayout(
+    if (isCloud && activeTelemetry && getShellLayoutSnapshot) {
+      activeTelemetry.trackShellLayout(
         getShellLayoutSnapshot({
           view_mode: mode.value,
           is_app_mode: isAppMode.value

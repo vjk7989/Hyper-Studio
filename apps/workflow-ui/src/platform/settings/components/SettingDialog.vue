@@ -89,19 +89,26 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, provide, ref, watch } from 'vue'
+import {
+  computed,
+  defineAsyncComponent,
+  h,
+  nextTick,
+  onBeforeUnmount,
+  provide,
+  ref,
+  watch
+} from 'vue'
+import { debounce } from 'es-toolkit/compat'
 
 import SearchInput from '@/components/ui/search-input/SearchInput.vue'
-import CurrentUserMessage from '@/components/dialog/content/setting/CurrentUserMessage.vue'
 import BaseModalLayout from '@/components/widget/layout/BaseModalLayout.vue'
 import NavItem from '@/components/widget/nav/NavItem.vue'
 import NavTitle from '@/components/widget/nav/NavTitle.vue'
-import { useBillingContext } from '@/composables/billing/useBillingContext'
 import ColorPaletteMessage from '@/platform/settings/components/ColorPaletteMessage.vue'
 import SettingsPanel from '@/platform/settings/components/SettingsPanel.vue'
 import { useSettingSearch } from '@/platform/settings/composables/useSettingSearch'
 import { useSettingUI } from '@/platform/settings/composables/useSettingUI'
-import { useSearchQueryTracking } from '@/platform/telemetry/searchQuery/useSearchQueryTracking'
 import type { SettingTreeNode } from '@/platform/settings/settingStore'
 import type {
   ISettingGroup,
@@ -110,6 +117,16 @@ import type {
 } from '@/platform/settings/types'
 import { OnCloseKey } from '@/types/widgetTypes'
 import { flattenTree } from '@/utils/treeUtil'
+
+const CurrentUserMessage =
+  import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true'
+    ? { render: () => h('span') }
+    : defineAsyncComponent(
+        () =>
+          import(
+            '@/components/dialog/content/setting/CurrentUserMessage.vue'
+          )
+      )
 
 const { onClose, defaultPanel, scrollToSettingId } = defineProps<{
   onClose: () => void
@@ -135,8 +152,6 @@ const {
   handleSearch: handleSearchBase,
   getSearchResults
 } = useSettingSearch()
-
-const { fetchBalance } = useBillingContext()
 
 const navRef = ref<HTMLElement | null>(null)
 const activeCategoryKey = ref<string | null>(defaultCategory.value?.key ?? null)
@@ -217,7 +232,31 @@ function onNavItemClick(id: string) {
 
 const searchResults = computed<ISettingGroup[]>(() => getSearchResults(null))
 
-useSearchQueryTracking('settings', searchQuery, searchResults)
+// Account analytics stay outside the embedded build. Keep equivalent search
+// telemetry in the standalone/cloud application without importing its
+// telemetry stack into Hyper-Studio.
+if (import.meta.env.VITE_HYPER_STUDIO_EMBEDDED !== 'true') {
+  const trackSearch = debounce((value: string) => {
+    const trimmed = value.trim()
+    if (!trimmed) return
+
+    void import('@/platform/telemetry').then(({ useTelemetry }) => {
+      const resultCount = searchResults.value.length
+      useTelemetry()?.trackSearchQuery({
+        surface: 'settings',
+        query: trimmed.slice(0, 100),
+        query_length: trimmed.length,
+        result_count: resultCount,
+        has_results: resultCount > 0
+      })
+    })
+  }, 500)
+  const stopSearchTracking = watch(searchQuery, trackSearch)
+  onBeforeUnmount(() => {
+    stopSearchTracking()
+    trackSearch.cancel()
+  })
+}
 
 // Scroll to and highlight the target setting once the correct category renders.
 if (scrollToSettingId) {
@@ -248,8 +287,13 @@ watch(activeCategoryKey, (newKey, oldKey) => {
   if (!newKey && !inSearch.value) {
     activeCategoryKey.value = oldKey
   }
-  if (newKey === 'credits') {
-    void fetchBalance()
+  if (
+    newKey === 'credits' &&
+    import.meta.env.VITE_HYPER_STUDIO_EMBEDDED !== 'true'
+  ) {
+    void import('@/composables/billing/useBillingContext').then(
+      ({ useBillingContext }) => useBillingContext().fetchBalance()
+    )
   }
   if (newKey) {
     void nextTick(() => {

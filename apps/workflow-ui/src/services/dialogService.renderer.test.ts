@@ -7,6 +7,37 @@ import { useBillingContext } from '@/composables/billing/useBillingContext'
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+const inheritedLoaderCalls = vi.hoisted(() => ({ count: 0 }))
+const observeInheritedLoader = <T>(load: () => Promise<T>) => {
+  inheritedLoaderCalls.count += 1
+  return load()
+}
+
+vi.mock(
+  import('@/components/dialog/content/ApiNodesSignInContent.vue'),
+  async (importOriginal) => observeInheritedLoader(importOriginal)
+)
+vi.mock(
+  import('@/components/dialog/content/SignInContent.vue'),
+  async (importOriginal) => observeInheritedLoader(importOriginal)
+)
+vi.mock(
+  import('@/components/dialog/content/UpdatePasswordContent.vue'),
+  async (importOriginal) => observeInheritedLoader(importOriginal)
+)
+vi.mock(
+  import('@/components/dialog/header/ComfyOrgHeader.vue'),
+  async (importOriginal) => observeInheritedLoader(importOriginal)
+)
+vi.mock(
+  import('@/platform/cloud/notification/components/CloudNotificationContent.vue'),
+  async (importOriginal) => observeInheritedLoader(importOriginal)
+)
+vi.mock(
+  import('@/platform/workflow/sharing/components/publish/ComfyHubPublishDialog.vue'),
+  async (importOriginal) => observeInheritedLoader(importOriginal)
+)
+
 vi.mock(import('@/i18n'), () => ({
   t: (key: string) => key
 }))
@@ -45,6 +76,7 @@ import { useDialogStore } from '@/stores/dialogStore'
 describe('dialogService Reka renderer opt-in', () => {
   it('does not open inherited account or cloud dialogs in the embedded app', async () => {
     embeddedState.enabled = true
+    inheritedLoaderCalls.count = 0
     const showDialog = vi.mocked(useDialogStore().showDialog)
     showDialog.mockClear()
     const service = useDialogService()
@@ -54,6 +86,7 @@ describe('dialogService Reka renderer opt-in', () => {
     await service.showCloudNotification()
     await service.showPublishDialog()
     expect(showDialog).not.toHaveBeenCalled()
+    expect(inheritedLoaderCalls.count).toBe(0)
     embeddedState.enabled = false
   })
 

@@ -5,12 +5,8 @@ import type {
 } from '@comfyorg/ingest-types'
 import { zErrorResponse, zGlobalSetting } from '@comfyorg/ingest-types/zod'
 
-import { getComfyApiBaseUrl } from '@/config/comfyApi'
-import {
-  fetchWithUnifiedRemint,
-  shouldRemintCloudRequest
-} from '@/platform/auth/unified/remintRetry'
 import { isCloud } from '@/platform/distribution/types'
+import { isHyperStudioEmbedded } from '@/platform/distribution/hyperStudio'
 import { api } from '@/scripts/api'
 import type { AuthHeader } from '@/types/authTypes'
 
@@ -24,9 +20,26 @@ export class GlobalSettingsApiError extends Error {
   }
 }
 
-function globalSettingsUrl(key?: GlobalSettingKey): string {
+const embeddedBuild =
+  import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true'
+
+async function fetchGlobalSetting(
+  key: GlobalSettingKey | undefined,
+  init: RequestInit
+): Promise<Response> {
   const path = `/global-settings${key ? `/${encodeURIComponent(key)}` : ''}`
-  return isCloud ? api.apiURL(path) : `${getComfyApiBaseUrl()}/api${path}`
+  if (embeddedBuild || isHyperStudioEmbedded) return api.fetchApi(path, init)
+
+  const [{ getComfyApiBaseUrl }, remint] = await Promise.all([
+    import('@/config/comfyApi'),
+    import('@/platform/auth/unified/remintRetry')
+  ])
+  const url = isCloud ? api.apiURL(path) : `${getComfyApiBaseUrl()}/api${path}`
+  return remint.fetchWithUnifiedRemint(
+    url,
+    init,
+    await remint.shouldRemintCloudRequest()
+  )
 }
 
 async function responseBody(response: Response): Promise<unknown> {
@@ -61,11 +74,10 @@ export async function getGlobalSetting(
   key: GlobalSettingKey,
   authHeader: AuthHeader
 ): Promise<GlobalSetting | undefined> {
-  const response = await fetchWithUnifiedRemint(
-    globalSettingsUrl(key),
-    { cache: 'no-store', headers: authHeader },
-    await shouldRemintCloudRequest()
-  )
+  const response = await fetchGlobalSetting(key, {
+    cache: 'no-store',
+    headers: authHeader
+  })
   if (response.status === 404) {
     const error = zErrorResponse.safeParse(await responseBody(response))
     if (error.success && error.data.code === 'NOT_FOUND') return undefined
@@ -77,14 +89,10 @@ export async function setGlobalSetting(
   setting: GlobalSettingValue,
   authHeader: AuthHeader
 ): Promise<GlobalSetting> {
-  const response = await fetchWithUnifiedRemint(
-    globalSettingsUrl(),
-    {
-      method: 'POST',
-      headers: { ...authHeader, 'Content-Type': 'application/json' },
-      body: JSON.stringify(setting)
-    },
-    await shouldRemintCloudRequest()
-  )
+  const response = await fetchGlobalSetting(undefined, {
+    method: 'POST',
+    headers: { ...authHeader, 'Content-Type': 'application/json' },
+    body: JSON.stringify(setting)
+  })
   return storedSetting(response)
 }

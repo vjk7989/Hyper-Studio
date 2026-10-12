@@ -295,9 +295,8 @@ export const zComfyNodeDef = z.object({
   experimental: z.boolean().optional(),
   dev_only: z.boolean().optional(),
   /**
-   * Whether the node is an API node. Running API nodes requires login to
-   * Comfy Org account.
-   * https://docs.comfy.org/tutorials/api-nodes/overview
+   * Whether the node is an API node. The host decides which provider
+   * connection, if any, is required to run it.
    */
   api_node: z.boolean().optional(),
   /**

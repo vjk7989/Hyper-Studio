@@ -8,7 +8,6 @@ import type { Ref } from 'vue'
 
 import { CANVAS_NAVIGATION_PRESETS } from '@/platform/settings/constants/canvasNavigation'
 import type { SettingParams, Settings } from '@/platform/settings/types'
-import { useTelemetry } from '@/platform/telemetry'
 import type { SettingChangedMetadata } from '@/platform/telemetry/types'
 import { api } from '@/scripts/api'
 import { app } from '@/scripts/app'
@@ -29,6 +28,15 @@ export interface SettingTreeNode extends TreeNode {
 interface AppliedSetting<TValue> {
   previousValue: TValue
   newValue: TValue
+}
+
+const embeddedBuild =
+  import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true'
+
+async function trackSettingChanged(event: SettingChangedMetadata): Promise<void> {
+  if (embeddedBuild) return
+  const { useTelemetry } = await import('@/platform/telemetry')
+  useTelemetry()?.trackSettingChanged(event)
 }
 
 function resolveDefaultValue<T>(value: T | (() => T)): T {
@@ -218,7 +226,7 @@ export const useSettingStore = defineStore('setting', () => {
     await api.storeSetting(key, applied.newValue)
 
     const event = settingChangedEvent(settingsById.value[key], key, applied)
-    if (event) useTelemetry()?.trackSettingChanged(event)
+    if (event) await trackSettingChanged(event)
   }
 
   /**
@@ -240,9 +248,8 @@ export const useSettingStore = defineStore('setting', () => {
 
     if (Object.keys(updatedSettings).length > 0) {
       await api.storeSettings(updatedSettings)
-      const telemetry = useTelemetry()
       for (const event of telemetryEvents) {
-        telemetry?.trackSettingChanged(event)
+        await trackSettingChanged(event)
       }
     }
   }

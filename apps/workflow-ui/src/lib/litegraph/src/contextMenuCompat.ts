@@ -78,10 +78,14 @@ class LegacyMenuCompat {
         if (!this.hasWarned.has(fnKey) && this.currentExtension) {
           this.hasWarned.add(fnKey)
 
+          const migrationHelp =
+            import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true'
+              ? 'See the extension migration guide in the Hyper-Studio documentation.'
+              : 'See: https://docs.comfy.org/custom-nodes/js/context-menu-migration'
           console.warn(
             `%c[DEPRECATED]%c Monkey-patching ${methodName as string} is deprecated. (Extension: "${this.currentExtension}")\n` +
               `Please use the new context menu API instead.\n\n` +
-              `See: https://docs.comfy.org/custom-nodes/js/context-menu-migration`,
+              migrationHelp,
             'color: orange; font-weight: bold',
             'color: inherit'
           )

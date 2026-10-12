@@ -7,19 +7,13 @@ import type { Component } from 'vue'
 import ConfirmationDialogContent from '@/components/dialog/content/ConfirmationDialogContent.vue'
 import ErrorDialogContent from '@/components/dialog/content/ErrorDialogContent.vue'
 import PromptDialogContent from '@/components/dialog/content/PromptDialogContent.vue'
-import TopUpCreditsDialogContentLegacy from '@/components/dialog/content/TopUpCreditsDialogContentLegacy.vue'
 import {
   HUG_CONTENT_CLASS,
   SELF_STYLED_PANEL_CONTENT_CLASS
 } from '@/components/ui/dialog/dialog.variants'
-import InsufficientCreditsMemberDialog from '@/platform/workspace/components/InsufficientCreditsMemberDialog.vue'
-import TopUpCreditsDialogContentWorkspace from '@/platform/workspace/components/TopUpCreditsDialogContentWorkspace.vue'
-import { useBillingCapabilities } from '@/platform/workspace/composables/useBillingCapabilities'
 import { t } from '@/i18n'
-import { useTelemetry } from '@/platform/telemetry'
 import { isCloud } from '@/platform/distribution/types'
 import { isHyperStudioEmbedded } from '@/platform/distribution/hyperStudio'
-import { useBillingContext } from '@/composables/billing/useBillingContext'
 import { useToastStore } from '@/platform/updates/common/toastStore'
 import { useDialogStore } from '@/stores/dialogStore'
 import type { RunErrorMessageSource } from '@/platform/errorCatalog/types'
@@ -37,19 +31,18 @@ import type { PaymentIntentSource } from '@/platform/telemetry/types'
 import type { WorkspaceRole } from '@/platform/workspace/api/workspaceApi'
 import type { DowngradeToPersonalResult } from '@/platform/workspace/composables/useDowngradeToPersonal'
 
-// Lazy loaders for dialogs - components are loaded on first use
-const lazyApiNodesSignInContent = () =>
-  import('@/components/dialog/content/ApiNodesSignInContent.vue')
-const lazySignInContent = () =>
-  import('@/components/dialog/content/SignInContent.vue')
-const lazyUpdatePasswordContent = () =>
-  import('@/components/dialog/content/UpdatePasswordContent.vue')
-const lazyComfyOrgHeader = () =>
-  import('@/components/dialog/header/ComfyOrgHeader.vue')
-const lazyCloudNotificationContent = () =>
-  import('@/platform/cloud/notification/components/CloudNotificationContent.vue')
-const lazyPublishDialog = () =>
-  import('@/platform/workflow/sharing/components/publish/ComfyHubPublishDialog.vue')
+const embeddedBuild =
+  import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true'
+
+function trackUiButtonClicked(buttonId: string, elementGroup: string): void {
+  if (embeddedBuild) return
+  void import('@/platform/telemetry').then(({ useTelemetry }) => {
+    useTelemetry()?.trackUiButtonClicked({
+      button_id: buttonId,
+      element_group: elementGroup
+    })
+  })
+}
 
 // A type alias, not an interface: `showDialog`'s props are index-signature
 // typed, and only object literal types get an implicit index signature.
@@ -257,10 +250,7 @@ export const useDialogService = () => {
         renderer: 'reka',
         size: 'lg',
         onClose: () => {
-          useTelemetry()?.trackUiButtonClicked({
-            button_id: 'error_dialog_closed',
-            element_group: 'error_dialog'
-          })
+          trackUiButtonClicked('error_dialog_closed', 'error_dialog')
         }
       }
     })
@@ -328,10 +318,7 @@ export const useDialogService = () => {
         renderer: 'reka',
         size: 'lg',
         onClose: () => {
-          useTelemetry()?.trackUiButtonClicked({
-            button_id: 'error_dialog_closed',
-            element_group: 'error_dialog'
-          })
+          trackUiButtonClicked('error_dialog_closed', 'error_dialog')
         }
       }
     })
@@ -345,11 +332,11 @@ export const useDialogService = () => {
     apiNodeNames: string[]
   ): Promise<boolean> {
     if (
-      import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true' ||
-      isHyperStudioEmbedded
+      embeddedBuild || isHyperStudioEmbedded
     )
       return false
-    const { default: ApiNodesSignInContent } = await lazyApiNodesSignInContent()
+    const { default: ApiNodesSignInContent } =
+      await import('@/components/dialog/content/ApiNodesSignInContent.vue')
 
     const key = 'api-nodes-signin'
 
@@ -379,12 +366,14 @@ export const useDialogService = () => {
 
   async function showSignInDialog(): Promise<boolean> {
     if (
-      import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true' ||
-      isHyperStudioEmbedded
+      embeddedBuild || isHyperStudioEmbedded
     )
       return false
     const [{ default: SignInContent }, { default: ComfyOrgHeader }] =
-      await Promise.all([lazySignInContent(), lazyComfyOrgHeader()])
+      await Promise.all([
+        import('@/components/dialog/content/SignInContent.vue'),
+        import('@/components/dialog/header/ComfyOrgHeader.vue')
+      ])
 
     return new Promise<boolean>((resolve) => {
       dialogStore.showDialog({
@@ -486,10 +475,22 @@ export const useDialogService = () => {
 
   async function showTopUpCreditsDialog(options?: TopUpCreditsDialogOptions) {
     if (
-      import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true' ||
-      isHyperStudioEmbedded
+      embeddedBuild || isHyperStudioEmbedded
     )
       return
+    const [
+      { useBillingContext },
+      { useBillingCapabilities },
+      { default: InsufficientCreditsMemberDialog },
+      { default: TopUpCreditsDialogContentWorkspace },
+      { default: TopUpCreditsDialogContentLegacy }
+    ] = await Promise.all([
+      import('@/composables/billing/useBillingContext'),
+      import('@/platform/workspace/composables/useBillingCapabilities'),
+      import('@/platform/workspace/components/InsufficientCreditsMemberDialog.vue'),
+      import('@/platform/workspace/components/TopUpCreditsDialogContentWorkspace.vue'),
+      import('@/components/dialog/content/TopUpCreditsDialogContentLegacy.vue')
+    ])
     const { type } = useBillingContext()
     const { canTopUp, canSubscribeSelfServe, isReady, initialize } =
       useBillingCapabilities()
@@ -550,12 +551,14 @@ export const useDialogService = () => {
    */
   async function showUpdatePasswordDialog() {
     if (
-      import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true' ||
-      isHyperStudioEmbedded
+      embeddedBuild || isHyperStudioEmbedded
     )
       return
     const [{ default: UpdatePasswordContent }, { default: ComfyOrgHeader }] =
-      await Promise.all([lazyUpdatePasswordContent(), lazyComfyOrgHeader()])
+      await Promise.all([
+        import('@/components/dialog/content/UpdatePasswordContent.vue'),
+        import('@/components/dialog/header/ComfyOrgHeader.vue')
+      ])
 
     return dialogStore.showDialog({
       key: 'global-update-password',
@@ -636,8 +639,7 @@ export const useDialogService = () => {
   async function showSubscriptionRequiredDialog(
     options?: SubscriptionDialogOptions
   ) {
-    if (import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true' || !isCloud)
-      return
+    if (embeddedBuild || !isCloud) return
 
     // A caller (e.g. the agent panel's paywall card) can fire this before the
     // bootstrap /features fetch resolves, most likely right after a fresh
@@ -686,7 +688,7 @@ export const useDialogService = () => {
     workspaceId?: string
     workspaceName?: string
   }) {
-    if (import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true') return
+    if (embeddedBuild) return
     const { default: component } =
       await import('@/platform/workspace/components/dialogs/DeleteWorkspaceDialogContent.vue')
     return dialogStore.showDialog({
@@ -700,7 +702,7 @@ export const useDialogService = () => {
   async function showCreateWorkspaceDialog(
     onConfirm?: (name: string) => void | Promise<void>
   ) {
-    if (import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true') return
+    if (embeddedBuild) return
     const { default: component } =
       await import('@/platform/workspace/components/dialogs/CreateWorkspaceDialogContent.vue')
     return dialogStore.showDialog({
@@ -720,7 +722,7 @@ export const useDialogService = () => {
   async function showTeamWorkspacesDialog(
     onConfirm?: (name: string) => void | Promise<void>
   ) {
-    if (import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true') return
+    if (embeddedBuild) return
     const { default: component } =
       await import('@/platform/workspace/components/dialogs/TeamWorkspacesDialogContent.vue')
     return dialogStore.showDialog({
@@ -734,7 +736,7 @@ export const useDialogService = () => {
   }
 
   async function showLeaveWorkspaceDialog() {
-    if (import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true') return
+    if (embeddedBuild) return
     const { default: component } =
       await import('@/platform/workspace/components/dialogs/LeaveWorkspaceDialogContent.vue')
     return dialogStore.showDialog({
@@ -745,7 +747,7 @@ export const useDialogService = () => {
   }
 
   async function showEditWorkspaceDialog() {
-    if (import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true') return
+    if (embeddedBuild) return
     const { default: component } =
       await import('@/platform/workspace/components/dialogs/EditWorkspaceDialogContent.vue')
     return dialogStore.showDialog({
@@ -758,7 +760,7 @@ export const useDialogService = () => {
   }
 
   async function showRemoveMemberDialog(memberId: string) {
-    if (import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true') return
+    if (embeddedBuild) return
     const { default: component } =
       await import('@/platform/workspace/components/dialogs/RemoveMemberDialogContent.vue')
     return dialogStore.showDialog({
@@ -774,7 +776,7 @@ export const useDialogService = () => {
     memberName: string
     targetRole: WorkspaceRole
   }) {
-    if (import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true') return
+    if (embeddedBuild) return
     const { default: component } =
       await import('@/platform/workspace/components/dialogs/ChangeMemberRoleDialogContent.vue')
     return dialogStore.showDialog({
@@ -791,7 +793,7 @@ export const useDialogService = () => {
     creditsUsed?: number
     currentLimit?: number | null
   }) {
-    if (import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true') return
+    if (embeddedBuild) return
     const { default: component } =
       await import('@/platform/workspace/components/dialogs/SetMemberCreditLimitDialogContent.vue')
     return dialogStore.showDialog({
@@ -803,7 +805,7 @@ export const useDialogService = () => {
   }
 
   async function showInviteMemberDialog() {
-    if (import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true') return
+    if (embeddedBuild) return
     const { default: component } =
       await import('@/platform/workspace/components/dialogs/InviteMemberDialogContent.vue')
     return dialogStore.showDialog({
@@ -816,7 +818,7 @@ export const useDialogService = () => {
   }
 
   async function showInviteMemberUpsellDialog() {
-    if (import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true') return
+    if (embeddedBuild) return
     const { default: component } =
       await import('@/platform/workspace/components/dialogs/InviteMemberUpsellDialogContent.vue')
     return dialogStore.showDialog({
@@ -829,7 +831,7 @@ export const useDialogService = () => {
   }
 
   async function showRevokeInviteDialog(inviteId: string) {
-    if (import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true') return
+    if (embeddedBuild) return
     const { default: component } =
       await import('@/platform/workspace/components/dialogs/RevokeInviteDialogContent.vue')
     return dialogStore.showDialog({
@@ -862,7 +864,7 @@ export const useDialogService = () => {
     cancelAt?: string,
     flowAlreadyOpened = false
   ) {
-    if (import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true') return
+    if (embeddedBuild) return
     const { default: component } =
       await import('@/components/dialog/content/subscription/CancelSubscriptionDialogContent.vue')
     return dialogStore.showDialog({
@@ -876,7 +878,7 @@ export const useDialogService = () => {
   }
 
   async function showCancelSubscriptionFlow(cancelAt?: string) {
-    if (import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true') return
+    if (embeddedBuild) return
     const cancellationFlow =
       await import('@/platform/cloud/subscription/launchCancellationFlow')
     return cancellationFlow.launchCancellationFlow({
@@ -896,7 +898,7 @@ export const useDialogService = () => {
     planName: string
     planSlug: string
   }): Promise<DowngradeToPersonalResult | null> {
-    if (import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true') return null
+    if (embeddedBuild) return null
     const {
       useDowngradeToPersonal,
       ReactivationConfirmationRequiredError,
@@ -997,11 +999,11 @@ export const useDialogService = () => {
   /** Shows one-time cloud notification modal for macOS desktop users. */
   async function showCloudNotification(): Promise<void> {
     if (
-      import.meta.env.VITE_HYPER_STUDIO_EMBEDDED === 'true' ||
-      isHyperStudioEmbedded
+      embeddedBuild || isHyperStudioEmbedded
     )
       return
-    const { default: component } = await lazyCloudNotificationContent()
+    const { default: component } =
+      await import('@/platform/cloud/notification/components/CloudNotificationContent.vue')
     return new Promise<void>((resolve) => {
       showLayoutDialog({
         key: 'global-cloud-notification',
@@ -1018,8 +1020,9 @@ export const useDialogService = () => {
   }
 
   async function showPublishDialog(): Promise<void> {
-    if (isHyperStudioEmbedded) return
-    const { default: ComfyHubPublishDialog } = await lazyPublishDialog()
+    if (embeddedBuild || isHyperStudioEmbedded) return
+    const { default: ComfyHubPublishDialog } =
+      await import('@/platform/workflow/sharing/components/publish/ComfyHubPublishDialog.vue')
     const key = 'global-comfyhub-publish'
     showLayoutDialog({
       key,
