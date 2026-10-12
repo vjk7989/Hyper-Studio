@@ -235,6 +235,28 @@ try {
   record('Export settings dialog opens', 'render not started')
   await page.screenshot({ path: path.join(home, 'editor-export-dialog.png') })
 
+  // A Workflow output arriving during an Editor dialog must update shared media
+  // without replacing the active project surface or losing transient UI state.
+  const workflowPreview = path.join(project, 'outputs', 'workflow-preview.png')
+  fs.copyFileSync(redPng, workflowPreview)
+  const projectId = JSON.parse(fs.readFileSync(path.join(project, '.hyper-studio', 'project.json'), 'utf8')).projectId
+  const editorModeButton = await page.locator('button[title^="Editor mode"]').elementHandle()
+  assert.ok(editorModeButton, 'Editor mode button is missing before Workflow media update')
+  await page.evaluate(() => {
+    window.__editorMediaUpdates = 0
+    window.electronAPI.onWorkspaceMediaChanged(event => {
+      if (event.entries.some(entry => entry.relativePath === 'outputs/workflow-preview.png')) window.__editorMediaUpdates += 1
+    })
+  })
+  await page.evaluate(id => window.electronAPI.registerWorkspaceMedia({
+    projectId: id, relativePath: 'outputs/workflow-preview.png', kind: 'image', origin: 'workflow',
+  }), projectId)
+  await page.waitForFunction(() => window.__editorMediaUpdates > 0, null, { timeout: 10000 })
+  await page.waitForTimeout(1200)
+  assert.equal(await editorModeButton.evaluate(element => element.isConnected), true, 'Workflow media update remounted the Editor project')
+  await page.getByRole('button', { name: 'Export Video' }).waitFor({ state: 'visible' })
+  record('Workflow media update preserves open Editor export', 'shared media arrived while settings and Editor mount stayed open')
+
   await page.locator('div.fixed.inset-0.z-50').first().click({ position: { x: 5, y: 5 } })
   await menu('File', 'New Timeline')
   await page.getByText('Timeline 3', { exact: true }).first().waitFor({ state: 'visible' })

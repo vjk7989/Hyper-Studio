@@ -134,6 +134,15 @@ export function Project() {
   migrationAssetsRef.current = activeProjectAssets
   const attemptedMigrationRef = useRef<{ projectId: string; key: string } | null>(null)
 
+  // An empty (or already upgraded) project has completed its initial open.
+  // Later media arriving from Workflow must upgrade in place; returning the
+  // initial migration screen then would unmount Editor and discard open dialogs.
+  useEffect(() => {
+    if (decision === 'ready' && activeProjectId && !needsAssetMetadataMigration && !assetMetadataMigrationProgress.running) {
+      setUpgradePassProjectId(activeProjectId)
+    }
+  }, [decision, activeProjectId, needsAssetMetadataMigration, assetMetadataMigrationProgress.running])
+
   const handleSaveActiveProject = useCallback((project: typeof activeProject extends null ? never : NonNullable<typeof activeProject>) => {
     if (!activeProjectId) return
     const latest = readProject(activeProjectId)
