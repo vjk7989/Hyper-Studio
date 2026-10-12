@@ -78,7 +78,7 @@ import {
   selectActiveTool,
 } from './editor-selectors'
 import { useTimelineDrag } from './useTimelineDrag'
-import { useEditorActions, useEditorStore } from './editor-store'
+import { useEditorActions, useEditorHistoryGesture, useEditorStore } from './editor-store'
 
 // Custom scissors cursor SVG for the blade tool (white with dark outline for contrast)
 const SCISSORS_CURSOR_SVG = `<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='6' cy='6' r='3'/><path d='M8.12 8.12 12 12'/><path d='M20 4 8.12 15.88'/><circle cx='6' cy='18' r='3'/><path d='M14.8 14.8 20 20'/></svg>`
@@ -232,6 +232,7 @@ export function VideoEditorTimelineEditingPanel(props: VideoEditorTimelineEditin
   const selectedSubtitleId = useEditorStore(selectSelectedSubtitleId)
   const editingSubtitleId = useEditorStore(selectEditingSubtitleId)
   const hasClipboard = useEditorStore(selectCanUseClipboard)
+  const historyGesture = useEditorHistoryGesture()
 
   const setClips = useCallback((value: React.SetStateAction<TimelineClip[]>) => {
     actions.setTimelineClips(value)
@@ -1115,7 +1116,7 @@ export function VideoEditorTimelineEditingPanel(props: VideoEditorTimelineEditin
   } = useTimelineDrag({
     activeTool, setActiveTool, lastTrimTool, setLastTrimTool,
     pixelsPerSecond, totalDuration,
-    clips, setClips, tracks,
+    clips, setClips, tracks, historyGesture,
     selectedClipIds, setSelectedClipIds,
     currentTime, setCurrentTime, setIsPlaying,
     snapEnabled, resolveClipPath, getMaxClipDuration, addClipToTimeline,

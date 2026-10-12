@@ -66,6 +66,7 @@ interface UseTimelineDragParams {
   totalDuration: number
   clips: TimelineClip[]
   setClips: React.Dispatch<React.SetStateAction<TimelineClip[]>>
+  historyGesture: { begin: () => void; end: () => void }
   tracks: Track[]
   selectedClipIds: Set<string>
   setSelectedClipIds: React.Dispatch<React.SetStateAction<Set<string>>>
@@ -98,7 +99,7 @@ export function useTimelineDrag(params: UseTimelineDragParams) {
   const {
     activeTool,
     pixelsPerSecond, totalDuration,
-    clips, setClips, tracks,
+    clips, setClips, tracks, historyGesture,
     selectedClipIds, setSelectedClipIds,
     currentTime, setCurrentTime, setIsPlaying,
     snapEnabled, getMaxClipDuration, addClipToTimeline,
@@ -623,11 +624,12 @@ export function useTimelineDrag(params: UseTimelineDragParams) {
     }
     if (resizingClip) {
       setClips(prev => resolveOverlaps(prev, new Set([resizingClip.clipId])))
+      historyGesture.end()
     }
     
     setDraggingClip(null)
     setResizingClip(null)
-  }, [lassoRect, clips, pixelsPerSecond, draggingClip, resizingClip, setClips, getTrackHeight, trackTopPx, clearDragPreviewDom])
+  }, [lassoRect, clips, pixelsPerSecond, draggingClip, resizingClip, setClips, getTrackHeight, trackTopPx, clearDragPreviewDom, historyGesture])
   
   const handleResizeMove = useCallback((e: MouseEvent) => {
     if (!resizingClip) return
@@ -872,6 +874,7 @@ export function useTimelineDrag(params: UseTimelineDragParams) {
     // Prevent resizing clips on locked tracks
     if (tracks[clip.trackIndex]?.locked) return
     
+    historyGesture.begin()
     setSelectedClipIds(expandWithLinkedClips(new Set([clip.id])))
     
     // For Roll trim, find the adjacent clip at the edit point

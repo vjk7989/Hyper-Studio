@@ -465,6 +465,15 @@ try {
   record('Selection shortcut and right-edge trim', `${durationBeforeTrim.toFixed(2)}s → ${activeTimeline().clips.find(clip => clip.id === trimClip.id).duration.toFixed(2)}s`)
   await menu('Edit', 'Undo')
   await waitUntil(() => Math.abs(activeTimeline()?.clips.find(clip => clip.id === trimClip.id)?.duration - durationBeforeTrim) < 0.1, 'Undo trim')
+  assert.deepEqual(
+    activeTimeline().clips.map(clip => clip.id).sort(),
+    splitClips.map(clip => clip.id).sort(),
+    'one Undo must restore the trim without undoing the preceding blade split',
+  )
+  assert.ok(
+    Math.abs(activeTimeline().clips.find(clip => clip.id === trimClip.id)?.startTime - trimClip.startTime) < 0.1,
+    'Undo trim must preserve the moved and split clip position',
+  )
   await menu('Edit', 'Redo')
   await waitUntil(() => activeTimeline()?.clips.find(clip => clip.id === trimClip.id)?.duration < durationBeforeTrim - 0.1, 'Redo trim')
   record('Trim Undo and Redo', 'edge returns to original duration, then shortened duration')

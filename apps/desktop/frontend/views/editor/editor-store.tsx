@@ -13,6 +13,8 @@ interface EditorStore {
   state: EditorState
   setStateWithHistory: (value: EditorSetStateAction) => void
   setStateWithoutHistory: (value: EditorSetStateAction) => void
+  beginHistoryGesture: () => void
+  endHistoryGesture: () => void
 }
 
 export type EditorStoreApi = StoreApi<EditorStore>
@@ -24,11 +26,14 @@ function resolveStateAction(value: EditorSetStateAction, prev: EditorState): Edi
 }
 
 export function createEditorStore(initialState: EditorState): EditorStoreApi {
-  return createStore<EditorStore>()((set) => ({
+  let gestureStart: EditorState | null = null
+  const store = createStore<EditorStore>()((set) => ({
     state: initialState,
     setStateWithHistory: (value) => {
       set((prev) => ({
-        state: recordHistoryStep(prev.state, resolveStateAction(value, prev.state)),
+        state: gestureStart
+          ? resolveStateAction(value, prev.state)
+          : recordHistoryStep(prev.state, resolveStateAction(value, prev.state)),
       }))
     },
     setStateWithoutHistory: (value) => {
@@ -36,7 +41,17 @@ export function createEditorStore(initialState: EditorState): EditorStoreApi {
         state: resolveStateAction(value, prev.state),
       }))
     },
+    beginHistoryGesture: () => {
+      if (gestureStart === null) gestureStart = store.getState().state
+    },
+    endHistoryGesture: () => {
+      const start = gestureStart
+      if (start === null) return
+      gestureStart = null
+      set((prev) => ({ state: recordHistoryStep(start, prev.state) }))
+    },
   }))
+  return store
 }
 
 function recordHistoryStep(prev: EditorState, next: EditorState): EditorState {
@@ -90,6 +105,14 @@ export function useEditorStore<T>(
 export function useEditorGetState(): () => EditorState {
   const store = useEditorStoreContext()
   return useCallback(() => store.getState().state, [store])
+}
+
+export function useEditorHistoryGesture() {
+  const store = useEditorStoreContext()
+  return useMemo(() => ({
+    begin: () => store.getState().beginHistoryGesture(),
+    end: () => store.getState().endHistoryGesture(),
+  }), [store])
 }
 
 function useEditorStoreSetStateWithHistory(): (value: EditorSetStateAction) => void {
