@@ -40,6 +40,9 @@ const EMBEDDED_ACCOUNT_PLACEHOLDER = resolve(
 const EMBEDDED_ACCOUNT_IDENTITY = resolve(
   'src/platform/distribution/embeddedAccountIdentity.ts'
 )
+const EMBEDDED_AGENT_CONSENT = resolve(
+  'src/platform/distribution/embeddedAgentConsent.ts'
+)
 const EMBEDDED_AUTH_STORE = resolve(
   'src/platform/distribution/embeddedAuthStore.ts'
 )
@@ -522,6 +525,15 @@ export default defineConfig({
         ) {
           return EMBEDDED_BILLING_CONTEXT
         }
+        if (
+          source ===
+            '@/workbench/extensions/agent/composables/agent/useAgentConsent' ||
+          normalizedSource.endsWith(
+            '/src/workbench/extensions/agent/composables/agent/useAgentConsent.ts'
+          )
+        ) {
+          return EMBEDDED_AGENT_CONSENT
+        }
         if (source === '@/platform/auth/firebaseIdentity') {
           return EMBEDDED_ACCOUNT_IDENTITY
         }
@@ -985,6 +997,8 @@ export default defineConfig({
             '@/config/comfyApi': EMBEDDED_COMFY_API,
             '@/platform/auth/firebaseIdentity': EMBEDDED_ACCOUNT_IDENTITY,
             '@/stores/authStore': EMBEDDED_AUTH_STORE,
+            '@/workbench/extensions/agent/composables/agent/useAgentConsent':
+              EMBEDDED_AGENT_CONSENT,
             'firebase/app': EMBEDDED_FIREBASE_APP,
             'firebase/auth': EMBEDDED_FIREBASE_AUTH
           }
