@@ -176,6 +176,8 @@ jobs:
           try {
             $env:DISTRIBUTION = 'localhost'
             $env:VITE_HYPER_STUDIO_EMBEDDED = 'true'
+            & ../../scripts/with-local-env.ps1 -Executable node -Arguments @('--max-old-space-size=4096', 'node_modules/vue-tsc/bin/vue-tsc.js', '--noEmit', '-p', 'tsconfig.hyper-studio.json')
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
             & ../../scripts/with-local-env.ps1 -Executable node -Arguments @('node_modules/vite/bin/vite.js', 'build', '--config', 'vite.config.mts')
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           } finally { Pop-Location }
