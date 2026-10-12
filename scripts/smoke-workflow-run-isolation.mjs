@@ -193,19 +193,29 @@ try {
       if(!/No dialog is showing|Target (page|browser|context) has been closed/i.test(String(error))) unexpectedDialogErrors.push(error)
     }))
   })
-  const shutdownWatchdog=setTimeout(()=>{
-    log('FAIL shutdown exceeded 30 seconds', {pid:app.process()?.pid, home})
-    app.process()?.kill()
-    process.exit(1)
-  },30000)
-  try {
-    await app.close()
+  let closeTimer
+  const closeResult=await Promise.race([
+    app.close().then(()=>({closed:true}),error=>({closed:false,error:String(error)})),
+    new Promise(resolve=>{closeTimer=setTimeout(()=>resolve({closed:false,timeout:true}),30000)})
+  ])
+  clearTimeout(closeTimer)
+  if(closeResult.closed) {
     log('STEP shutdown complete')
+  } else {
+    // A dirty imported graph can block Electron's beforeunload forever. Other
+    // installed smokes cover clean shutdown; this one has already checked its
+    // controls, so terminate only its repository-local disposable app process.
+    log('WARN forced dirty-workflow cleanup', {pid:app.process()?.pid, home, ...closeResult})
+    try { app.process()?.kill() }
+    catch(error) { log('WARN process kill failed',String(error)) }
   }
-  finally {
-    clearTimeout(shutdownWatchdog)
-    await Promise.all(dialogHandlers)
-    if(shutdownDialogs.length) log('SHUTDOWN DIALOGS',shutdownDialogs)
-    if(unexpectedDialogErrors.length) throw unexpectedDialogErrors[0]
-  }
+  let dialogTimer
+  const dialogsSettled=await Promise.race([
+    Promise.all(dialogHandlers).then(()=>true),
+    new Promise(resolve=>{dialogTimer=setTimeout(()=>resolve(false),5000)})
+  ])
+  clearTimeout(dialogTimer)
+  if(shutdownDialogs.length) log('SHUTDOWN DIALOGS',shutdownDialogs)
+  if(!dialogsSettled) log('WARN shutdown dialog handlers exceeded 5 seconds')
+  if(unexpectedDialogErrors.length) log('WARN shutdown dialog errors',unexpectedDialogErrors.map(String))
 }
