@@ -276,7 +276,23 @@ try {
   }
   const updated = await waitForBatch(updateTask.ui_id)
   if (updated.operation.result !== 'success' || updated.batch.failed_operations !== 0) {
-    throw new Error(`Manager update failed: ${JSON.stringify(updated)}`)
+    const historyUrl = new URL('v2/manager/queue/history', restarted.url)
+    historyUrl.searchParams.set('ui_id', updateTask.ui_id)
+    const historyResponse = await fetch(historyUrl)
+    const history = historyResponse.ok ? await historyResponse.json() : { httpStatus: historyResponse.status }
+    const diagnostic = {
+      task: updateTask,
+      operation: updated.operation,
+      history,
+      installedHead: git(['-C', installedPath, 'rev-parse', 'HEAD']),
+      installedBranch: git(['-C', installedPath, 'branch', '--show-current']),
+      installedRemotes: git(['-C', installedPath, 'remote', '-v']),
+      expectedHead: updateCommit
+    }
+    const diagnosticPath = path.join(home, 'manager-update-failed.json')
+    fs.writeFileSync(diagnosticPath, JSON.stringify(diagnostic, null, 2))
+    const reason = String(history?.result || history?.status?.messages?.[0] || 'no Manager reason').slice(0, 300)
+    throw new Error(`Manager update failed: ${reason}; diagnostics: ${diagnosticPath}`)
   }
   if (git(['-C', installedPath, 'rev-parse', 'HEAD']) !== updateCommit) throw new Error('Installed node did not advance to the local update commit')
   process.stdout.write('PASS: Manager updated the installed pack to the next local fixture commit\n')
