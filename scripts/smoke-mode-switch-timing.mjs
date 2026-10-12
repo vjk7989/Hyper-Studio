@@ -127,7 +127,29 @@ try {
     const status = await window.electronAPI.getWorkflowEngineStatus()
     return status.state === 'running' && status.projectId !== previousId
   }, firstProjectId, { timeout: 120000 })
-  await window.getByRole('button', { name: 'Shared files (0)' }).waitFor({ state: 'visible', timeout: 30000 })
+  try {
+    // The engine may finish before React navigates into the new workspace.
+    // Prove that the visible shell belongs to this project before checking
+    // its media count; a running engine alone says nothing about the route.
+    await window.locator('header').getByText('Isolated workflow', { exact: true }).waitFor({ state: 'visible', timeout: 30000 })
+    await window.getByRole('button', { name: 'Workflow', exact: true, pressed: true }).waitFor({ state: 'visible', timeout: 30000 })
+    const sharedFiles = window.getByRole('button', { name: /^Shared files \(\d+\)$/ })
+    await sharedFiles.waitFor({ state: 'visible', timeout: 30000 })
+    const label = await sharedFiles.innerText()
+    if (label.trim() !== 'Shared files (0)') throw new Error(`New project exposed media from another project: ${label.trim()}`)
+  } catch (error) {
+    const evidence = path.join(home, 'second-project-failure.json')
+    const state = await window.evaluate(async () => ({
+      url: location.href,
+      engine: await window.electronAPI.getWorkflowEngineStatus(),
+      headers: [...document.querySelectorAll('header')].map(header => header.innerText.slice(0, 500)),
+      visibleButtons: [...document.querySelectorAll('button')].filter(button => button.getClientRects().length).map(button => button.innerText.trim()).filter(Boolean).slice(0, 80),
+      alerts: [...document.querySelectorAll('[role="alert"]')].map(alert => alert.textContent?.trim()),
+    })).catch(e => ({ diagnosticError: String(e) }))
+    fs.writeFileSync(evidence, JSON.stringify(state, null, 2))
+    await window.screenshot({ path: path.join(home, 'second-project-failure.png') }).catch(() => undefined)
+    throw new Error(`${error instanceof Error ? error.message : String(error)}; evidence: ${evidence}`)
+  }
   timings.secondProjectIsolated = true
   const sorted = [...timings.warmSwitchMs].sort((a, b) => a - b)
   timings.warmP95Ms = sorted[Math.ceil(sorted.length * 0.95) - 1]
