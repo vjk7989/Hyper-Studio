@@ -50,7 +50,8 @@ test('rejects inherited cloud assets and destinations', async (t) => {
     ...requiredFiles,
     'assets/CloudLoginView-deadbeef.js':
       'fetch("https://cloud.comfy.org/api/session")',
-    'assets/comfy-logo-cafebabe.js': 'export default "inherited mark"'
+    'assets/comfy-logo-cafebabe.js': 'export default "inherited mark"',
+    'assets/images/partner-nodes-signin.webp': 'inherited promotion'
   })
   t.after(() => rm(root, { recursive: true, force: true }))
 
@@ -59,7 +60,8 @@ test('rejects inherited cloud assets and destinations', async (t) => {
   assert.equal(result.ok, false)
   assert.deepEqual(result.forbiddenAssets, [
     'assets/CloudLoginView-deadbeef.js',
-    'assets/comfy-logo-cafebabe.js'
+    'assets/comfy-logo-cafebabe.js',
+    'assets/images/partner-nodes-signin.webp'
   ])
   assert.deepEqual(result.forbiddenDestinations, [
     {

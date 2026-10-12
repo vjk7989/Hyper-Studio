@@ -1,3 +1,6 @@
+import { rm } from 'node:fs/promises'
+import { resolve } from 'node:path'
+
 import type { Plugin } from 'vite'
 
 const DESIGN_SYSTEM_STYLE_SUFFIX =
@@ -8,6 +11,9 @@ const INHERITED_ICON_SAFELIST =
   /(icon(?:-mask)?-\[comfy--\{)([^}]+)(\}\])/g
 const SOURCE_MAP_REFERENCE =
   /(?:\/\/[#@]\s*sourceMappingURL=.*?(?=\r?\n|$)|\/\*[#@]\s*sourceMappingURL=.*?\*\/)/g
+const EMBEDDED_PROMO_ASSET_PATHS = [
+  'assets/images/partner-nodes-signin.webp'
+] as const
 
 export function stripInheritedIconSafelist(source: string): string {
   return source.replace(
@@ -52,6 +58,14 @@ function stripBundleSourceMapReferences(bundle: Record<string, BundleItem>) {
   }
 }
 
+export async function removeEmbeddedPromoAssets(outputDirectory: string) {
+  await Promise.all(
+    EMBEDDED_PROMO_ASSET_PATHS.map((relativePath) =>
+      rm(resolve(outputDirectory, relativePath), { force: true })
+    )
+  )
+}
+
 export function hyperStudioEmbeddedOutputPlugin(enabled: boolean): Plugin {
   return {
     name: 'hyper-studio-embedded-output-hygiene',
@@ -72,6 +86,11 @@ export function hyperStudioEmbeddedOutputPlugin(enabled: boolean): Plugin {
         stripBundleSourceMapReferences(
           bundle as unknown as Record<string, BundleItem>
         )
+      }
+    },
+    async writeBundle(options) {
+      if (enabled && options.dir) {
+        await removeEmbeddedPromoAssets(options.dir)
       }
     }
   }

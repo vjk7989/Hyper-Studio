@@ -2,7 +2,7 @@ import { lstat, readFile, readdir } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const FORBIDDEN_ASSET_NAME = /^(?:Cloud[A-Za-z0-9]*|ComfyCloud[A-Za-z0-9]*|comfy-(?:cloud|logo)|OAuth[A-Za-z0-9]*|onboardingCloudRoutes|cloudFeedbackTopbarButton|useCloudAuthPage|useSubscriptionDialog|vendor-firebase|firebaseIdentity|SignInContent|SignUpForm|UserPanel|UserSelectView|CreditsPanel|Subscription(?:Required|Inactive|Transition|Cancellation)[A-Za-z0-9]*|CancelSubscriptionDialogContent|SubscribeToRun|ApiNodesSignInContent|CurrentUserPopoverWorkspace|WorkspaceSwitcherPopover|(?:Create|Delete|Edit|Leave|TeamWorkspaces|SetMemberCreditLimit|InviteMember|InviteMemberUpsell|RevokeInvite|RemoveMember|ChangeMemberRole|DowngradeRemoveMembers)DialogContent)(?:[-.])/i
+const FORBIDDEN_ASSET_NAME = /^(?:Cloud[A-Za-z0-9]*|ComfyCloud[A-Za-z0-9]*|comfy-(?:cloud|logo)|OAuth[A-Za-z0-9]*|onboardingCloudRoutes|cloudFeedbackTopbarButton|useCloudAuthPage|useSubscriptionDialog|vendor-firebase|firebaseIdentity|SignInContent|SignUpForm|UserPanel|UserSelectView|CreditsPanel|Subscription(?:Required|Inactive|Transition|Cancellation)[A-Za-z0-9]*|CancelSubscriptionDialogContent|SubscribeToRun|ApiNodesSignInContent|CurrentUserPopoverWorkspace|WorkspaceSwitcherPopover|(?:partner|api|cloud|account)[-_]?(?:nodes[-_]?)?(?:sign[-_]?in|login)|(?:Create|Delete|Edit|Leave|TeamWorkspaces|SetMemberCreditLimit|InviteMember|InviteMemberUpsell|RevokeInvite|RemoveMember|ChangeMemberRole|DowngradeRemoveMembers)DialogContent)(?:[-.])/i
 const FORBIDDEN_DESTINATIONS = [
   /(?:https?|wss?):\/\/(?:[a-z0-9-]+\.)*comfy\.org\b/gi,
   /https?:\/\/[^\s"'`]*\.firebaseapp\.com\b/gi,

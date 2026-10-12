@@ -1,8 +1,13 @@
+import { randomUUID } from 'node:crypto'
+import { access, mkdir, rm, writeFile } from 'node:fs/promises'
+import { resolve } from 'node:path'
+
 import { describe, expect, it } from 'vitest'
 
 import {
   excludeInheritedIconsFromTemplateGlob,
   hyperStudioEmbeddedOutputPlugin,
+  removeEmbeddedPromoAssets,
   stripInheritedIconSafelist,
   stripSourceMapReferences
 } from './hyperStudioEmbeddedOutputPlugin'
@@ -78,5 +83,32 @@ describe('hyperStudioEmbeddedOutputPlugin', () => {
       code: '@source inline("icon-[comfy--{node}]");',
       map: null
     })
+  })
+
+  it('removes inherited sign-in promotion assets from embedded output', async () => {
+    const outputDirectory = resolve(
+      process.cwd(),
+      '../../.local-tmp',
+      `embedded-output-plugin-${randomUUID()}`
+    )
+    const promoAsset = resolve(
+      outputDirectory,
+      'assets/images/partner-nodes-signin.webp'
+    )
+    const retainedAsset = resolve(outputDirectory, 'assets/images/local.webp')
+    try {
+      await mkdir(resolve(outputDirectory, 'assets/images'), {
+        recursive: true
+      })
+      await writeFile(promoAsset, 'inherited promotion')
+      await writeFile(retainedAsset, 'local asset')
+
+      await removeEmbeddedPromoAssets(outputDirectory)
+
+      await expect(access(promoAsset)).rejects.toThrow()
+      await expect(access(retainedAsset)).resolves.toBeUndefined()
+    } finally {
+      await rm(outputDirectory, { recursive: true, force: true })
+    }
   })
 })
