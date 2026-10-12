@@ -291,8 +291,12 @@ try {
     }
     const diagnosticPath = path.join(home, 'manager-update-failed.json')
     fs.writeFileSync(diagnosticPath, JSON.stringify(diagnostic, null, 2))
-    const reason = String(history?.result || history?.status?.messages?.[0] || 'no Manager reason').slice(0, 300)
-    throw new Error(`Manager update failed: ${reason}; diagnostics: ${diagnosticPath}`)
+    const reason = String(history?.history?.result || history?.history?.status?.messages?.[0] || 'no Manager reason').slice(0, 300)
+    await window.evaluate(() => window.electronAPI.stopWorkflowEngine())
+    const engineTracePath = path.join(shared, 'caches', 'workflow', 'diagnostics', 'engine-startup.log')
+    const engineTrace = fs.existsSync(engineTracePath) ? fs.readFileSync(engineTracePath, 'utf8') : 'Workflow engine trace unavailable'
+    fs.writeFileSync(path.join(home, 'manager-update-engine.log'), engineTrace)
+    throw new Error(`Manager update failed: ${reason}; diagnostics: ${diagnosticPath}; engine trace: ${path.join(home, 'manager-update-engine.log')}`)
   }
   if (git(['-C', installedPath, 'rev-parse', 'HEAD']) !== updateCommit) throw new Error('Installed node did not advance to the local update commit')
   process.stdout.write('PASS: Manager updated the installed pack to the next local fixture commit\n')
