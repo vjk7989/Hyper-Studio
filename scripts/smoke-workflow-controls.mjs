@@ -54,9 +54,14 @@ try {
 
   const iframe = window.locator('iframe[title="Hyper-Studio workflow canvas"]')
   try {
-    await iframe.waitFor({ state: 'visible', timeout: 60000 })
+    // The managed engine has a 120-second first-start deadline. This smoke
+    // starts after several installed-app checks on the same CI runner, so
+    // leave room for that cold start while the separate warm-switch gate
+    // measures interactive responsiveness.
+    await iframe.waitFor({ state: 'visible', timeout: 130000 })
   } catch (error) {
     log('WORKFLOW STARTUP BODY', (await window.locator('body').innerText()).slice(0, 3000))
+    log('WORKFLOW ENGINE STATUS', await window.evaluate(() => window.electronAPI.getWorkflowEngineStatus()).catch(reason => ({ error: String(reason) })))
     await window.screenshot({ path: path.join(home, 'workflow-open-failed.png') }).catch(() => {})
     throw error
   }

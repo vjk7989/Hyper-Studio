@@ -84,11 +84,26 @@ try {
   if((await canvas.locator('body').innerText()).includes('Required input missing')) throw new Error('Successful linked workflow still shows a required-input warning')
   log('PASS linked local execution generated PNG',outputs.find(name=>name.startsWith('workflow-control-ui_')))
   await canvas.getByRole('button',{name:'Graph mode, workflow actions'}).click()
-  assert.ok((await canvas.locator('body').innerText()).includes('Workflow'),'Graph action menu must open')
+  await canvas.getByRole('menu').waitFor({state:'visible',timeout:10000})
   await canvas.locator('body').press('Escape')
+  await canvas.getByRole('menu').waitFor({state:'hidden',timeout:10000})
+  await canvas.locator('#graph-canvas').click({position:{x:5,y:5}})
   await canvas.locator('#graph-canvas').press('Control+,')
   const settings=canvas.getByTestId('settings-dialog')
-  await settings.waitFor({state:'visible',timeout:10000})
+  try {
+    await settings.waitFor({state:'visible',timeout:15000})
+  } catch(error) {
+    const evidence={
+      activeElement:await canvas.locator('body').evaluate(() => document.activeElement?.outerHTML.slice(0,500)).catch(() => null),
+      menuCount:await canvas.getByRole('menu').count(),
+      iframeUrl:await canvas.locator('body').evaluate(() => location.href).catch(() => null),
+      bodyText:(await canvas.locator('body').innerText().catch(() => '')).slice(0,1000),
+    }
+    fs.writeFileSync(path.join(home,'settings-open-failure.json'),JSON.stringify(evidence,null,2))
+    await window.screenshot({path:path.join(home,'settings-open-failure.png')}).catch(()=>{})
+    log('SETTINGS OPEN DIAGNOSTIC',evidence)
+    throw error
+  }
   // The embedded canvas can cross the responsive breakpoint as the dialog
   // settles. Check the actual navigation control immediately before clicking.
   const showSettingsNav=settings.getByRole('button',{name:'Show left panel'})
